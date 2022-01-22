@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gc:CodeList xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/"
+             xmlns:xoev-cl-3="http://xoev.de/schemata/genericode/3"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Annotation>
+      <Description>
+         <xoev-cl-3:nameKurz>GDS.Dokumentklasse</xoev-cl-3:nameKurz>
+         <xoev-cl-3:beschreibung-codeliste>Codeliste der verschiedenen Dokumentklassen.</xoev-cl-3:beschreibung-codeliste>
+         <xoev-cl-3:herausgebernameKurz>AG-IT-Standards</xoev-cl-3:herausgebernameKurz>
+         <xoev-cl-3:beschreibung-versionCodeliste>Spalte 'fachmodul': Aufgeführte Fachmodule nutzen ausschließlich die für sie gekennzeichneten Werte</xoev-cl-3:beschreibung-versionCodeliste>
+         <xoev-cl-3:datumGueltigkeitAb>2021-08-16</xoev-cl-3:datumGueltigkeitAb>
+         <xoev-cl-3:versionCodelistenHandbuch>1.1</xoev-cl-3:versionCodelistenHandbuch>
+         <xoev-cl-3:aenderungZurVorversion>Es gibt keine inhaltlichen Änderungen zur Vorgängerversion. Es wurde lediglich das Fachmodul REG bei einigen Codelisteneinträgen in der Fachmodulspalte ergänzt.</xoev-cl-3:aenderungZurVorversion>
+      </Description>
+   </Annotation>
+   <Identification>
+      <ShortName>gds.dokumentklasse</ShortName>
+      <LongName>GDS.Dokumentklasse</LongName>
+      <Version>1.3</Version>
+      <CanonicalUri>urn:xoev-de:xjustiz:codeliste:gds.dokumentklasse</CanonicalUri>
+      <CanonicalVersionUri>urn:xoev-de:xjustiz:codeliste:gds.dokumentklasse_1.3</CanonicalVersionUri>
+      <Agency>
+         <LongName>BLK-AG IT-Standards in der Justiz</LongName>
+      </Agency>
+   </Identification>
+   <ColumnSet>
+      <Column Id="code" Use="required">
+         <ShortName>code</ShortName>
+         <LongName>Schlüssel</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="wert" Use="required">
+         <ShortName>wert</ShortName>
+         <LongName>Wert</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="fachmodul" Use="optional">
+         <ShortName>fachmodul</ShortName>
+         <LongName>Aufgeführte Fachmodule nutzen ausschließlich die für sie gekennzeichneten Werte</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Key Id="codeKey">
+         <Annotation>
+            <AppInfo>
+               <xoev-cl-3:empfohleneCodeSpalte/>
+            </AppInfo>
+         </Annotation>
+         <ShortName>codeKey</ShortName>
+         <ColumnRef Ref="code"/>
+      </Key>
+   </ColumnSet>
+   <SimpleCodeList>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>001</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Andere / Sonstige</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,ZSSR,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>003</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Klage / Antrag</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>005</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anlage</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,ZSSR,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>006</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Urteil</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>007</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschluss</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>008</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfügung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>009</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vermerk</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>010</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Protokoll</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>011</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Fehlblatt</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>012</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zustellungsdokument</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>013</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gutachten</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>014</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Technische Information</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>015</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Schreiben</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,ZSSR,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>016</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag (Behörde)</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>017</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bescheid</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>018</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Einspruch / Widerspruch (Behörde)</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>019</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Einspruchs- / Widerspruchsbescheid</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG,INSO,REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>020</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Kostendokument</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+   </SimpleCodeList>
+</gc:CodeList>

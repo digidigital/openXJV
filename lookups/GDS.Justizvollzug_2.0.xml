@@ -1,0 +1,3688 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gc:CodeList xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/"
+             xmlns:xoev-cl-3="http://xoev.de/schemata/genericode/3"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Annotation>
+      <Description>
+         <xoev-cl-3:nameKurz>GDS.Justizvollzug</xoev-cl-3:nameKurz>
+         <xoev-cl-3:beschreibung-codeliste>Diese Codeliste kann an allen Stellen eingebunden werden, wo Justizvollzugsanstalten fachlich benötigt werden.</xoev-cl-3:beschreibung-codeliste>
+         <xoev-cl-3:herausgebernameKurz>AG IT-Standards</xoev-cl-3:herausgebernameKurz>
+         <xoev-cl-3:datumGueltigkeitAb>2022-10-31</xoev-cl-3:datumGueltigkeitAb>
+         <xoev-cl-3:versionCodelistenHandbuch>1.1</xoev-cl-3:versionCodelistenHandbuch>
+         <xoev-cl-3:aenderungZurVorversion>Der Codelistentyp wurde von Typ1 nach Typ3 geändert. Es gibt keine inhaltlichen Änderungen. Die Codelisten-Versionsnummer ist unverändert.</xoev-cl-3:aenderungZurVorversion>
+      </Description>
+   </Annotation>
+   <Identification>
+      <ShortName>gds.justizvollzug</ShortName>
+      <LongName>GDS.Justizvollzug</LongName>
+      <Version>2.0</Version>
+      <CanonicalUri>urn:xoev-de:xjustiz:codeliste:gds.justizvollzug</CanonicalUri>
+      <CanonicalVersionUri>urn:xoev-de:xjustiz:codeliste:gds.justizvollzug_2.0</CanonicalVersionUri>
+      <Agency>
+         <LongName>BLK-AG IT-Standards in der Justiz</LongName>
+      </Agency>
+   </Identification>
+   <ColumnSet>
+      <Column Id="code" Use="required">
+         <ShortName>code</ShortName>
+         <LongName>Schlüssel</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="wert" Use="required">
+         <ShortName>wert</ShortName>
+         <LongName>Wert</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Key Id="codeKey">
+         <Annotation>
+            <AppInfo>
+               <xoev-cl-3:empfohleneCodeSpalte/>
+            </AppInfo>
+         </Annotation>
+         <ShortName>codeKey</ShortName>
+         <ColumnRef Ref="code"/>
+      </Key>
+   </ColumnSet>
+   <SimpleCodeList>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1001</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Saarbrücken</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>101</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Flensburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1010</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ottweiler</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>102</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Itzehoe</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1020</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neunkirchen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1021</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neunkirchen (ZA Saarlouis)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1022</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA St. Ingbert</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>103</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kiel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1030</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Lebach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>104</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lübeck</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1040</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Merzig</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>105</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lübeck (Schwarzenbek)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>106</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neumünster</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>107</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JA Schleswig (TA Neumünster)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>108</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schleswig</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>110</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Rendsburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1101</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Moabit)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1102</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Tegel)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1103</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JA Berlin (Jugendstrafanstalt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1104</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (JVA für Frauen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1105</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Düppel)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1106</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Hakenfelde)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1107</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Plötzensee)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1108</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Heiligensee)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1109</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Charlottenburg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>111</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JA Schleswig</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1111</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Berlin-Neukölln</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1112</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin-Düppel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1114</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Berlin (Moabit)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>112</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Moltsfelde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1131</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JA Berlin (Jugendstrafanstalt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1139</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Berlin (Jugendarrestanstalt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1142</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (JVA für Frauen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1143</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (JVA für Frauen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1144</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (JVA für Frauen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1152</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Düppel)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1160</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Hakenfelde)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1172</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Berlin (Plötzensee)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1173</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Berlin (Plötzensee)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1191</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Berlin (Charlottenburg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1192</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Berlin (Plötzensee)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1194</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Berlin (Plötzensee)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1195</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Berlin (Plötzensee)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1197</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Krankenhaus Reinickendorf</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1198</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Berlin</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1199</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Berlin</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1202</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Königs Wusterhausen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1204</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Frankfurt/Oder</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1205</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Oranienburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1210</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>HAH Prötzel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1211</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Brandenburg an der Havel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1221</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Wriezen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1231</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Spremberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1233</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Luckau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1234</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Luckau-Duben</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1235</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neuruppin-Wulkow</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1238</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Cottbus-Dissenchen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1250</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Brandenburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1252</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Teupitz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1266</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Neuruppin (Psychiatrie)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1280</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Eberswalde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1300</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Eberswalde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1301</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bützow</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1308</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Waldeck</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1310</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Wismar</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1332</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Stralsund</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1333</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neustrelitz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1334</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ueckermünde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1338</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neubrandenburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1339</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Ueckermünde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1390</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Klinikum Hansestadt Stralsund</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1391</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Christopherus-Diakoniewerk</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1401</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bautzen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1402</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Chemnitz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1403</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Dresden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1404</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Görlitz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1405</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Leipzig</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1406</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Plauen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1409</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Torgau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1410</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Waldheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1411</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Zeithain</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1412</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Zwickau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1416</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Chemnitz-Kaßberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1454</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Leipzig</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1455</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UHA Leipzig (Außenstelle)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1457</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Arnsdorf (Fachkrankenhaus)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1501</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Magdeburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1505</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Magdeburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1506</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Naumburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1508</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Raßnitz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1509</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Volkstedt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1510</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Volkstedt (ZwA Eisleben)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1521</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Halle III</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1522</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Dessau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1523</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Halle</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1594</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Magdeburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1595</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Halle</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1596</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Halle (Abt. Frauen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1598</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Uchtspringe</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1599</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Bernburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1603</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Weimar</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1604</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Gera</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1608</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Gera</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1609</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Tonna</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1613</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Zweiganstalt Unterwellenborn</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1614</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Untermaßfeld</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1621</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hohenleuben</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1622</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ichtershausen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1695</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Hildburghausen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1696</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Mühlhausen/Pfaffenrode</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1697</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Stadtroda</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>1699</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Goldlauter (Suhl)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>190</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Neustadt (i. Holstein)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>191</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Schleswig</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>201</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Fuhlsbüttel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>203</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Glasmoor</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>204</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hahnöfersand</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>206</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UHA Hamburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>209</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Vierlande</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>210</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Bergedorf</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>212</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Billwerder</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>214</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Altengamme</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>290</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>FK Klinikum Nord</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>301</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Braunschweig</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>302</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Gifhorn</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>303</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Helmstedt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>304</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Peine</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>306</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bückeburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>308</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Burgdorf</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>310</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Celle</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>313</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Salinenmoor</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>315</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Bad Gandersheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>317</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Roßdorf Abt. Göttingen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>318</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Roßdorf Abt. Duderstadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>319</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Roßdorf Abt. Einbeck</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>320</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Roßdorf Abt. Holzminden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>322</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Roßdorf</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>324</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JA Hameln</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>325</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hameln (Freigängerabtl.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>326</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hannover (Abt. Langenhagen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>327</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hannover</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>328</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hannover (Bildungsstätte)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>329</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hannover (Freigängerabt.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>330</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hildesheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>333</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lingen und JVK</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>334</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lingen (Abt. Groß-Hesepe)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>336</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lingen - Damaschke</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>338</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lüneburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>339</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lüneburg (Abt. Brockw. Weg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>341</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Meppen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>343</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Oldenburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>344</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Oldenburg (ZA Delmenhorst)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>345</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Oldenburg (ZA Nordenham)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>346</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Oldenburg (Abt. Gerichtsstr.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>347</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lingen Abt. Osnabrück</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>348</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Sehnde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>349</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Stade</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>350</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Cuxhaven</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>352</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Uelzen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>354</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Vechta</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>355</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Vechta (JVA f. Frauen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>356</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Vechta-Falkenrott</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>357</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Vechta</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>358</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Verden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>359</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Achim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>360</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Vechta (ZA Nienburg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>362</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Wilhelmshaven</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>363</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Aurich</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>364</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Emden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>367</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Wolfenbüttel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>368</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Goslar (ZA Wolfenbüttel)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>378</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Bad Zwischenahn (Wehnen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>379</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Tiefenbrunn (Krkh. Rosdorf)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>380</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Rehburg-Loccum (Wunstorf)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>381</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Wunstorf</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>382</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Osnabrück</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>383</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Moringen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>384</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Lüneburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>385</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Lüneburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>386</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Königslutter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>387</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Hildesheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>388</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Hildesheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>389</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Hannover</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>390</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Göttingen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>391</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Zeven-Brauel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>392</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Neustadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>393</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lingen Abt. Schinkelstraße</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>394</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Meppen (Außenarbeitsstelle)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>395</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Königslutter (ZwA Wolfenb.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>396</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Jever</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>397</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Stade (Abtl. Bremervörde)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>398</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Bersenbrück</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>399</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bad Gandersheim (Alfeld)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>400</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bremen-Oslebshausen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>401</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bremen-Blockland</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>402</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bremen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>403</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bremerhaven</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>490</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Bremen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>502</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Attendorn</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>503</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bielefeld-Senne</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>504</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bielefeld-Brackwede I</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>505</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bielefeld-Brackwede II</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>507</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bochum</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>508</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bochum-Langendreer</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>510</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Castrop-Rauxel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>511</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Münster(Hafthaus Coesfeld)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>512</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Detmold</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>513</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Dinslaken</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>514</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Dortmund</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>516</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Düsseldorf</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>517</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Duisburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>518</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Duisburg-Hamborn</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>519</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Fröndenberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>520</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Essen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>521</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Geldern</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>522</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Gelsenkirchen (Sozialth.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>523</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hagen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>524</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hamm</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>525</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Heinsberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>526</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Herford</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>528</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hövelhof</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>529</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Iserlohn</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>530</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kleve</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>531</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Köln</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>532</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Krefeld</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>533</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Leverkusen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>534</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Moers-Kapellen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>535</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mönchengladbach-Giesenkirchen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>536</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mönchengladbach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>537</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Moers</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>538</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mülheim/a.d. Ruhr</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>539</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Münster</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>540</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neuss</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>541</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Oberhausen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>542</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Recklinghausen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>543</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Remscheid</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>544</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Remscheid-Zweiganstalt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>545</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Rheinbach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>546</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwerte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>547</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Siegburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>548</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Siegen (ZwA der JVA Attendorn)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>549</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Werl</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>550</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Willich I</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>551</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Wuppertal</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>552</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Willich II</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>553</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Aachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>554</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Euskirchen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>555</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Gelsenkirchen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>563</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Gütersloh</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>564</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Bedburg-Hau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>565</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Bonn</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>566</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Düren</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>567</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Düsseldorf</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>568</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Haldem</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>569</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Langenfeld</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>570</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Lippstadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>571</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Lippstadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>572</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Marsberg (Westf. Therapiez.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>573</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Köln</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>574</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Viersen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>575</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Bottrop</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>576</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Düsseldorf-Gerresheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>579</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Lünen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>582</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Remscheid</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>583</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Wetter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>584</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Hemer</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>585</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Rheine</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>588</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Köln (Außenstelle)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>589</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bielefeld-Brackwede I</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>590</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Büren</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>591</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Düren (Übergangshaus Köln)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>594</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Solingen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>595</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Wuppertal (Hafthaus Barmen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>596</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Marsberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>597</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Gütersloh</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>598</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Herne</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>601</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Butzbach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>602</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Darmstadt (geschl. Vollzug)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>603</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Dieburg (geschl. Vollzug)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>604</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Frankfurt/Main</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>605</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Frankfurt/Main II</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>606</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Frankfurt/Main III</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>607</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Frankfurt/Main IV</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>608</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Fulda</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>609</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kassel I</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>610</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Kassel II</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>611</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Limburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>612</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Rockenberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>613</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwalmstadt (geschl. Vollzug)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>614</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Wiesbaden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>615</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Weiterstadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>616</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Offenbach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>620</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Gelnhausen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>621</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Gießen (geschl. Vollzug)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>622</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hanau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>623</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kassel III (Zweiganstalt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>628</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Frankfurt/Main III - OV</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>631</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Kaufungen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>641</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Gießen (offener Vollzug)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>642</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Darmstadt (offener Vollzug)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>643</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Dieburg (offener Vollzug)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>648</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Fulda (offener Vollzug)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>650</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwalmstadt (Kornhaus)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>660</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hünfeld</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>677</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Frankfurt/Main IV (OV)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>688</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Friedberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>689</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Offenbach E.f.A.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>690</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kassel (off. Vz. Hafenstr.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>691</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Marburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>692</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Haina</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>693</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Hadamar</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>694</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Eltville</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>696</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Groß-Gerau (Rockenberg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>697</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kassel (off. Vz. Baunatal)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>698</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kassel (off. Vz. Aspenstr.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>701</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Diez</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>702</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Frankenthal</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>704</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Koblenz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>705</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Ludwigshafen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>706</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mainz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>707</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Schifferstadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>708</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Trier</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>709</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Wittlich</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>710</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Wittlich</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>711</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Zweibrücken</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>713</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Worms</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>714</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Rohrbach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>793</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Klingenmünster</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>794</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Andernach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>795</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Alzey</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>796</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Zweibrücken-Birkhausen (ZwA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>797</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Trier (ZwA Saarburg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>798</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mainz (Wonsheim)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>799</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Bad Neuenahr</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>801</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Adelsheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>802</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mosbach (Baden)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>803</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Tauberbischofsheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>806</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bruchsal</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>810</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Freiburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>811</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Freiburg (Waldkirch)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>812</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Freiburg (Holzmarkt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>813</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Freiburg (Tennenbacher Str.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>814</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Freiburg (Emmendingen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>815</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Heilbronn</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>816</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Heilbronn (Hohrainhof)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>820</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Asperg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>821</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Asperg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>822</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Crailsheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>825</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Karlsruhe</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>826</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kislau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>827</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Rastatt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>830</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Konstanz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>831</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Konstanz (AS. Singen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>832</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Konstanz (Krkh. Reichenau)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>835</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Heimsheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>836</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ludwigsburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>840</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mannheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>841</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mannheim (Heidelberg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>845</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Offenburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>846</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Offenburg (ZA Kehl)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>848</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Offenburg (ZA Kenzingen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>849</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Offenburg (ZA Bühl)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>850</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Pforzheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>851</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Calw</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>852</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Pforzheim (ZA Sachsenheim)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>855</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ravensburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>856</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ravensburg (ZwA Bettenreute)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>860</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Rottenburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>861</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hohenstein (ZA Rottenburg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>862</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Tübingen (ZA Rottenburg)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>865</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Rottweil</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>866</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Oberndorf</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>868</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hechingen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>870</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwäbisch-Gmünd</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>871</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwäb.-Gmünd (ZwA Heidenh.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>872</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwäb.-Gmünd (ZwA Ellwang.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>873</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwäb.-Gmünd (Zweiganstalt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>874</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lauchheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>875</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwäbisch-Hall</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>876</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwäbisch-Hall</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>877</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schwäbisch-Hall</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>880</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Stuttgart</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>881</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Leonberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>884</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ulm (Zweiganstalt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>885</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ulm</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>886</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Bad Schussenried</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>887</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ulm</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>888</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Emmendingen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>889</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Weinsberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>890</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Waldshut-Tiengen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>891</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Lörrach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>892</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Villingen-Schwenningen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>893</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Göppingen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>894</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Müllheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>895</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Wiesloch</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>897</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Weissenau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>898</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Wiesloch</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>899</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Zwiefalten</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>901</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Aichach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>902</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Amberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>903</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ansbach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>904</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Aschaffenburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>905</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Augsburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>906</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bad Neustadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>907</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bad Reichenhall</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>908</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bamberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>909</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bayreuth</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>910</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Bernau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>911</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ebrach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>912</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Eichstätt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>913</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Erding</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>914</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SOZ Erlangen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>915</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Garmisch Partenkirchen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>916</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Hof</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>917</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Ingolstadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>918</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kaisheim</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>919</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kempten</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>920</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Kronach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>921</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Landsberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>922</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Landshut</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>923</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Laufen in Oberbayern</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>924</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Memmingen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>925</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Mühldorf am Inn</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>926</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA München</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>927</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neuburg a. d. Donau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>928</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neuburg-Herrenwörth</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>929</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Neu-Ulm</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>930</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Niederschönenfeld</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>931</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Nürnberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>932</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Passau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>933</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Regensburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>934</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Schweinfurt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>935</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Straubing</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>936</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Traunstein</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>937</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Weiden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>939</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA Würzburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>944</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Landau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>982</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Deggendorf(Mainkofen)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>983</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Lohr</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>984</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Werneck</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>985</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Regensburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>986</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Parsberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>987</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Straubing</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>988</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LKH Erlangen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>989</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Kaufbeuren</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>990</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Haar</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>991</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Günzburg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>992</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Wasserburg (Gabersee)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>993</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Bayreuth</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>994</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVK Ansbach</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>995</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Nürnberg</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>996</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA München (Jugendarrest-Anst.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>997</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JVA München(Frauenanstalt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>998</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Hof</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>999</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JAA Augsburg</SimpleValue>
+         </Value>
+      </Row>
+   </SimpleCodeList>
+</gc:CodeList>
