@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=openXJV
+GenericName=XJustiz-Viewer
+Comment=openXJV - Viewer für XJustiz-Dateien
+Exec=openxjv
+Icon=${SNAP}/meta/desktop/openxjv.svg
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupNotify=true

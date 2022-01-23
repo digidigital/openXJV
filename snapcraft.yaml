@@ -1,0 +1,55 @@
+name: openxjv 
+title: openXJV
+base: core18 
+adopt-info: openxjv
+summary: openXJV ist ein kostenloses Anzeigeprogramm für XJustiz-Dateien
+description: |
+  openXJV ist ein kostenloses Anzeigeprogramm für XJustiz-Dateien, die im Rahmen des elektronischen Rechtsverkehrs bei der Übertragung von Dokumenten Verwendung finden.
+  Dies ist z. B. für die Akteneinsicht in Akten der Bundesanstalt für Arbeit (BA) relevant, 
+  da diese auf elektronischem Wege lediglich Einzeldateien mit einem begleitenden XJustiz-Datensatz übermittelt. 
+  Erst das Auslesen des Datensatzes erzeugt aus der übermittelten "Dateisammlung" wieder eine sinnvolle Aktendarstellung.
+  Es eignet sich auch zur Anzeige beliebiger XJustiz-Datensätze der "Schriftgutübermittlung" über beA, eBO, beN, etc. 
+  openXJV ist entstanden, da zum Zeitpunkt des Projektstarts keine plattformübergreifende Anzeigelösung bereit stand.
+  
+  openXJV unterstützt den aktuell (Stand 01.2022) gültigen XJustiz-Standard 3.2.1 sowie die Vorgängerversion 2.4.1. Es werden die wichtigsten Datentypen und Strukturen unterstützt - eine vollständige und abolut fehlerfreie Anzeige kann jedoch nicht garantiert werden. 
+  Fachverfahren werden nicht unterstützt. 
+
+icon: OpenXJV_icon.svg
+license: MPL-2.0
+compression: lzo 
+grade: stable # 'stable' 'devel'
+confinement: strict # 'strict' 'devmode'
+architectures:
+  - build-on: amd64
+
+apps:
+  openxjv:
+    command: python3 $SNAP/openXJV.py
+    command-chain: [bin/debian-multiarch-triplet-provider-launch]
+    desktop: /build/aesify/parts/get-source/icons/openxjv.desktop
+    extensions: [gnome-3-28]
+    plugs:
+      - home
+      - removable-media
+      - desktop
+      - desktop-legacy
+      - wayland
+      - unity7
+      - x11
+    
+parts:
+  get-source:
+    plugin: dump
+    source: https://github.com/digidigital/openXJV.git
+  debian-multiarch-triplet-provider-launch:
+    plugin: nil
+    stage-snaps: [debian-multiarch-triplet-provider-launch]
+  openxjv:
+    plugin: python
+    source: https://github.com/digidigital/openXJV.git
+    source-type: git
+    python-packages: [pyperclip, PySimpleGUI, pikepdf]
+    stage-packages: [lxml, PyQt5, PyQtWebEngine, appdirs] 
+    override-pull: |
+      snapcraftctl pull  
+      snapcraftctl set-version "$(git describe --tags)"   
