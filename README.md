@@ -1,5 +1,5 @@
 # openXJV
-Viewer for XJustiz files used file / data transfers between courts, lawyers, agencies, etc. in  Germany's EGVP-System
+Viewer for XJustiz files used for file / data transfers between courts, lawyers, agencies, etc. in  Germany's EGVP-System
 
 openXJV ist ein **kostenloses Anzeigeprogramm für XJustiz-Dateien**, die im Rahmen des elektronischen Rechtsverkehrs bei der Übertragung von Dokumenten Verwendung finden.
 
