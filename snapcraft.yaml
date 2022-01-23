@@ -48,8 +48,7 @@ parts:
     plugin: python
     source: https://github.com/digidigital/openXJV.git
     source-type: git
-    python-packages: [pyperclip, PySimpleGUI, pikepdf]
-    stage-packages: [lxml, PyQt5, PyQtWebEngine, appdirs] 
+    python-packages: [lxml, PyQt5, PyQtWebEngine, appdirs]
     override-pull: |
       snapcraftctl pull  
       snapcraftctl set-version "$(git describe --tags)"   
