@@ -37,6 +37,7 @@ apps:
       - unity7
       - x11
       - gsettings
+      - browser-support
     
 parts:
   get-source:
