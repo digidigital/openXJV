@@ -69,7 +69,7 @@ parts:
       - libqt53dlogic5
       - libqt53dquick5
       - libqt53dquickscene2d5
-      - libqt5gamepad5
+      #- libqt5gamepad5
       - libqt5multimedia5-plugins
     override-pull: |
       snapcraftctl pull  
