@@ -48,7 +48,7 @@ parts:
     plugin: python
     source: https://github.com/digidigital/openXJV.git
     source-type: git
-    python-packages: [lxml, PyQt5, PyQtWebEngine, appdirs]
+    python-packages: [lxml, appdirs]
     stage-packages:
       - python3-pyqt5
       - python3-pyqt5.qtwebengine
@@ -62,15 +62,15 @@ parts:
       - libodbc2
       - libspeechd2
       - libqt53drender5
-      - libQt53DAnimation5
-      - libQt53DCore5
-      - libQt53DExtras5
-      - libQt53DInput5
-      - libQt53DLogic5
-      - libQt53DQuick5
-      - libQt53DQuickScene2D5
-      - libQt5Gamepad5
-      - libQt5MultimediaQuick5
+      - libqt53danimation5
+      - libqt53dcore5
+      - libqt53dextras5
+      - llibqt53dinput5
+      - libqt53dlogic5
+      - libqt53dquick5
+      - libqt53dquickscene2d5
+      - libqt5gamepad5
+      - libqt5multimedia5-plugins
     override-pull: |
       snapcraftctl pull  
       snapcraftctl set-version "$(git describe --tags)"   
