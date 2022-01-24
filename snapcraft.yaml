@@ -38,6 +38,7 @@ apps:
       - x11
       - gsettings
       - browser-support
+      - network
     
 parts:
   get-source:
@@ -53,7 +54,7 @@ parts:
     python-packages: [lxml, PyQt5==5.15.6, PyQtWebEngine, appdirs]
     stage-packages:
       #- python3-pyqt5
-      - python3-pyqt5.qtwebengine
+      #- python3-pyqt5.qtwebengine
       - overlay-scrollbar-gtk2
       - libatk-adaptor
       - libcanberra-gtk-module
@@ -64,16 +65,16 @@ parts:
       - libpq5
       - libodbc1
       - libspeechd2
-      - libqt53drender5
-      - libqt53danimation5
-      - libqt53dcore5
-      - libqt53dextras5
-      - libqt53dinput5
-      - libqt53dlogic5
-      - libqt53dquick5
-      - libqt53dquickscene2d5
+      #- libqt53drender5
+      #- libqt53danimation5
+      #- libqt53dcore5
+      #- libqt53dextras5
+      #- libqt53dinput5
+      #- libqt53dlogic5
+      #- libqt53dquick5
+      #- libqt53dquickscene2d5
       #- libqt5gamepad5
-      - libqt5multimedia5-plugins
+      #- libqt5multimedia5-plugins
     override-pull: |
       snapcraftctl pull  
       snapcraftctl set-version "$(git describe --tags)"   
