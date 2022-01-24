@@ -48,9 +48,9 @@ parts:
     plugin: python
     source: https://github.com/digidigital/openXJV.git
     source-type: git
-    python-packages: [lxml, appdirs]
+    python-packages: [lxml, PyQt5, appdirs]
     stage-packages:
-      - python3-pyqt5
+      #- python3-pyqt5
       - python3-pyqt5.qtwebengine
       - overlay-scrollbar-gtk2
       - libatk-adaptor
