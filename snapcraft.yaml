@@ -59,7 +59,7 @@ parts:
       - libpulse-mainloop-glib0
       - libnss3
       - libpq5
-      - libodbc2
+      - libodbc1
       - libspeechd2
       - libqt53drender5
       - libqt53danimation5
