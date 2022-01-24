@@ -69,7 +69,6 @@ parts:
       - libQt53DLogic5
       - libQt53DQuick5
       - libQt53DQuickScene2D5
-      - libQt53DRender5
       - libQt5Gamepad5
       - libQt5MultimediaQuick5
     override-pull: |
