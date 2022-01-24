@@ -57,6 +57,7 @@ parts:
       - overlay-scrollbar-gtk2
       - libatk-adaptor
       - libcanberra-gtk-module
+      - libcanberra-gtk3-module 
       - unity-gtk3-module
       - libpulse-mainloop-glib0
       - libnss3
