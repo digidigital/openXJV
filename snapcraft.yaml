@@ -36,6 +36,7 @@ apps:
       - wayland
       - unity7
       - x11
+      - gsettings
     
 parts:
   get-source:
