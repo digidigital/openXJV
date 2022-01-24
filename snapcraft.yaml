@@ -65,7 +65,7 @@ parts:
       - libqt53danimation5
       - libqt53dcore5
       - libqt53dextras5
-      - llibqt53dinput5
+      - libqt53dinput5
       - libqt53dlogic5
       - libqt53dquick5
       - libqt53dquickscene2d5
