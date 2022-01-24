@@ -50,8 +50,6 @@ parts:
     source-type: git
     python-packages: [lxml, PyQt5, PyQtWebEngine, appdirs]
     stage-packages:
-      - libxcb
-      - qtdeclarative
       - python3-pyqt5
       - overlay-scrollbar-gtk2
       - libatk-adaptor
