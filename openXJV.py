@@ -795,6 +795,7 @@ class UI(QMainWindow):
         if file and os.path.exists(file):
             self.__loadFile(file)
         elif file and not os.path.exists(file):
+            print('Pfad existiert nicht:' + file)
             pass
         elif file==None:
             
@@ -802,7 +803,7 @@ class UI(QMainWindow):
                 folder=str(self.settings.value("defaultFolder", self.homedir))
             
             file , check = QFileDialog.getOpenFileName(None, "XJustiz-Datei öffnen",
-                                               folder, "XJustiz-Dateien (*.xml *.XML)")
+                                               folder, "XJustiz-Dateien (*.xml *.XML)",options=QFileDialog.DontUseNativeDialog)
             if check:
                 self.__loadFile(file)
         
