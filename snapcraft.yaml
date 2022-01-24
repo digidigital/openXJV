@@ -26,7 +26,7 @@ apps:
   openxjv:
     command: python3 $SNAP/openXJV.py
     command-chain: [bin/debian-multiarch-triplet-provider-launch]
-    desktop: /build/openxjv/parts/get-source/desktop/openxjv.desktop
+    desktop: /build/openxjv/parts/get-source/src/desktop/openxjv.desktop
     extensions: [gnome-3-28]
     plugs:
       - home
@@ -58,6 +58,20 @@ parts:
       - unity-gtk3-module
       - libpulse-mainloop-glib0
       - libnss3
+      - libpq5
+      - libodbc2
+      - libspeechd2
+      - libqt53drender5
+      - libQt53DAnimation5
+      - libQt53DCore5
+      - libQt53DExtras5
+      - libQt53DInput5
+      - libQt53DLogic5
+      - libQt53DQuick5
+      - libQt53DQuickScene2D5
+      - libQt53DRender5
+      - libQt5Gamepad5
+      - libQt5MultimediaQuick5
     override-pull: |
       snapcraftctl pull  
       snapcraftctl set-version "$(git describe --tags)"   
