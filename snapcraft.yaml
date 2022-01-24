@@ -26,7 +26,7 @@ apps:
   openxjv:
     command: python3 $SNAP/openXJV.py
     command-chain: [bin/debian-multiarch-triplet-provider-launch]
-    desktop: /build/openxjv/parts/get-source/icons/openxjv.desktop
+    desktop: /build/openxjv/parts/get-source/desktop/openxjv.desktop
     extensions: [gnome-3-28]
     plugs:
       - home
@@ -51,10 +51,13 @@ parts:
     python-packages: [lxml, PyQt5, PyQtWebEngine, appdirs]
     stage-packages:
       - python3-pyqt5
+      - python3-pyqt5.qtwebengine
       - overlay-scrollbar-gtk2
       - libatk-adaptor
       - libcanberra-gtk-module
       - unity-gtk3-module
+      - libpulse-mainloop-glib0
+      - libnss3
     override-pull: |
       snapcraftctl pull  
       snapcraftctl set-version "$(git describe --tags)"   
