@@ -1,0 +1,1616 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1920</width>
+    <height>1080</height>
+   </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::PreventContextMenu</enum>
+  </property>
+  <property name="windowTitle">
+   <string>openXJV</string>
+  </property>
+  <property name="animated">
+   <bool>true</bool>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabs">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Ubuntu</family>
+        <pointsize>11</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <stylestrategy>PreferAntialias</stylestrategy>
+        <kerning>false</kerning>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="locale">
+       <locale language="German" country="Germany"/>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="dokumente">
+       <attribute name="title">
+        <string>Dokumente</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QSplitter" name="splitter_5">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="handleWidth">
+           <number>10</number>
+          </property>
+          <property name="childrenCollapsible">
+           <bool>false</bool>
+          </property>
+          <widget class="QSplitter" name="splitter_4">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="baseSize">
+            <size>
+             <width>400</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="childrenCollapsible">
+            <bool>false</bool>
+           </property>
+           <widget class="QSplitter" name="splitter_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="childrenCollapsible">
+             <bool>false</bool>
+            </property>
+            <widget class="QGroupBox" name="nachrichtenkopf">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="baseSize">
+              <size>
+               <width>0</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Ubuntu</family>
+               <pointsize>11</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+               <underline>false</underline>
+               <strikeout>false</strikeout>
+               <stylestrategy>PreferAntialias</stylestrategy>
+               <kerning>false</kerning>
+              </font>
+             </property>
+             <property name="title">
+              <string>Nachrichtenkopf</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_10">
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
+                <item>
+                 <layout class="QFormLayout" name="formLayout">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="absenderLabel">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Absender:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="absenderText">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
+                    <property name="contextMenuPolicy">
+                     <enum>Qt::DefaultContextMenu</enum>
+                    </property>
+                    <property name="acceptDrops">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                    <property name="placeholderText">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="empfaengerLabel">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Empfänger:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="empfaengerText">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="erstellungszeitpunktLabel">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                      <underline>false</underline>
+                      <strikeout>false</strikeout>
+                      <stylestrategy>PreferAntialias</stylestrategy>
+                      <kerning>false</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Erstellt am:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLineEdit" name="erstellungszeitpunktText">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                      <underline>false</underline>
+                      <strikeout>false</strikeout>
+                      <stylestrategy>PreferAntialias</stylestrategy>
+                      <kerning>false</kerning>
+                     </font>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QFormLayout" name="formLayout_2">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="absAktenzeichenLabel">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
+                    <property name="toolTip">
+                     <string>Absenderaktenzeichen</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>2000</number>
+                    </property>
+                    <property name="text">
+                     <string>Abs. Az.:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="absenderAktenzeichenText">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
+                    <property name="toolTip">
+                     <string>Absenderaktenzeichen</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>2000</number>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="empfAktenzeichenLabel">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
+                    <property name="toolTip">
+                     <string>Empfängeraktenzeichen</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>2000</number>
+                    </property>
+                    <property name="text">
+                     <string>Empf. Az.:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="empfaengerAktenzeichenText">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
+                    <property name="toolTip">
+                     <string>Empfängeraktenzeichen</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>2000</number>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="sendungsprioritaetLabel">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                      <underline>false</underline>
+                      <strikeout>false</strikeout>
+                      <stylestrategy>PreferAntialias</stylestrategy>
+                      <kerning>false</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Priorität:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLineEdit" name="sendungsprioritaetText">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                      <pointsize>11</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                      <underline>false</underline>
+                      <strikeout>false</strikeout>
+                      <stylestrategy>PreferAntialias</stylestrategy>
+                      <kerning>false</kerning>
+                     </font>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QSplitter" name="splitter_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="childrenCollapsible">
+              <bool>false</bool>
+             </property>
+             <widget class="QGroupBox" name="favoriten">
+              <property name="title">
+               <string>Favoriten</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_4">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QVBoxLayout" name="verticalLayout">
+                 <property name="leftMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>9</number>
+                 </property>
+                 <item>
+                  <widget class="QScrollArea" name="scrollArea_2">
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Plain</enum>
+                   </property>
+                   <property name="lineWidth">
+                    <number>0</number>
+                   </property>
+                   <property name="sizeAdjustPolicy">
+                    <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                   </property>
+                   <property name="widgetResizable">
+                    <bool>true</bool>
+                   </property>
+                   <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>0</y>
+                      <width>438</width>
+                      <height>141</height>
+                     </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_5">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <item row="1" column="0">
+                      <widget class="QListWidget" name="favoritenView">
+                       <property name="toolTip">
+                        <string>Doppelklick öffnet die Datei im externen Standardprogramm.</string>
+                       </property>
+                       <property name="toolTipDuration">
+                        <number>2500</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="deleteFavoriteButton">
+                   <property name="font">
+                    <font>
+                     <family>Material Icons</family>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Markierten Favoriteneintrag löschen</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>2000</number>
+                   </property>
+                   <property name="text">
+                    <string></string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QSplitter" name="splitter">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="childrenCollapsible">
+               <bool>false</bool>
+              </property>
+              <widget class="QGroupBox" name="inhalt">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="title">
+                <string>Inhalt</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_3">
+                <property name="leftMargin">
+                 <number>9</number>
+                </property>
+                <property name="topMargin">
+                 <number>9</number>
+                </property>
+                <property name="rightMargin">
+                 <number>9</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>9</number>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QScrollArea" name="scrollArea">
+                  <property name="widgetResizable">
+                   <bool>true</bool>
+                  </property>
+                  <widget class="QWidget" name="scrollAreaWidgetContents">
+                   <property name="geometry">
+                    <rect>
+                     <x>0</x>
+                     <y>0</y>
+                     <width>440</width>
+                     <height>68</height>
+                    </rect>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_6">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item row="0" column="0">
+                     <widget class="QTreeView" name="inhaltView">
+                      <property name="toolTip">
+                       <string>Strukturierte Darstellung des Inhalts gegliedert nach Dokumenten, Akten und Unterakten</string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>4000</number>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::NoFrame</enum>
+                      </property>
+                      <property name="sizeAdjustPolicy">
+                       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QGroupBox" name="metadaten">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>100</height>
+                </size>
+               </property>
+               <property name="title">
+                <string>Metadaten des aktiven Inhalts  </string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_7">
+                <property name="leftMargin">
+                 <number>9</number>
+                </property>
+                <property name="topMargin">
+                 <number>9</number>
+                </property>
+                <property name="rightMargin">
+                 <number>9</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>9</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QTextEdit" name="metadatenText">
+                  <property name="acceptDrops">
+                   <bool>false</bool>
+                  </property>
+                  <property name="toolTip">
+                   <string>Metadaten des unter &quot;Inhalt&quot; markierten Eintrags.</string>
+                  </property>
+                  <property name="toolTipDuration">
+                   <number>1500</number>
+                  </property>
+                  <property name="inputMethodHints">
+                   <set>Qt::ImhMultiLine</set>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>1</number>
+                  </property>
+                  <property name="midLineWidth">
+                   <number>0</number>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                  </property>
+                  <property name="lineWrapMode">
+                   <enum>QTextEdit::NoWrap</enum>
+                  </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::TextSelectableByMouse</set>
+                  </property>
+                  <property name="placeholderText">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QGroupBox" name="dokumente_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>6</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>250</height>
+             </size>
+            </property>
+            <property name="inputMethodHints">
+             <set>Qt::ImhNone</set>
+            </property>
+            <property name="title">
+             <string>Dateien</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_9">
+             <item row="0" column="0">
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="spacing">
+                <number>6</number>
+               </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <widget class="QLabel" name="label_9">
+                   <property name="toolTip">
+                    <string>Dateien anzeigen, die diese Zeichenketten in den Metadaten enthalten.</string>
+                   </property>
+                   <property name="text">
+                    <string>+Filter:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="plusFilter">
+                   <property name="toolTip">
+                    <string>Dateien anzeigen, die diese Zeichenketten in den Metadaten enthalten.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>3000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>10</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_10">
+                   <property name="toolTip">
+                    <string>Ausfiltern von Dateien, die diese Zeichenketten in den Metadaten enthalten.</string>
+                   </property>
+                   <property name="text">
+                    <string>-Filter:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="minusFilter">
+                   <property name="toolTip">
+                    <string>Ausfiltern von Dateien, die diese Zeichenketten in den Metadaten enthalten.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>3000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>10</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="filterMagic">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>25</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Material Icons</family>
+                     <pointsize>13</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Technische Dateien ausfiltern</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>2000</number>
+                   </property>
+                   <property name="text">
+                    <string></string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="filterLeeren">
+                   <property name="toolTip">
+                    <string>Alle Filter zurücksetzen</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>2000</number>
+                   </property>
+                   <property name="text">
+                    <string>Filter leeren</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="docTableView">
+                 <property name="toolTip">
+                  <string>Datei mit Doppelklick in Vorschau anzeigen oder extern öffnen.</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>2000</number>
+                 </property>
+                 <property name="inputMethodHints">
+                  <set>Qt::ImhMultiLine</set>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <property name="showDropIndicator" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                 <property name="dragDropOverwriteMode">
+                  <bool>false</bool>
+                 </property>
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <property name="textElideMode">
+                  <enum>Qt::ElideMiddle</enum>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="cornerButtonEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <property name="columnCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderMinimumSectionSize">
+                  <number>20</number>
+                 </attribute>
+                 <attribute name="horizontalHeaderStretchLastSection">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="verticalHeaderVisible">
+                  <bool>false</bool>
+                 </attribute>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+          <widget class="QWebEngineView" name="browser">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>6</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>10</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="baseSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="acceptDrops">
+            <bool>false</bool>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="url">
+            <url>
+             <string>about:blank</string>
+            </url>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="grunddaten">
+       <attribute name="title">
+        <string>Grunddaten</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_14">
+        <item row="0" column="0">
+         <widget class="QSplitter" name="splitter_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="childrenCollapsible">
+           <bool>false</bool>
+          </property>
+          <widget class="QGroupBox" name="beteiligteBox">
+           <property name="title">
+            <string>Beteiligte</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_12">
+            <item row="0" column="0">
+             <widget class="QTextEdit" name="beteiligteText">
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Daten zu Beteiligten</string>
+              </property>
+              <property name="toolTipDuration">
+               <number>2000</number>
+              </property>
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QTextEdit::NoWrap</enum>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+              <property name="html">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QSplitter" name="splitter_6">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="childrenCollapsible">
+            <bool>false</bool>
+           </property>
+           <widget class="QGroupBox" name="instanzdatenBox">
+            <property name="title">
+             <string>Instanzdaten</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_11">
+             <item row="0" column="0">
+              <widget class="QTextEdit" name="instanzenText">
+               <property name="minimumSize">
+                <size>
+                 <width>20</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Liste der Stationen, die ein Vorgang durchlaufen hat.
+Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
+               </property>
+               <property name="toolTipDuration">
+                <number>4000</number>
+               </property>
+               <property name="undoRedoEnabled">
+                <bool>false</bool>
+               </property>
+               <property name="lineWrapMode">
+                <enum>QTextEdit::NoWrap</enum>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QGroupBox" name="terminsdatenBox">
+            <property name="title">
+             <string>Terminsdaten</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_8">
+             <item row="0" column="0">
+              <widget class="QSplitter" name="splitter_8">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="childrenCollapsible">
+                <bool>false</bool>
+               </property>
+               <widget class="QTableWidget" name="termineTableView">
+                <property name="toolTip">
+                 <string>Klick aktualisiert Detailansicht des gewählten Termins</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>2500</number>
+                </property>
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="showDropIndicator" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <property name="sortingEnabled">
+                 <bool>true</bool>
+                </property>
+                <property name="cornerButtonEnabled">
+                 <bool>false</bool>
+                </property>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="verticalHeaderVisible">
+                 <bool>false</bool>
+                </attribute>
+               </widget>
+               <widget class="QTextEdit" name="terminDetailView">
+                <property name="toolTip">
+                 <string>Detailinformationen zum gewählten Termin</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>2500</number>
+                </property>
+                <property name="undoRedoEnabled">
+                 <bool>false</bool>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QTextEdit::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1920</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Ubuntu</family>
+    </font>
+   </property>
+   <widget class="QMenu" name="menuDatei">
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+     </font>
+    </property>
+    <property name="title">
+     <string>Datei</string>
+    </property>
+    <addaction name="actionOeffnen"/>
+    <addaction name="actionZIP_ArchiveOeffnen"/>
+    <addaction name="actionSchliessen"/>
+   </widget>
+   <widget class="QMenu" name="menuOptionen">
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+     </font>
+    </property>
+    <property name="title">
+     <string>Optionen</string>
+    </property>
+    <widget class="QMenu" name="menuPDF_Viewer">
+     <property name="title">
+      <string>PDF Viewer</string>
+     </property>
+     <addaction name="actionPDF_js"/>
+     <addaction name="actionChromium"/>
+     <addaction name="actionnativ"/>
+    </widget>
+    <addaction name="menuPDF_Viewer"/>
+    <addaction name="actionAktenverzeichnis_festlegen"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuUeber">
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+     </font>
+    </property>
+    <property name="title">
+     <string>Hilfe</string>
+    </property>
+    <addaction name="actionAnleitung"/>
+    <addaction name="actionSupport_anfragen"/>
+    <addaction name="actionUeberOpenXJV"/>
+   </widget>
+   <widget class="QMenu" name="menuAnsicht">
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+     </font>
+    </property>
+    <property name="title">
+     <string>Ansicht</string>
+    </property>
+    <widget class="QMenu" name="menuSpalten_ein_ausblenden">
+     <property name="title">
+      <string>Dokumente</string>
+     </property>
+     <addaction name="actionSpaltenkonfiguration"/>
+     <addaction name="separator"/>
+     <addaction name="actionAbsenderColumn"/>
+     <addaction name="actionAdressatColumn"/>
+     <addaction name="actionAkteneinsichtColumn"/>
+     <addaction name="actionBestandteilColumn"/>
+     <addaction name="actionBezugsdateinameColumn"/>
+     <addaction name="actionDatumColumn"/>
+     <addaction name="actionDokumententypColumn"/>
+     <addaction name="actionDokumentenklasseColumn"/>
+     <addaction name="actionEEB_HinweisColumn"/>
+     <addaction name="actionEingangsdatumColumn"/>
+     <addaction name="actionfrGeschaeftszeichenColumn"/>
+     <addaction name="actionJustizkostenrelevanzColumn"/>
+     <addaction name="actionVeraktungsdatumColumn"/>
+     <addaction name="actionVersionsnummerColumn"/>
+     <addaction name="actionVertraulichkeitsstufeColumn"/>
+     <addaction name="actionZustellung_StPO_41Column"/>
+     <addaction name="separator"/>
+     <addaction name="actionLeereSpaltenAusblenden"/>
+    </widget>
+    <addaction name="actionNachrichtenkopf"/>
+    <addaction name="actionFavoriten"/>
+    <addaction name="menuSpalten_ein_ausblenden"/>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menuDatei"/>
+   <addaction name="menuOptionen"/>
+   <addaction name="menuAnsicht"/>
+   <addaction name="menuUeber"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="font">
+    <font>
+     <family>Material Icons</family>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>5</width>
+     <height>5</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonFollowStyle</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionOeffnen"/>
+   <addaction name="actionZIP_ArchiveOeffnen"/>
+   <addaction name="separator"/>
+   <addaction name="actionAktenverzeichnis_festlegen"/>
+   <addaction name="separator"/>
+   <addaction name="actionZuruecksetzen"/>
+   <addaction name="separator"/>
+   <addaction name="actionSupport_anfragen"/>
+  </widget>
+  <action name="actionUeberOpenXJV">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Über openXJV</string>
+   </property>
+  </action>
+  <action name="actionOeffnen">
+   <property name="text">
+    <string>Öffnen</string>
+   </property>
+   <property name="iconText">
+    <string></string>
+   </property>
+   <property name="toolTip">
+    <string>Öffnen</string>
+   </property>
+   <property name="font">
+    <font/>
+   </property>
+  </action>
+  <action name="actionPDF_js">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>PDF.js</string>
+   </property>
+   <property name="iconText">
+    <string>PDF.js</string>
+   </property>
+   <property name="toolTip">
+    <string>PDF.js</string>
+   </property>
+  </action>
+  <action name="actionnativ">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>nativ</string>
+   </property>
+  </action>
+  <action name="actionZuruecksetzen">
+   <property name="text">
+    <string>Ansicht zurücksetzen</string>
+   </property>
+   <property name="iconText">
+    <string></string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Material Icons</family>
+    </font>
+   </property>
+  </action>
+  <action name="actionFavoriten_bereinigen">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Favoriten bereinigen</string>
+   </property>
+  </action>
+  <action name="actionAktenverzeichnis_festlegen">
+   <property name="text">
+    <string>Aktenverzeichnis festlegen</string>
+   </property>
+   <property name="iconText">
+    <string></string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionDatumColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Datum</string>
+   </property>
+  </action>
+  <action name="actionEingangsdatumColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Eingangsdatum</string>
+   </property>
+  </action>
+  <action name="actionVeraktungsdatumColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Veraktungsdatum</string>
+   </property>
+  </action>
+  <action name="actionDokumententypColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Dokumententyp</string>
+   </property>
+  </action>
+  <action name="actionDokumentenklasseColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Dokumentklasse</string>
+   </property>
+  </action>
+  <action name="actionBestandteilColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bestandteil</string>
+   </property>
+  </action>
+  <action name="actionVersionsnummerColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Versionsnummer</string>
+   </property>
+  </action>
+  <action name="actionBezugsdateinameColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bezugsdateiname</string>
+   </property>
+  </action>
+  <action name="actionEEB_HinweisColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>EEB-Hinweis</string>
+   </property>
+  </action>
+  <action name="actionZustellung_StPO_41Column">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Zustellung StPO §41</string>
+   </property>
+  </action>
+  <action name="actionAkteneinsichtColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Akteneinsicht</string>
+   </property>
+  </action>
+  <action name="actionAbsenderColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Absender</string>
+   </property>
+  </action>
+  <action name="actionAdressatColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Adressat</string>
+   </property>
+  </action>
+  <action name="actionJustizkostenrelevanzColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Justizkostenrelevanz</string>
+   </property>
+  </action>
+  <action name="actionfrGeschaeftszeichenColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>fr. Geschäftszeichen</string>
+   </property>
+  </action>
+  <action name="actionVertraulichkeitsstufeColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Vertraulichkeitsstufe</string>
+   </property>
+  </action>
+  <action name="actionSpaltenkonfiguration">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Spaltenkonfiguration</string>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </action>
+  <action name="actionNachrichtenkopf">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Nachrichtenkopf</string>
+   </property>
+  </action>
+  <action name="actionFavoriten">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Favoriten</string>
+   </property>
+  </action>
+  <action name="actionLeereSpaltenAusblenden">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Leere Spalten ausblenden</string>
+   </property>
+  </action>
+  <action name="actionSchliessen">
+   <property name="text">
+    <string>Schließen</string>
+   </property>
+  </action>
+  <action name="actionChromium">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Chromium</string>
+   </property>
+  </action>
+  <action name="actionAnleitung">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Anleitung</string>
+   </property>
+  </action>
+  <action name="actionStyleFusion">
+   <property name="text">
+    <string>Fusion</string>
+   </property>
+  </action>
+  <action name="actionStyleWindows">
+   <property name="text">
+    <string>Windows (klasssisch)</string>
+   </property>
+  </action>
+  <action name="actionZIP_ArchiveOeffnen">
+   <property name="text">
+    <string>ZIP-Archiv(e) öffnen</string>
+   </property>
+   <property name="iconText">
+    <string></string>
+   </property>
+  </action>
+  <action name="actionSupport_anfragen">
+   <property name="text">
+    <string>Support anfragen</string>
+   </property>
+   <property name="iconText">
+    <string></string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebEngineView</class>
+   <extends>QWidget</extends>
+   <header location="global">QtWebEngineWidgets/QWebEngineView</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../fonts/resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionSchliessen</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
