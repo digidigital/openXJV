@@ -21,6 +21,7 @@ import os
 import sys
 import re
 import subprocess
+import platform
 from shutil import copyfile
 from pathlib import Path
 from zipfile import ZipFile
@@ -52,6 +53,9 @@ from PyQt5.QtWidgets import (QFileDialog,
 from appdirs import AppDirs
 
 from xjustizParser import *
+
+global VERSION 
+VERSION = '0.5.0'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=12, set_bold=False, color=QColor(0, 0, 0)):
@@ -91,8 +95,9 @@ class TextObject():
             return ''
 
 class UI(QMainWindow):
-    def __init__(self, file=None, ziplist=None):
+    def __init__(self, file=None, ziplist=None, app=None):
         super(UI, self).__init__() 
+
         self.tempDir=TemporaryDirectory()
         self.tempfile=''
         # Needed for pyinstaller onefile...
@@ -113,10 +118,9 @@ class UI(QMainWindow):
         windowIcon.addFile(icon128,(QSize(128,128)))
         windowIcon.addFile(icon256,(QSize(256,256)))
         self.setWindowIcon(windowIcon)
-
+       
         self.dirs = AppDirs("OpenXJV", "digidigital", version="0.1")
         os.makedirs(self.dirs.user_data_dir, exist_ok=True) 
-        
         
         #Don't use Path.home() directly in case we are in a snap package
         self.homedir=os.environ.get('SNAP_REAL_HOME', Path.home())
@@ -124,15 +128,23 @@ class UI(QMainWindow):
         # Load the .ui file
         uic.loadUi(self.scriptRoot + '/ui/openxjv.ui', self) 
         
-        ###Prepare settings###
-        self.settings = QSettings('OpenXJV','Björn Seipel')
-        # settings.setValue("monkey", 1)
-        # margin = int(settings.value("editor/wrapMargin", None))
-        # settings.remove(value)
+        self.setWindowTitle('openXJV %s' % VERSION)
         
+        ###Prepare settings###
+        self.settings = QSettings('openXJV','digidigital')
+
         QWebEngineSettings.globalSettings().setAttribute(QWebEngineSettings.PluginsEnabled,True)
         QWebEngineSettings.globalSettings().setAttribute(QWebEngineSettings.ErrorPageEnabled,False)
         
+        #Check if Chromium PDF viewer is available (introduced with Qt 5.13) 
+        try:
+            QWebEngineSettings.PdfViewerEnabled
+            self.chromiumPdfViewerAvailable = True   
+        except AttributeError:
+            self.chromiumPdfViewerAvailable = False
+            self.actionChromium.setEnabled(False)
+            self.actionChromium.setVisible(False)
+            
         ###Load fonts###
         fontDir = self.scriptRoot + '/fonts/'
         fontDatabase=QFontDatabase() ; 
@@ -143,15 +155,15 @@ class UI(QMainWindow):
         for font in fontFiles:          
             fontDatabase.addApplicationFont(fontDir + font) 
        
-        self.setFont(QFont('Ubuntu'))
-        self.tabs.setFont(QFont('Ubuntu'))
+        self.setFont(QFont('Ubuntu', 11))
+        if app:
+            app.setFont(QFont('Ubuntu', 11))
         
         ###set toolbarButtonwidth###        
         for child in self.toolBar.children():
             if child.__class__.__name__ == 'QToolButton':
                 child.setFixedWidth(25)
         
-
         
         #Adjust table header style         
         self.docTableView.horizontalHeader().setHighlightSections(False)
@@ -168,7 +180,6 @@ class UI(QMainWindow):
             "PDFjs":"file://%s%s/html/pdfjs/web/viewer.html?file=" % (winslash, urlPath),   
             "chromium":"file://%s" % winslash, 
         }            
-        
         
         ###columns/order to display in document view###
         self.docTableAttributes = [
@@ -221,10 +232,6 @@ class UI(QMainWindow):
          
         self.isDocColumnEmpty={}
         
-  
-        
-        
-        
         ####initial settings####
         self.inhaltView.setHeaderHidden(True)
         
@@ -248,7 +255,6 @@ class UI(QMainWindow):
             for zip in ziplist:
                 if not zip.lower().endswith('zip'):
                     sys.exit("Fehler: Die übergebene Liste enthält nicht ausschließlich ZIP-Dateien.")
-            print(ziplist)
             self.getZipFiles(files=ziplist)    
         elif inputfile:
             self.getFile(inputfile)
@@ -287,12 +293,12 @@ class UI(QMainWindow):
         
     def __displayInfo(self):
         QMessageBox.information(self, "Information",
-        "openXJV 0.5\n"
+        "openXJV " + VERSION + "\n"
         "Lizenz: GPL v3\n"
         "(c) 2022 Björn Seipel\nKontakt: support@digidigital.de\nWebsite: https://openXJV.de\n\n" 
         "Die Anwendung nutzt folgende Komponenten:\n"
         "Qt5 - LGPLv3\n"
-        "PyQT4 - GNU GPL v3\n"
+        "PyQT5 - GNU GPL v3\n"
         "appdirs - MIT License\n"
         "lxml - BSD License\n"
         "PDF.js - Apache 2.0 License\n"
@@ -301,12 +307,10 @@ class UI(QMainWindow):
         "pyinstaller - GPLv2 or later\n"
         "python 3.x - PSF License\n\n"
         "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden."
-        
-        
         )
     
     def __supportAnfragen(self):
-        QDesktopServices.openUrl(QUrl("mailto:?to=support@digidigital.de&subject=Supportanfrage zu openXJV", QUrl.TolerantMode))
+        QDesktopServices.openUrl(QUrl("mailto:?to=support@digidigital.de&subject=Supportanfrage zu openXJV %s unter %s" % (VERSION,platform.platform()) , QUrl.TolerantMode))
     
     def __updateSelectedInhalt(self, val, akte):
         aktenID=val.siblingAtColumn(val.column()+1).data()
@@ -709,7 +713,6 @@ class UI(QMainWindow):
                         favoriteFile.write(filename + '\n')
             elif os.path.exists(filepath):
                 os.remove(filepath)
-    
             
     def __getAktenSubBaum(self, akten, node):    
         for einzelakte in akten.values():
@@ -790,12 +793,10 @@ class UI(QMainWindow):
                 
             self.getFile(folder=self.tempPath.name)
             
-            
     def getFile(self, file=None, folder=None):
         if file and os.path.exists(file):
             self.__loadFile(file)
         elif file and not os.path.exists(file):
-            print('Pfad existiert nicht:' + file)
             pass
         elif file==None:
             
@@ -803,30 +804,11 @@ class UI(QMainWindow):
                 folder=str(self.settings.value("defaultFolder", self.homedir))
             
             file , check = QFileDialog.getOpenFileName(None, "XJustiz-Datei öffnen",
-                                               folder, "XJustiz-Dateien (*.xml *.XML)",options=QFileDialog.DontUseNativeDialog)
+                                               folder, "XJustiz-Dateien (*.xml *.XML)")
             if check:
                 self.__loadFile(file)
         
     def __loadFile(self, file):    
-        type=None
-        with open(file) as fp:
-            while True:
-                line = fp.readline()
-                if not line:
-                    break
-                if 'xjustizVersion="2.4.0"' in line:
-                    type="2.4.0"
-                    break
-                if 'xjustizVersion="3.2.1"' in line:
-                    type="3.2.1"
-                    break 
-        if type=="2.4.0":
-            self.akte=parser240(file)
-        elif type=="3.2.1":
-            self.akte=parser321(file)
-        else:
-            self.statusBar.showMessage('Konnte keine unterstützte XJustiz-Version auslesen: %s' % file)
-            return None
         try:
             type=None
             with open(file) as fp:
@@ -883,9 +865,8 @@ class UI(QMainWindow):
         self.settings.setValue('nachrichtenkopf' , self.actionNachrichtenkopf.isChecked())
         self.settings.setValue('favoriten' , self.actionFavoriten.isChecked())
         self.settings.setValue('leereSpalten' , self.actionLeereSpaltenAusblenden.isChecked())
-               
         
-        if self.actionChromium.isChecked():
+        if self.actionChromium.isChecked() and self.chromiumPdfViewerAvailable:
             self.settings.setValue('pdfViewer', 'chromium')
         elif self.actionnativ.isChecked():
             self.settings.setValue('pdfViewer', 'nativ')                       
@@ -906,7 +887,6 @@ class UI(QMainWindow):
             self.actionnativ.setEnabled(True)
             self.browser.setVisible(True)
            
-        
         elif self.actionnativ.isChecked() and self.actionnativ.isEnabled():
             self.actionnativ.setEnabled(False)
             self.actionPDF_js.setChecked(False)
@@ -923,7 +903,6 @@ class UI(QMainWindow):
             self.actionnativ.setChecked(False)
             self.actionnativ.setEnabled(True)
             self.browser.setVisible(True)   
-            
             
         self.__updateSettings()
     
@@ -942,7 +921,7 @@ class UI(QMainWindow):
         self.actionFavoriten.setChecked(True if self.settings.value('favoriten', 'true').lower()=='true' else False)
         self.actionLeereSpaltenAusblenden.setChecked(True if self.settings.value('leereSpalten', 'true').lower()=='true' else False)
         
-        self.actionChromium.setChecked(True if self.settings.value('pdfViewer', 'PDFjs')=='chromium' else False)
+        self.actionChromium.setChecked(True if self.settings.value('pdfViewer', 'PDFjs')=='chromium' and self.chromiumPdfViewerAvailable else False)
         self.actionnativ.setChecked(True if self.settings.value('pdfViewer', 'PDFjs')=='nativ' else False)     
         
         self.__viewerSwitch()
@@ -1221,7 +1200,6 @@ class UI(QMainWindow):
             if raDaten:
                 text+='<blockquote><b><u>Rechtsanwalt im Verfahren</u></b>%s</blockquote>' % raDaten
             
-        
         return text
     
     def __orgTemplate(self, beteiligter):
@@ -1581,7 +1559,6 @@ class UI(QMainWindow):
         text.addLine('Ladungszusatz', ladungszusatz)
         text.addRaw('<br>')
         return text.getText()
-    
         
     def __setTerminDetailView(self, val):
         text=''
@@ -1593,9 +1570,15 @@ class UI(QMainWindow):
         self.terminDetailView.setHtml(text) 
                                         
 if __name__ == "__main__":
+    
+    print('Disabling Chomium-Sandbox for AppImage compatibility reasons (Seems to be unavailable on most systems anyway).')
+    os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
+    
     app = QApplication([])
     app.setStyle('Fusion')
-
+    app.setObjectName('openXJV')
+    app.setApplicationName('openXJV %s' % VERSION)
+    app.setApplicationVersion(VERSION)
     #Parse sys.argv
     file=None
     ziplist=None
@@ -1605,8 +1588,9 @@ if __name__ == "__main__":
     elif len(sys.argv)>=2:
         ziplist=[]
         for file in sys.argv[1:]:
-            ziplist.append(file)
+            if file.lower().endswith('zip'):
+                ziplist.append(file)
             
-    widget = UI(file=file, ziplist=ziplist)
+    widget = UI(file=file, ziplist=ziplist, app=app)
     widget.show()
     sys.exit(app.exec_())
