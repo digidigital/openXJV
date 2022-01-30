@@ -596,7 +596,7 @@ class parser321():
         aktenzeichenParts={}
         aktenzeichenParts['az.art']                      =self.lookup.xjustizValue ('GDS.Aktenzeichenart', self._findElementText("./az.art", element=aktenzeichen, code=True))
         aktenzeichenParts['auswahl_az.vergebendeStation']=self._parseBehoerde(self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen))
-        #TESTEN!!!!
+        
         aktenzeichenParts['aktenzeichen.freitext']       =self._findElementText("./auswahl_aktenzeichen/aktenzeichen.freitext", element=aktenzeichen) 
         if len(aktenzeichenParts['aktenzeichen.freitext'])==0:
             aktenzeichenStrukturiert={}
@@ -1601,14 +1601,15 @@ class parser240(parser321):
         
         items=[
             'hauptterminsdatum',
-            'hauptterminsId',
-            'terminsId',
             'spruchkoerper',
             'oeffentlich'
         ]
         
         for item in items:
             data[item]=self._findElementText('./' + item, termin)
+        
+        data['hauptterminsID']=self._findElementText('./hauptterminsId', termin)
+        data['terminsID']=self._findElementText('./terminsId', termin)
         
         data['auswahl_hauptterminszeit']={}
         data['auswahl_hauptterminszeit']['hauptterminsuhrzeit'] = self._findElementText('.//hauptterminsuhrzeit', termin)
@@ -1669,7 +1670,6 @@ class parser240(parser321):
         return data
     
     def _parseAllValues(self):
-        
         
         ####### Nachrichtenkopf (Alle Werte nach Spezifikation 2.4.0 unterstützt - werden in Struktur 3.2.1 abgebildet) #######
         
@@ -1758,7 +1758,6 @@ class parser240(parser321):
             instanzData['telekommunikation']=[]
             
             self.grunddaten['instanzen'][instanzData['instanznummer']]=instanzData
-
 
         ## Terminsdaten ##
         self.termine=[]
