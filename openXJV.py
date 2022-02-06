@@ -20,6 +20,7 @@
 import os
 import sys
 import re
+import urllib.request
 import subprocess
 import platform
 from shutil import copyfile
@@ -33,7 +34,7 @@ from PyQt5.Qt import (QSettings,
                       
 )
 
-from PyQt5.QtCore import QUrl, Qt, QSize
+from PyQt5.QtCore import QUrl, Qt, QSize 
 from PyQt5.QtWebEngineWidgets import (QWebEngineView, QWebEngineSettings)
 from PyQt5 import uic, QtPrintSupport
 from PyQt5.QtGui import (QIcon,
@@ -55,7 +56,7 @@ from appdirs import AppDirs
 from xjustizParser import *
 
 global VERSION 
-VERSION = '0.5.0'
+VERSION = '0.5.1'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=12, set_bold=False, color=QColor(0, 0, 0)):
@@ -129,6 +130,10 @@ class UI(QMainWindow):
         uic.loadUi(self.scriptRoot + '/ui/openxjv.ui', self) 
         
         self.setWindowTitle('openXJV %s' % VERSION)
+        
+        #Hide "New version" icon
+        self.newVersionIndicator=self.toolBar.actions()[8]
+        self.newVersionIndicator.setVisible(False)
         
         ###Prepare settings###
         self.settings = QSettings('openXJV','digidigital')
@@ -242,8 +247,7 @@ class UI(QMainWindow):
         #Load empty viewer
         self.url=self.viewerPaths['PDFjs'] 
         self.browser.setUrl(QUrl.fromUserInput(self.url))
-      
-
+            
         #########self.favoriteniew##########
         self.favorites = set()
 
@@ -279,14 +283,30 @@ class UI(QMainWindow):
         self.actionNachrichtenkopf.triggered.connect(self.__updateSettings)
         self.actionFavoriten.triggered.connect(self.__updateSettings)
         self.actionLeereSpaltenAusblenden.triggered.connect(self.__updateSettings)
+        self.actionOnlineAufUpdatesPruefen.triggered.connect(self.__updateSettings)
         self.actionnativ.triggered.connect(self.__viewerSwitch)
         self.actionPDF_js.triggered.connect(self.__viewerSwitch)
         self.actionChromium.triggered.connect(self.__viewerSwitch)
         self.browser.page().profile().downloadRequested.connect(self.__downloadRequested)
         self.browser.page().printRequested.connect(self.__printRequested)
+        self.actionNeueVersion.triggered.connect(lambda triggered: QDesktopServices.openUrl(QUrl("https://openxjv.de" , QUrl.TolerantMode)))
         for columnSetting in self.docHeaderColumnsSettings.values():
             if columnSetting['setting']:
                 columnSetting['setting'].triggered.connect(self.__updateSettings)
+        
+        # Workaround für sich nicht aktualisierenden Tabelleninhalt unter Fedora 35 & Ubuntu 22.04 -> Wayland ???
+        self.docTableView.horizontalHeader().sectionClicked.connect(self.docTableView.viewport().update)
+
+                # Defaultgröße setzen
+        screen_resolution = app.desktop().screenGeometry()
+        self.resize(int(screen_resolution.width()/2),int(screen_resolution.height()/2))
+
+        # Maximiere Fenster
+        self.showMaximized()
+        
+        #Check for updates
+        if self.actionOnlineAufUpdatesPruefen.isChecked():
+            self.__checkForUpdates(updateIndicator=self.newVersionIndicator)
         
         def __del__(self):
             self.settings.sync()
@@ -807,6 +827,9 @@ class UI(QMainWindow):
                                                folder, "XJustiz-Dateien (*.xml *.XML)")
             if check:
                 self.__loadFile(file)
+            
+            # Windows loses focus loading ZIP-files
+            self.activateWindow()
         
     def __loadFile(self, file):    
         try:
@@ -872,7 +895,9 @@ class UI(QMainWindow):
             self.settings.setValue('pdfViewer', 'nativ')                       
         else:    
             self.settings.setValue('pdfViewer', 'PDFjs')     
-                              
+         
+        self.settings.setValue('checkUpdates', self.actionOnlineAufUpdatesPruefen.isChecked()) 
+         
         self.__updateVisibleColumns()
         self.__updateVisibleViews()
 
@@ -906,7 +931,41 @@ class UI(QMainWindow):
             
         self.__updateSettings()
     
+    def __checkForUpdates(self, updateIndicator=None):
+        updateAvailable=False
         
+        #Download version info for supported platforms / hide option for unsupported ones
+        if os.environ.get('APPIMAGE'):
+            updateAvailable=self.__checkUrlforNewVersion('https://openXJV.de/latestAppImage.xml')
+        elif sys.platform.lower().startswith('win'):
+            updateAvailable=self.__checkUrlforNewVersion('https://openXJV.de/latestWinInstaller.xml')
+        else:
+            self.actionOnlineAufUpdatesPruefen.setVisible(False)
+        
+        if updateAvailable:
+            if updateIndicator:
+                updateIndicator.setVisible(True)
+            self.statusBar.showMessage('Es steht eine neue Version der Software zum Download bereit.')
+            return True
+        else:
+            return False
+        
+    def __checkUrlforNewVersion(self, url=None):
+        if url: 
+            try:
+                with urllib.request.urlopen(url) as content:
+                    for line in content.readlines():
+                        result=(re.findall('<version>.+?</version>',str(line))) 
+                        if result and result[0]:
+                            for newVer , oldVer in zip(result[0][9:-10].split('.'), VERSION.split('.')):
+                                print (newVer + ' > ' + oldVer)
+                                if newVer > oldVer:
+                                    return True   
+            except:
+                self.statusBar.showMessage('Online-Überprüfung auf neue Version konnte nicht durchgeführt werden.')
+        
+        return False
+    
     def __readSettings(self):
         for key, value in self.docHeaderColumnsSettings.items(): 
             if value['setting']:
@@ -923,6 +982,8 @@ class UI(QMainWindow):
         
         self.actionChromium.setChecked(True if self.settings.value('pdfViewer', 'PDFjs')=='chromium' and self.chromiumPdfViewerAvailable else False)
         self.actionnativ.setChecked(True if self.settings.value('pdfViewer', 'PDFjs')=='nativ' else False)     
+        
+        self.actionOnlineAufUpdatesPruefen.setChecked(True if self.settings.value('checkUpdates', 'true').lower()=='true' else False)
         
         self.__viewerSwitch()
         self.__updateVisibleViews()
@@ -1570,8 +1631,7 @@ class UI(QMainWindow):
         self.terminDetailView.setHtml(text) 
                                         
 if __name__ == "__main__":
-    
-    print('Disabling Chomium-Sandbox for AppImage compatibility reasons (Seems to be unavailable on most systems anyway).')
+    print('Disabling Chomium-Sandbox for compatibility reasons (Seems to be unavailable on most systems anyway).')
     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
     
     app = QApplication([])
