@@ -27,7 +27,8 @@ from shutil import copyfile
 from pathlib import Path
 from zipfile import ZipFile
 from tempfile import TemporaryDirectory
-from PyQt5.Qt import (QSettings,  
+from PyQt5.Qt import (QSettings, 
+                      QCursor, 
                       QStandardItemModel, 
                       QStandardItem, 
                       QHeaderView,
@@ -56,7 +57,7 @@ from appdirs import AppDirs
 from xjustizParser import *
 
 global VERSION 
-VERSION = '0.5.1'
+VERSION = '0.5.2'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=12, set_bold=False, color=QColor(0, 0, 0)):
@@ -74,6 +75,7 @@ class TextObject():
         self.ignoreEmptyText=False
 
     def addLine(self, value1=None, value2=None, prepend=False):
+        '''Fügt eine Zeile Text hinzu, sofern beide Textwerte nicht None sind. Der Trenner wird in self.delimiter ferstgelegt.'''
         if value1 and value2:
             self.text+='%s%s%s%s' % (str(value1), self.delimiter, str(value2), self.newline)
 
@@ -84,10 +86,12 @@ class TextObject():
             self.text+=str(text)
 
     def addHeading(self, headline, ignoreEmptyText=False):
+        '''Fügt dem Text eine Überschrift hinzu.'''
         self.headline='<br><b><i>' + str(headline)+ '</b></i>'+self.newline
         self.ignoreEmptyText=bool(ignoreEmptyText)
 
     def getText(self):
+        '''Gibt den Text des Objektes zurück. Sofern addHeading ohne ignoreEmptyText=True aufgerufen wurde, wird auch bei gesetzter Überschrift ein leerer String zurückgegeben, sofern der eigentliche Text leer ist.'''
         if self.ignoreEmptyText:
             return self.headline + self.text
         elif self.text:
@@ -192,6 +196,7 @@ class UI(QMainWindow):
             'datumDesSchreibens',
             'posteingangsdatum',
             'veraktungsdatum',
+            'scanDatum',
             'anzeigename',
             'dokumententyp',
             'dokumentklasse',
@@ -211,7 +216,7 @@ class UI(QMainWindow):
         ]
 
         self.docHeaderColumnsSettings={
-            #key                                 headertext                         action for menu-item /config                    default visibility  width of column                 
+            #key                              headertext                           action for menu-item /config                    default visibility  width of column                 
             ''                               :{'headertext':''                   ,'setting':None                                  ,'default':True , 'width':10},
             ''                               :{'headertext':''                   ,'setting':None                                  ,'default':True , 'width':10},
             'nummerImUebergeordnetenContainer':{'headertext':'#'                   ,'setting':None                                  ,'default':True , 'width':45},
@@ -220,6 +225,7 @@ class UI(QMainWindow):
             'datumDesSchreibens'              :{'headertext':'Datum'               ,'setting':self.actionDatumColumn                ,'default':True , 'width':95},
             'posteingangsdatum'               :{'headertext':'Eingang'             ,'setting':self.actionEingangsdatumColumn        ,'default':True,  'width':195},
             'veraktungsdatum'                 :{'headertext':'Veraktung'           ,'setting':self.actionVeraktungsdatumColumn      ,'default':True,  'width':95},
+            'scanDatum'                       :{'headertext':'Scandatum'           ,'setting':self.actionScandatumColumn            ,'default':False, 'width':95},
             'dokumententyp'                   :{'headertext':'Typ'                 ,'setting':self.actionDokumententypColumn        ,'default':True , 'width':None},
             'dokumentklasse'                  :{'headertext':'Klasse'              ,'setting':self.actionDokumentenklasseColumn     ,'default':True , 'width':None},
             'bestandteil'                     :{'headertext':'Bestandteil'         ,'setting':self.actionBestandteilColumn          ,'default':True , 'width':None},
@@ -252,7 +258,7 @@ class UI(QMainWindow):
         self.favorites = set()
 
         #########load initial files##########
-        inputfile=self.settings.value("lastFile", None)
+        lastfile=self.settings.value("lastFile", None)
         if file and file.lower().endswith('xml'):
             self.getFile(file)
         elif ziplist:
@@ -260,8 +266,8 @@ class UI(QMainWindow):
                 if not zip.lower().endswith('zip'):
                     sys.exit("Fehler: Die übergebene Liste enthält nicht ausschließlich ZIP-Dateien.")
             self.getZipFiles(files=ziplist)    
-        elif inputfile:
-            self.getFile(inputfile)
+        elif lastfile:
+            self.getFile(lastfile)
 
         ####connections####
         self.actionOeffnen.triggered.connect(lambda:self.getFile())
@@ -282,6 +288,7 @@ class UI(QMainWindow):
         self.actionZuruecksetzen.triggered.connect(self.__resetSettings)   
         self.actionNachrichtenkopf.triggered.connect(self.__updateSettings)
         self.actionFavoriten.triggered.connect(self.__updateSettings)
+        self.actionNotizen.triggered.connect(self.__updateSettings)
         self.actionLeereSpaltenAusblenden.triggered.connect(self.__updateSettings)
         self.actionOnlineAufUpdatesPruefen.triggered.connect(self.__updateSettings)
         self.actionnativ.triggered.connect(self.__viewerSwitch)
@@ -297,7 +304,7 @@ class UI(QMainWindow):
         # Workaround für sich nicht aktualisierenden Tabelleninhalt unter Fedora 35 & Ubuntu 22.04 -> Wayland ???
         self.docTableView.horizontalHeader().sectionClicked.connect(self.docTableView.viewport().update)
 
-                # Defaultgröße setzen
+        # Defaultgröße setzen
         screen_resolution = app.desktop().screenGeometry()
         self.resize(int(screen_resolution.width()/2),int(screen_resolution.height()/2))
 
@@ -308,9 +315,10 @@ class UI(QMainWindow):
         if self.actionOnlineAufUpdatesPruefen.isChecked():
             self.__checkForUpdates(updateIndicator=self.newVersionIndicator)
         
-        def __del__(self):
-            self.settings.sync()
-        
+    def cleanUp(self):
+        self.__saveNotes() 
+        self.settings.sync()
+    
     def __displayInfo(self):
         QMessageBox.information(self, "Information",
         "openXJV " + VERSION + "\n"
@@ -428,7 +436,6 @@ class UI(QMainWindow):
                 tempItem=self.__tableItem(oeffentlich)
                 tempItem.setTextAlignment(Qt.AlignCenter)
                 self.termineTableView.setItem(rowNo, 3, tempItem)
-                
                 
                 if termin['hauptterminsdatum']:
                     terminTyp='Folgetermin'
@@ -557,26 +564,33 @@ class UI(QMainWindow):
             self.__hideEmptyColumns() 
        
     def __hideEmptyColumns(self):
+        '''Blendet leere Spalten aus.'''
         for columnNo, isEmpty in self.isDocColumnEmpty.items():
             if isEmpty:
                 self.docTableView.setColumnHidden(columnNo, True)       
     
     def __arrangeData(self, dictOfMetadata, attributes):
+        '''Gibt die Werte eines Dictionaries in der Reihenfolge einer übergebenen Schlüsselliste zurück. Ist für einen Schlüssel kein Eintrag vorhanden, wird ein leeres Listenelement eingefügt.'''
         arrangedRow=[]      
         for attribute in attributes:
-            if isinstance(dictOfMetadata[attribute], str):
+            if isinstance(dictOfMetadata.get(attribute), str):
                 arrangedRow.append(self.__replaceTrueFalse(dictOfMetadata[attribute]))
-            if isinstance(dictOfMetadata[attribute], list):
+            if isinstance(dictOfMetadata.get(attribute), list):
                 text=''
                 newline=''
                 for item in dictOfMetadata[attribute]:
                     if item:
                         text+=newline + item
                         newline=' '
-                arrangedRow.append(text)     
+                arrangedRow.append(text)
+                
+            if dictOfMetadata.get(attribute)==None:
+                arrangedRow.append('')
+            
         return arrangedRow
     
     def __replaceTrueFalse(self, value):
+       '''Ersetzt Strings "True" mit "ja" und "False" mit "nein". Nicht case sensitiv.'''
        if value.lower()=='true':
            return 'ja' 
        elif value.lower()=='false':
@@ -584,6 +598,7 @@ class UI(QMainWindow):
        return value
     
     def __tableItem (self, text, font='Ubuntu'):
+        '''Erstellt TableItem und setzt für dieses einen Font'''
         item = QTableWidgetItem(text)
         item.setFont(QFont(font))
         return item
@@ -592,6 +607,11 @@ class UI(QMainWindow):
         
         text=TextObject(newline='\n')
         if aktenID==None or aktenID=='':
+            
+            if nachricht.nachricht.get('vertraulichkeit'):
+                text.addLine('Vertraulichkeitsstufe', nachricht.nachricht['vertraulichkeit'].get('vertraulichkeitsstufe'))
+                text.addLine('Vertraulichkeitsgrund', nachricht.nachricht['vertraulichkeit'].get('vertraulichkeitsgrund'))
+            
             labelList =[
                 ['nachrichtenNummer','Nachricht Nr.'],
                 ['nachrichtenAnzahl','Von Nachrichten gesamt'],
@@ -616,7 +636,7 @@ class UI(QMainWindow):
                     eeb = 'Abgabe angefordert'
                 text.addLine('EEB', eeb)
                 
-                if akte['aktentyp']:
+                if akte.get('aktentyp'):
                     for aktenzeichen in akte['aktenzeichen']:
                         text.addLine('Aktenzeichen', aktenzeichen['aktenzeichen.freitext'])
             
@@ -642,12 +662,14 @@ class UI(QMainWindow):
             for label in labelList:
                 text.addLine(label[1], akte[label[0]])
             
-            if akte['laufzeit']:
-                if akte['laufzeit']['beginn']:
-                    text.addLine('Laufzeit ab', akte['laufzeit']['beginn'])
-                if akte['laufzeit']['ende']:         
-                    text.addLine('Laufzeit bis', akte['laufzeit']['ende'])
+            if akte.get('laufzeit'):
+                text.addLine('Laufzeit ab', akte['laufzeit'].get('beginn'))        
+                text.addLine('Laufzeit bis', akte['laufzeit'].get('ende'))
             
+            if akte.get('justizinterneDaten'):
+                if akte.get('roemischPaginiert'):
+                    text.addLine('Römisch Paginiert',  self.__replaceTrueFalse(akte['justizinterneDaten']['roemischPaginiert']))
+                    
             if akte['zustellung41StPO'].lower() == 'true':
                 text.addLine('Zustellung gem. §41StPO', 'ja')        
             elif akte['zustellung41StPO'].lower() == 'false':    
@@ -656,7 +678,7 @@ class UI(QMainWindow):
         self.metadatenText.setPlainText(text.getText())
                         
     def __setNachrichtenkopf (self, absender, empfaenger, nachrichtenkopf):
-        ###Inhalte setzen###
+        '''Inhalte der Nachrichtenkopf-Box setzen'''
         self.absenderText.setText(absender['name'])
         self.absenderAktenzeichenText.setText(absender['aktenzeichen'])
         self.empfaengerText.setText(empfaenger['name'])
@@ -671,6 +693,7 @@ class UI(QMainWindow):
         self.empfaengerAktenzeichenText.setCursorPosition(0)
     
     def __isSet(self, value):
+        '''Ersetzt einen leeren String '' mit 'nicht angegeben'.'''
         if value == '':
             return 'nicht angegeben'
         else:
@@ -698,6 +721,7 @@ class UI(QMainWindow):
             self.statusBar.showMessage(filename + ' zu Favoriten hinzugefügt.')
     
     def __setFavorites(self):
+        '''Aktualisiert die Einträge in der Favoriten-View und initiiert die Speicherung der Werte'''
         self.favoritenView.clear()
         
         for favorite in self.favorites:
@@ -706,6 +730,7 @@ class UI(QMainWindow):
         self.__saveFavorites()    
     
     def __removeFavorite(self):
+        '''Entfernt den aktuell in der FavoritenView markierten Eintrag aus der Liste der Favoriten.'''
         if self.favoritenView.currentItem():
             filename = self.favoritenView.currentItem().text()
             self.favorites.remove(filename)
@@ -714,6 +739,7 @@ class UI(QMainWindow):
             self.statusBar.showMessage(filename + ' aus Favoriten entfernt.')
             
     def __loadFavorites(self):
+        '''Lädt die Favoriten aus einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht.'''
         self.favorites.clear()
         if self.akte.nachricht['eigeneID']:
             filepath = os.path.join(self.dirs.user_data_dir , self.akte.nachricht['eigeneID'])
@@ -725,6 +751,7 @@ class UI(QMainWindow):
         self.__setFavorites()
          
     def __saveFavorites(self):
+        '''Speichert die Favoriten in einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht.'''
         if self.akte.nachricht['eigeneID']:
             filepath = os.path.join(self.dirs.user_data_dir , self.akte.nachricht['eigeneID'])
             if self.favorites:
@@ -733,7 +760,27 @@ class UI(QMainWindow):
                         favoriteFile.write(filename + '\n')
             elif os.path.exists(filepath):
                 os.remove(filepath)
-            
+    
+    def __loadNotes(self):
+        '''Lädt die Notizen aus einer Datei, deren Dateinamen dem Wert der notizen + 'eigeneID' entspricht.'''
+        self.notizenText.clear()
+        if self.akte.nachricht['eigeneID']:
+            filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + self.akte.nachricht['eigeneID'])
+            if os.path.exists(filepath):
+                with open(filepath , 'r') as notesFile:
+                    self.notizenText.setPlainText(notesFile.read())
+         
+    def __saveNotes(self):
+        '''Speichert die Favoriten in einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht.'''
+        notizen=self.notizenText.toPlainText()
+        if self.akte.nachricht['eigeneID']:
+            filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + self.akte.nachricht['eigeneID'])
+            if re.sub(r"[\n\t\s]*", "", notizen):
+                with open(filepath , 'w') as notesFile:
+                    notesFile.write(notizen)
+            elif os.path.exists(filepath):
+                os.remove(filepath)
+               
     def __getAktenSubBaum(self, akten, node):    
         for einzelakte in akten.values():
            
@@ -802,6 +849,7 @@ class UI(QMainWindow):
     
     def getZipFiles(self, files=None):
         if files:
+            app.setOverrideCursor(QCursor(Qt.WaitCursor))
             self.tempPath=TemporaryDirectory()
             
             for file in files:
@@ -809,11 +857,18 @@ class UI(QMainWindow):
                     with ZipFile(file, 'r') as zip: 
                         zip.extractall(self.tempPath.name)    
                 except:
+                    app.restoreOverrideCursor()
                     self.statusBar.showMessage(file + ' konnte nicht entpackt werden.')
-                
+                    return
+            
+            app.restoreOverrideCursor()
             self.getFile(folder=self.tempPath.name)
             
     def getFile(self, file=None, folder=None):
+        #Notes eines ggf. geöffneten Datensatzes speichern
+        if len(self.notizenText.toPlainText()):
+            self.__saveNotes()
+        
         if file and os.path.exists(file):
             self.__loadFile(file)
         elif file and not os.path.exists(file):
@@ -831,7 +886,8 @@ class UI(QMainWindow):
             # Windows loses focus loading ZIP-files
             self.activateWindow()
         
-    def __loadFile(self, file):    
+    def __loadFile(self, file):
+        app.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             type=None
             with open(file) as fp:
@@ -839,22 +895,36 @@ class UI(QMainWindow):
                     line = fp.readline()
                     if not line:
                         break
+                    
+                    line=line.replace(" ", "")
+                    
                     if 'xjustizVersion="2.4.0"' in line:
                         type="2.4.0"
                         break
                     if 'xjustizVersion="3.2.1"' in line:
                         type="3.2.1"
                         break 
-            if type=="2.4.0":
+                    if 'xjustizVersion="3.3.1"' in line:
+                        type="3.3.1"
+                        break 
+            
+            if   type=="2.4.0":
                 self.akte=parser240(file)
             elif type=="3.2.1":
                 self.akte=parser321(file)
+            elif type=="3.3.1":
+                self.akte=parser331(file)
             else:
                 self.statusBar.showMessage('Konnte keine unterstützte XJustiz-Version auslesen: %s' % file)
+                
                 return None
-        except:
+        except Exception as e:
+            print("ERROR : %s" % str(e))
             self.statusBar.showMessage('Fehler beim Öffnen der Datei: %s' % file)
+            app.restoreOverrideCursor()
             return None 
+        
+        app.restoreOverrideCursor()
         
         self.__setDocumentTable()
         self.__setInhaltView(self.akte.schriftgutobjekte)
@@ -862,6 +932,7 @@ class UI(QMainWindow):
         self.__setMetadata(self.akte)
         self.__filtersTriggered()
         self.__loadFavorites()
+        self.__loadNotes()
         self.__setInstanzenView()
         self.__setBeteiligteView()
         self.__setTerminTable(self.akte.termine)
@@ -874,12 +945,12 @@ class UI(QMainWindow):
         self.settings.setValue("lastFile", file)
                           
     def __chooseStartFolder(self):       
-         folder = QFileDialog.getExistingDirectory(None, "Standardverzeichnis wählen",
+        folder = QFileDialog.getExistingDirectory(None, "Standardverzeichnis wählen",
                                         str(self.settings.value("defaultFolder", '')),
                                         QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks)
          
-         if folder:
-             self.settings.setValue("defaultFolder", folder)
+        if folder:
+            self.settings.setValue("defaultFolder", folder)
     
     def __updateSettings(self):
         for key, value in self.docHeaderColumnsSettings.items(): 
@@ -887,6 +958,7 @@ class UI(QMainWindow):
                 self.settings.setValue(key , value['setting'].isChecked())
         self.settings.setValue('nachrichtenkopf' , self.actionNachrichtenkopf.isChecked())
         self.settings.setValue('favoriten' , self.actionFavoriten.isChecked())
+        self.settings.setValue('notizen' , self.actionNotizen.isChecked())
         self.settings.setValue('leereSpalten' , self.actionLeereSpaltenAusblenden.isChecked())
         
         if self.actionChromium.isChecked() and self.chromiumPdfViewerAvailable:
@@ -932,6 +1004,7 @@ class UI(QMainWindow):
         self.__updateSettings()
     
     def __checkForUpdates(self, updateIndicator=None):
+        '''Prüft online, ob eine neue Programmversion veröffentlicht wurde.'''
         updateAvailable=False
         
         #Download version info for supported platforms / hide option for unsupported ones
@@ -958,7 +1031,6 @@ class UI(QMainWindow):
                         result=(re.findall('<version>.+?</version>',str(line))) 
                         if result and result[0]:
                             for newVer , oldVer in zip(result[0][9:-10].split('.'), VERSION.split('.')):
-                                print (newVer + ' > ' + oldVer)
                                 if newVer > oldVer:
                                     return True   
             except:
@@ -978,6 +1050,7 @@ class UI(QMainWindow):
                     value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
         self.actionNachrichtenkopf.setChecked(True if self.settings.value('nachrichtenkopf', 'true').lower()=='true' else False)
         self.actionFavoriten.setChecked(True if self.settings.value('favoriten', 'true').lower()=='true' else False)
+        self.actionNotizen.setChecked(True if self.settings.value('notizen', 'false').lower()=='true' else False)
         self.actionLeereSpaltenAusblenden.setChecked(True if self.settings.value('leereSpalten', 'true').lower()=='true' else False)
         
         self.actionChromium.setChecked(True if self.settings.value('pdfViewer', 'PDFjs')=='chromium' and self.chromiumPdfViewerAvailable else False)
@@ -994,6 +1067,7 @@ class UI(QMainWindow):
                 value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
         self.actionNachrichtenkopf.setChecked(True)
         self.actionFavoriten.setChecked(True)
+        self.actionNotizen.setChecked(False)
         self.actionLeereSpaltenAusblenden.setChecked(True)  
         self.actionPDF_js.setChecked(True)  
         self.__viewerSwitch()        
@@ -1002,6 +1076,7 @@ class UI(QMainWindow):
     def __updateVisibleViews(self):
         self.nachrichtenkopf.setVisible(self.actionNachrichtenkopf.isChecked())
         self.favoriten.setVisible(self.actionFavoriten.isChecked())
+        self.notizen.setVisible(self.actionNotizen.isChecked())
     
     def __openManual(self):
         manualPath = os.path.join(self.scriptRoot , 'docs', 'openXJV_Benutzerhandbuch.pdf')
@@ -1072,7 +1147,7 @@ class UI(QMainWindow):
         ]
                 
         text=''
-        if self.akte.grunddaten['verfahrensnummer']:
+        if self.akte.grunddaten.get('verfahrensnummer'):
             text+='<b><i>Verfahrensnummer:</i></b> %s<br>' % self.akte.grunddaten['verfahrensnummer']
             
         keys=list(self.akte.grunddaten['instanzen'].keys())
@@ -1082,22 +1157,25 @@ class UI(QMainWindow):
             text+="%s<b>Instanz %s</b><br>%s<b><i>Instanzdaten</i></b><br>" % (hr, key, hr)       
             text+='<b>Behörde:</b> %s<br>' % instanz['auswahl_instanzbehoerde']['name']
             
-            if instanz['aktenzeichen']['aktenzeichen.freitext']:
+            if instanz['aktenzeichen'].get('aktenzeichen.freitext'):
                 text+='<b>Aktenzeichen:</b> %s<br>' % instanz['aktenzeichen']['aktenzeichen.freitext']
             
+            if instanz['aktenzeichen'].get('sammelvorgangsnummer'):
+                text+='<b>Sammelvorgangsnummer:</b> %s<br>' % instanz['aktenzeichen']['sammelvorgangsnummer']
+            
             for value in singleValues:
-                if instanz[value[0]]:
+                if instanz.get(value[0]):
                     text+= value[1] % instanz[value[0]]
             
             for gegenstand in instanz['verfahrensgegenstand']:
                 setBR=False
-                if gegenstand['gegenstand']:
+                if gegenstand.get('gegenstand'):
                     text+='<b>Gegenstand:</b> %s' % gegenstand['gegenstand']
                     setBR=True
-                if gegenstand['gegenstandswert'].strip():
+                if gegenstand.get('gegenstandswert').strip():
                    text+=', Streitwert: %s' % (gegenstand['gegenstandswert'])
                    setBR=True
-                if gegenstand['auswahl_zeitraumDesVerwaltungsaktes'].strip():
+                if gegenstand.get('auswahl_zeitraumDesVerwaltungsaktes').strip():
                    text+=', Datum/Zeitraum: %s' % (gegenstand['auswahl_zeitraumDesVerwaltungsaktes'])   
                    setBR=True 
                 if setBR:
@@ -1111,8 +1189,8 @@ class UI(QMainWindow):
         text=TextObject()
         text.addHeading('Telekommunikationsverbindungen')
         for eintrag in telekommunikation:
-                text.addRaw('%s: %s' % (eintrag['telekommunikationsart'],eintrag['verbindung']))
-                if eintrag['telekommunikationszusatz']:
+                text.addRaw('%s: %s' % (eintrag.get('telekommunikationsart'),eintrag.get('verbindung')))
+                if eintrag.get('telekommunikationszusatz'):
                     text.addRaw(" (%s)" % eintrag['telekommunikationszusatz'])
                     text.addRaw('<br>')
         return text.getText()
@@ -1120,24 +1198,24 @@ class UI(QMainWindow):
     def __rollenTemplate(self, rollen):
         text=''
         for rolle in rollen:
-            if rolle['rollenbezeichnung'] and rolle['rollennummer']:
+            if rolle.get('rollenbezeichnung') and rolle.get('rollennummer'):
  
                 text+='<b>Rolle'
-                if rolle['rollenID']:
+                if rolle.get('rollenID'):
                     text+=' in Instanz '
                     delimiter=''
                     for rollenID in rolle['rollenID']:
-                        text+='%s%s' % (delimiter, rollenID['ref.instanznummer'])
+                        text+='%s%s' % (delimiter, rollenID.get('ref.instanznummer'))
                         delimiter=', ' 
-                    text+=':</b> <u>%s</u><br>' % self.akte.rollenverzeichnis.get(str(rolle['rollennummer']))
+                    text+=':</b> <u>%s</u><br>' % self.akte.rollenverzeichnis.get(str(rolle.get('rollennummer')))
                 else:
-                    if rolle['rollenbezeichnung']:
-                        text+=':</b> %s %s<br>' % (rolle['rollenbezeichnung'], rolle['nr'])
-                if rolle['naehereBezeichnung']:
+                    if rolle.get('rollenbezeichnung'):
+                        text+=':</b> %s %s<br>' % (rolle.get('rollenbezeichnung'), rolle.get('nr'))
+                if rolle.get('naehereBezeichnung'):
                     text+='Nähere Bezeichnung: %s<br>' % rolle['naehereBezeichnung']
-                for referenz in rolle['referenz']:
+                for referenz in rolle.get('referenz'):
                     text+='Bezug zu: %s<br>' %  self.akte.rollenverzeichnis.get(str(referenz))  
-                if rolle['geschaeftszeichen']:
+                if rolle.get('geschaeftszeichen'):
                     text+='Geschäftszeichen: %s<br>' % rolle['geschaeftszeichen']
         return text
              
@@ -1153,32 +1231,36 @@ class UI(QMainWindow):
         delimiter=''
         for anschrift in anschriften:
             text+=delimiter
-            if anschrift['anschriftstyp']:
+            if anschrift.get('anschriftstyp'):
                 text+='<u>%s</u><br>' % anschrift['anschriftstyp']
-               
+            
+            if anschrift.get('derzeitigerAufenthalt') and anschrift.get('derzeitigerAufenthalt').lower()=='true':
+                text+='Hierbei handelt es sich um den derzeitigen Aufenthalt.<br>' 
+            
             for key, value in items.items():
                 if anschrift[key]:
                     text += value % anschrift[key]
                 
-            if anschrift['strasse'] or anschrift['hausnummer']:
-                text+='%s %s<br>' % (anschrift['strasse'], anschrift['hausnummer'])
-            if anschrift['anschriftenzusatz']: 
+            if anschrift.get('strasse') or anschrift.get('hausnummer'):
+                text+='%s %s<br>' % (anschrift.get('strasse'), anschrift.get('hausnummer'))
+            if anschrift.get('anschriftenzusatz'): 
                 delimiter=''
                 for zusatz in anschrift['anschriftenzusatz']:
                     text+=delimiter + zusatz
                     delimiter=', '
                 text+='<br>'
-            if anschrift['postfachnummer']:
+            if anschrift.get('postfachnummer'):
                 text+='Postfach %s<br>' % anschrift['postfachnummer']
-            if anschrift['postleitzahl'] or anschrift['ort']:
-                text+='%s %s %s<br>' % (anschrift['postleitzahl'], anschrift['ort'], anschrift['ortsteil'])
-            if anschrift['staat']:
+            if anschrift.get('postleitzahl') or anschrift.get('ort'):
+                text+='%s %s %s<br>' % (anschrift.get('postleitzahl'), anschrift.get('ort'), anschrift.get('ortsteil'))
+            if anschrift.get('staat'):
                 text+='%s<br>' % anschrift['staat']
-            if anschrift['staatAlternativ']:
-                text+='%s<br>' % anschrift['staatAlternativ']      
+            if anschrift.get('staatAlternativ'):
+                text+='%s<br>' % anschrift['staatAlternativ']
+            if anschrift.get('bundesland'):
+                text+='%s<br>' % anschrift['bundesland']
             delimiter='<br>'
             
-        #if anschriften:
         if text:
             text='<br><b><i>%s</i></b><br>%s' % (heading, text)
         return text
@@ -1233,30 +1315,33 @@ class UI(QMainWindow):
     def __kanzleiTemplate(self,beteiligter):
         text='<br><b><u>Kanzlei / Rechtsanwalt</u></b><br>'
         
-        if beteiligter['bezeichnung.aktuell']:
+        if beteiligter.get('bezeichnung.aktuell'):
             text+='Bezeichnung: %s<br>' % beteiligter['bezeichnung.aktuell']
         
         for alteBezeichnung in beteiligter['bezeichnung.alt']:
             text+='Ehemals: %s<br>' % alteBezeichnung
         
-        if beteiligter['kanzleiform']:
+        if beteiligter.get('kanzleiform'):
             text+='Kanzleiform: %s<br>' % beteiligter['kanzleiform']
             
-            if beteiligter['rechtsform']:
+            if beteiligter.get('rechtsform'):
                 text+='Rechtsform: %s<br>' % beteiligter['rechtsform']
             
-        if beteiligter['geschlecht']:
+        if beteiligter.get('geschlecht'):
             text+='Geschlecht: %s<br>' % beteiligter['geschlecht']
             
         text+=self.__anschriftTemplate(beteiligter['anschrift'])
         
         text+=self.__telkoTemplate(beteiligter['telekommunikation'])
+
+        if beteiligter.get('bankverbindung'):
+            text+=self.__bankverbindungTemplate(beteiligter['bankverbindung'])
         
-        if beteiligter['umsatzsteuerID']:
+        if beteiligter.get('umsatzsteuerID'):
             text+='<br><b><i>Steuerdaten</i></b><br>'
             text+='Umsatzsteuer-ID: %s<br>' % beteiligter['umsatzsteuerID']
         
-        if beteiligter['raImVerfahren']:
+        if beteiligter.get('raImVerfahren'):
             raDaten=self.__natPersonTemplate(beteiligter['raImVerfahren'])
             if raDaten:
                 text+='<blockquote><b><u>Rechtsanwalt im Verfahren</u></b>%s</blockquote>' % raDaten
@@ -1265,19 +1350,19 @@ class UI(QMainWindow):
     
     def __orgTemplate(self, beteiligter):
         text='<br><b><u>Organisation / Juristische Person</u></b><br>'
-        if beteiligter['bezeichnung.aktuell']:
+        if beteiligter.get('bezeichnung.aktuell'):
             text+='Bezeichnung: %s</b><br>' % beteiligter['bezeichnung.aktuell']
         
         for alteBezeichnung in beteiligter['bezeichnung.alt']:
             text+='Ehemals: %s<br>' % alteBezeichnung
             
-        if beteiligter['kurzbezeichnung']: 
+        if beteiligter.get('kurzbezeichnung'): 
             text+='Kurzbezeichnung: %s<br>' % beteiligter['kurzbezeichnung']
             
-        if beteiligter['geschlecht']:
+        if beteiligter.get('geschlecht'):
             text+='Geschlecht: %s<br>' % beteiligter['geschlecht']
         
-        if beteiligter['angabenZurRechtsform']:
+        if beteiligter.get('angabenZurRechtsform'):
             text+=self.__rechtsformTemplate(beteiligter['angabenZurRechtsform'])
         
         for sitz in beteiligter['sitz']:
@@ -1286,13 +1371,17 @@ class UI(QMainWindow):
         text+=self.__anschriftTemplate(beteiligter['anschrift'])
         text+=self.__telkoTemplate(beteiligter['telekommunikation'])
         
-        if beteiligter['registereintragung']:
+        if beteiligter.get('bundeseinheitlicheWirtschaftsnummer'):
+            text+='<br><b><i>Bundeseinheitliche Wirtschaftsnummer</i></b><br>'
+            text+='Bundeseinheitliche Wirtschaftsnr.: %s<br>' % beteiligter['bundeseinheitlicheWirtschaftsnummer']
+        
+        if beteiligter.get('registereintragung'):
             text+=self.__registerTemplate(beteiligter['registereintragung'])
         
-        if beteiligter['bankverbindung']:
+        if beteiligter.get('bankverbindung'):
             text+=self.__bankverbindungTemplate(beteiligter['bankverbindung'])
         
-        if beteiligter['umsatzsteuerID']:
+        if beteiligter.get('umsatzsteuerID'):
             text+='<br><b><i>Steuerdaten</i></b><br>'
             text+='Umsatzsteuer-ID: %s<br>' % beteiligter['umsatzsteuerID']
         return text
@@ -1300,86 +1389,123 @@ class UI(QMainWindow):
     def __sitzTemplate(self, sitz):
         text=TextObject()
         text.addHeading('Sitz')
-        text.addLine('Ort', sitz['ort'])
-        text.addLine('Postleitzahl', sitz['postleitzahl'])
-        text.addLine('Staat', sitz['staat'])
+        text.addLine('Ort', sitz.get('ort'))
+        text.addLine('Postleitzahl', sitz.get('postleitzahl'))
+        text.addLine('Staat', sitz.get('staat'))
                     
         return text.getText()
     
     def __rechtsformTemplate (self, rechtsform):
         text=TextObject()
         text.addHeading('Rechtsform')
-        text.addLine('Rechtsform', rechtsform['rechtsform'])
-        text.addLine('Weitere Bezeichnung', rechtsform['weitereBezeichnung'])
+        text.addLine('Rechtsform', rechtsform.get('rechtsform'))
+        text.addLine('Weitere Bezeichnung', rechtsform.get('weitereBezeichnung'))
        
         return text.getText()
     
     def __natPersonTemplate(self, beteiligter):              
-        text=''
-        text+=self.__vollerNameTemplate(beteiligter['vollerName'])
+        text=TextObject()
+        text.addHeading('Personendaten')
+        text.addRaw(self.__vollerNameTemplate(beteiligter.get('vollerName')))
         
         for staatsangehoerigkeit in beteiligter['staatsangehoerigkeit']:
-            text+='Staatsangehörigkeit: %s<br>' % staatsangehoerigkeit  
+            text.addLine('Staatsangehörigkeit', staatsangehoerigkeit)  
         
         for herkunftsland in beteiligter['herkunftsland']:
-            text+='Herkunftsland: %s<br>' % herkunftsland
+            text.addLine('Herkunftsland', herkunftsland)
         
         for sprache in beteiligter['sprache']:
-            text+='Sprache: %s<br>' % sprache
+            text.addLine('Sprache', sprache)
         
-        if beteiligter['beruf']:
-            text+='<br><b><i>Berufliche Daten</i></b><br>'
+        if beteiligter.get('beruf'):
+            text.addRaw('<br><b><i>Berufliche Daten</i></b><br>')
             for beruf in beteiligter['beruf']:
-                text+='Beruf: %s<br>' % beruf
+                text.addLine('Beruf', beruf)
                 
-        text+=self.__anschriftTemplate(beteiligter['anschrift'])
-        text+=self.__telkoTemplate(beteiligter['telekommunikation'])
+        text.addRaw(self.__anschriftTemplate(beteiligter.get('anschrift')))
+        text.addRaw(self.__telkoTemplate(beteiligter.get('telekommunikation')))
         
-        if beteiligter['zustaendigeInstitution']:
-            text+='<br><b><i>Zuständige Institution(en)</i></b><br>'
+        if beteiligter.get('zustaendigeInstitution'):
+            text.addRaw('<br><b><i>Zuständige Institution(en)</i></b><br>')
             for rollennummer in beteiligter['zustaendigeInstitution']:
-                text+='%s<br>' % self.akte.rollenverzeichnis.get(str(rollennummer))
+                text.addRaw('%s<br>' % self.akte.rollenverzeichnis.get(str(rollennummer)))
         
-        if beteiligter['bankverbindung']:
-            text+=self.__bankverbindungTemplate(beteiligter['bankverbindung'])
+        if beteiligter.get('bankverbindung'):
+            text.addRaw(self.__bankverbindungTemplate(beteiligter['bankverbindung']))
         
-        if beteiligter['umsatzsteuerID']:
-            text+='<br><b><i>Steuerdaten</i></b><br>'
-            text+='Umsatzsteuer-ID: %s<br>' % beteiligter['umsatzsteuerID']
+        if beteiligter.get('bundeseinheitlicheWirtschaftsnummer'):
+            text.addRaw('<br><b><i>Bundeseinheitliche Wirtschaftsnummer</i></b><br>')
+            text.addLine('Wirtschaftsnummer', beteiligter['bundeseinheitlicheWirtschaftsnummer'])
         
-        for alias in beteiligter['aliasNatuerlichePerson']:
-            text+='<blockquote><b><u>Aliasdaten</u></b>%s</blockquote>' % self.__natPersonTemplate(alias)
+        if beteiligter.get('umsatzsteuerID'):
+            text.addRaw('<br><b><i>Steuerdaten</i></b><br>')
+            text.addLine('Umsatzsteuer-ID', beteiligter.get('umsatzsteuerID'))
         
-        if beteiligter['geburt']:
-            text+=self.__geburtTemplate(beteiligter['geburt'])  
+        for alias in beteiligter.get('aliasNatuerlichePerson'):
+            text.addRaw('<blockquote><b><u>Aliasdaten</u></b>%s</blockquote>' % self.__natPersonTemplate(alias))
         
-        if beteiligter['tod']:
-            text+=self.__todTemplate(beteiligter['tod'])
+        if beteiligter.get('geburt'):
+            text.addRaw(self.__geburtTemplate(beteiligter['geburt']))  
+        
+        if beteiligter.get('tod'):
+            text.addRaw(self.__todTemplate(beteiligter['tod']))
             
-        if beteiligter['geburt']:
-            text+=self.__geburtTemplate(beteiligter['geburt'])
+        if beteiligter.get('geburt'):
+            text.addRaw(self.__geburtTemplate(beteiligter['geburt']))
 
-        if beteiligter['registereintragungNatuerlichePerson']:
-            text+=self.__registerNatPersonTemplate(beteiligter['registereintragungNatuerlichePerson'])
+        if beteiligter.get('ausweisdokument'):
+             text.addRaw(self.__ausweisTemplate(beteiligter['ausweisdokument']))
+              
+        if beteiligter.get('registereintragungNatuerlichePerson'):
+            text.addRaw(self.__registerNatPersonTemplate(beteiligter['registereintragungNatuerlichePerson']))
         
-        if beteiligter['auswahl_auskunftssperre']:
-            text+=self.__sperreTemplate(beteiligter['auswahl_auskunftssperre'])
-        
-        if text:
-            text='<br><b><i>Personendaten</i></b><br>'+text
+        if beteiligter.get('auswahl_auskunftssperre'):
+            text.addRaw(self.__sperreTemplate(beteiligter['auswahl_auskunftssperre']))
             
-        return text 
+        return text.getText() 
    
+    def __ausweisTemplate (self, ausweise):
+        text=TextObject()
+        text.addHeading('Ausweisdokumente')
+        for ausweis in ausweise:
+            if text.getText():
+                text.addRaw('<br>')
+            text.addLine('Ausweisart', ausweis.get('ausweisart'))  
+            text.addLine('Ausweis-ID', ausweis.get('ausweis.ID'))
+            text.addLine('Ausstellender Staat', ausweis.get('ausstellenderStaat')) 
+            if ausweis.get('ausstellendeBehoerde'): 
+                text.addLine('Ausstellende Behörde', self.__behoerdeResolver(ausweis['ausstellendeBehoerde']))
+            if ausweis.get('gueltigkeit'):
+                text.addLine('Gültigkeit', self.__zeitraumResolver(ausweis['gueltigkeit']))
+            text.addLine('Zusatzinformationen', ausweis.get('zusatzinformation'))
+        return text.getText()
+
+    def __zeitraumResolver(self, zeitraum):
+        text=''
+        if zeitraum.get('beginn'):
+            text+=zeitraum['beginn']   
+        if zeitraum.get('ende'):
+            if text:
+                text+=' - '
+            text+=zeitraum['ende']
+        return text
+    
+    def __behoerdeResolver(self, behoerde):
+        if behoerde.get('type')=='GDS.Ref.Beteiligtennummer':
+            return self.akte.beteiligtenverzeichnis.get(behoerde.get('name'))   
+        else:
+            return behoerde.get('name')
+        
     def __registerNatPersonTemplate(self, registereintragung):
         text=TextObject()
        
         text.addHeading('Registrierung natürliche Person')
 
-        text.addLine('Firma', registereintragung['verwendeteFirma'])
-        text.addLine('Weitere Bezeichnung', registereintragung['angabenZurRechtsform']['weitereBezeichnung'])
-        text.addLine('Rechtsform', registereintragung['angabenZurRechtsform']['rechtsform']) 
+        text.addLine('Firma', registereintragung.get('verwendeteFirma'))
+        text.addLine('Weitere Bezeichnung', registereintragung['angabenZurRechtsform'].get('weitereBezeichnung'))
+        text.addLine('Rechtsform', registereintragung['angabenZurRechtsform'].get('rechtsform')) 
         
-        if registereintragung['registereintragung']:
+        if registereintragung.get('registereintragung'):
             text.addRaw(self.__registerTemplate(registereintragung['registereintragung']))
             
         return text.getText()
@@ -1430,7 +1556,7 @@ class UI(QMainWindow):
     def __geburtTemplate(self, geburt):
         text=TextObject()
         text.addHeading('Geburtsdaten')
-        text.addLine('Geburtsdatum', geburt['geburtsdatum'])
+        text.addLine('Geburtsdatum', geburt.get('geburtsdatum'))
         if geburt['geburtsdatum.unbekannt'].lower() =='true': 
             text.addRaw('Geburtsdatum: unbekannt<br>')
         text.addLine('Geburtsort', geburt['geburtsort']['ort'])
@@ -1500,11 +1626,11 @@ class UI(QMainWindow):
             ['sepa-mandat', 'Sepa-Mandat'],
             ['verwendungszweck', 'Verwendungszweck']
         ]
-        delimiter=''
+        verbindungNr=1
         for bankverbindung in bankverbindungen:
             for item in items:
-                text.addRaw(delimiter)
-                itemValue = bankverbindung[item[0]]
+                
+                itemValue = bankverbindung.get(item[0])
                 
                 if item[0]=='sepa-mandat' and itemValue.lower()=='true':
                     itemValue='Erteilt'
@@ -1512,15 +1638,22 @@ class UI(QMainWindow):
                     itemValue='Nicht erteilt'    
                 
                 text.addLine(item[1], itemValue)
-                    
-            delimiter='<br>'
-                  
+            
+            if bankverbindung.get('sepa-basislastschrift'):
+                text.addLine('Lastschrifttyp' , bankverbindung['sepa-basislastschrift'].get('lastschrifttyp' ))
+                text.addLine('Mandatsreferenz', bankverbindung['sepa-basislastschrift'].get('mandatsreferenz'))
+                text.addLine('Mandatsdatum'   , bankverbindung['sepa-basislastschrift'].get('mandatsdatum'   ))
+            
+            if verbindungNr < len(bankverbindungen):
+                text.addRaw('<br>')
+            verbindungNr+=1            
+        
         return text.getText()                      
                   
     def __setBeteiligteView(self):
         text=TextObject()
         for beteiligung in self.akte.grunddaten['beteiligung']:
-            text.addLine('<b>Beteiligtennummer</b>', beteiligung['beteiligtennummer'])
+            text.addLine('<b>Beteiligtennummer</b>', beteiligung.get('beteiligtennummer'))
             
             if beteiligung['rolle']:
                 text.addRaw(self.__rollenTemplate(beteiligung['rolle']))
@@ -1556,7 +1689,7 @@ class UI(QMainWindow):
         if termin['terminsart']:
             text.addRaw('<b>Art des Termins: %s</b><br>' % termin['terminsart'])
                 
-        text.addLine('Spruchkörper', termin['spruchkoerper'])
+        text.addLine('Spruchkörper', termin.get('spruchkoerper'))
                 
         if termin['oeffentlich'].lower()=='true':
             text.addRaw("Es handelt sich um einen öffentlichen Termin.<br>") 
@@ -1631,7 +1764,7 @@ class UI(QMainWindow):
         self.terminDetailView.setHtml(text) 
                                         
 if __name__ == "__main__":
-    print('Disabling Chomium-Sandbox for compatibility reasons (Seems to be unavailable on most systems anyway).')
+    print('Disabling Chromium-Sandbox for compatibility reasons (Seems to be unavailable on most systems anyway).')
     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
     
     app = QApplication([])
@@ -1639,6 +1772,7 @@ if __name__ == "__main__":
     app.setObjectName('openXJV')
     app.setApplicationName('openXJV %s' % VERSION)
     app.setApplicationVersion(VERSION)
+    
     #Parse sys.argv
     file=None
     ziplist=None
@@ -1652,5 +1786,6 @@ if __name__ == "__main__":
                 ziplist.append(file)
             
     widget = UI(file=file, ziplist=ziplist, app=app)
+    app.aboutToQuit.connect(widget.cleanUp)
     widget.show()
     sys.exit(app.exec_())

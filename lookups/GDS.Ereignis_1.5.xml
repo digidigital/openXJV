@@ -1,0 +1,2384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gc:CodeList xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/"
+             xmlns:xoev-cl-3="http://xoev.de/schemata/genericode/3"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Annotation>
+      <Description>
+         <xoev-cl-3:nameKurz>GDS.Ereignis</xoev-cl-3:nameKurz>
+         <xoev-cl-3:beschreibung-codeliste>Codeliste der verschiedenen Ereignisse.</xoev-cl-3:beschreibung-codeliste>
+         <xoev-cl-3:herausgebernameKurz>AG-IT-Standards</xoev-cl-3:herausgebernameKurz>
+         <xoev-cl-3:beschreibung-versionCodeliste>Spalte 'fachmodul': Aufgeführte Fachmodule nutzen ausschließlich die für sie gekennzeichneten Werte</xoev-cl-3:beschreibung-versionCodeliste>
+         <xoev-cl-3:datumGueltigkeitAb>2021-11-15</xoev-cl-3:datumGueltigkeitAb>
+         <xoev-cl-3:versionCodelistenHandbuch>1.1</xoev-cl-3:versionCodelistenHandbuch>
+         <xoev-cl-3:aenderungZurVorversion>Neuer Eintrag '228|MiStra'. Des Weiteren wurde das Fachmodul ZPO bei einigen Codelisteneinträgen in der Fachmodulspalte ergänzt.</xoev-cl-3:aenderungZurVorversion>
+      </Description>
+   </Annotation>
+   <Identification>
+      <ShortName>gds.ereignis</ShortName>
+      <LongName>GDS.Ereignis</LongName>
+      <Version>1.5</Version>
+      <CanonicalUri>urn:xoev-de:xjustiz:codeliste:gds.ereignis</CanonicalUri>
+      <CanonicalVersionUri>urn:xoev-de:xjustiz:codeliste:gds.ereignis_1.5</CanonicalVersionUri>
+      <Agency>
+         <LongName>BLK-AG IT-Standards in der Justiz</LongName>
+      </Agency>
+   </Identification>
+   <ColumnSet>
+      <Column Id="code" Use="required">
+         <ShortName>code</ShortName>
+         <LongName>Schlüssel</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="wert" Use="required">
+         <ShortName>wert</ShortName>
+         <LongName>Wert</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="beschreibung" Use="optional">
+         <ShortName>beschreibung</ShortName>
+         <LongName>Beschreibung</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="fachmodul" Use="optional">
+         <ShortName>fachmodul</ShortName>
+         <LongName>Aufgeführte Fachmodule nutzen ausschließlich die für sie gekennzeichneten Werte</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Key Id="codeKey">
+         <Annotation>
+            <AppInfo>
+               <xoev-cl-3:empfohleneCodeSpalte/>
+            </AppInfo>
+         </Annotation>
+         <ShortName>codeKey</ShortName>
+         <ColumnRef Ref="code"/>
+      </Key>
+   </ColumnSet>
+   <SimpleCodeList>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>001</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe nach § 335a HGB</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>002</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>HR Auszug</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>003</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nachsendung von Posteingang</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>004</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Stellungnahme auf gerichtlichen Hinweis</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EHUG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>005</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anfrage Anschrift</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL,ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>006</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anfrage Arbeitgeber</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL,ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>007</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anfrage Arbeitgeber und Anschrift</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>008</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auskunft Anschrift</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL,ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>009</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auskunft Arbeitgeber</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL,ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>010</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auskunft Arbeitgeber und Anschrift</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>011</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Fehler aufgetreten</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL,VAG,VSTR,ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>012</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Prüffall aufgetreten</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL,ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>013</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auskunftsanspruch</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>014</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>schuldrechtlicher-Versorgungsausgleich</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>015</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Versorgungsausgleich-Wertausgleich</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>016</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>017</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Klage</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>018</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sterbefallbenachrichtigung_Nachlassgericht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>019</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sterbefallbenachrichtigung_Verwahrgericht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>020</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sterbefallbenachrichtigung_Notarverwahrung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>021</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Aktenzeichenmitteilung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>022</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nichtübernahme</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>023</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Löschung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>024</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rollenwechsel</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>025</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Neuer Termin</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>026</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Terminaufhebung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>027</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Umladung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>028</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Eintragungsmitteilung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>029</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ergänzende Unterlage</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>030</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anklage anfordern</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>031</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe an StA</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>032</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe an GStA</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>033</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe an Gericht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>034</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ergebnismitteilung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>035</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Übersendung der angeforderten Anklage</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>036</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anforderung Grundbuchinhalt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>037</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vollzugsmitteilung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>038</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Übergabe Anteilsinhaber</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>039</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag Insolvenzeröffnung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>040</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Übergabe Debitoren</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>041</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Jahresmeldung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>042</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nachmeldung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>043</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Übergabe Forderungsanmeldungen mit Erklärungen</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>044</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Übergabe Forderungsanmeldungen ohne Erklärungen</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>045</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeine Mitteilung, dass das Portal im folgenden keine Fehler übermittelt</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>046</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeine Mitteilung, dass das Portal im folgenden näher spezifizierte Fehler übermittelt</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>047</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vollzaehligkeitsmitteilung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>048</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Mitteilung der Verfahrensid</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>049</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>MiZi IX 1 Mitteilungen über die Anordnung und Aufhebung von Verfügungsbeschränkungen</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>050</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>MiZi IX 2 Mitteilungen bei Ablehnung der Eröffnung des Insolvenzverfahrens mangels Masse</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>051</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>MiZi IX 3 Mitteilungen über die Eröffnung des Insolvenzverfahrens</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>052</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>MiZi IX 4 Mitteilungen über weitere Entscheidungen in Insolvenzverfahren</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>053</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Übermittlung Bericht (ForStab)</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>INSO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>054</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe nach Einspruch</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>055</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe nach Widerspruch</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>056</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Weitere Abgabe nach Einspruch</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>057</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Weitere Abgabe nach Widerspruch</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>058</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SC-Form A - Klageformblatt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>059</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SC-Form B - Korrekturblatt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>060</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SC-Form C - Antwortblatt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>061</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SC-Form D - Urteil</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>062</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag an Ermittlungsrichter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>063</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag im Erkenntnisverfahren</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>064</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstige Anträge im Ermittlungsverfahren</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>065</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anrechte nur außerhalb der Ehezeit</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Es ergibt sich kein Ehezeitanteil.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>066</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anrechte, Auskunft elektronisch</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Standardfall der Auskunft, Übersendung eines Datensatzes einschließlich der PDF-Datei.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>067</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anrechte, Auskunft erfolgt auf Papier</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Endgültiger Abbruch des elektronischen Verfahrens, falls Auskunftserteilung elektronisch nicht möglich ist (zum Beispiel für Ausnahmefälle, in denen die Auskunft nur manuell erteilt werden kann); Sämtliche anschließenden Verfahrensabläufe erfolgen ausschließlich manuell.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>068</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anrechte, Auskunft elektronisch ohne PDF und zusätzlich auf Papier</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Übergangslösung, falls PDF-Versendung noch nicht möglich ist: Übersendung eines Datensatzes ohne PDF-Datei; zusätzliche Auskunft in Papierform erforderlich.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>069</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anrechte, Auskunft muss gesondert eingeholt werden</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Wird von der DRV nicht verwendet.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>070</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berichtigung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>071</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>keine Anrechte</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Der Versicherte hat zwar eine Versicherungsnummer, jedoch sind keine rentenrechtlichen Zeiten im Versicherungskonto enthalten (zum Beispiel nach einer Beitragserstattung).</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>072</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Teilzeiträume</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Dieses Feld ist vorgesehen für den Fall einer Auskunftserteilung für Teilzeiträume; es wird von der DRV derzeit nicht verwendet; DRV würde Papier schicken.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>073</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erstverfahren</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Das Verfahren ist auf die erstmalige Durchführung des Versorgungsausgleichs ausgerichtet (z.B. Scheidung).</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>074</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abaenderungsverfahren</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Ein Abänderungsverfahren ist eine neue Familiensache. Es existiert bereits ein rechtskräftig abgeschlossenes Verfahren.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>075</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Empfangsbestätigung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>076</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Prüffallantwort</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>077</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Hinweis</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>078</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erstentscheidung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>079</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abänderungsentscheidung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>080</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berichtigungsbeschluss</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>081</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auskunft aus ungeklärtem Konto</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Familiengericht bittet um eine Auskunft aus einem ungeklärten Versicherungskonto.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>082</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Stellungnahme zum Schriftsatz</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Familiengericht bittet um Stellungnahme zu einem (als pdf-Datei) beigefügten Schriftsatz.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>083</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ruhen, Aussetzung, Abtrennung</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Familiengericht teilt mit, dass das Verfahren ruht oder ausgesetzt oder der Versorgungsausgleich abgetrennt wurde. Das maschinelle Verfahren bleibt offen.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>084</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sachstandsanfrage</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>z.B. Familiengericht bittet um Angabe der Gründe für eine noch nicht erteilte Auskunft.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>085</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsmittel wurde eingelegt</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Information</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>086</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Neue Anfrage wird angekündigt</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Das maschinelle Verfahren wird geschlossen. Es erfolgt eine neue Anfrage durch das Gericht, zum Beispiel als Wiederholungsauskunftsersuchen, oder bei Auskunftsersuchen nach Fortsetzung eines weggelegten Verfahrens oder nach Wiederaufnahme eines abgetrennten, ausgesetzten oder ruhenden Verfahrens, oder wegen Zuständigkeitswechsel des Amtsgerichts, oder als neues Auskunftsersuchen mit berichtigter Ehezeit.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>087</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erledigung wegen Todes</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Das maschinelle Verfahren wird geschlossen. Abschluss durch Tod eines Versicherten vor Rechtskraft der Scheidung.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>088</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rücknahme des Scheidungsantrages</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Das maschinelle Verfahren wird geschlossen.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>089</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erledigung durch Vereinbarung der Beteiligten</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Das maschinelle Verfahren wird geschlossen.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>090</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Änderung des Aktenzeichens bei Abgabe innerhalb</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Überschreiben des Aktenzeichens.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>091</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rückgriff auf Papierform</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Das maschinelle Verfahren wird geschlossen.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>092</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sachstandsmitteilung (im Auskunftsverfahren)</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Eigene Codeliste für die Gründe einer Sachstandsmitteilung.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>093</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>mangelnde Mitwirkung</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Versicherter wirkt trotz mehrfacher Erinnerung nicht mit, weshalb derzeit keine Auskunft erteilt werden kann. Das Verfahren bleibt offen.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>094</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nachholung der Mitwirkung</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Das Auskunftsverfahren kann fortgesetzt werden.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>095</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zuständigkeitswechsel</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Während der Bearbeitung des Auskunftsersuchens stellt sich heraus, dass für die Bearbeitung des Auskunftsersuchens ein anderer RV-Träger zuständig ist. Dieser übersendet dann die Auskunft.</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>096</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtskraftanfrage</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>097</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>rechtskräftig</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VAG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>098</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Entscheidung Schuldnerwiderspruch</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>099</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Entscheidung Schuldnerwiderspruch Verarbeitungsbestätigung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>100</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Schuldnerverzeichnis Eintragung Korrektur</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>101</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Schuldnerverzeichnis Verarbeitungsbestätigung Portal</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>102</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Schuldnerverzeichnisabdrucke</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>103</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vermögensverzeichnis Übermittlung Korrektur</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>104</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vermögensverzeichnis Übermittlungsbestätigung Portal</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>VSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>105</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anfrage Fahrzeugdaten</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>106</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Personenliste</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>107</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Fahrzeugliste</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>108</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Fahrzeugakte</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>109</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechnung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>110</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag Durchsuchungsanordnung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZVSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>111</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag PfÜB gewöhnliche Forderungen</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZVSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>112</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag PfÜB Unterhaltsforderungen</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZVSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>113</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vollstreckungsauftrag</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>ZVSTR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>114</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erstmitteilung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>115</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Neueingang</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>116</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Neueingang OWi</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>117</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Neueingang E-Haft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>118</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nachermittlung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>119</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Fahndung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>120</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Asservate</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>121</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ergänzende Mitteilung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>122</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ausschreibung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>123</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Eilantrag</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>124</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anweisung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>125</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ermittlungsmaßnahme</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>126</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Führungsaufsicht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>127</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Strafvollstreckungssachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>128</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anbieteverzeichnis</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>129</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bewertungsverzeichnis</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>130</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Aussonderung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>131</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AnbietungEmpfangBestaetigen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>132</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>BewertungEmpfangBestaetigen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>133</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AussonderungImportBestaetigen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>134</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SC-Form C2 - Antwortblatt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>135</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SC-FreeFormLetter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>136</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SC-IncomingFreeFormLetter-an das Gericht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>137</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SC-Withdrawal</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>138</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe der Akten nach Umwandlung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>139</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe von Beiakten</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>140</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe von Restaktenbestandteilen</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>141</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Aktenabgabe</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>142</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Aktenübersendung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>143</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Änderung der Firma</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>144</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Änderung der Kommanditeinlage</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>145</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Änderung des Gesellschaftsvertrages/der Satzung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>146</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Änderung Personendaten</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>147</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anmeldung Auflösung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>148</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anmeldung der Geschäftsanschrift</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>149</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ausscheiden eines Prokuristen/einer Prokuristin</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>150</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Austritt eines Kommanditisten/einer Kommanditistin</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>151</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Austritt persönlich haftende(r) Gesellschafter(in)</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>152</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Austritt von Partnern einer Partnerschaftsgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>153</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bedingtes Kapital</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>154</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bestellung eines Prokuristen/einer Prokuristin</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>155</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Einreichung einer Gesellschafterliste</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>156</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Eintritt eines Kommanditisten/einer Kommanditistin</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>157</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Eintritt persönlich haftende(r) Gesellschafter(in)</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>158</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Eintritt von Partnern einer Partnerschaftsgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>159</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Errichtung einer Zweigniederlassung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>160</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung einer AG</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>161</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung einer Genossenschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>162</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung einer GmbH</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>163</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung einer KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>164</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung einer Kommanditgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>165</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung einer OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>166</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung einer Partnerschaftsgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>167</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung eines Vereins</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>168</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung eines Einzelkaufmanns/einer Einzelkauffrau</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>169</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Formwechsel mit neuer Registernummer beim selben Gericht</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>170</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Genehmigtes Kapital</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>171</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Geschäftsführer(in) Änderung der Vertretungsbefugnis</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>172</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Geschäftsführer(in) Austritt</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>173</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Geschäftsführer(in) Eintritt</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>174</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Kapitalerhöhung oder -herabsetzung (AG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>175</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Kapitalerhöhung oder -herabsetzung (GmbH)</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>176</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Löschung des Rechtsträgers</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>177</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Löschung Empfangsberechtigter</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>178</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nachfolge in einen Kommanditanteil</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>179</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Neuanmeldung Empfangsberechtigter</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>180</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Persönlich haftende(r) Gesellschafter(in) Änderung der Vertretungsbefugnis</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>181</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Prokurist(in) Änderung der Vertretungsbefugnis</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>182</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsformwechsel außerhalb des UmwG</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>183</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sitzverlegung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>184</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sitzverlegung in einen anderen Bezirk</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>185</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstige Anmeldung/Mitteilung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>186</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstiges_Datenänderung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>187</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstiges_Datenlöschung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>188</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstiges_Neueintragung</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>189</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Abspaltung; Übernehmender Rechtsträger</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>190</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Abspaltung; Übertragender Rechtsträger</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>191</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Ausgliederung; Übernehmender Rechtsträger</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>192</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Ausgliederung; Übertragender Rechtsträger</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>193</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Formwechsel</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>194</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Vermögensübertragung; Übernehmender Rechtsträger</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>195</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Vermögensübertragung; Übertragender Rechtsträger</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>196</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Verschmelzung; Übernehmender Rechtsträger</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>197</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UmwG: Verschmelzung; Übertragender Rechtsträger</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>198</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Unternehmensvertrag (Gewinnabführung etc.)</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>199</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vorstand Änderung der Vertretungsbefugnis</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>200</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vorstand Austritt</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>201</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vorstand Eintritt</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>202</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Wechsel des Inhabers/der Inhaberin mit Haftungsausschluss</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>203</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Wechsel des Inhabers/der Inhaberin</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>REG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>204</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Versand Allgemein</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>205</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Versand zur Weiterführung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>206</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Versand an höhere Instanz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>207</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Versand an niedrigere Instanz</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>208</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Versand als Beiakte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>209</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Versand zur Akteneinsicht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>210</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abgabe von Vorbänden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>211</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abfrage mit Phonetik</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>212</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Abfrage ohne Phonetik</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>213</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>keine Treffer</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>214</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>zu viele Treffer</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>215</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rücknahme Antrag/Schreiben</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>216</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beendigung des Verfahrens</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>217</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bekanntmachung einer Musterfeststellungsklage</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>218</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Registerauszug</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>219</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionseinlegung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>220</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vergleichsaustritte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>221</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zwischenentscheidung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>222</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anfrage Geburtsort</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>223</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auskunft Geburtsort</SimpleValue>
+         </Value>
+         <Value ColumnRef="fachmodul">
+            <SimpleValue>EZOLL</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>224</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ersteintragung eGbR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>225</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Eintritt Gesellschafter(in) eGbR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>226</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Austritt Gesellschafter(in) eGbR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>227</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Änderung der Vertretungsbefugnis eines Gesellschafters/einer Gesellschafterin einer eGbR</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>228</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>MiStra</SimpleValue>
+         </Value>
+      </Row>
+   </SimpleCodeList>
+</gc:CodeList>

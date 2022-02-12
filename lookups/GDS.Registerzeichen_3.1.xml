@@ -1,0 +1,2240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gc:CodeList xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/"
+             xmlns:xoev-cl-3="http://xoev.de/schemata/genericode/3"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Annotation>
+      <Description>
+         <xoev-cl-3:nameKurz>GDS.Registerzeichen</xoev-cl-3:nameKurz>
+         <xoev-cl-3:beschreibung-codeliste>Codeliste der verschiedenen Registerzeichen</xoev-cl-3:beschreibung-codeliste>
+         <xoev-cl-3:herausgebernameKurz>AG-IT-Standards</xoev-cl-3:herausgebernameKurz>
+         <xoev-cl-3:datumGueltigkeitAb>2022-10-31</xoev-cl-3:datumGueltigkeitAb>
+         <xoev-cl-3:versionCodelistenHandbuch>1.1</xoev-cl-3:versionCodelistenHandbuch>
+         <xoev-cl-3:aenderungZurVorversion>Die Codeliste wurde um die Registerzeichen SAN, RES und GesR ergänzt. Der Codelistentyp wurde von Typ1 nach Typ3 geändert.</xoev-cl-3:aenderungZurVorversion>
+      </Description>
+   </Annotation>
+   <Identification>
+      <ShortName>gds.registerzeichen</ShortName>
+      <LongName>GDS.Registerzeichen</LongName>
+      <Version>3.1</Version>
+      <CanonicalUri>urn:xoev-de:xjustiz:codeliste:gds.registerzeichen</CanonicalUri>
+      <CanonicalVersionUri>urn:xoev-de:xjustiz:codeliste:gds.registerzeichen_3.1</CanonicalVersionUri>
+      <Agency>
+         <LongName>BLK-AG IT-Standards in der Justiz</LongName>
+      </Agency>
+   </Identification>
+   <ColumnSet>
+      <Column Id="code" Use="required">
+         <ShortName>code</ShortName>
+         <LongName>Schlüssel</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="wert" Use="required">
+         <ShortName>wert</ShortName>
+         <LongName>Wert</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Key Id="codeKey">
+         <Annotation>
+            <AppInfo>
+               <xoev-cl-3:empfohleneCodeSpalte/>
+            </AppInfo>
+         </Annotation>
+         <ShortName>codeKey</ShortName>
+         <ColumnRef Ref="code"/>
+      </Key>
+   </ColumnSet>
+   <SimpleCodeList>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erstinstanzliche Klagen und Wiederaufnahmeverfahren in Verwaltungsstreitsachen (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ABR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsbeschwerden (BAG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AK</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Aktenkontrolle für Haftprüfungsverfahren (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AktE</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge auf gerichtliche Entscheidung nach dem AktG, dem EGAktG und verwandten Gesetzen (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AnwSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anwaltsgerichtliche Verfahren (GenBAnw., BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AnwZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zulassungssachen betreffend Rechtsanwälte beim BGH, Sofortige Beschwerden gegen Entscheidungen eines Anwaltsgerichtshofes und Anfechtung von Wahlen und Beschlüssen der Rechtsanwaltskammer beim BGH und der Bundesrechtsanwaltskammer (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeines Register (GenBAnw., AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ARP</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeines Register für politische Sachen (GenBAnw.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ARs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gerichtsstandbestimmungen in Strafsachen, Auslieferungssachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ARV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vorlagen nach §§ 80, 86 BetrVG (BAG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ARZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeine Register, Akteneinsicht und Gerichtsstandsbestimmungen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ausl</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auslieferungssachen, Durchlieferungssachen (GenStA); (StA und HansOLG); Verfahren nach dem Gesetz über die internationale Rechtshilfe in Strafsachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstige Anträge außerhalb eines schwebenden Verfahrens, soweit eine Zuständigkeit des BVerwG überhaupt denkbar ist (Allgemeine Verfahren) (BVerwG) AZA</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AZA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Prozesskostenhilfeanträge außerhalb anhängiger Verfahren (BAG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AZB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionsbeschwerden (BAG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AZR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionen (BAG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Mahnsachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ba</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Arbeitsgerichtliche Mahnsachen (ArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BAusl</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auslieferungssachen (GenBAnw.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Berl</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berichtssachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BewÜberwR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bewährungs- und Führungsaufsichtsüberwachung (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BG-Ä</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren gegen Ärzte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BG-Ap</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren gegen Apotheker</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BG-Arch</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren gegen Architekten</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BG-Ing</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren gegen Ingenieure</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BGns</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gnadensachen (GenBAnw.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BG-Psy</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren gegen Psychiater</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BGs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Teilregister für Strafsachen, einzelne Anordnungen des Ermittlungsrichters (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BG-T</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren gegen Tierärzte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BG-Z</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren gegen Zahnärzte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BJs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ermittlungsverfahren in erstinstanzlichen Strafsachen (GenBAnw.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BLw</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsbeschwerden in Landwirtschaftssachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BN</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nichtzulassungsbeschwerden in Normenkontrollsachen nach § 47 Abs. 7 VwGO (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Bs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Privatklage- und Bußgeldsachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BS</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschlussverfahren (ArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BSch</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zusatz bei Binnenschifffahrtssachen (AG, OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BSR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Binnenschiffsregister (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschlussverfahren (ArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verwirkung von Grundrechten, Art. 18 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Feststellung der Verfassungswidrigkeit von Parteien, Art. 21 Abs. 2 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvC</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden im Wahlprüfungsverfahren, Art. 41 Abs. 2 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvD</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anklagen gegen den Bundespräsidenten, Art. 61 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvE</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfassungsstreitigkeiten zwischen Bundesorganen, Art. 93 Abs. 1 Nr. 1 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvF</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Normenkontrolle auf Antrag von Verfassungsorganen, Art. 93 Abs. 1 Nr. 2 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfassungsstreitigkeiten zwischen Bund und Ländern, Art. 93 Abs. 1 Nr. 3; Art. 84 Abs. 4 Satz 2 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Öffentlich-rechtliche Streitigkeiten nach Art. 93 Abs. 1 Nr. 4 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvJ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Richteranklagen, Art. 98 Abs. 2 und 5 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvK</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landesverfassungsstreitigkeiten kraft landesrechtlicher Zuweisung, Art. 99 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Normenkontrolle auf Vorlage der Gerichte, Art. 100 Abs. 1 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvM</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Völkerrechtsregel als Teil des Bundesrechts, Art. 100 Abs. 2 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvN</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auslegung des Grundgesetzes auf Vorlage eines Landesverfassungsgerichts, Art. 100 Art. 3 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvO</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Meinungsverschiedenheiten über das Fortgelten von Recht als Bundesrecht, Art. 126 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvP</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren in den sonst durch Bundesgesetz zugewiesenen Fällen, Art. 93 Abs. 2 GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvQ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Einstweilige Anordnungen, § 32 BVerfGG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfassungsbeschwerden, Art. 93 Abs. 1 Nr. 4a und 4b GG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BvT</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstige Verfahren (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BW-RegSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsbeschwerden in Wirtschaftsstrafsachen usw. (BayObLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BZR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bundeszentralregister</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>C</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeine Zivilsachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ca</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeine Zivilsachen am Arbeitsgericht (ArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>CN</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionen in Verfahren nach § 47 Abs. 5 VwGO (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Cs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Strafbefehle (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>D</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Disziplinarsachen (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>DB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Disziplinarsachen (Beschlußsachen) (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>DG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Dienstgericht für Richter (LG, OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>DGH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren vor dem Dienstgerichtshof für Richter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>DR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Aufträge an Gerichtsvollzieher (GV)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ds</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Strafsachen des Einzelrichters (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>DW</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Wiederaufnahmeverfahren in Disziplinarsachen (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>E-(pat)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerde in Patent-, Gebrauchsmuster-, Sortenschutz- und Warenzeichensachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>EG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge auf Einleitung des ehrengerichtlichen Verfahrens (EG f. RA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>EGH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen, Beschwerden und Anträge auf gerichtliche Entscheidungen (EGH f. RA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>EV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ehrengerichtliche Verfahren gegen Rechtsanwälte (GenStA); Verfahren nach der BRAO, erstinstanzlich</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>EVy</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren nach der BRAO, zweitinstanzlich</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>EVY</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zweitinstanzliche Ehrengerichtsverfahren gegen Rechtsanwälte (GenStA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>EWs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Entlassungs- und Widerrufssachen (StA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>F</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Familiensachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>FA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Führungsaufsicht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>FH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Familiensachen außerhalb anhängiger Verfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ga</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Arreste und einstweilige Verfügungen (ArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GesR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gesellschaftsregister</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gerichtshilfesachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GnR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Genossenschaftsregister (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Gns</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gnadensachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Güterrechtsregister (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Gr.Sen.</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren vor dem Großen Senat des Bundesverwaltungsgerichts (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Gs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Einzelne richterliche Anordnungen in Strafsachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GS</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Großer Senat (BAG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GSSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Großer Senat in Strafsachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GSZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Großer Senat in Zivilsachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>H</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Zivilverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ha</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Verfahren (ArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>HEs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Haftentscheidungen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>HL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Hinterlegungssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>HLw</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Landwirtschaftssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>HR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Handelsregistersachen (AG); Erzwingungshaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>HRA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Handelsregister (Einzelkaufleute, Personengesellschaften) (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>HRB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Handelsregister (Kapitalgesellschaften) (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Hs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zivilsachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>I</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beurkundungen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>IE</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Insolvenzverfahren nach Art. 102 Abs.3 EGInsO und §§ 354 und 356 InsO (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>II</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstiges in der freiwilligen Gerichtsbarkeit (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>III</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Standesamtssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>IK</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verbraucherinsolvenzverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>IN</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Insolvenzverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>IV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfügungen von Todes wegen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>IX</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beistandschaften (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>J</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verteilungssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>JL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Aufträge der Justizbehörden an Gerichtsvollzieher (GV)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Js</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ermittlungsverfahren (StA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>JS-OWi</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bußgeldsachen der Staatsanwaltschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>K</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zwangsversteigerungssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Kart</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Kartellbußgeldsachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Kart.</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zusatz bei Kartellsachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KLs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zusatz bei Strafsachen vor der Großen Strafkammer (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KRB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bußgeld-Rechtsbeschwerden in Kartellsachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ks</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zusatz bei Schwurgerichtssachen (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erinnerungen gegen den Kostenansatz und Gegenvorstellungen gegen die Streitwertfestsetzung (Kosten und Streitwert) (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KVR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Kartellsachen (BGH) - Verwaltungs-Rechtsbeschwerden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KVZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nichtzulassungsbeschwerden Kartellsachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KZA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhanlb eines in der Revisionsinstanz anhängigen Rechtsstreits in Kartellsachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KZR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Kartellsachen (BGH) - Nichtzulassungsbeschwerden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>L</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zwangsverwaltungssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LBG-Ä</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landesberufsgerichtliche Rechtsmittelverfahren gegen Ärzte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LBG-Ap</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landesberufsgerichtliche Rechtsmittelverfahren gegen Apotheker</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LBG-Arch</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landesberufsgerichtliche Rechtsmittelverfahren gegen Architekten</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LBG-Ing</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landesberufsgerichtliche Rechtsmittelverfahren gegen Ingenieure</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LBG-Psy</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landesberufsgerichtliche Rechtsmittelverfahren gegen Psychiater</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LBG-T</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landesberufsgerichtliche Rechtsmittelverfahren gegen Tierärzte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LBG-Z</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landesberufsgerichtliche Rechtsmittelverfahren gegen Zahnärzte</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Li</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zwangslizenzverfahren (BPatG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LiQ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Einstweilige Verfügung in Zwangslizenzverfahren (BPatG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LiR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rücknahmeklagen in Zwangslizenzsachen (BPatG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ls</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Strafsachen vor dem Schöffengericht (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Lw</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landwirtschaftssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LwE</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landwirtschaftliche Entschuldungssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LwG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landwirtschaftliche Genehmigungsverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LwH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Höfesachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LwP</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landpachtsachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LwS</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge nach § 10 RSiedlG (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LwV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Geschäfte nach § 1 Nr. 4 LwVG (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LwW</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Landwirtschaftssachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LwZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zuweisungsverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>M</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeine Zwangsvollstreckungssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>MR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Musterregister (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>N</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Konkursverfahren oder Gesamtvollstreckungsverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NATO</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Angelegenheiten nach dem NATO-Truppenstatut</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ni</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Patentnichtigkeitsverfahren (BPatG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NotSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Notarsachen (GenBAnw., BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NotZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verwaltungsstreitverfahren in Notarsachen und sofortige Beschwerden gegen Entscheidungen der Oberlandesgerichte (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ns</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Strafsachen (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NSV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>nachträgliche Sicherungsverwahrung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren nach der BNotO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>O</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeine Zivilsachen 1. Instanz (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ObJs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Strafsachen 1. Instanz (GenStA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ObSs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionen in Strafsachen und Rechtsbeschwerden in Bußgeldsachen (GenStA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OGs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Einzelne richterliche Anordnungen vor dem OLG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Verfahren der 1. Instanz (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OJs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erstinstanzliche Strafsachen (GenStA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OLGAusl</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auslieferungssverfahren nach IRG vor dem OLG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OWi</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Bußgeldverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OWi originär</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Originäre Bußgeldverfahren AG (G)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>P</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsbeschwerden in Personalvertretungs- und Richtervertretungssachen (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Pat</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren nach der PatAnwO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PatAnwSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden und Revisionen in Patentanwaltssachen (GenBAnw., BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PatAnwZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verwaltungsstreitverfahren in Patentanwaltssachen (GenBAnw., BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PatA-Z</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Verfahren gegen Patentanwälte beim OLG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PatL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren gegen Patentanwälte beim LG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PAtO</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Verfahren gegen Patentanwälte OLG (G)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Nichtzulassungsbeschwerden in Personalvertretungs- und Richtervertretungssachen (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PBvS</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beendigung des Amtes eines Richters des BVerfG bei Dienstunfähigkeit oder aus sonstigen Gründen, § 105 BVerfGG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PBvU</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Plenarentscheidungen, § 16 BVerfGG (BVerfG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Pk</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Pachtkreditregister (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PKH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge auf Bewilligung von Prozeßkostenhilfe, auch soweit sie während eines schwebenden Verfahrens gestellt werden (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PLs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Strafprozessliste (Amtsanw.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Partnerschaftsregistersachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ps</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Privatklagesachen (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Qs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Straf- und Bußgeldsachen (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>RE-Miet</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsentscheide in Mietsachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>RES</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Restrukturierungsverfahren (StaRUG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>RiSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Disziplinarsachen nach dem Richtergesetz (GenBAnw., BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>RiZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Versetzungs- und Prüfungsverfahren nach dem Richtergesetz (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>RR-RevAGLG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionsverfahren vor dem Oberlandesgericht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>RR-RevLG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionsverfahren vor dem Oberlandesgericht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>RR-SprRev</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionsverfahren vor dem Oberlandesgericht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Rs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Zivilsachen (GenStA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>S</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Zivilsachen (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Sa</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungssachen (LArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SAN</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sanierungsverfahren (StaRUG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SBR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Schiffsbauregister (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Sch</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Liste für Zivilprozesssachen, Schiedsrichterliches Verfahren (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SchH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Liste für Zivilprozesssachen, Anträge auf gerichtliche Entscheidung in den in § 1062 Abs. 1 Nr.1 bis 3 ZPO genannten Fällen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Berufungsverfahren (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SHa</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Berufungsverfahren (LArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ss</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionen in Strafsachen und Rechtsbeschwerden in Bußgeldsachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ss (B)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsbeschwerden in Bußgeldsachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ss (OWi)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsbeschwerden in Bußgeldsachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SS OWi</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsbeschwerden vor dem OLG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SS-Bs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Rechtsbeschwerden</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ss-Bz</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Antrag auf Zulassung der Rechtsbeschwerde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SSR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Seeschiffsregister (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>St</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Stellungnahmen gegenüber dem Bundesverfassungsgericht, gegenüber dem Gemeinsamen Senat der obersten Gerichtshöfe des Bundes, gegenüber dem Großen Senat und zu Gesetzentwürfen (Stellungnahmen) (BVerwG); Strafsachen 1. Instanz vor dem OLG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Strafsachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StBR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerderegister in Strafsachen (BayObLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StbST</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren in Steuerberater- und Steuerbevollmächtigtensachen (GenBAnw., BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StE</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren in erstinstanzlichen Strafsachen beim BGH (GenBAnw.)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StES</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Entschädigungssachen nach dem StrEG, Betragsverfahren</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren gegen Steuerberater-/Bevollmächtigte beim LG (G)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StO</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Verfahren gegen Steuerberater-/Bevollmächtigte (G)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionen in Strafsachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StrEs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Register für Entschädigungssachen nach dem StrEG (GenStA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StRR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionsregister in Strafsachen (GenBAnw., BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren nach dem StBerG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StVK</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren vor der Strafvollstreckungskammer (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>T</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Zivilsachen (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ta</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeine arbeitsgerichtliche Beschwerdesachen (LArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>TaBV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerdesachen in Beschlussverfahren (LArbG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>U</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Zivilsachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>UF</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen und Beschwerden gegen Endentscheidungen in Familiensachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>UFH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Berufungsverfahren in Familiensachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>UH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Berufungsverfahren (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>UJs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ermittlungsverfahren gegen Unbekannt (StA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>UV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Unterbringungsverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>V</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Auseinandersetzungen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Entscheidungen über Justizverwaltungsakte in Zivilsachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VAs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Entscheidungen über Justizverwaltungsakte in Strafsachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VAus</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ausschlussverfahren nach § 138a StPO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Verg</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Liste für Vergaberechtssachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VerwB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verwahrungsbuch für Verfügungen von Todes wegen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VGS</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vereinigte Große Senate (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VI</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstige Nachlasssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VII</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vormundschaften (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VIII</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Pflegschaften (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VN</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vergleichsverfahren (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Vollz</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren vor der Strafvollstreckungskammer nach §§ 109, 110 StVollzG (LG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Vollz (Ws)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verfahren vor dem Strafsenat nach §§ 116, 117 StVollzG (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vereinsregister (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VRG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vorlagen nach §§ 80, 84, 86 BVerfGG (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VRJs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vollstreckungsregister für Jugendgerichtssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VRs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Strafvollstreckungssachen (StA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Vs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionen in Privatklagesachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Vs-G</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionsverfahren im Privatklageverfahren vom AG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VSV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>vorbehaltene Sicherungsverwahrung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>W</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Zivilsachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>W-(pat)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Patent-, Gebrauchsmuster-, Sortenschutz- und Warenzeichensachen (BPatG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vorlagen, Anträge und Beschwerden nach der Wehrbeschwerdeordnung (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WB-Reg.</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Verwahrungsregister (BayObLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WBW</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Wiederaufnahmeverfahren in Wehrbeschwerdesachen (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WD</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufungen in Wehrdisziplinarsachen (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WDB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Vorlagen, Anträge und Beschwerden nach der Wehrdisziplinarordnung (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WDW</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Wiederaufnahmeverfahren in Wehrdisziplinarsachen (BVerwG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WF</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Sonstige Beschwerden in Familiensachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WpSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Berufsgerichtliche Verfahren in Wirtschaftsprüfersachen (GenBAnw., BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ws</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Straf- und Bußgeldsachen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ws_weit Beschwerde</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>weitere Beschwerden in Straf- und Bußgeldsachen OLG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ww</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Landwirtschaftssachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Wx</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Weitere Beschwerden in freiwilliger Gerichtsbarkeit (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WXv</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Landwirtschaftssachen (OLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>X</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Andere vormundschaftsgerichtliche Angelegenheiten (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>XI</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Erziehungsbeistandschaften (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>XII</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Fürsorgeerziehungen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>XIV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Freiheitsentziehungs- und Unterbringungssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>XV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Landwirtschaftssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>XVI</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Adoptionssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>XVII</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Betreuungssachen (AG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Revisionsverfahren (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZA-(Pat)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Patentsachen (BPatG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZAR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Allgemeines Register in Zivilsachen (BayObLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden in Zivilsachen, Rechtsbeschwerden und weitere Beschwerden (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZBR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerderegister in Zivilsachen (BayObLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionen in Zivilsachen und Berufungen in Patentsachen (BGH)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZRR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Revisionsregister in Zivilsachen (BayObLG)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Zs</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Beschwerden gegen Amts- und Staatsanwälte (GenStA)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZS-(pat)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Anträge außerhalb anhängiger Patentsachen (BPatG)</SimpleValue>
+         </Value>
+      </Row>
+   </SimpleCodeList>
+</gc:CodeList>

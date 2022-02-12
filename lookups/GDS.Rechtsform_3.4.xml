@@ -1,0 +1,1252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gc:CodeList xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/"
+             xmlns:xoev-cl-3="http://xoev.de/schemata/genericode/3"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Annotation>
+      <Description>
+         <xoev-cl-3:nameKurz>GDS.Rechtsform</xoev-cl-3:nameKurz>
+         <xoev-cl-3:beschreibung-codeliste>Diese Codeliste enthält eine Auflistung von Rechtsformen, die im elektronischen Rechtsverkehr vorkommen können.</xoev-cl-3:beschreibung-codeliste>
+         <xoev-cl-3:herausgebernameKurz>AG IT-Standards</xoev-cl-3:herausgebernameKurz>
+         <xoev-cl-3:datumGueltigkeitAb>2022-10-31</xoev-cl-3:datumGueltigkeitAb>
+         <xoev-cl-3:versionCodelistenHandbuch>1.1</xoev-cl-3:versionCodelistenHandbuch>
+         <xoev-cl-3:aenderungZurVorversion>Die Codeliste wurde um die Rechtsformen "eGbR" und "RAR" ergänzt. Die Einträge "ARA", "ARB", "ARG" und "ARP" wurden gelöscht. Der Codelistentyp wurde von Typ1 nach Typ3 geändert.</xoev-cl-3:aenderungZurVorversion>
+      </Description>
+   </Annotation>
+   <Identification>
+      <ShortName>gds.rechtsform</ShortName>
+      <LongName>GDS.Rechtsform</LongName>
+      <Version>3.4</Version>
+      <CanonicalUri>urn:xoev-de:xjustiz:codeliste:gds.rechtsform</CanonicalUri>
+      <CanonicalVersionUri>urn:xoev-de:xjustiz:codeliste:gds.rechtsform_3.4</CanonicalVersionUri>
+      <Agency>
+         <LongName>BLK-AG IT-Standards in der Justiz</LongName>
+      </Agency>
+   </Identification>
+   <ColumnSet>
+      <Column Id="code" Use="required">
+         <ShortName>code</ShortName>
+         <LongName>Schlüssel</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="wert" Use="required">
+         <ShortName>wert</ShortName>
+         <LongName>Wert</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="beschreibung" Use="optional">
+         <ShortName>beschreibung</ShortName>
+         <LongName>Beschreibung</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Key Id="codeKey">
+         <Annotation>
+            <AppInfo>
+               <xoev-cl-3:empfohleneCodeSpalte/>
+            </AppInfo>
+         </Annotation>
+         <ShortName>codeKey</ShortName>
+         <ColumnRef Ref="code"/>
+      </Key>
+   </ColumnSet>
+   <SimpleCodeList>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG (England)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG (England)</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft nach englischem Recht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG (Schottland)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG (Schottland)</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft nach schottischem Recht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG aG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG aG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft auf Gegenseitigkeit</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG CH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG CH</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft nach Schweizer Recht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG iG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG iG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft in Gründung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG+Co KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG+Co KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft &amp; Co. KG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG+Co KG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG+Co KG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft &amp; Co. KG in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG+Co OGH iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG+Co OGH iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft &amp; Co. OHG in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AG+Co OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AG+Co OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Aktiengesellschaft &amp; Co. OHG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AO</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AO</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>AO</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Anstalt des öffentlichen Rechts</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>APS</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>APS</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>APS</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>AS</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>AS</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>A S</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Bund</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BRG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>BRG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Bergrechtliche Gewerkschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BrGem</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>BrGem</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Bruchteilsgemeinschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>BV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>BV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Besloten Vennootschap</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Corporation</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Corporation</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Corporation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>e.V.</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>e.V.</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Eingetragener Verein</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>e.V. iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>e.V. iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Eingetragener Verein in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>eG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>eG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Eingetragene Genossenschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>eG iG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>eG iG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Eingetragene Genossenschaft in Gründung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>eG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>eG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Eingetragene Genossenschaft in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>EGB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>EGB</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Eigenbetrieb</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>eGbR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>eGbR</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>eingetragene Gesellschaft bürgerlichen Rechts</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>eK</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>eK</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Eingetragener Kaufmann oder eingetragene Kauffrau</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>EWIV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>EWIV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Europäische Wirtschaftliche Interessenvereinigung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Freitext</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Freitext</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>siehe weitere Bezeichnung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GbR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GbR</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Gesellschaft bürgerlichen Rechts</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Gem</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gem</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Gemeinde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GemVerb</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GemVerb</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Gemeindeverband</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Gesamthandsgemeinschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gesamthandsgemeinschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Gesamthandsgemeinschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Gew</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Gew</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Gewerkschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>gGmbH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>gGmbH</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Gemeinnützige GmbH</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GmbH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GmbH</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GmbH iG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GmbH iG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>GmbH in Gründung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GmbH iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GmbH iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>GmbH in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GmbH+Co KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GmbH+Co KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>GmbH &amp; Co. KG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GmbH+Co KG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GmbH+Co KG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>GmbH &amp; Co. KG in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GmbH+Co OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GmbH+Co OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>GmbH &amp; Co. OHG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GmbH+Co OHG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GmbH+Co OHG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>GmbH &amp; Co. OHG in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>GVV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>GVV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Gesamtvollstreckungsverwalter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Inc</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Inc</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Incorporated</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Inn</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Inn</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Innung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>IV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>IV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Insolvenzverwalter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>JPpR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>JPpR</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Juristische Person des privaten Rechts</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Kommanditgesellschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>KG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Kommanditgesellschaft in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Kommanditgesellschaft auf Aktien</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ki</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ki</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Kirchengemeinde</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KiSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>KiSt</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Kirchliche Stiftung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>KöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Körperschaft des öffentlichen Rechts</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Kr</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Kr</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Kreis oder Landkreis</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>KV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>KV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Konkursverwalter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>L</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>L</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Land</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LLP</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LLP</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Limited Liability Partnership</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Ltd</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Ltd</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Limited</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>LV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>LV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Landschaftsverband</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NaKV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>NaKV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Nachlasskonkursverwalter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NaP</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>NaP</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Nachlasspfleger</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NaV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>NaV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Nachlassverwalter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>NV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>NV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Naamloze Vennootschap</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Offene Handelsgesellschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OHG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>OHG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Offene Handelsgesellschaft in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>OY</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>OY</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>OY</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Part</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Part</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Partei</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Part iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Part iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Partnerschaft in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PartG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>PartG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Partnerschaftsgesellschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>PartGmbB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>PartGmbB</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Partnerschaftsgesellschaft mit beschränkter Berufshaftung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Pfl</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Pfl</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Pfleger für Sammelvermögen</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>RAR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>RAR</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Rechtsform ausländischen Rechts</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Re</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Re</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Reederei</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>S.E.</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>S.E.</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Societas Europaea</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>S.L.</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>S.L.</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Sociedad de responsabilidad limitada</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SA</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Société Anonyme</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SA FR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SA FR</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>AG nach französischem Recht</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SARL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SARL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Société à responsabilité limitée</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SCE</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SCE</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Europäische Genossenschaft (SCE)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SE</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SE</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Europäische Gesellschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Seq</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Seq</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Sequester</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SJP</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SJP</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Sonstige juristische Person</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SNC</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SNC</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>SNC</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SoGem</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SoGem</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Sonstige Gemeinschaft ohne eigene Rechtspersönlichkeit</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SPA</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SPA</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>SPA</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SpzOO</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SpzOO</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Sp.Z.O.O</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SRG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SRG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Seerechtliche Gesellschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>SRL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>SRL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Società a responsabilità limitata</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>St</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>St</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Stiftung</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>St iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>St iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Stiftung in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>St+Co KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>St+Co KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Stiftung &amp; Co. KG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>St+Co KG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>St+Co KG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Stiftung &amp; Co. KG in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>St+Co OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>St+Co OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Stiftung &amp; Co. OHG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>St+Co OHG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>St+Co OHG iL</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Stiftung &amp; Co. OHG in Liquidation</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>Stadt</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>Stadt</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Stadt</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>StbR</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>StbR</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Stiftung des bürgerlichen Rechts</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>TH</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>TH</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Treuhänder gem. § 313 Inso</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>TV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>TV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Testamentsvollstrecker</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>TY</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>TY</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>TY</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>UG (haftungsbeschränkt)</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UG (haftungsbeschränkt)</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Unternehmergesellschaft (haftungsbeschränkt)</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>UG+Co KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>UG+Co KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Unternehmergesellschaft (haftungsbeschränkt) &amp; Co. KG</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>V</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>V</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Verein</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VEB</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>VEB</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Volkseigener Betrieb</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VglV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>VglV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Vergleichsverwalter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VIV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>VIV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Vorläufiger Insolvenzverwalter</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>VVaG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>VVaG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Versicherungsverein auf Gegenseitigkeit</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>WEG</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>WEG</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Wohnungseigentümergemeinschaft</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="code">
+            <SimpleValue>ZV</SimpleValue>
+         </Value>
+         <Value ColumnRef="wert">
+            <SimpleValue>ZV</SimpleValue>
+         </Value>
+         <Value ColumnRef="beschreibung">
+            <SimpleValue>Zwangsverwalter</SimpleValue>
+         </Value>
+      </Row>
+   </SimpleCodeList>
+</gc:CodeList>

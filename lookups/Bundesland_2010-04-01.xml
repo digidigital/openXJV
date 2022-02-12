@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<gc:CodeList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/" xmlns:xoev-cl="http://www.xoev.de/schemata/xoev-gc-codelist-1_0" xsi:schemaLocation="http://docs.oasis-open.org/codelist/ns/genericode/1.0/ http://docs.oasis-open.org/codelist/cs-genericode-1.0/xsd/genericode.xsd http://www.xoev.de/schemata/xoev-gc-codelist-1_0 xoev-cl-attributes.xsd">
+  <Annotation>
+    <Description>
+      <xoev-cl:beschreibung>Die Bundesrepublik Deutschland ist ein Zusammenschluss von Bundesländern. Die meisten Bundesländer umfassen mehrere Kreise und Bezirke.Diese Codeliste stellt die deutschen Bundesländer nach dem Gemeindeverzeichnis des Statistischen Bundesamtes dar. Dieser Code ist auch Bestandteil des Amtlichen Gemeindeschlüssels (AGS).</xoev-cl:beschreibung>
+      <xoev-cl:datumgueltigkeitab>2010-04-01</xoev-cl:datumgueltigkeitab>
+    </Description>
+  </Annotation>
+  <Identification>
+    <ShortName>Bundesland</ShortName>
+    <LongName>Die deutschen Bundesländer nach dem Gemeindeverzeichnis des Statistischen Bundesamtes</LongName>
+    <Version>2010-04-01</Version>
+    <CanonicalUri>urn:de:bund:destatis:bevoelkerungsstatistik:schluessel:bundesland</CanonicalUri>
+    <CanonicalVersionUri>urn:de:bund:destatis:bevoelkerungsstatistik:schluessel:bundesland_2010-04-01</CanonicalVersionUri>
+    <Agency>
+      <ShortName>Destatis</ShortName>
+      <LongName>Statistisches Bundesamt, Wiesbaden</LongName>
+    </Agency>
+  </Identification>
+  <ColumnSet>
+    <Column Id="SCHLUESSEL" Use="required">
+      <ShortName>SCHLUESSEL</ShortName>
+      <Data Type="string"/>
+    </Column>
+    <Column Id="Bezeichnung" Use="required">
+      <ShortName>Bezeichnung</ShortName>
+      <Data Type="string"/>
+    </Column>
+    <Key Id="codeKey">
+      <Annotation>
+        <AppInfo>
+          <xoev-cl:xoev-code/>
+        </AppInfo>
+      </Annotation>
+      <ShortName>CodeKey</ShortName>
+      <ColumnRef Ref="SCHLUESSEL"/>
+    </Key>
+    <Key Id="codenameKey">
+      <Annotation>
+        <AppInfo>
+          <xoev-cl:xoev-codename/>
+        </AppInfo>
+      </Annotation>
+      <ShortName>CodenameKey</ShortName>
+      <ColumnRef Ref="Bezeichnung"/>
+    </Key>
+  </ColumnSet>
+  <SimpleCodeList>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>01</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Schleswig-Holstein</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>02</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Hamburg</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>03</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Niedersachsen</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>04</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Bremen</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>05</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Nordrhein-Westfalen</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>06</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Hessen</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>07</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Rheinland-Pfalz</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>08</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Baden-Württemberg</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>09</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Bayern</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>10</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Saarland</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>11</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Berlin</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>12</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Brandenburg</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>13</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Mecklenburg-Vorpommern</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>14</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Sachsen</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>15</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Sachsen-Anhalt</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="SCHLUESSEL">
+        <SimpleValue>16</SimpleValue>
+      </Value>
+      <Value ColumnRef="Bezeichnung">
+        <SimpleValue>Thüringen</SimpleValue>
+      </Value>
+    </Row>
+  </SimpleCodeList>
+</gc:CodeList>

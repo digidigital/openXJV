@@ -6,7 +6,6 @@ import lxml.etree as ET
 
 class Lookup:
     def __init__(self, filepath) -> None:
-        
         # XML Dateinamen im Lookup-Verzeichnis einlesen
         # Hier werden später - bei Aufruf von xjustizValue() - Codes
         # ausgelesen. Ist keine Datei mit passendem Dateinamen vorhanden, 
@@ -19,25 +18,24 @@ class Lookup:
             if not 'fehlerhaft' in filename.lower():
                 self.filelistXML.append(filename)
         self._codelistenXSD={}
-                
+        
         # Codelisten-XSD einlesen und in dict ablegen
         for filename in glob.glob(filepath + '*_cl_*.xsd'):
             ns = '{http://www.w3.org/2001/XMLSchema}'
             content = ET.parse(filename).getroot()
-            # Für Dateien nach XOEV 1.6.1
-            lists=  (content.findall('.//'+ns+'complexType'))
             # Für Dateien nach XOEV 1.7.1
-            #lists+= (content.findall('./' +ns+'simpleType'))
+            lists= (content.findall('.//' +ns+'simpleType'))
+            
             for list in lists:
-                if 'Code.' in list.get('name'):
-                    shortName = list.find('.//codeliste/nameKurz').text
-                    tempDict={}
-                    elements=list.findall('.//'+ns+'enumeration')
-                    for element in elements:
-                        tempDict[element.get('value')]= element.find('.//wert').text
-                    if len(tempDict)!=0:
-                        self._codelistenXSD[shortName]=tempDict
-                                                         
+                shortName = list.find('.//codeliste/nameKurz').text
+                    
+                tempDict={}
+                elements=list.findall('.//'+ns+'enumeration')
+                for element in elements:
+                    tempDict[element.get('value')]= element.find('.//wert').text
+                if len(tempDict)!=0:
+                    self._codelistenXSD[shortName]=tempDict
+                                             
         # Standard-XPath - Enthält Platzhalter für Spaltenbezeichnungsattribute
         # und Suchwert          
         self.gcode3Query =".//Row[Value[@ColumnRef = '%s']/SimpleValue/text() = '%s']/Value[@ColumnRef = '%s']/SimpleValue/text()"
@@ -65,6 +63,7 @@ class Lookup:
 
     # Bildet Suchlogik ab und liefert Wert zurück    
     def xjustizValue (self, type, searchKey=None, keyColumnRef=None, getFromColumnRef=None):
+
         if searchKey==None or searchKey=='': return '' 
         
         # Überprüfen, ob Datei mir passendem Typnamen existiert und XML Dateipfad zurückgeben
@@ -78,7 +77,11 @@ class Lookup:
                 if str(searchKey) in self._codelistenXSD[type].keys():
                     return self._codelistenXSD[type][str(searchKey)]
                 else:
-                    return 'Wert mit Code %s vom Typ %s nicht in XSDs gefunden' % (searchKey, type)
+                    #print('Wert mit Code %s vom Typ %s nicht in XSDs gefunden.' % (searchKey, type))
+                    return 'Wert mit Code %s vom Typ %s nicht in XSDs gefunden.' % (searchKey, type)
+            else:
+                #print('Keine Codeliste vom Typ %s hinterlegt.' % type)
+                return 'Keine Codeliste vom Typ %s hinterlegt.' % type   
 
         # Einlesen der XML-Datei
         gdsRoot=self._lookupRoot(listFile)
@@ -95,7 +98,6 @@ class Lookup:
             getFromColumnRef = [x.text for x in gdsRoot.findall(".//ColumnSet/Column[@Use='required']/ShortName") if x.text != keyColumnRef][0]
         
         value = self._getValue(gdsRoot, searchKey, keyColumnRef, getFromColumnRef)
-
         if value != None:
             return value
         else:
