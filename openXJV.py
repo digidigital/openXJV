@@ -57,7 +57,7 @@ from appdirs import AppDirs
 from xjustizParser import *
 
 global VERSION 
-VERSION = '0.5.2'
+VERSION = '0.5.3'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=12, set_bold=False, color=QColor(0, 0, 0)):
@@ -1138,6 +1138,7 @@ class UI(QMainWindow):
             self.statusBar.showMessage('Druck aufgrund von Sicherheitsbedenken abgebrochen (Unzulässiger Dateiname).')
           
     def __setInstanzenView(self):
+        text=TextObject()
         singleValues=[        
             ['abteilung','<b>Abteilung:</b> %s<br>'],
             ['kurzrubrum','<b>Kurzrubrum:</b> %s<br>'],
@@ -1146,44 +1147,42 @@ class UI(QMainWindow):
             ['sachgebietszusatz','<b>Sachgebietszusatz:</b> %s<br>']     
         ]
                 
-        text=''
         if self.akte.grunddaten.get('verfahrensnummer'):
-            text+='<b><i>Verfahrensnummer:</i></b> %s<br>' % self.akte.grunddaten['verfahrensnummer']
+            text.addLine('<b><i>Verfahrensnummer:</i></b>', self.akte.grunddaten['verfahrensnummer'])
             
         keys=list(self.akte.grunddaten['instanzen'].keys())
         for key in keys:
             instanz=self.akte.grunddaten['instanzen'][key]
             hr='________________________________________________________________________________________________<br><br>'
-            text+="%s<b>Instanz %s</b><br>%s<b><i>Instanzdaten</i></b><br>" % (hr, key, hr)       
-            text+='<b>Behörde:</b> %s<br>' % instanz['auswahl_instanzbehoerde']['name']
+            text.addRaw("%s<b>Instanz %s</b><br>%s<b><i>Instanzdaten</i></b><br>" % (hr, key, hr))       
+            if instanz.get('auswahl_instanzbehoerde'):
+                text.addLine('<b>Behörde</b>', instanz['auswahl_instanzbehoerde'].get('name'))
             
-            if instanz['aktenzeichen'].get('aktenzeichen.freitext'):
-                text+='<b>Aktenzeichen:</b> %s<br>' % instanz['aktenzeichen']['aktenzeichen.freitext']
-            
-            if instanz['aktenzeichen'].get('sammelvorgangsnummer'):
-                text+='<b>Sammelvorgangsnummer:</b> %s<br>' % instanz['aktenzeichen']['sammelvorgangsnummer']
+            if instanz.get('aktenzeichen'):
+                text.addLine('<b>Aktenzeichen</b>', instanz['aktenzeichen'].get('aktenzeichen.freitext'))      
+                text.addLine('<b>Sammelvorgangsnummer</b>', instanz['aktenzeichen'].get('sammelvorgangsnummer'))
             
             for value in singleValues:
                 if instanz.get(value[0]):
-                    text+= value[1] % instanz[value[0]]
+                    text.addRaw(value[1] % instanz[value[0]])
             
             for gegenstand in instanz['verfahrensgegenstand']:
                 setBR=False
                 if gegenstand.get('gegenstand'):
-                    text+='<b>Gegenstand:</b> %s' % gegenstand['gegenstand']
-                    setBR=True
+                   text.addRaw('<b>Gegenstand:</b> %s' % gegenstand['gegenstand'])
+                   setBR=True
                 if gegenstand.get('gegenstandswert').strip():
-                   text+=', Streitwert: %s' % (gegenstand['gegenstandswert'])
+                   text.addRaw(', Streitwert: %s' % gegenstand['gegenstandswert'])
                    setBR=True
                 if gegenstand.get('auswahl_zeitraumDesVerwaltungsaktes').strip():
-                   text+=', Datum/Zeitraum: %s' % (gegenstand['auswahl_zeitraumDesVerwaltungsaktes'])   
+                   text.addRaw(', Datum/Zeitraum: %s' % (gegenstand['auswahl_zeitraumDesVerwaltungsaktes']))   
                    setBR=True 
                 if setBR:
-                    text+='<br>'
+                    text.addRaw('<br>')
             
-            text+=self.__telkoTemplate(instanz['telekommunikation'])
+            text.addRaw(self.__telkoTemplate(instanz['telekommunikation']))
             
-        self.instanzenText.setHtml(text)
+        self.instanzenText.setHtml(text.getText())
 
     def __telkoTemplate(self, telekommunikation):
         text=TextObject()

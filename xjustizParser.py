@@ -88,7 +88,7 @@ class parser321():
     
     # Gibt alle Textelemente der mit findall gefundenen Elemente
     # mit _newline getrennt als string zurück
-    def _getSubTexts (self, path, element=None, namespace=None, newline='\n'):
+    def _getSubTexts(self, path, element=None, namespace=None, newline='\n'):
         namespace = self._xj_ns if namespace is None else namespace
         element = self._root if element is None else element
         
@@ -105,14 +105,16 @@ class parser321():
             return text
 
     # Wie find, fügt jedoch automatisch Namespace zu Pfad hinzu
-    def _findElement (self, path, element=None, namespace=None):
+    def _findElement(self, path, element=None, namespace=None):
         namespace = self._xj_ns if namespace is None else namespace
         element = self._root if element is None else element
         
         path =self._addNS(path)
         try:
             result = element.find(path)
-            if result==None:
+            if result==None or str(result)=='-1':
+                if str(result)=='-1':
+                    print('Es wurde versucht, ein Kindelement eines nicht existierenden Knotens zu finden.')
                 result=''
             return result
         except AttributeError:
@@ -243,7 +245,6 @@ class parser321():
         kanzleiData['raImVerfahren']=[]
         if self._findElement('./raImVerfahren', node)!='':
             kanzleiData['raImVerfahren']=self._parseNatuerlichePerson(self._findElement('./raImVerfahren', node))
-        kanzleiData['raImVerfahren']=self._parseNatuerlichePerson(self._findElement('./raImVerfahren', node))
         
         kanzleiData['umsatzsteuerID']= self._findElementText('./umsatzsteuerID', node)
         return kanzleiData
@@ -252,7 +253,6 @@ class parser321():
         personData={}
         personData['type']='GDS.NatuerlichePerson'
         personData['vollerName']=self._parseNameNatuerlichePerson(self._findElement('./vollerName', node))
-        
         personData['aliasNatuerlichePerson']=[]
         for alias in self._findAllElements ("./aliasNatuerlichePerson", node): 
             personData['aliasNatuerlichePerson'].append(self._parseNatuerlichePerson(alias))
@@ -592,7 +592,10 @@ class parser321():
     def _parseAktenzeichen(self, aktenzeichen):
         aktenzeichenParts={}
         aktenzeichenParts['az.art']                      =self.lookup.xjustizValue ('GDS.Aktenzeichenart', self._findElementText("./az.art", element=aktenzeichen, code=True))
-        aktenzeichenParts['auswahl_az.vergebendeStation']=self._parseBehoerde(self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen))
+        
+        aktenzeichenParts['auswahl_az.vergebendeStation']=[]
+        if self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen)!='':
+            aktenzeichenParts['auswahl_az.vergebendeStation']=self._parseBehoerde(self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen))
         
         aktenzeichenParts['aktenzeichen.freitext']       =self._findElementText("./auswahl_aktenzeichen/aktenzeichen.freitext", element=aktenzeichen) 
         if len(aktenzeichenParts['aktenzeichen.freitext'])==0:
@@ -613,12 +616,16 @@ class parser321():
             aktenzeichenStrukturiert['register']     =self.lookup.xjustizValue ('GDS.Registerzeichen', self._findElementText(".//register", element=aktenzeichen, code=True))
             aktenzeichenParts['aktenzeichen.strukturiert']=aktenzeichenStrukturiert
             
-            aktenzeichenParts['aktenzeichen.freitext']= "%s %s %s %s/%s %s" % (aktenzeichenStrukturiert['vorsatz'],
-                                                                               aktenzeichenStrukturiert['abteilung'],
-                                                                               aktenzeichenStrukturiert['register'],
-                                                                               aktenzeichenStrukturiert['laufendeNummer'],
-                                                                               aktenzeichenStrukturiert['jahr'],
-                                                                               aktenzeichenStrukturiert['zusatz'])
+            aktenzeichenFreitext="%s %s %s %s/%s %s" % (aktenzeichenStrukturiert['vorsatz'],
+                                                        aktenzeichenStrukturiert['abteilung'],
+                                                        aktenzeichenStrukturiert['register'],
+                                                        aktenzeichenStrukturiert['laufendeNummer'],
+                                                        aktenzeichenStrukturiert['jahr'],
+                                                        aktenzeichenStrukturiert['zusatz'])
+            
+            if aktenzeichenFreitext.strip() != '/':
+                aktenzeichenParts['aktenzeichen.freitext']=aktenzeichenFreitext 
+        
         return aktenzeichenParts
 
     def _parseTelekommunikation(self, node):
@@ -903,12 +910,13 @@ class parser321():
             instanzData['telekommunikation']=[]
             for telekomEintrag in self._findAllElements ("./telekommunikation", instanz): 
                 instanzData['telekommunikation'].append(self._parseTelekommunikation(telekomEintrag))
-                
-            instanzData['aktenzeichen']=self._parseAktenzeichen(self._findElement("./aktenzeichen", instanz))
+            
+            instanzData['aktenzeichen']=[]
+            if self._findElement("./aktenzeichen", instanz)!='':
+                instanzData['aktenzeichen']=self._parseAktenzeichen(self._findElement("./aktenzeichen", instanz))
 
             instanzData['auswahl_instanzbehoerde']=self._parseBehoerde(self._findElement("./auswahl_instanzbehoerde", instanz))
 
-            #self.grunddaten['instanzen'].append({instanzData['instanznummer']:instanzData})
             self.grunddaten['instanzen'][instanzData['instanznummer']]=instanzData
 
 
@@ -1032,7 +1040,10 @@ class parser331(parser321):
     def _parseAktenzeichen(self, aktenzeichen):
         aktenzeichenParts={}
         aktenzeichenParts['az.art']                      =self.lookup.xjustizValue ('GDS.Aktenzeichenart', self._findElementText("./az.art", element=aktenzeichen, code=True))
-        aktenzeichenParts['auswahl_az.vergebendeStation']=self._parseBehoerde(self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen))
+        aktenzeichenParts['auswahl_az.vergebendeStation']=[]
+        if self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen)!='':
+            aktenzeichenParts['auswahl_az.vergebendeStation']=self._parseBehoerde(self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen))
+           
         aktenzeichenParts['sammelvorgangsnummer']        =self._findElementText("./sammelvorgangsnummer", element=aktenzeichen) 
         
         aktenzeichenParts['aktenzeichen.freitext']       =self._findElementText("./auswahl_aktenzeichen/aktenzeichen.freitext", element=aktenzeichen) 
@@ -1054,12 +1065,16 @@ class parser331(parser321):
             aktenzeichenStrukturiert['register']     =self.lookup.xjustizValue ('GDS.Registerzeichen', self._findElementText(".//register", element=aktenzeichen, code=True))
             aktenzeichenParts['aktenzeichen.strukturiert']=aktenzeichenStrukturiert
             
-            aktenzeichenParts['aktenzeichen.freitext']= "%s %s %s %s/%s %s" % (aktenzeichenStrukturiert['vorsatz'],
-                                                                               aktenzeichenStrukturiert['abteilung'],
-                                                                               aktenzeichenStrukturiert['register'],
-                                                                               aktenzeichenStrukturiert['laufendeNummer'],
-                                                                               aktenzeichenStrukturiert['jahr'],
-                                                                               aktenzeichenStrukturiert['zusatz'])
+            aktenzeichenFreitext="%s %s %s %s/%s %s" % (aktenzeichenStrukturiert['vorsatz'],
+                                                        aktenzeichenStrukturiert['abteilung'],
+                                                        aktenzeichenStrukturiert['register'],
+                                                        aktenzeichenStrukturiert['laufendeNummer'],
+                                                        aktenzeichenStrukturiert['jahr'],
+                                                        aktenzeichenStrukturiert['zusatz'])
+            
+            if aktenzeichenFreitext.strip() != '/':
+                aktenzeichenParts['aktenzeichen.freitext']=aktenzeichenFreitext 
+        
         return aktenzeichenParts
 
     def _parseDokumente(self, path='./schriftgutobjekte/dokument', element=None):
@@ -1272,7 +1287,6 @@ class parser331(parser321):
         kanzleiData['raImVerfahren']=[]
         if self._findElement('./raImVerfahren', node)!='':
             kanzleiData['raImVerfahren']=self._parseNatuerlichePerson(self._findElement('./raImVerfahren', node))
-        kanzleiData['raImVerfahren']=self._parseNatuerlichePerson(self._findElement('./raImVerfahren', node))
         
         kanzleiData['umsatzsteuerID']= self._findElementText('./umsatzsteuerID', node)
         
@@ -1490,7 +1504,9 @@ class parser331(parser321):
             for telekomEintrag in self._findAllElements ("./telekommunikation", instanz): 
                 instanzData['telekommunikation'].append(self._parseTelekommunikation(telekomEintrag))
                 
-            instanzData['aktenzeichen']=self._parseAktenzeichen(self._findElement("./aktenzeichen", instanz))
+            instanzData['aktenzeichen']=[]
+            if self._findElement("./aktenzeichen", instanz)!='':
+                instanzData['aktenzeichen']=self._parseAktenzeichen(self._findElement("./aktenzeichen", instanz))
 
             instanzData['auswahl_instanzbehoerde']=self._parseBehoerde(self._findElement("./auswahl_instanzbehoerde", instanz))
 
@@ -1607,8 +1623,7 @@ class parser240(parser321):
         kanzleiData['anschrift']=[]
         for anschrift in self._findAllElements ("./anschrift", node): 
             kanzleiData['anschrift'].append(self._parseAnschrift(anschrift)) 
-        
-        
+         
         kanzleiData['rechtsform'] =self.lookup.xjustizValue ('GDS.Rechtsform', self._findElementText("./rechtsform", node, code=True))
         kanzleiData['kanzleiform']=self.lookup.xjustizValue ('GDS.Kanzleiform', self._findElementText("./kanzleiform", node, code=True))
         
@@ -1619,8 +1634,7 @@ class parser240(parser321):
         kanzleiData['raImVerfahren']=[]
         if self._findElement('./raImVerfahren', node)!='':
             kanzleiData['raImVerfahren']=self._parseNatuerlichePerson(self._findElement('./ra_im_Verfahren', node))
-        kanzleiData['raImVerfahren']=self._parseNatuerlichePerson(self._findElement('./ra_im_Verfahren', node))
-        
+       
         #Nur in 2.4.0 unterstützt
         kanzleiData['anschrift.gerichtsfach']={}
         if self._findElement('./anschrift.gerichtsfach', node)!='':
@@ -1941,8 +1955,10 @@ class parser240(parser321):
     def _parseAktenzeichen(self, aktenzeichen):
         aktenzeichenParts={}
         aktenzeichenParts['az.art']                      =self.lookup.xjustizValue ('GDS.Aktenzeichenart', self._findElementText("./az.art", element=aktenzeichen, code=True))
-        aktenzeichenParts['auswahl_az.vergebendeStation']=self._parseBehoerde(self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen))
-        #TESTEN!!!!
+        aktenzeichenParts['auswahl_az.vergebendeStation']=[]
+        if self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen)!='':
+            aktenzeichenParts['auswahl_az.vergebendeStation']=self._parseBehoerde(self._findElement("./auswahl_az.vergebendeStation", element=aktenzeichen))
+     
         aktenzeichenParts['aktenzeichen.freitext']       =self._findElementText("./auswahl_aktenzeichen/aktenzeichen.freitext", element=aktenzeichen) 
         if len(aktenzeichenParts['aktenzeichen.freitext'])==0:
             aktenzeichenStrukturiert={}
@@ -1962,12 +1978,16 @@ class parser240(parser321):
             aktenzeichenStrukturiert['register']     =self.lookup.xjustizValue ('GDS.Registerzeichen', self._findElementText(".//register", element=aktenzeichen, code=True))
             aktenzeichenParts['aktenzeichen.strukturiert']=aktenzeichenStrukturiert
             
-            aktenzeichenParts['aktenzeichen.freitext']= "%s %s %s %s/%s %s" % (aktenzeichenStrukturiert['vorsatz'],
-                                                                               aktenzeichenStrukturiert['abteilung'],
-                                                                               aktenzeichenStrukturiert['register'],
-                                                                               aktenzeichenStrukturiert['laufendeNummer'],
-                                                                               aktenzeichenStrukturiert['jahr'],
-                                                                               aktenzeichenStrukturiert['zusatz'])
+            aktenzeichenFreitext="%s %s %s %s/%s %s" % (aktenzeichenStrukturiert['vorsatz'],
+                                                        aktenzeichenStrukturiert['abteilung'],
+                                                        aktenzeichenStrukturiert['register'],
+                                                        aktenzeichenStrukturiert['laufendeNummer'],
+                                                        aktenzeichenStrukturiert['jahr'],
+                                                        aktenzeichenStrukturiert['zusatz'])
+            
+            if aktenzeichenFreitext.strip() != '/':
+                aktenzeichenParts['aktenzeichen.freitext']=aktenzeichenFreitext 
+        
         return aktenzeichenParts
     
     def _parseAktenzeichenEinfach(self, aktenzeichen):
