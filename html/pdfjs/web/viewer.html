@@ -23,12 +23,33 @@ See https://github.com/adobe-type-tools/cmap-resources
 <html dir="ltr" mozdisallowselectionprint>
   <head>
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="google" content="notranslate">
     <title>PDF.js viewer</title>
+    <script>
 
+      var head = document.getElementsByTagName('head')[0]
+      
+      // Creating link element
+      var style = document.createElement('link') 
 
-    <link rel="stylesheet" href="viewer.css">
+      const queryString = window.location.search;
+      console.log(queryString);
+      const urlParams = new URLSearchParams(queryString);
+      console.log(urlParams.has('darkmode'));
+      if (urlParams.has('darkmode')) {
+        style.href = 'viewer-dark.css'  
+      } else {
+        style.href = 'viewer.css'  
+      }
+      style.type = 'text/css'
+      style.rel = 'stylesheet'
+      head.append(style);
+     
+    </script>
+     
+    <!--<link rel="stylesheet" href="viewer.css">-->
 
 
 <!-- This snippet is used in production (included from viewer.html) -->
@@ -37,10 +58,11 @@ See https://github.com/adobe-type-tools/cmap-resources
 
 
   <script src="viewer.js"></script>
-
+ 
   </head>
 
   <body tabindex="1">
+    
     <div id="outerContainer">
 
       <div id="sidebarContainer">
