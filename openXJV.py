@@ -23,6 +23,7 @@ import re
 import urllib.request
 import subprocess
 import platform
+import darkdetect
 from shutil import copyfile
 from pathlib import Path
 from zipfile import ZipFile
@@ -35,7 +36,7 @@ from PyQt5.Qt import (QSettings,
                       
 )
 
-from PyQt5.QtCore import QUrl, Qt, QSize 
+from PyQt5.QtCore import QUrl, Qt, QSize, QLibraryInfo 
 from PyQt5.QtWebEngineWidgets import (QWebEngineView, QWebEngineSettings)
 from PyQt5 import uic, QtPrintSupport
 from PyQt5.QtGui import (QIcon,
@@ -54,10 +55,10 @@ from PyQt5.QtWidgets import (QFileDialog,
 )
 from appdirs import AppDirs
 
-from xjustizParser import *
+from helperScripts import parser240, parser321, parser331
 
 global VERSION 
-VERSION = '0.5.3'
+VERSION = '0.5.4'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=12, set_bold=False, color=QColor(0, 0, 0)):
@@ -80,6 +81,7 @@ class TextObject():
             self.text+='%s%s%s%s' % (str(value1), self.delimiter, str(value2), self.newline)
 
     def addRaw(self, text='', prepend=False):  
+        '''Fügt dem Text unveränderten Rohtext hinzu- "prepend=True" fügt den Text am Textanfang ein'''
         if prepend:
             self.text=str(text) + self.text
         else:
@@ -103,6 +105,8 @@ class UI(QMainWindow):
     def __init__(self, file=None, ziplist=None, app=None):
         super(UI, self).__init__() 
 
+        self.app=app
+        
         self.tempDir=TemporaryDirectory()
         self.tempfile=''
         # Needed for pyinstaller onefile...
@@ -130,9 +134,51 @@ class UI(QMainWindow):
         #Don't use Path.home() directly in case we are in a snap package
         self.homedir=os.environ.get('SNAP_REAL_HOME', Path.home())
         
+        ###Load fonts###
+        fontDir = self.scriptRoot + '/fonts/'
+        fontDatabase=QFontDatabase() ; 
+        fontFiles=[
+            "materialicons/MaterialIcons-Regular.ttf",
+            "ubuntu-font-family-0.83/Ubuntu-L.ttf",
+            "ubuntu-font-family-0.83/Ubuntu-R.ttf"
+        ] 
+
+        for font in fontFiles:          
+            fontDatabase.addApplicationFont(fontDir + font) 
+        
         # Load the .ui file
         uic.loadUi(self.scriptRoot + '/ui/openxjv.ui', self) 
+        self.buttonFont=QFont('Material Icons')
+        self.buttonFont.setWeight(QFont.Thin)
+        self.iconFont=QFont('Material Icons')
+        self.iconFont.setWeight(0)
+        self.appFont=QFont('Ubuntu')
         
+        if sys.platform=='darwin':
+            appFontSize=14
+            appFontWeight=QFont.Normal
+            buttonFontSize=16
+            iconFontSize=23
+             
+        else:
+            appFontSize=11
+            appFontWeight=QFont.Normal
+            buttonFontSize=13
+            iconFontSize=18
+
+        self.appFont.setPointSize(appFontSize)
+        self.appFont.setWeight(appFontWeight)
+        self.setFont(self.appFont)
+        if app:
+            app.setFont(self.appFont)
+        
+        self.iconFont.setPointSize(iconFontSize)
+        self.buttonFont.setPointSize(buttonFontSize)
+        
+        self.deleteFavoriteButton.setFont(self.buttonFont)
+        self.filterMagic.setFont(self.buttonFont)
+        self.toolBar.setFont(self.iconFont)
+
         self.setWindowTitle('openXJV %s' % VERSION)
         
         #Hide "New version" icon
@@ -154,25 +200,10 @@ class UI(QMainWindow):
             self.actionChromium.setEnabled(False)
             self.actionChromium.setVisible(False)
             
-        ###Load fonts###
-        fontDir = self.scriptRoot + '/fonts/'
-        fontDatabase=QFontDatabase() ; 
-        fontFiles=[
-            "ubuntu-font-family-0.83/Ubuntu-R.ttf",
-            "materialicons/MaterialIcons-Regular.ttf"
-        ] 
-        for font in fontFiles:          
-            fontDatabase.addApplicationFont(fontDir + font) 
-       
-        self.setFont(QFont('Ubuntu', 11))
-        if app:
-            app.setFont(QFont('Ubuntu', 11))
-        
         ###set toolbarButtonwidth###        
         for child in self.toolBar.children():
             if child.__class__.__name__ == 'QToolButton':
                 child.setFixedWidth(25)
-        
         
         #Adjust table header style         
         self.docTableView.horizontalHeader().setHighlightSections(False)
@@ -251,8 +282,7 @@ class UI(QMainWindow):
         self.__readSettings()
         
         #Load empty viewer
-        self.url=self.viewerPaths['PDFjs'] 
-        self.browser.setUrl(QUrl.fromUserInput(self.url))
+        self.__loadEmptyViewer()        
             
         #########self.favoriteniew##########
         self.favorites = set()
@@ -294,6 +324,7 @@ class UI(QMainWindow):
         self.actionnativ.triggered.connect(self.__viewerSwitch)
         self.actionPDF_js.triggered.connect(self.__viewerSwitch)
         self.actionChromium.triggered.connect(self.__viewerSwitch)
+        self.actionAlleSpaltenMarkieren.triggered.connect(self.__checkAllColumns)
         self.browser.page().profile().downloadRequested.connect(self.__downloadRequested)
         self.browser.page().printRequested.connect(self.__printRequested)
         self.actionNeueVersion.triggered.connect(lambda triggered: QDesktopServices.openUrl(QUrl("https://openxjv.de" , QUrl.TolerantMode)))
@@ -318,6 +349,12 @@ class UI(QMainWindow):
     def cleanUp(self):
         self.__saveNotes() 
         self.settings.sync()
+    
+    def __loadEmptyViewer(self):
+        self.url=self.viewerPaths['PDFjs'] 
+        if darkdetect.isDark() and sys.platform == 'darwin':
+                self.url+='&darkmode=True'
+        self.browser.setUrl(QUrl.fromUserInput(self.url))
     
     def __displayInfo(self):
         QMessageBox.information(self, "Information",
@@ -410,7 +447,7 @@ class UI(QMainWindow):
                                               
             columnCount=0
             for item in self.terminTableColumnsHeader:
-                headerItem=self.__tableItem(item, 'Ubuntu')
+                headerItem=self.__tableItem(item, self.appFont)
                 headerItem.setTextAlignment(Qt.AlignCenter)
                 self.termineTableView.setHorizontalHeaderItem(columnCount, headerItem)
                 columnCount+=1
@@ -419,21 +456,21 @@ class UI(QMainWindow):
             
             for termin in termine:
                 
-                tempItem=self.__tableItem(termin['uuid'])
+                tempItem=self.__tableItem(termin['uuid'], self.appFont)
                 self.termineTableView.setItem(rowNo, 0, tempItem)    
                 
                 datum=zeit=termin['terminszeit']['terminsdatum']
-                tempItem=self.__tableItem(datum)
+                tempItem=self.__tableItem(datum, self.appFont)
                 tempItem.setTextAlignment(Qt.AlignCenter)
                 self.termineTableView.setItem(rowNo, 1, tempItem)
                 
                 zeit=termin['terminszeit']['auswahl_terminszeit']['terminsuhrzeit'] + termin['terminszeit']['auswahl_terminszeit']['terminszeitangabe']
-                tempItem=self.__tableItem(zeit)
+                tempItem=self.__tableItem(zeit, self.appFont)
                 tempItem.setTextAlignment(Qt.AlignCenter)
                 self.termineTableView.setItem(rowNo, 2, tempItem)
                 
                 oeffentlich=self.__replaceTrueFalse(termin['oeffentlich'])
-                tempItem=self.__tableItem(oeffentlich)
+                tempItem=self.__tableItem(oeffentlich, self.appFont)
                 tempItem.setTextAlignment(Qt.AlignCenter)
                 self.termineTableView.setItem(rowNo, 3, tempItem)
                 
@@ -441,17 +478,17 @@ class UI(QMainWindow):
                     terminTyp='Folgetermin'
                 else:
                     terminTyp='Haupttermin'
-                tempItem=self.__tableItem(terminTyp)
+                tempItem=self.__tableItem(terminTyp, self.appFont)
                 tempItem.setTextAlignment(Qt.AlignCenter)
                 self.termineTableView.setItem(rowNo, 4, tempItem)
                 
                 terminsart=termin['terminsart']
-                tempItem=self.__tableItem(terminsart)
+                tempItem=self.__tableItem(terminsart, self.appFont)
                 tempItem.setTextAlignment(Qt.AlignCenter)
                 self.termineTableView.setItem(rowNo, 5, tempItem)
                 
                 spruchkoerper=termin['spruchkoerper']
-                tempItem=self.__tableItem(spruchkoerper)
+                tempItem=self.__tableItem(spruchkoerper, self.appFont)
                 tempItem.setTextAlignment(Qt.AlignCenter)
                 self.termineTableView.setItem(rowNo, 6, tempItem)
                 
@@ -495,11 +532,11 @@ class UI(QMainWindow):
             self.docTableView.setColumnCount(len(data[0]))
             
             #Add columns with icons for "add to favorits" and "open external"
-            self.docTableView.setHorizontalHeaderItem(0, self.__tableItem('', 'Material Icons'))
+            self.docTableView.setHorizontalHeaderItem(0, self.__tableItem('', self.buttonFont))
             if self.docHeaderColumnsSettings['']['width']:
                 self.docTableView.setColumnWidth(0, self.docHeaderColumnsSettings['']['width'])
                 self.docTableView.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
-            self.docTableView.setHorizontalHeaderItem(1,  self.__tableItem('', 'Material Icons'))
+            self.docTableView.setHorizontalHeaderItem(1,  self.__tableItem('', self.buttonFont))
             if self.docHeaderColumnsSettings['']['width']:
                 self.docTableView.setColumnWidth(1, self.docHeaderColumnsSettings['']['width'])
                 self.docTableView.horizontalHeader().setSectionResizeMode(1, QHeaderView.Fixed)
@@ -507,7 +544,7 @@ class UI(QMainWindow):
             columnCount=2
             for item in self.docTableAttributes:
                 headerText=self.docHeaderColumnsSettings[item]['headertext']
-                self.docTableView.setHorizontalHeaderItem(columnCount, self.__tableItem(headerText, 'Ubuntu'))
+                self.docTableView.setHorizontalHeaderItem(columnCount, self.__tableItem(headerText, self.appFont))
 
                 # set fixed width for items that have one defined...
                 if self.docHeaderColumnsSettings[item]['width']:
@@ -522,9 +559,9 @@ class UI(QMainWindow):
                 for item in row:
                     #Material Icons font for first two columns
                     if itemNo > 1:
-                        font='Ubuntu'  
+                        font=self.appFont  
                     else: 
-                        font='Material Icons'
+                        font=self.buttonFont
                     
                     #Leading zeros fo '#'-Items that are not empty   
                     if itemNo==2 and item:
@@ -597,10 +634,10 @@ class UI(QMainWindow):
            return 'nein'
        return value
     
-    def __tableItem (self, text, font='Ubuntu'):
+    def __tableItem (self, text, font=QFont('Ubuntu', 11, 50)):
         '''Erstellt TableItem und setzt für dieses einen Font'''
         item = QTableWidgetItem(text)
-        item.setFont(QFont(font))
+        item.setFont(font)
         return item
     
     def __setMetadata(self, nachricht, aktenID=None):
@@ -773,14 +810,17 @@ class UI(QMainWindow):
     def __saveNotes(self):
         '''Speichert die Favoriten in einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht.'''
         notizen=self.notizenText.toPlainText()
-        if self.akte.nachricht['eigeneID']:
-            filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + self.akte.nachricht['eigeneID'])
-            if re.sub(r"[\n\t\s]*", "", notizen):
-                with open(filepath , 'w') as notesFile:
-                    notesFile.write(notizen)
-            elif os.path.exists(filepath):
-                os.remove(filepath)
-               
+        try:
+            if self.akte.nachricht['eigeneID']:
+                filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + self.akte.nachricht['eigeneID'])
+                if re.sub(r"[\n\t\s]*", "", notizen):
+                    with open(filepath , 'w') as notesFile:
+                        notesFile.write(notizen)
+                elif os.path.exists(filepath):
+                    os.remove(filepath)
+        except AttributeError:
+            pass
+
     def __getAktenSubBaum(self, akten, node):    
         for einzelakte in akten.values():
            
@@ -832,6 +872,9 @@ class UI(QMainWindow):
             else:
                 filePath = filepath
             self.url=self.viewerPaths[self.settings.value('pdfViewer', 'PDFjs')] + "%s" % (filePath)
+            
+            if darkdetect.isDark() and sys.platform == 'darwin':
+                self.url+='&darkmode=True'
                 
             self.browser.setUrl(QUrl.fromUserInput(self.url))
         else: 
@@ -849,7 +892,7 @@ class UI(QMainWindow):
     
     def getZipFiles(self, files=None):
         if files:
-            app.setOverrideCursor(QCursor(Qt.WaitCursor))
+            self.app.setOverrideCursor(QCursor(Qt.WaitCursor))
             self.tempPath=TemporaryDirectory()
             
             for file in files:
@@ -861,7 +904,7 @@ class UI(QMainWindow):
                     self.statusBar.showMessage(file + ' konnte nicht entpackt werden.')
                     return
             
-            app.restoreOverrideCursor()
+            self.app.restoreOverrideCursor()
             self.getFile(folder=self.tempPath.name)
             
     def getFile(self, file=None, folder=None):
@@ -887,7 +930,7 @@ class UI(QMainWindow):
             self.activateWindow()
         
     def __loadFile(self, file):
-        app.setOverrideCursor(QCursor(Qt.WaitCursor))
+        self.app.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             type=None
             with open(file) as fp:
@@ -921,10 +964,10 @@ class UI(QMainWindow):
         except Exception as e:
             print("ERROR : %s" % str(e))
             self.statusBar.showMessage('Fehler beim Öffnen der Datei: %s' % file)
-            app.restoreOverrideCursor()
+            self.app.restoreOverrideCursor()
             return None 
         
-        app.restoreOverrideCursor()
+        self.app.restoreOverrideCursor()
         
         self.__setDocumentTable()
         self.__setInhaltView(self.akte.schriftgutobjekte)
@@ -939,8 +982,7 @@ class UI(QMainWindow):
         self.terminDetailView.setHtml('')
         self.basedir=os.path.dirname(os.path.realpath(file))
         #Load empty viewer                     
-        self.url=self.viewerPaths['PDFjs'] 
-        self.browser.setUrl(QUrl.fromUserInput(self.url))
+        self.__loadEmptyViewer()   
         self.statusBar.showMessage('Eingelesene Datei: %s - XJustiz-Version: %s' % (file, type))
         self.settings.setValue("lastFile", file)
                           
@@ -975,7 +1017,7 @@ class UI(QMainWindow):
 
         
     def __viewerSwitch(self):
-      
+        '''Aktivert / deaktiviert die Viewerauswahl(-möglichkeiten) in Abhängigkeit vom ausgelösten Ereignis'''
         if self.actionChromium.isChecked() and self.actionChromium.isEnabled():
             self.actionChromium.setEnabled(False)
             self.actionPDF_js.setChecked(False)
@@ -1012,6 +1054,8 @@ class UI(QMainWindow):
             updateAvailable=self.__checkUrlforNewVersion('https://openXJV.de/latestAppImage.xml')
         elif sys.platform.lower().startswith('win'):
             updateAvailable=self.__checkUrlforNewVersion('https://openXJV.de/latestWinInstaller.xml')
+        elif sys.platform == 'darwin':
+            updateAvailable=self.__checkUrlforNewVersion('https://openXJV.de/latestMacApp.xml')
         else:
             self.actionOnlineAufUpdatesPruefen.setVisible(False)
         
@@ -1041,27 +1085,28 @@ class UI(QMainWindow):
     def __readSettings(self):
         for key, value in self.docHeaderColumnsSettings.items(): 
             if value['setting']:
-                setTo = self.settings.value(key, 'default')
+                setTo = str(self.settings.value(key, 'default'))
                 if setTo.lower() == 'true':
                     value['setting'].setChecked(True) 
                 elif setTo.lower() == 'false':
                     value['setting'].setChecked(False)
                 else:    
                     value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
-        self.actionNachrichtenkopf.setChecked(True if self.settings.value('nachrichtenkopf', 'true').lower()=='true' else False)
-        self.actionFavoriten.setChecked(True if self.settings.value('favoriten', 'true').lower()=='true' else False)
-        self.actionNotizen.setChecked(True if self.settings.value('notizen', 'false').lower()=='true' else False)
-        self.actionLeereSpaltenAusblenden.setChecked(True if self.settings.value('leereSpalten', 'true').lower()=='true' else False)
+        self.actionNachrichtenkopf.setChecked(True if str(self.settings.value('nachrichtenkopf', 'true')).lower()=='true' else False)
+        self.actionFavoriten.setChecked(True if str(self.settings.value('favoriten', 'true')).lower()=='true' else False)
+        self.actionNotizen.setChecked(True if str(self.settings.value('notizen', 'false')).lower()=='true' else False)
+        self.actionLeereSpaltenAusblenden.setChecked(True if str(self.settings.value('leereSpalten', 'true')).lower()=='true' else False)
         
         self.actionChromium.setChecked(True if self.settings.value('pdfViewer', 'PDFjs')=='chromium' and self.chromiumPdfViewerAvailable else False)
         self.actionnativ.setChecked(True if self.settings.value('pdfViewer', 'PDFjs')=='nativ' else False)     
         
-        self.actionOnlineAufUpdatesPruefen.setChecked(True if self.settings.value('checkUpdates', 'true').lower()=='true' else False)
+        self.actionOnlineAufUpdatesPruefen.setChecked(True if str(self.settings.value('checkUpdates', 'true')).lower()=='true' else False)
         
         self.__viewerSwitch()
         self.__updateVisibleViews()
                 
     def __resetSettings(self):
+        '''Setzt Spalten und Ansichtsoptionen auf Defaultwerte zurück'''
         for key, value in self.docHeaderColumnsSettings.items():
             if value['setting']:
                 value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
@@ -1073,11 +1118,19 @@ class UI(QMainWindow):
         self.__viewerSwitch()        
         self.__updateSettings()
         
+    def __checkAllColumns(self):
+        '''Setzt den Haken in den Ansichtsoptionen bei allen Spalten'''
+        for key, value in self.docHeaderColumnsSettings.items():
+            if value['setting']:
+                value['setting'].setChecked(True)       
+        self.__updateSettings()
+        
     def __updateVisibleViews(self):
         self.nachrichtenkopf.setVisible(self.actionNachrichtenkopf.isChecked())
         self.favoriten.setVisible(self.actionFavoriten.isChecked())
         self.notizen.setVisible(self.actionNotizen.isChecked())
-    
+
+        
     def __openManual(self):
         manualPath = os.path.join(self.scriptRoot , 'docs', 'openXJV_Benutzerhandbuch.pdf')
         self.__openFileExternal(manualPath, True, True)
@@ -1762,9 +1815,11 @@ class UI(QMainWindow):
         
         self.terminDetailView.setHtml(text) 
                                         
-if __name__ == "__main__":
-    print('Disabling Chromium-Sandbox for compatibility reasons (Seems to be unavailable on most systems anyway).')
+def launchApp():
+    
+    print('Disabling Chromium-Sandbox for compatibility reasons (Seems to be unavailable on Debian / Ubuntu based systems anyway).')
     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
+    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"]  = "--log-level=3"
     
     app = QApplication([])
     app.setStyle('Fusion')
@@ -1785,6 +1840,10 @@ if __name__ == "__main__":
                 ziplist.append(file)
             
     widget = UI(file=file, ziplist=ziplist, app=app)
+    widget.setWindowFlags((widget.windowFlags() & ~Qt.WindowFullscreenButtonHint) | Qt.CustomizeWindowHint)
     app.aboutToQuit.connect(widget.cleanUp)
     widget.show()
     sys.exit(app.exec_())
+    
+if __name__ == "__main__":
+    launchApp()

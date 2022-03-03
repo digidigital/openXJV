@@ -22,14 +22,6 @@
     <height>960</height>
    </size>
   </property>
-  <property name="font">
-   <font>
-    <pointsize>11</pointsize>
-    <weight>50</weight>
-    <bold>false</bold>
-    <kerning>false</kerning>
-   </font>
-  </property>
   <property name="contextMenuPolicy">
    <enum>Qt::PreventContextMenu</enum>
   </property>
@@ -52,7 +44,7 @@
    <bool>false</bool>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
-   <bool>true</bool>
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -88,18 +80,6 @@
         <height>0</height>
        </size>
       </property>
-      <property name="font">
-       <font>
-        <family>Ubuntu</family>
-        <pointsize>11</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-        <underline>false</underline>
-        <strikeout>false</strikeout>
-        <stylestrategy>PreferAntialias</stylestrategy>
-        <kerning>false</kerning>
-       </font>
-      </property>
       <property name="cursor">
        <cursorShape>ArrowCursor</cursorShape>
       </property>
@@ -110,19 +90,6 @@
        <number>0</number>
       </property>
       <widget class="QWidget" name="dokumente">
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>11</pointsize>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-         <underline>false</underline>
-         <strikeout>false</strikeout>
-         <stylestrategy>PreferAntialias</stylestrategy>
-         <kerning>false</kerning>
-        </font>
-       </property>
        <attribute name="title">
         <string>Dokumente</string>
        </attribute>
@@ -204,19 +171,6 @@
                <height>120</height>
               </size>
              </property>
-             <property name="font">
-              <font>
-               <family>Ubuntu</family>
-               <pointsize>11</pointsize>
-               <weight>50</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-               <underline>false</underline>
-               <strikeout>false</strikeout>
-               <stylestrategy>PreferAntialias</stylestrategy>
-               <kerning>false</kerning>
-              </font>
-             </property>
              <property name="title">
               <string>Nachrichtenkopf</string>
              </property>
@@ -230,19 +184,6 @@
                  <layout class="QFormLayout" name="formLayout">
                   <item row="1" column="0">
                    <widget class="QLabel" name="absenderLabel">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>Absender:</string>
                     </property>
@@ -250,19 +191,6 @@
                   </item>
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="absenderText">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="contextMenuPolicy">
                      <enum>Qt::DefaultContextMenu</enum>
                     </property>
@@ -282,19 +210,6 @@
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="empfaengerLabel">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>Empfänger:</string>
                     </property>
@@ -302,19 +217,6 @@
                   </item>
                   <item row="2" column="1">
                    <widget class="QLineEdit" name="empfaengerText">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="readOnly">
                      <bool>true</bool>
                     </property>
@@ -322,19 +224,6 @@
                   </item>
                   <item row="3" column="0">
                    <widget class="QLabel" name="erstellungszeitpunktLabel">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>Erstellt am:</string>
                     </property>
@@ -342,19 +231,6 @@
                   </item>
                   <item row="3" column="1">
                    <widget class="QLineEdit" name="erstellungszeitpunktText">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="readOnly">
                      <bool>true</bool>
                     </property>
@@ -366,19 +242,6 @@
                  <layout class="QFormLayout" name="formLayout_2">
                   <item row="1" column="0">
                    <widget class="QLabel" name="absAktenzeichenLabel">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="toolTip">
                      <string>Absenderaktenzeichen</string>
                     </property>
@@ -392,19 +255,6 @@
                   </item>
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="absenderAktenzeichenText">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="toolTip">
                      <string>Absenderaktenzeichen</string>
                     </property>
@@ -418,19 +268,6 @@
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="empfAktenzeichenLabel">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="toolTip">
                      <string>Empfängeraktenzeichen</string>
                     </property>
@@ -444,19 +281,6 @@
                   </item>
                   <item row="2" column="1">
                    <widget class="QLineEdit" name="empfaengerAktenzeichenText">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="toolTip">
                      <string>Empfängeraktenzeichen</string>
                     </property>
@@ -470,19 +294,6 @@
                   </item>
                   <item row="3" column="0">
                    <widget class="QLabel" name="sendungsprioritaetLabel">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>Priorität:</string>
                     </property>
@@ -490,19 +301,6 @@
                   </item>
                   <item row="3" column="1">
                    <widget class="QLineEdit" name="sendungsprioritaetText">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="readOnly">
                      <bool>true</bool>
                     </property>
@@ -536,19 +334,6 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
-              </property>
-              <property name="font">
-               <font>
-                <family>Ubuntu</family>
-                <pointsize>11</pointsize>
-                <weight>50</weight>
-                <italic>false</italic>
-                <bold>false</bold>
-                <underline>false</underline>
-                <strikeout>false</strikeout>
-                <stylestrategy>PreferAntialias</stylestrategy>
-                <kerning>false</kerning>
-               </font>
               </property>
               <property name="title">
                <string>Favoriten</string>
@@ -608,8 +393,8 @@
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>117</width>
-                      <height>412</height>
+                      <width>280</width>
+                      <height>142</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_5">
@@ -630,19 +415,6 @@
                      </property>
                      <item row="1" column="0">
                       <widget class="QListWidget" name="favoritenView">
-                       <property name="font">
-                        <font>
-                         <family>Ubuntu</family>
-                         <pointsize>11</pointsize>
-                         <weight>50</weight>
-                         <italic>false</italic>
-                         <bold>false</bold>
-                         <underline>false</underline>
-                         <strikeout>false</strikeout>
-                         <stylestrategy>PreferAntialias</stylestrategy>
-                         <kerning>false</kerning>
-                        </font>
-                       </property>
                        <property name="toolTip">
                         <string>Doppelklick öffnet die Datei im externen Standardprogramm.</string>
                        </property>
@@ -657,19 +429,6 @@
                  </item>
                  <item>
                   <widget class="QPushButton" name="deleteFavoriteButton">
-                   <property name="font">
-                    <font>
-                     <family>Material Icons</family>
-                     <pointsize>14</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                     <stylestrategy>PreferAntialias</stylestrategy>
-                     <kerning>false</kerning>
-                    </font>
-                   </property>
                    <property name="toolTip">
                     <string>Markierten Favoriteneintrag löschen</string>
                    </property>
@@ -702,19 +461,6 @@
                  <height>0</height>
                 </size>
                </property>
-               <property name="font">
-                <font>
-                 <family>Ubuntu</family>
-                 <pointsize>11</pointsize>
-                 <weight>50</weight>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                 <underline>false</underline>
-                 <strikeout>false</strikeout>
-                 <stylestrategy>PreferAntialias</stylestrategy>
-                 <kerning>false</kerning>
-                </font>
-               </property>
                <property name="title">
                 <string>Inhalt</string>
                </property>
@@ -744,8 +490,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>215</width>
-                     <height>198</height>
+                     <width>281</width>
+                     <height>68</height>
                     </rect>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_6">
@@ -763,19 +509,6 @@
                     </property>
                     <item row="0" column="0">
                      <widget class="QTreeView" name="inhaltView">
-                      <property name="font">
-                       <font>
-                        <family>Ubuntu</family>
-                        <pointsize>11</pointsize>
-                        <weight>50</weight>
-                        <italic>false</italic>
-                        <bold>false</bold>
-                        <underline>false</underline>
-                        <strikeout>false</strikeout>
-                        <stylestrategy>PreferAntialias</stylestrategy>
-                        <kerning>false</kerning>
-                       </font>
-                      </property>
                       <property name="toolTip">
                        <string>Strukturierte Darstellung des Inhalts gegliedert nach Dokumenten, Akten und Unterakten</string>
                       </property>
@@ -803,19 +536,6 @@
                  <height>100</height>
                 </size>
                </property>
-               <property name="font">
-                <font>
-                 <family>Ubuntu</family>
-                 <pointsize>11</pointsize>
-                 <weight>50</weight>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                 <underline>false</underline>
-                 <strikeout>false</strikeout>
-                 <stylestrategy>PreferAntialias</stylestrategy>
-                 <kerning>false</kerning>
-                </font>
-               </property>
                <property name="title">
                 <string>Metadaten des aktiven Inhalts  </string>
                </property>
@@ -839,19 +559,6 @@
                     <width>0</width>
                     <height>0</height>
                    </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Ubuntu</family>
-                    <pointsize>11</pointsize>
-                    <weight>50</weight>
-                    <italic>false</italic>
-                    <bold>false</bold>
-                    <underline>false</underline>
-                    <strikeout>false</strikeout>
-                    <stylestrategy>PreferAntialias</stylestrategy>
-                    <kerning>false</kerning>
-                   </font>
                   </property>
                   <property name="acceptDrops">
                    <bool>false</bool>
@@ -925,19 +632,6 @@
                <height>200</height>
               </size>
              </property>
-             <property name="font">
-              <font>
-               <family>Ubuntu</family>
-               <pointsize>11</pointsize>
-               <weight>50</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-               <underline>false</underline>
-               <strikeout>false</strikeout>
-               <stylestrategy>PreferAntialias</stylestrategy>
-               <kerning>false</kerning>
-              </font>
-             </property>
              <property name="inputMethodHints">
               <set>Qt::ImhNone</set>
              </property>
@@ -957,19 +651,6 @@
                  <layout class="QHBoxLayout" name="horizontalLayout">
                   <item>
                    <widget class="QLabel" name="label_9">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>10</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="toolTip">
                      <string>Dateien anzeigen, die diese Zeichenketten in den Metadaten enthalten.</string>
                     </property>
@@ -1006,19 +687,6 @@
                   </item>
                   <item>
                    <widget class="QLabel" name="label_10">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>10</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="toolTip">
                      <string>Ausfiltern von Dateien, die diese Zeichenketten in den Metadaten enthalten.</string>
                     </property>
@@ -1067,19 +735,6 @@
                       <height>16777215</height>
                      </size>
                     </property>
-                    <property name="font">
-                     <font>
-                      <family>Material Icons</family>
-                      <pointsize>13</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="toolTip">
                      <string>Technische Dateien ausfiltern</string>
                     </property>
@@ -1093,19 +748,6 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="filterLeeren">
-                    <property name="font">
-                     <font>
-                      <family>Ubuntu</family>
-                      <pointsize>10</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                      <stylestrategy>PreferAntialias</stylestrategy>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
                     <property name="toolTip">
                      <string>Alle Filter zurücksetzen</string>
                     </property>
@@ -1121,19 +763,6 @@
                 </item>
                 <item>
                  <widget class="QTableWidget" name="docTableView">
-                  <property name="font">
-                   <font>
-                    <family>Ubuntu</family>
-                    <pointsize>11</pointsize>
-                    <weight>50</weight>
-                    <italic>false</italic>
-                    <bold>false</bold>
-                    <underline>false</underline>
-                    <strikeout>false</strikeout>
-                    <stylestrategy>PreferAntialias</stylestrategy>
-                    <kerning>false</kerning>
-                   </font>
-                  </property>
                   <property name="toolTip">
                    <string>Datei mit Doppelklick in Vorschau anzeigen oder extern öffnen.</string>
                   </property>
@@ -1251,18 +880,6 @@
        </layout>
       </widget>
       <widget class="QWidget" name="grunddaten">
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>11</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-         <underline>false</underline>
-         <strikeout>false</strikeout>
-         <stylestrategy>PreferAntialias</stylestrategy>
-         <kerning>false</kerning>
-        </font>
-       </property>
        <attribute name="title">
         <string>Grunddaten</string>
        </attribute>
@@ -1279,18 +896,6 @@
            <bool>false</bool>
           </property>
           <widget class="QGroupBox" name="beteiligteBox">
-           <property name="font">
-            <font>
-             <family>Ubuntu</family>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-             <underline>false</underline>
-             <strikeout>false</strikeout>
-             <stylestrategy>PreferAntialias</stylestrategy>
-             <kerning>false</kerning>
-            </font>
-           </property>
            <property name="title">
             <string>Beteiligte</string>
            </property>
@@ -1302,11 +907,6 @@
                 <width>20</width>
                 <height>0</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>11</pointsize>
-               </font>
               </property>
               <property name="toolTip">
                <string>Daten zu Beteiligten</string>
@@ -1342,18 +942,6 @@ p, li { white-space: pre-wrap; }
             <bool>false</bool>
            </property>
            <widget class="QGroupBox" name="instanzdatenBox">
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <stylestrategy>PreferAntialias</stylestrategy>
-              <kerning>false</kerning>
-             </font>
-            </property>
             <property name="title">
              <string>Instanzdaten</string>
             </property>
@@ -1365,11 +953,6 @@ p, li { white-space: pre-wrap; }
                  <width>20</width>
                  <height>0</height>
                 </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>11</pointsize>
-                </font>
                </property>
                <property name="toolTip">
                 <string>Liste der Stationen, die ein Vorgang durchlaufen hat.
@@ -1392,18 +975,6 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
             </layout>
            </widget>
            <widget class="QGroupBox" name="terminsdatenBox">
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-              <stylestrategy>PreferAntialias</stylestrategy>
-              <kerning>false</kerning>
-             </font>
-            </property>
             <property name="title">
              <string>Terminsdaten</string>
             </property>
@@ -1490,25 +1061,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      <height>22</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <family>Ubuntu</family>
-     <pointsize>11</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-     <kerning>false</kerning>
-    </font>
-   </property>
    <widget class="QMenu" name="menuDatei">
-    <property name="font">
-     <font>
-      <family>Ubuntu</family>
-      <pointsize>11</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <kerning>false</kerning>
-     </font>
-    </property>
     <property name="title">
      <string>Datei</string>
     </property>
@@ -1517,15 +1070,6 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="actionSchliessen"/>
    </widget>
    <widget class="QMenu" name="menuOptionen">
-    <property name="font">
-     <font>
-      <family>Ubuntu</family>
-      <pointsize>11</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <kerning>false</kerning>
-     </font>
-    </property>
     <property name="title">
      <string>Optionen</string>
     </property>
@@ -1543,15 +1087,6 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="actionOnlineAufUpdatesPruefen"/>
    </widget>
    <widget class="QMenu" name="menuUeber">
-    <property name="font">
-     <font>
-      <family>Ubuntu</family>
-      <pointsize>11</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <kerning>false</kerning>
-     </font>
-    </property>
     <property name="title">
      <string>Hilfe</string>
     </property>
@@ -1560,15 +1095,6 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="actionUeberOpenXJV"/>
    </widget>
    <widget class="QMenu" name="menuAnsicht">
-    <property name="font">
-     <font>
-      <family>Ubuntu</family>
-      <pointsize>11</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <kerning>false</kerning>
-     </font>
-    </property>
     <property name="title">
      <string>Ansicht</string>
     </property>
@@ -1577,6 +1103,8 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
       <string>Dokumente</string>
      </property>
      <addaction name="actionSpaltenkonfiguration"/>
+     <addaction name="separator"/>
+     <addaction name="actionAlleSpaltenMarkieren"/>
      <addaction name="separator"/>
      <addaction name="actionAbsenderColumn"/>
      <addaction name="actionAdressatColumn"/>
@@ -1613,15 +1141,6 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
   <widget class="QToolBar" name="toolBar">
    <property name="enabled">
     <bool>true</bool>
-   </property>
-   <property name="font">
-    <font>
-     <family>Material Icons</family>
-     <pointsize>16</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-     <kerning>false</kerning>
-    </font>
    </property>
    <property name="windowTitle">
     <string>toolBar</string>
@@ -1675,9 +1194,6 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    <property name="toolTip">
     <string>Öffnen</string>
    </property>
-   <property name="font">
-    <font/>
-   </property>
   </action>
   <action name="actionPDF_js">
    <property name="checkable">
@@ -1713,11 +1229,6 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="iconText">
     <string></string>
-   </property>
-   <property name="font">
-    <font>
-     <family>Material Icons</family>
-    </font>
    </property>
   </action>
   <action name="actionFavoriten_bereinigen">
@@ -2021,6 +1532,11 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="text">
     <string>Notizen</string>
+   </property>
+  </action>
+  <action name="actionAlleSpaltenMarkieren">
+   <property name="text">
+    <string>Alle Spalten markieren</string>
    </property>
   </action>
  </widget>
