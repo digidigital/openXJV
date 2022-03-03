@@ -15,3 +15,5 @@ openXJV ist entstanden, da zum Zeitpunkt des Projektstarts keine plattformüberg
 
 Das Benutzerhandbuch finden Sie in der Anwendung unter "Hilfe", hier auf Github im Unterverzeichnis "docs" 
 oder zum Download auf https://openxjv.de  
+
+Die Installation ist mit einem Installer für Windows, einem AppImage für Linux (jeweils unter https://github.com/digidigital/openXJV/releases) und plattformübergreifend (Windows, Linux, macOS) mittels pip möglich > https://pypi.org/project/openXJV/
