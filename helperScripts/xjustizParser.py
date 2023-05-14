@@ -113,7 +113,7 @@ class parser321():
         path =self._addNS(path)
         try:
             result = element.find(path)
-            if result==None or str(result)=='-1':
+            if result is None or str(result)=='-1':
                 if str(result)=='-1':
                     print('Es wurde versucht, ein Kindelement eines nicht existierenden Knotens zu finden.')
                 result=''
@@ -188,7 +188,7 @@ class parser321():
         data={}
         data['ort']          = self._findElementText('./ort', sitz)
         data['postleitzahl'] = self._findElementText('./postleitzahl', sitz)
-        data['staat']        = self.lookup.xjustizValue ('Country Codes', self._findElementText("./staat", sitz, code=True), keyColumnRef='ISONumeric', getFromColumnRef="ShortName")
+        data['staat']        = self._parseStaat (self._findElement("./staat", sitz))
         return data
     
     def _parseRechtsform(self, rechtsform):
@@ -236,7 +236,7 @@ class parser321():
             kanzleiData['anschrift'].append(self._parseAnschrift(anschrift)) 
         
         kanzleiData['geschlecht'] =self.lookup.xjustizValue ('GDS.Geschlecht', self._findElementText("./geschlecht", node, code=True))
-        kanzleiData['rechtsform'] =self.lookup.xjustizValue ('GDS.Rechtsform', self._findElementText("./rechtsform", node, code=True))
+        kanzleiData['rechtsform'] = self._parseRechtsform(node)['rechtsform']
         kanzleiData['kanzleiform']=self.lookup.xjustizValue ('GDS.Kanzleiform', self._findElementText("./kanzleiform", node, code=True))
         
         kanzleiData['telekommunikation']=[]
@@ -281,21 +281,15 @@ class parser321():
             personData['zustaendigeInstitution'].append(institution.text)      
         
         personData['staatsangehoerigkeit']=[]
-        for staat in self._findAllElements ("./staatsangehoerigkeit/auswahl_staat/staat", node, code=True):
+        for staat in self._findAllElements ("./staatsangehoerigkeit", node):
             if staat is not None:
-                personData['staatsangehoerigkeit'].append(self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISONumeric', getFromColumnRef="ShortName"))
-        for staatAlternativ in self._findAllElements ("./staatsangehoerigkeit/auswahl_staat/staat.alternativ", node, code=True):
-            if staatAlternativ is not None:
-                personData['staatsangehoerigkeit'].append(self.lookup.xjustizValue ('GDS.Staaten.Alternativ', staat.text))
-        
+                personData['staatsangehoerigkeit'].append(self._parseStaat (staat))              
+                       
         personData['herkunftsland']=[]
-        for staat in self._findAllElements ("./herkunftsland/auswahl_staat/staat", node, code=True):
+        for staat in self._findAllElements ("./herkunftsland", node):
             if staat is not None:
-                personData['herkunftsland'].append(self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISONumeric', getFromColumnRef="ShortName"))
-        for staatAlternativ in self._findAllElements ("./herkunftsland/auswahl_staat/staat.alternativ", node, code=True):
-            if staatAlternativ is not None:
-                personData['herkunftsland'].append(self.lookup.xjustizValue ('GDS.Staaten.Alternativ', staat.text))                                           
-        
+                personData['herkunftsland'].append(self._parseStaat (staat))   
+                                                       
         personData['sprache']=[]
         for sprache in self._findAllElements ("./sprache", node, code=True):
             personData['sprache'].append(self.lookup.xjustizValue ('GDS.Sprachen', sprache.text))
@@ -330,8 +324,12 @@ class parser321():
         data={}
         data['verwendeteFirma']                            = self._findElementText('./verwendeteFirma' , registereintragung)
         data['angabenZurRechtsform']                       = {}
-        data['angabenZurRechtsform']['weitereBezeichnung'] = self._findElementText('./angabenZurRechtsform/weitereBezeichnung' , registereintragung)
-        data['angabenZurRechtsform']['rechtsform']         = self.lookup.xjustizValue ('GDS.Rechtsform', self._findElementText("./angabenZurRechtsform/rechtsform", registereintragung, code=True))
+        angaben=self._findElement('./angabenZurRechtsform', registereintragung)
+        if angaben != '':
+             data['angabenZurRechtsform'] =  self._parseRechtsform(angaben)
+        else:
+            data['angabenZurRechtsform']['weitereBezeichnung'] = ''
+            data['angabenZurRechtsform']['rechtsform']         = ''
         data['registereintragung']                         = self._parseRegistrierung(self._findElement('./registereintragung', registereintragung))
         return data
     
@@ -377,8 +375,8 @@ class parser321():
         anschrift['anschriftstyp']=self.lookup.xjustizValue ('GDS.Anschriftstyp', self._findElementText("./anschriftstyp", node, code=True))
         
        
-        anschrift['staat']          =self.lookup.xjustizValue ('Country Codes', self._findElementText("./staat/auswahl_staat/staat", node, code=True), keyColumnRef='ISONumeric', getFromColumnRef="ShortName")
-        anschrift['staatAlternativ']=self.lookup.xjustizValue ('GDS.Staaten.Alternativ', self._findElementText("./staat/auswahl_staat/staat.alternativ", node, code=True))
+        anschrift['staat']          = self._parseStaat (self._findElement("./staat", node))
+        
             
         #Set default values as defined in the specification if empty
         if anschrift['ort.unbekannt']=='':
@@ -411,6 +409,9 @@ class parser321():
             data['sepa-mandat']='false'
         
         return data
+    
+    def _parseGeldbetrag(self, geldbetrag):
+        return self._findElementText('.//zahl', geldbetrag) + ' ' + self.lookup.xjustizValue ('Währung', self._findElementText(".//waehrung", element=geldbetrag, code=True))
     
     def _parseGeburt(self, geburt):
         data={}
@@ -446,18 +447,22 @@ class parser321():
         geburtsort={}
         
         data['geburtsort']={}
-        data['geburtsort']['ort']  =self._findElementText('./geburtsort/ort', geburt)
-        data['geburtsort']['staat']=''
-        
-        for staat in self._findAllElements ("./geburtsort/staat/auswahl_staat/staat", geburt, code=True):
-            if staat is not None:
-                data['geburtsort']['staat']=self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISONumeric', getFromColumnRef="ShortName")
-        for staatAlternativ in self._findAllElements ("./geburtsort/staat/auswahl_staat/staat.alternativ", geburt, code=True):
-            if staatAlternativ is not None:
-                data['geburtsort']['staat']=self.lookup.xjustizValue ('GDS.Staaten.Alternativ', staat.text)
-       
+        data['geburtsort']['ort']  =self._findElementText('./geburtsort/ort', geburt)    
+        data['geburtsort']['staat']= self._parseStaat (self._findElement ("./geburtsort/staat", geburt))  
+            
         return data
     
+    def _parseStaat(self, staat):
+        staatAllgemein  = self.lookup.xjustizValue ('Country Codes', self._findElementText(".//staat", staat, code=True), keyColumnRef='ISOAlpha2code', getFromColumnRef="ShortName")
+        staatAlternativ = self.lookup.xjustizValue ('GDS.Staaten.Alternativ', self._findElementText(".//staat.alternativ", staat, code=True))
+
+        if staatAllgemein:
+            return staatAllgemein
+        elif staatAlternativ:
+            return staatAlternativ
+        else:
+            return ''
+        
     def _parseTod(self, tod):
         
         data={}
@@ -562,8 +567,8 @@ class parser321():
     def _parseVerfahrensgegenstand(self, node):
         gegenstandData={}
         gegenstandData['gegenstand']     =self._findElementText('.//gegenstand', node)
-        gegenstandData['gegenstandswert']=self._findElementText('.//zahl', node) + ' ' + self.lookup.xjustizValue ('Währung', self._findElementText(".//waehrung", element=node, code=True))
-        
+        gegenstandData['gegenstandswert']=self._parseGeldbetrag(self._findElement('.//gegenstandswert', node))
+
         gegenstandData['auswahl_zeitraumDesVerwaltungsaktes']=''
         auswahl = self._findElement("./auswahl_zeitraumDesVerwaltungsaktes", node)
         if   self._tagInAuswahl ('jahr', auswahl):
@@ -922,11 +927,7 @@ class parser321():
 
 
         ## Terminsdaten ##
-        self.termine=[]
-        for termin in self._findAllElements ("./grunddaten/verfahrensdaten/auswahl_termin/terminsdaten"):
-            self.termine.append(self._parseTermin(termin))
-        for fortsetzungstermin in self._findAllElements ("./grunddaten/verfahrensdaten/auswahl_termin/fortsetzungsterminsdaten"):
-            self.termine.append(self._parseTermin(fortsetzungstermin))
+        self.termine=self._getTermine()
         
         ####### Schriftgutobjekte #######
 
@@ -934,11 +935,19 @@ class parser321():
         self.schriftgutobjekte['dokumente']   = self._parseDokumente()
         self.schriftgutobjekte['akten']       = self._parseAkten()
 
+    def _getTermine(self):
+        termine=[]
+        for termin in self._findAllElements ("./grunddaten/verfahrensdaten/auswahl_termin/terminsdaten"):
+            termine.append(self._parseTermin(termin))
+        for fortsetzungstermin in self._findAllElements ("./grunddaten/verfahrensdaten/auswahl_termin/fortsetzungsterminsdaten"):
+            termine.append(self._parseTermin(fortsetzungstermin))
+        return termine
+    
     #Gibt alle Dokumente einer Akte zurück. 
     #Ohne ID werden die Dokumente der obersten Ebene zurückgegeben  
     def getDocuments(self, aktenID=None):
         documents={}
-        if aktenID==None:
+        if aktenID is None:
             if self.schriftgutobjekte['dokumente']:
                 documents=self.schriftgutobjekte['dokumente']
         elif self.schriftgutobjekte['akten']:
@@ -1100,7 +1109,8 @@ class parser331(parser321):
                 'zustellung41StPO',
                 'nurMetadaten',
                 'ersteSeitennummer',
-                'letzteSeitennummer'
+                'letzteSeitennummer',
+                'erstellungszeitpunkt'
             )
             for documentNode in documentNodes:
                 document={}
@@ -1278,7 +1288,7 @@ class parser331(parser321):
             kanzleiData['anschrift'].append(self._parseAnschrift(anschrift)) 
         
         kanzleiData['geschlecht'] =self.lookup.xjustizValue ('GDS.Geschlecht', self._findElementText("./geschlecht", node, code=True))
-        kanzleiData['rechtsform'] =self.lookup.xjustizValue ('GDS.Rechtsform', self._findElementText("./rechtsform", node, code=True))
+        kanzleiData['rechtsform'] = self._parseRechtsform(node)['rechtsform']
         kanzleiData['kanzleiform']=self.lookup.xjustizValue ('GDS.Kanzleiform', self._findElementText("./kanzleiform", node, code=True))
         
         kanzleiData['telekommunikation']=[]
@@ -1330,20 +1340,14 @@ class parser331(parser321):
             personData['zustaendigeInstitution'].append(institution.text)      
         
         personData['staatsangehoerigkeit']=[]
-        for staat in self._findAllElements ("./staatsangehoerigkeit/auswahl_staat/staat", node, code=True):
+        for staat in self._findAllElements ("./staatsangehoerigkeit", node):
             if staat is not None:
-                personData['staatsangehoerigkeit'].append(self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISONumeric', getFromColumnRef="ShortName"))
-        for staatAlternativ in self._findAllElements ("./staatsangehoerigkeit/auswahl_staat/staat.alternativ", node, code=True):
-            if staatAlternativ is not None:
-                personData['staatsangehoerigkeit'].append(self.lookup.xjustizValue ('GDS.Staaten.Alternativ', staat.text))
-        
+                personData['staatsangehoerigkeit'].append(self._parseStaat (staat))              
+                       
         personData['herkunftsland']=[]
-        for staat in self._findAllElements ("./herkunftsland/auswahl_staat/staat", node, code=True):
+        for staat in self._findAllElements ("./herkunftsland", node):
             if staat is not None:
-                personData['herkunftsland'].append(self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISONumeric', getFromColumnRef="ShortName"))
-        for staatAlternativ in self._findAllElements ("./herkunftsland/auswahl_staat/staat.alternativ", node, code=True):
-            if staatAlternativ is not None:
-                personData['herkunftsland'].append(self.lookup.xjustizValue ('GDS.Staaten.Alternativ', staat.text))                                           
+                personData['herkunftsland'].append(self._parseStaat (staat))                                          
         
         personData['sprache']=[]
         for sprache in self._findAllElements ("./sprache", node, code=True):
@@ -1379,16 +1383,7 @@ class parser331(parser321):
                 
         return personData
     
-    def _parseStaat(self, staat):
-        staatAllgemein  = self.lookup.xjustizValue ('Country Codes', self._findElementText(".//staat", staat, code=True), keyColumnRef='ISONumeric', getFromColumnRef="ShortName")
-        staatAlternativ = self.lookup.xjustizValue ('GDS.Staaten.Alternativ', self._findElementText(".//staat.alternativ", staat, code=True))
 
-        if staatAllgemein:
-            return staatAllgemein
-        elif staatAlternativ:
-            return staatAlternativ
-        else:
-            return ''
         
     def _parseBundesland(self, bundesland):
         bundeslandBRD      = self.lookup.xjustizValue ('Bundesland', self._findElementText(".//bundesland.BRD", bundesland, code=True))
@@ -1514,20 +1509,271 @@ class parser331(parser321):
             #self.grunddaten['instanzen'].append({instanzData['instanznummer']:instanzData})
             self.grunddaten['instanzen'][instanzData['instanznummer']]=instanzData
 
-
         ## Terminsdaten ##
-        self.termine=[]
-        for termin in self._findAllElements ("./grunddaten/verfahrensdaten/auswahl_termin/terminsdaten"):
-            self.termine.append(self._parseTermin(termin))
-        for fortsetzungstermin in self._findAllElements ("./grunddaten/verfahrensdaten/auswahl_termin/fortsetzungsterminsdaten"):
-            self.termine.append(self._parseTermin(fortsetzungstermin))
+        self.termine=self._getTermine()
         
         ####### Schriftgutobjekte #######
 
         self.schriftgutobjekte['anschreiben'] = self._findElementText("./schriftgutobjekte/anschreiben/ref.sgo")
         self.schriftgutobjekte['dokumente']   = self._parseDokumente()
         self.schriftgutobjekte['akten']       = self._parseAkten()
+
+class parser341(parser331):         
+    def _parseAkten(self, path='./schriftgutobjekte/akte', element=None):
+        element = self._root if element is None else element
+        
+        files={}
+        fileNodes= self._findAllElements(path, element=element)
+        if fileNodes != '':
+            simpleValues=(  
+                './anzeigename',
+                './identifikation/id',
+                './identifikation/nummerImUebergeordnetenContainer',
+                './xjustiz.fachspezifischeDaten/anzeigename',
+                './xjustiz.fachspezifischeDaten/weiteresOrdnungskriteriumBehoerde',
+                './xjustiz.fachspezifischeDaten/erstellungszeitpunktAkteVersand',
+                './xjustiz.fachspezifischeDaten/ruecksendungEEB.erforderlich',
+                './justizinterneDaten/zustellung41StPO',
+                './justizinterneDaten/uebergabeAktenfuehrungsbefugnis',
+                # teilaktenspezifisch
+                './xjustiz.fachspezifischeDaten/akteneinsicht',
+                './xjustiz.fachspezifischeDaten/letztePaginierungProTeilakte',
+                './justizinterneDaten/roemischPaginiert'
+            )
+            for fileNode in fileNodes:
+                file={}
+                for simpleValue in simpleValues:
+                    file[simpleValue.rsplit('/', 1)[1]]=self._findElementText(simpleValue, fileNode)
+
+               
+                file['dokumente']            = self._parseDokumente('./xjustiz.fachspezifischeDaten/inhalt/dokument', fileNode)
+                file['teilakten']            = self._parseAkten('./xjustiz.fachspezifischeDaten/inhalt/teilakte', fileNode)
+                file['abgebendeStelle']      = self.lookup.xjustizValue ('GDS.Gerichte', self._findElementText("./xjustiz.fachspezifischeDaten/abgebendeStelle", element=fileNode, code=True))
+                file['aktentyp']             = self.lookup.xjustizValue ('GDS.Aktentyp', self._findElementText("./xjustiz.fachspezifischeDaten/aktentyp", element=fileNode, code=True))
+                file['vertraulichkeitsstufe']= self.lookup.xjustizValue ('Vertraulichkeitsstufe', self._findElementText("./vertraulichkeitsstufe", element=fileNode , code=True))
+                
+                file['personen']=[]
+                for person in self._findAllElements ('./xjustiz.fachspezifischeDaten/person/ref.beteiligtennummer', element=fileNode):
+                        file['personen'].append(person.text)
+                
+                file['laufzeit']={}
+                for laufzeit in self._findElement ('./laufzeit', element=fileNode):
+                    # remove namespace and use tag as key
+                    file['laufzeit'][laufzeit.tag.rsplit("}", 1)[1]]=laufzeit.text
+                
+                file['aktenreferenzen']=[]
+                for aktenreferenz in self._findAllElements ('./xjustiz.fachspezifischeDaten/aktenreferenzen', element=fileNode):
+                    referenceParts={}
+                    referenceParts['id.referenzierteAkte']=self._findElementText("./id.referenzierteAkte", element=aktenreferenz)
+                    referenceParts['aktenreferenzart']    =self.lookup.xjustizValue ('GDS.Aktenreferenzart', self._findElementText("./aktenreferenzart", element=aktenreferenz, code=True))
+                    file['aktenreferenzen'].append(referenceParts)
+                
+                file['aktenzeichen']=[]
+                for aktenzeichen in self._findAllElements ('./xjustiz.fachspezifischeDaten/aktenzeichen', element=fileNode):
+                    file['aktenzeichen'].append(self._parseAktenzeichen(aktenzeichen))
+                
+                # Teilaktenspezifisch
+                file['teilaktentyp']=self.lookup.xjustizValue ('GDS.Teilaktentyp', self._findElementText("./xjustiz.fachspezifischeDaten/teilaktentyp", element=fileNode, code=True))
+                
+                files[file['id']]=file
+                
+        return files
+
+    def _parseNatuerlichePerson(self, node):
+        personData={}
+        personData['type']='GDS.NatuerlichePerson'
+        personData['vollerName']=self._parseNameNatuerlichePerson(self._findElement('./vollerName', node))
+        
+        personData['aliasNatuerlichePerson']=[]
+        for alias in self._findAllElements ("./aliasNatuerlichePerson", node): 
+            personData['aliasNatuerlichePerson'].append(self._parseNatuerlichePerson(alias))
+        
+        personData['umsatzsteuerID']= self._findElementText('./umsatzsteuerID', node)
+        personData['steueridentifikationsnummer']= self._findElementText('./steueridentifikationsnummer', node)
+        personData['bundeseinheitlicheWirtschaftsnummer']= self._findElementText('./bundeseinheitlicheWirtschaftsnummer', node)
+        
+        personData['geschlecht']    =self.lookup.xjustizValue ('GDS.Geschlecht', self._findElementText("./geschlecht", node, code=True))
+        personData['familienstand'] =self.lookup.xjustizValue ('GDS.Familienstand', self._findElementText("./familienstand", node, code=True))
+        personData['personalstatut']=self.lookup.xjustizValue ('GDS.Personalstatut', self._findElementText("./personalstatut", node, code=True))
+        
+        personData['beruf']=[]
+        for beruf in self._findAllElements ("./beruf", node): 
+            personData['beruf'].append(beruf.text)
+        
+        personData['telekommunikation']=[]
+        for telekom in self._findAllElements ("./telekommunikation", node): 
+            personData['telekommunikation'].append(self._parseTelekommunikation(telekom))
+            
+        personData['anschrift']=[]
+        for anschrift in self._findAllElements ("./anschrift", node): 
+            personData['anschrift'].append(self._parseAnschrift(anschrift))    
+        
+        personData['zustaendigeInstitution']=[]
+        for institution in self._findAllElements ("./zustaendigeInstitution/ref.rollennummer", node): 
+            personData['zustaendigeInstitution'].append(institution.text)      
+        
+        personData['staatsangehoerigkeit']=[]
+        for staat in self._findAllElements ("./staatsangehoerigkeit", node):
+            if staat is not None:
+                personData['staatsangehoerigkeit'].append(self._parseStaat (staat))              
+                       
+        personData['herkunftsland']=[]
+        for staat in self._findAllElements ("./herkunftsland", node):
+            if staat is not None:
+                personData['herkunftsland'].append(self._parseStaat (staat))                                          
+        
+        personData['sprache']=[]
+        for sprache in self._findAllElements ("./sprache", node, code=True):
+            personData['sprache'].append(self.lookup.xjustizValue ('GDS.Sprachen', sprache.text))
+        
+        personData['bankverbindung']=[]
+        for bankverbindung in self._findAllElements ("./bankverbindung", node):
+            personData['bankverbindung'].append(self._parseBankverbindung(bankverbindung))
+               
+        personData['registereintragungNatuerlichePerson']=[]
+        registereintragung=self._findElement('./registereintragungNatuerlichePerson', node)
+        if registereintragung != '':
+            personData['registereintragungNatuerlichePerson']=self._parseRegistereintragungNatuerlichePerson(registereintragung)
+        
+        personData['tod']=[]
+        tod=self._findElement('./tod', node)
+        if tod != '':
+            personData['tod']=self._parseTod(tod)
+            
+        personData['geburt']=[]
+        geburt=self._findElement('./geburt', node)
+        if geburt != '':
+            personData['geburt']=self._parseGeburt(geburt)
+                    
+        personData['auswahl_auskunftssperre']=[]
+        auskunftssperre=self._findElement('./auswahl_auskunftssperre', node)
+        if auskunftssperre != '':
+            personData['auswahl_auskunftssperre']=self._parseAuskunftssperre(auskunftssperre)
+        
+        personData['ausweisdokument']=[]
+        for dokument in self._findAllElements ("./ausweisdokument", node): 
+            personData['ausweisdokument'].append(self._parseAusweisdokument(dokument))
+                
+        return personData
     
+    def _parseGeldbetrag(self, geldbetragNode):
+        geldbetrag = self._findElementText('.//zahl', geldbetragNode)
+        
+        waehrung = self.lookup.xjustizValue ('Währung', self._findElementText(".//waehrung", element=geldbetragNode, code=True))
+        if waehrung != '':
+            return geldbetrag + ' ' + waehrung
+      
+        historischeWaehrung = self._findElementText('.//historischeWaehrung', geldbetragNode)
+        if historischeWaehrung != '':
+            return geldbetrag + ' ' + historischeWaehrung
+        
+        if geldbetrag != '':
+            return geldbetrag
+        
+        return ''
+
+    def _parseRechtsform(self, rechtsform):
+        data={}
+        data['rechtsform']         = self._findElementText("./rechtsform", rechtsform, code=True)
+        data['weitereBezeichnung'] = self._findElementText('./weitereBezeichnung', rechtsform)
+       
+        return data
+
+    def _parseRegistrierung(self, registrierung):
+        data={}
+        
+        items=(
+            'registernummer',
+            'reid',
+            'lei',
+            'euid'             
+        )
+        
+        for item in items:
+            data[item]= self._findElementText('./' + item, registrierung)
+        
+        data['auswahl_registerbehoerde']={}
+        
+        data['auswahl_registerbehoerde']['inlaendischesRegistergericht']={}
+        data['auswahl_registerbehoerde']['inlaendischesRegistergericht']['gericht']=self.lookup.xjustizValue ('GDS.Gerichte', self._findElementText("./auswahl_registerbehoerde/inlaendischesRegistergericht/gericht", registrierung, code=True))
+        data['auswahl_registerbehoerde']['inlaendischesRegistergericht']['registerart']=self.lookup.xjustizValue ('GDS.Registerart', self._findElementText("./auswahl_registerbehoerde/inlaendischesRegistergericht/registerart", registrierung, code=True))
+        
+        data['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']={}
+        data['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbehoerde']   =self._findElementText('./auswahl_registerbehoerde/sonstigeRegisterbehoerde/registerbehoerde', registrierung)
+        data['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbezeichnung']=self._findElementText('./auswahl_registerbehoerde/sonstigeRegisterbehoerde/registerbezeichnung', registrierung)
+        
+        data['auswahl_registerbehoerde']['auslaendischeRegisterbehoerde']=self.lookup.xjustizValue ('GDS.BRIS-ListOfRegisters', self._findElementText("./auswahl_registerbehoerde/auslaendischeRegisterbehoerde", registrierung, code=True))
+                    
+        return data
+    
+    def _parseStaat(self, staat):
+        staatAllgemein  = self.lookup.xjustizValue ('BfJ Staat', self._findElementText(".", staat, code=True), keyColumnRef='Schluessel', getFromColumnRef="Staat-oder-Gebiet")
+        if staatAllgemein:
+            return staatAllgemein
+        else:
+            return ''
+ 
+    def _getTermine(self):
+        termine=[]
+        for termin in self._findAllElements ("./grunddaten/verfahrensdaten/terminsdaten"):
+            termine.append(self._parseTermin(termin))
+        return termine
+    
+    def _parseTermin(self, termin):
+        data={}
+        
+        data['uuid']=str(uuid.uuid4())
+        
+        items=[
+            'terminsID',
+            'spruchkoerper',
+            'oeffentlich',
+            'ref.bezugstermin'
+        ]
+        
+        for item in items:
+            data[item]=self._findElementText('./' + item, termin)
+        
+        itemsGerichtsort=[
+            'gebaeude',
+            'stockwerk',
+            'raum'            
+        ]
+        
+        data['auswahl_terminsort']                = {}
+        data['auswahl_terminsort']['gerichtsort'] = {}
+  
+        for item in itemsGerichtsort:
+            data['auswahl_terminsort']['gerichtsort'][item]        = self._findElementText('./auswahl_terminsort/gerichtsort/' + item, termin)
+              
+        data['auswahl_terminsort']['gerichtsort']['anschrift']={}
+        anschrift=self._findElement("./auswahl_terminsort/gerichtsort/anschrift",termin)
+        if anschrift != '':
+            data['auswahl_terminsort']['gerichtsort']['anschrift'] = self._parseAnschrift(anschrift)
+        
+        data['auswahl_terminsort']['lokaltermin'] = {}
+        data['auswahl_terminsort']['lokaltermin']['beschreibung']  = self._findElementText('./auswahl_terminsort/lokaltermin/beschreibung' , termin)
+        data['auswahl_terminsort']['lokaltermin']['anschrift']={}        
+        anschrift=self._findElement("./auswahl_terminsort/lokaltermin/anschrift",termin)
+        if anschrift != '':
+            data['auswahl_terminsort']['lokaltermin']['anschrift'] = self._parseAnschrift(anschrift)
+        
+        data['terminszeit']={}
+        data['terminszeit']['terminsdatum']                             = self._findElementText('./terminszeit/terminsdatum' , termin)  
+        data['terminszeit']['auswahl_terminszeit']={}
+        data['terminszeit']['auswahl_terminszeit']['terminsuhrzeit']    = self._findElementText('./terminszeit/auswahl_terminszeit/terminsuhrzeit' , termin)
+        data['terminszeit']['auswahl_terminszeit']['terminszeitangabe'] = self._findElementText('./terminszeit/auswahl_terminszeit/terminszeitangabe' , termin)             
+        data['terminszeit']['terminsdauer']                             = self._findElementText('./terminszeit/terminsdauer' , termin)       
+                 
+        data['terminsart'] = self.lookup.xjustizValue ('GDS.Terminsart', self._findElementText("./terminsart", termin, code=True))
+        data['terminskategorie'] = self.lookup.xjustizValue ('GDS.Terminskategorie', self._findElementText("./terminskategorie", termin, code=True))
+        
+        data['teilnehmer']=[]
+        for teilnehmer in self._findAllElements ("./teilnehmer", termin):
+            data['teilnehmer'].append(self._parseTerminTeilnehmer(teilnehmer))
+
+        return data
+
 class parser240(parser321):
     def __init__(self, filename=None):
         super().__init__(filename)
@@ -1671,12 +1917,12 @@ class parser240(parser321):
         personData['staatsangehoerigkeit']=[]
         for staat in self._findAllElements ("./staatsangehoerigkeit", node, code=True):
             if staat is not None:
-                personData['staatsangehoerigkeit'].append(self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISONumeric', getFromColumnRef="ShortName"))
+                personData['staatsangehoerigkeit'].append(self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISOAlpha2code', getFromColumnRef="ShortName"))
         
         personData['herkunftsland']=[]
         for staat in self._findAllElements ("./herkunftsland", node, code=True):
             if staat is not None:
-                personData['herkunftsland'].append(self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISONumeric', getFromColumnRef="ShortName"))
+                personData['herkunftsland'].append(self.lookup.xjustizValue ('Country Codes', staat.text, keyColumnRef='ISOAlpha2code', getFromColumnRef="ShortName"))
                                         
         personData['sprache']=[]
         for sprache in self._findAllElements ("./sprache", node, code=True):
@@ -1762,15 +2008,12 @@ class parser240(parser321):
         
         anschrift['anschriftstyp']=self.lookup.xjustizValue ('GDS.Anschriftstyp', self._findElementText("./anschriftstyp", node, code=True))
        
-        anschrift['staat']          =self.lookup.xjustizValue ('Country Codes', self._findElementText("./staat", node, code=True), keyColumnRef='ISONumeric', getFromColumnRef="ShortName")
+        anschrift['staat']        =self.lookup.xjustizValue ('Country Codes', self._findElementText("./staat", node, code=True), keyColumnRef='ISOAlpha2code', getFromColumnRef="ShortName")
                     
         #Set default values as defined in the specification if empty
         if anschrift['ort.unbekannt']=='':
-            anschrift['ort.unbekannt']='true'
-        
-        #von 2.4.0 nicht unterstützt
-        anschrift['staatAlternativ']=''
-    
+            anschrift['ort.unbekannt']='true'      
+   
         return anschrift
         
     
@@ -1789,7 +2032,7 @@ class parser240(parser321):
         
         data['geburtsort']={}
         data['geburtsort']['ort']  =self._findElementText('./geburtsort/ort', geburt)
-        data['geburtsort']['staat']=self.lookup.xjustizValue ('Country Codes', self._findElementText("./geburtsort/staat", geburt, code=True), keyColumnRef='ISONumeric', getFromColumnRef="ShortName")
+        data['geburtsort']['staat']=self.lookup.xjustizValue ('Country Codes', self._findElementText("./geburtsort/staat", geburt, code=True), keyColumnRef='ISOAlpha2code', getFromColumnRef="ShortName")
         
         #Von 2.4.0 nicht unterstützt
         data['geburtsdatum.unbekannt']=''
@@ -1807,7 +2050,7 @@ class parser240(parser321):
         data['sterbedatum']= self._findElementText('./sterbedatum', tod)     
         data['sterbeort']= {}
         data['sterbeort']['ort']  =self._findElementText('./sterbeort/ort', tod)
-        data['sterbeort']['staat']=self.lookup.xjustizValue ('Country Codes', self._findElementText("./sterbeort/staat", tod, code=True), keyColumnRef='ISONumeric', getFromColumnRef="ShortName")
+        data['sterbeort']['staat']=self.lookup.xjustizValue ('Country Codes', self._findElementText("./sterbeort/staat", tod, code=True), keyColumnRef='ISOAlpha2code', getFromColumnRef="ShortName")
 
         #Von 2.4.0 nicht untertstützt        
         data['sterbedatumZeitraum']={}
@@ -2328,7 +2571,7 @@ class parser240(parser321):
     #Ohne ID werden die Dokumente der obersten Ebene zurückgegeben  
     def getDocuments(self, aktenID=None):
         documents={}
-        if aktenID==None:
+        if aktenID is None:
             if self.schriftgutobjekte['dokumente']:
                 documents=self.schriftgutobjekte['dokumente']
         elif self.schriftgutobjekte['akten']:

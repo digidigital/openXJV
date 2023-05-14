@@ -64,14 +64,14 @@ class Lookup:
     # Bildet Suchlogik ab und liefert Wert zurück    
     def xjustizValue (self, type, searchKey=None, keyColumnRef=None, getFromColumnRef=None):
 
-        if searchKey==None or searchKey=='': return '' 
+        if searchKey is None or searchKey=='': return '' 
         
-        # Überprüfen, ob Datei mir passendem Typnamen existiert und XML Dateipfad zurückgeben
+        # Überprüfen, ob Datei mit passendem Typnamen existiert und XML Dateipfad zurückgeben
         listFile=self._checkForList(type)
         
         # Falls keine Datei gefunden wurde, auf Vorhandensein
         # eines aus den XSD-Dateien ausgelesenen Dict für den Typ prüfen
-        if listFile == None:
+        if listFile is None:
             if type in self._codelistenXSD.keys():
                 
                 if str(searchKey) in self._codelistenXSD[type].keys():
@@ -88,13 +88,13 @@ class Lookup:
 
         # Die als key spezifizierte Spalte identifizieren, 
         # sofern kein key beimFunktionsaufruf angegeben wurde
-        if keyColumnRef == None:
+        if keyColumnRef is None:
             keyColumnRef=gdsRoot.find('.//ColumnSet/Key/ColumnRef').get('Ref')
             
         # Sofern nicht beim Funktionsaufruf übergeben, die 
         # erste Spalte, die eine von "key" abweichende 
         # Bezeichnung hat als Wert-Spalte festlegen 
-        if getFromColumnRef == None:
+        if getFromColumnRef is None:
             getFromColumnRef = [x.text for x in gdsRoot.findall(".//ColumnSet/Column[@Use='required']/ShortName") if x.text != keyColumnRef][0]
         
         value = self._getValue(gdsRoot, searchKey, keyColumnRef, getFromColumnRef)
