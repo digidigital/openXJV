@@ -3,7 +3,7 @@
            xmlns:tns="http://www.xjustiz.de"
            xmlns:xoev-code="http://xoev.de/schemata/code/1_0"
            targetNamespace="http://www.xjustiz.de"
-           version="3.0.0"
+           version="3.1.0"
            elementFormDefault="unqualified"
            attributeFormDefault="unqualified">
    <xs:annotation>
@@ -28,20 +28,20 @@
    </xs:annotation>
    <xs:import schemaLocation="xoev-code.xsd"
               namespace="http://xoev.de/schemata/code/1_0"/>
-   <xs:complexType name="Code.GDS.Personalstatut">
+   <xs:complexType name="Code.EEB.StoerungsID">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>GDS.Personalstatut</nameLang>
-               <nameKurz>GDS.Personalstatut</nameKurz>
-               <nameTechnisch>gds.personalstatut</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:gds.personalstatut</kennung>
-               <beschreibung>Codeliste der verschiedenen Personenstati.</beschreibung>
+               <nameLang>EEB.StoerungsID</nameLang>
+               <nameKurz>EEB.StoerungsID</nameKurz>
+               <nameTechnisch>eeb.stoerungs-id</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:eeb.stoerungs-id</kennung>
+               <beschreibung>Codeliste der verschiedenen Störungs-IDs.</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
             <versionCodeliste>
-               <version>2.0</version>
+               <version>2.1</version>
                <versionCodelistenHandbuch>1.1</versionCodelistenHandbuch>
             </versionCodeliste>
             <codelistenspalten>
@@ -66,33 +66,33 @@
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
             <xs:sequence>
-               <xs:element name="code" type="tns:gds.personalstatut"/>
+               <xs:element name="code" type="tns:eeb.stoerungs-id"/>
             </xs:sequence>
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:gds.personalstatut"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:eeb.stoerungs-id"/>
             <xs:attribute name="listVersionID"
                           type="xs:normalizedString"
                           use="optional"
-                          fixed="2.0"/>
+                          fixed="2.1"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:simpleType name="gds.personalstatut">
+   <xs:simpleType name="eeb.stoerungs-id">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>GDS.Personalstatut</nameLang>
-               <nameKurz>GDS.Personalstatut</nameKurz>
-               <nameTechnisch>gds.personalstatut</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:gds.personalstatut</kennung>
-               <beschreibung>Codeliste der verschiedenen Personenstati.</beschreibung>
+               <nameLang>EEB.StoerungsID</nameLang>
+               <nameKurz>EEB.StoerungsID</nameKurz>
+               <nameTechnisch>eeb.stoerungs-id</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:eeb.stoerungs-id</kennung>
+               <beschreibung>Codeliste der verschiedenen Störungs-IDs.</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
             <versionCodeliste>
-               <version>2.0</version>
+               <version>2.1</version>
                <versionCodelistenHandbuch>1.1</versionCodelistenHandbuch>
             </versionCodeliste>
             <codelistenspalten>
@@ -114,45 +114,24 @@
          </xs:appinfo>
       </xs:annotation>
       <xs:restriction base="xs:token">
-         <xs:enumeration value="001">
+         <xs:enumeration value="1">
             <xs:annotation>
                <xs:appinfo>
-                  <wert>Kontingentflüchtling</wert>
+                  <wert>Zustellungsempfänger nicht am Verfahren beteiligt</wert>
                </xs:appinfo>
             </xs:annotation>
          </xs:enumeration>
-         <xs:enumeration value="002">
+         <xs:enumeration value="2">
             <xs:annotation>
                <xs:appinfo>
-                  <wert>Asylbewerber abgelehnt</wert>
+                  <wert>Inhalt der Sendung unklar oder unvollständig</wert>
                </xs:appinfo>
             </xs:annotation>
          </xs:enumeration>
-         <xs:enumeration value="003">
+         <xs:enumeration value="3">
             <xs:annotation>
                <xs:appinfo>
-                  <wert>Asylbewerber</wert>
-               </xs:appinfo>
-            </xs:annotation>
-         </xs:enumeration>
-         <xs:enumeration value="004">
-            <xs:annotation>
-               <xs:appinfo>
-                  <wert>Flüchtling (Genfer Konvention)</wert>
-               </xs:appinfo>
-            </xs:annotation>
-         </xs:enumeration>
-         <xs:enumeration value="005">
-            <xs:annotation>
-               <xs:appinfo>
-                  <wert>staatenlos</wert>
-               </xs:appinfo>
-            </xs:annotation>
-         </xs:enumeration>
-         <xs:enumeration value="006">
-            <xs:annotation>
-               <xs:appinfo>
-                  <wert>Asylbewerber anerkannt</wert>
+                  <wert>Zertifikatsprüfung fehlgeschlagen</wert>
                </xs:appinfo>
             </xs:annotation>
          </xs:enumeration>

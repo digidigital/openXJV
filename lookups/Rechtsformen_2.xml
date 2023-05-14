@@ -1,0 +1,3683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gc:CodeList xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/"
+             xmlns:xoev-cl-4="http://xoev.de/schemata/genericode/4"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Annotation>
+      <Description>
+         <xoev-cl-4:shortName>Rechtsformen</xoev-cl-4:shortName>
+         <xoev-cl-4:codelistDescription>Die Codeliste urn:xoev-de:xunternehmen:codeliste:rechtsformen bildet ab Version 2 fachbereichsübergreifend Anforderungen an die Codierung von Rechtsforminformationen ab und ermöglicht deren bereichsübergreifend einheitliche Codierung und Übermittlung. Aktuell werden die Anforderungen aus dem Grundinformationsdienst GINSTER der Steuerverwaltung und damit auch der Codierung im ELSTER-Unternehmenskonto, aus dem Registerportal der Handels-, Genossenschafts-, Partnerschafts- und Vereinsregister, dem Standard XGewerbeanzeige / XGewerbeordnung und damit auch dem Unternehmerverzeichnis der gesetzlichen Unfallversicherung umgesetzt. Auf diese Weise können beispielweise Rechtsforminformationen ohne semantische Brüche aus dem ELSTER-Unternehmenskonto über einen Online-Dienst zur Gewerbeanmeldung an die zuständige Gewerbebehörde übermittelt werden und dort mit Daten aus dem Registerportal der Justiz und (perspektivisch) mit dem Basisregister gemäß UBRegG zusammengeführt werden. Seit Version 2 sind die Codes sechsstellig und hierarchisch gegliedert, um unterschiedliche Granularitäten der Rechtsformdifferenzierung zu unterstützen und Codes einfacher zueinander in Bezug setzen zu können. Die Version 2 der Rechtsformcodierung ist vollständig rückwärtskompatibel zur Version 1 in dem Sinne, dass eine Eins-zu-eins-Umschlüsselung der bisherigen Codes erfolgen kann.</xoev-cl-4:codelistDescription>
+         <xoev-cl-4:agencyShortName>XUnternehmen</xoev-cl-4:agencyShortName>
+         <xoev-cl-4:versionHandbook>1.2</xoev-cl-4:versionHandbook>
+		 <xoev-cl-4:datumGueltigkeitAb>2022-09-01</xoev-cl-4:datumGueltigkeitAb>
+      </Description>
+   </Annotation>
+   <Identification>
+      <ShortName>rechtsformen</ShortName>
+      <LongName>Rechtsformen</LongName>
+      <Version>2</Version>
+      <CanonicalUri>urn:xoev-de:xunternehmen:codeliste:rechtsformen</CanonicalUri>
+      <CanonicalVersionUri>urn:xoev-de:xunternehmen:codeliste:rechtsformen_2</CanonicalVersionUri>
+      <Agency>
+         <LongName>XUnternehmen</LongName>
+      </Agency>
+   </Identification>
+   <ColumnSet>
+      <Column Id="Code" Use="required">
+         <ShortName>Code</ShortName>
+         <LongName>Code</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="Bezeichnung-kurz" Use="required">
+         <ShortName>Bezeichnung-kurz</ShortName>
+         <LongName>Bezeichnung-kurz</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="Bezeichnung-lang" Use="required">
+         <ShortName>Bezeichnung-lang</ShortName>
+         <LongName>Bezeichnung-lang</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="Eintragungsart" Use="optional">
+         <ShortName>Eintragungsart</ShortName>
+         <LongName>Eintragungsart</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="Standardprofil" Use="optional">
+         <ShortName>Standardprofil</ShortName>
+         <LongName>Standardprofil</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="Hinweise-fachlich" Use="optional">
+         <ShortName>Hinweise-fachlich</ShortName>
+         <LongName>Hinweise-fachlich</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Column Id="Mapping-in-Standardprofil" Use="optional">
+         <ShortName>Mapping-in-Standardprofil</ShortName>
+         <LongName>Mapping-in-Standardprofil</LongName>
+         <Data Type="string"/>
+      </Column>
+      <Key Id="CodeKey">
+         <Annotation>
+            <AppInfo>
+               <xoev-cl-4:recommendedKeyColumn/>
+            </AppInfo>
+         </Annotation>
+         <ShortName>CodeKey</ShortName>
+         <ColumnRef Ref="Code"/>
+      </Key>
+   </ColumnSet>
+   <SimpleCodeList>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>100000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Rechtsf. PG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Rechtsfähige Personengesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>-</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>110000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>PHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Personenhandelsgesellschaft (PHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>OHG (auch &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Offene Handelsgesellschaft (OHG); auch &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>auch Kapitalgesellschaft/Genossenschaft/Stiftung/Verein/Personengesellschaft &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Offene Handelsgesellschaft (OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Kapitalgesellschaft &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kapitalgesellschaft &amp; Co. Offene Handelsgesellschaft </SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111210</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GmbH &amp; Co. OHG (auch UG &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung &amp; Co. Offene Handelsgesellschaft (GmbH &amp; Co. OHG); auch Unternehmergesellschaft (haftungsbeschränkt) &amp; Co. Offene Handelsgesellschaft (UG (haftungsbeschränkt) &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111211</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GmbH &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung &amp; Co. Offene Handelsgesellschaft (GmbH &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111212</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>UG &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Unternehmergesellschaft (haftungsbeschränkt) &amp; Co.Offene Handelsgesellschaft (UG (haftungsbeschränkt) &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111220</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG &amp; Co. OHG (auch SE &amp; Co OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft &amp; Co. Offene Handelsgesellschaft (AG &amp; Co. OHG); auch Europäische Aktiengesellschaft &amp; Co. Offene Handelsgesellschaft (SE &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111221</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft &amp; Co. Offene Handelsgesellschaft (AG &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111222</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>SE &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Europäische Aktiengesellschaft &amp; Co. Offene Handelsgesellschaft (SE &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111230</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>KGaA &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kommanditgesellschaft auf Aktien &amp; Co. Offene Handelsgesellschaft (KGaA &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111240</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Ltd. (unsp.) &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Limited (unspezifisch) &amp; Co. Offene Handelsgesellschaft (Ltd. (unsp.) &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111300</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Genossenschaft &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Genossenschaft &amp; Co. Offene Handelsgesellschaft </SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111310</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>eG &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>eingetragene Genossenschaft &amp; Co. Offene Handelsgesellschaft (eG &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>111400</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Stiftung &amp; Co. OHG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Stiftung &amp; Co. Offene Handelsgesellschaft (Stiftung &amp; Co. OHG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>KG (auch &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kommanditgesellschaft (KG); auch &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>auch Kapitalgesellschaft/Genossenschaft/Stiftung/Verein/Personengesellschaft &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kommanditgesellschaft (KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Kapitalgesellschaft &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kapitalgesellschaft &amp; Co. Kommanditgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112210</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GmbH &amp; Co. KG (auch UG &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung &amp; Co. Kommanditgesellschaft (GmbH &amp; Co. KG); auch Unternehmergesellschaft (haftungsbeschränkt) &amp; Co. Kommanditgesellschaft (UG (haftungsbeschränkt) &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112211</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GmbH &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung &amp; Co. Kommanditgesellschaft (GmbH &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112212</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>UG &amp; Co.KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Unternehmergesellschaft (haftungsbeschränkt) &amp; Co. Kommanditgesellschaft (UG (haftungsbeschränkt) &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112220</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG &amp; Co. KG (auch SE &amp; Co KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft &amp; Co. Kommanditgesellschaft (AG &amp; Co. KG); auch Europäische Aktiengesellschaft &amp; Co. Kommanditgesellschaft (SE &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112221</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft &amp; Co. Kommanditgesellschaft (AG &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112222</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>SE &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Europäische Aktiengesellschaft &amp; Co. Kommanditgesellschaft (SE &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112230</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>KGaA &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kommanditgesellschaft auf Aktien &amp; Co. Kommanditgesellschaft (KGaA &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112240</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Ltd. (unsp.) &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Limited (unspezifisch) &amp; Co Kommanditgesellschaft (Ltd. (unsp.) &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112300</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Genossenschaft &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Genossenschaft &amp; Co. Kommanditgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112310</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>eG &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>eingetragene Genossenschaft &amp; Co. Kommanditgesellschaft (eG &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112400</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Personengesellschaft &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Personengesellschaft &amp; Co. Kommanditgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112410</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GbR &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft bürgerlichen Rechts &amp; Co. Kommanditgesellschaft (GbR &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>laut LG Berlin möglich</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112500</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Stiftung &amp; Co. KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Stiftung &amp; Co. Kommanditgesellschaft (Stiftung &amp; Co. KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>112600</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Investment-KG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Investmentkommanditgesellschaft (Investment-KG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>113000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>EWIV</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Europäische Wirtschaftliche Interessensvereinigung (EWIV)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Rechtsform nach europ. Gesellschaftsrecht</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>114000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Partenreederei</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Partenreederei (§ 489 HGB a. F.)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>120000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GbR (auch eGbR)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft des bürgerlichen Rechts (GbR; BGB-Gesellschaft); auch eingetragene Gesellschaft des bürgerlichen Rechts (eGbR)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>GesR, ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>121000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nicht eingetragene GbR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nicht eingetragene Gesellschaft des bürgerlichen Rechts (nicht eingetragene GbR)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>122000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nicht eingetragene GbR mbH</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nicht eingetragene Gesellschaft des bürgerlichen Rechts mit beschränkter Haftung (GbR mbH)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>für eGbRs siehe auch §707a Abs. 2 MoPeG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>123000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>eGbR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>eingetragene Gesellschaft des bürgerlichen Rechts (eGbR)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>GesR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>130000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. rechtsf. Personengesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige rechtsfähige Personengesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,P,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>131000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>PartG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Partnerschaftsgesellschaft (PartG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>P</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>138000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (Personengesellschaft)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (Personengesellschaft)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>138100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. rechtsf. Personengesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige rechtsfähige Personengesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>190000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. Personengesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Personengesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>191000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. Personengesellschaft (EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Personengesellschaft (EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>192000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. Personengesellschaft (Nicht-EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Personengesellschaft (Nicht-EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>200000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Juristische Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Juristische Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>-</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>210000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>rechtsf. Verein</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>rechtsfähiger Verein</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,V</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>211000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>eingetragener Verein</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>eingetragener Verein</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,V</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>212000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Wirtschaftlicher Verein</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Wirtschaftlicher Verein</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Der Verein wird nach Verleihung nicht im Vereinsregister eingetragen, sondern in Abteilung A des Handelsregisters.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>213000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>VVaG (auch PVaG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Versicherungsverein auf Gegenseitigkeit (VVaG); auch Pensionsfondsverein auf Gegenseitigkeit (PVaG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>213100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>VVaG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Versicherungsverein auf Gegenseitigkeit (VVaG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>213200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>PVaG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Pensionsfondsverein auf Gegenseitigkeit (PVaG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Sonderform des VVaG; für den PVaG gelten die Vorschriften über den Versicherungsverein auf Gegenseitigkeit entsprechend.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>220000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Kapitalgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kapitalgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>221000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>(g)GmbH (auch UG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung (GmbH); auch gemeinnützige GmbH (gGmbH); Unternehmergesellschaft (haftungsbeschränkt) (UG (haftungsbeschränkt))</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>221100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>g(GmbH)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung (GmbH); auch gemeinnützige GmbH (gGmbH)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>221110</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GmbH</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung (GmbH)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>221120</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>gGmbH</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>gemeinnützige Gesellschaft mit beschränkter Haftung (gGmbH)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>221200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>UG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Unternehmergesellschaft (haftungsbeschränkt) (UG (haftungsbeschränkt))</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Die in § 5a GmbHG geregelte UG (haftungsbeschränkt) stellt keine neue Rechtsform dar. Vielmehr handelt es sich um eine GmbH mit einem geringeren Stammkapital als dem für die gewöhnliche GmbH vorgeschriebenen Mindeststammkapital .</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>222000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG (auch SE; InvAG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft (AG); auch Europäische Aktiengesellschaft (SE); Investmentaktiengesellschaft (Investment-AG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>222100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG (auch Investment-AG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft (AG); auch Investmentaktiengesellschaft (InvAG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>222110</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft (AG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>222120</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>InvAG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Investmentaktiengesellschaft (InvAG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>222200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>SE</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Europäische Aktiengesellschaft (SE)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B,X</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>KGaA (auch &amp; Co. KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kommanditgesellschaft auf Aktien (KGaA); auch &amp; Co. KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kommanditgesellschaft auf Aktien (KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Kapitalgesellschaft &amp; Co. KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kapitalgesellschaft &amp; Co. Kommanditgesellschaft auf Aktien</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223210</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GmbH &amp; Co. KGaA (auch UG &amp; Co. KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung &amp; Co. Kommanditgesellschaft auf Aktien (GmbH &amp; Co. KGaA); auch Unternehmergesellschaft (haftungsbeschränkt) &amp; Co. Kommanditgesellschaft auf Aktien (UG (haftungsbeschränkt) &amp; Co. KGaA);</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223211</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>GmbH &amp; Co. KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung &amp; Co. Kommanditgesellschaft auf Aktien (GmbH &amp; Co. KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223212</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>UG &amp; Co.KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Unternehmergesellschaft (haftungsbeschränkt) &amp; Co. Kommanditgesellschaft auf Aktien (UG (haftungsbeschränkt) &amp; Co. KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223300</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG &amp; Co. KGaA (auch SE &amp; Co KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft &amp; Co. Kommanditgesellschaft auf Aktien (AG &amp; Co. KGaA); auch Europäische Aktiengesellschaft &amp; Co. Kommanditgesellschaft auf Aktien (SE &amp; Co. KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223310</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>AG &amp; Co. KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Aktiengesellschaft &amp; Co. Kommanditgesellschaft auf Aktien (AG &amp; Co. KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>223320</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>SE &amp; Co. KGaA</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Europäische Aktiengesellschaft und Co. Kommanditgesellschaft auf Aktien (SE &amp; Co. KGaA)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>224000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonstige Kapitalgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige Kapitalgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>224100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Bergrechtl. Gewerkschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Bergrechtliche Gewerkschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Als bergrechtliche Gewerkschaft wurde eine Personenvereinigung zur gemeinschaftlichen Nutzung eines Bergwerks bezeichnet. Diese Rechtsform wurde zum 1.1.1986 abgeschafft und die Unternehmen in Kapitalgesellschaften umgewandelt, die die Bezeichnung „bergrechtliche Gewerkschaft“ aber noch weiterführen dürfen.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>224200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Kolonialgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Kolonialgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>224300</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Seerechtl. Gesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Seerechtliche Gesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>224800</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (Kapitalgesellschaft)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (Kapitalgesellschaft)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>224810</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. Kapitalgesellschaft (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige Kapitalgesellschaft (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 268100 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>230000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>rechtsf. Stiftung (privatrechtl. o. öff.-rechtl.)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>rechtsfähige Stiftung (privatrechtliche oder öffentlich-rechtliche)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,S</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>231000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>rechtsf. Stiftung (Privatrecht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>rechtsfähige Stiftung des Privatrechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,S</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>232000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>rechtsf. Stiftung (öffentl. Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>rechtsfähige Stiftung des öffentlichen Rechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,S</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>240000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>KöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Körperschaft des öffentlichen Rechts (KöR)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>241000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>berufsständische KöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>berufsständische Körperschaft des öffentlichen Rechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>242000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Gebietskörperschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gebietskörperschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>243000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ÖR Religionsgemeinschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>öffentlich-rechtliche Religionsgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>250000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Genossenschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Genossenschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>G,X</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>251000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>eG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>eingetragene Genossenschaft (eG)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>G</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>252000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>SCE</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Europäische Genossenschaft (SCE)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>G,X</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Rechtsform nach europ. Gesellschaftsrecht</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>258000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (Genossenschaft)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (Genossenschaft)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>G</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>258100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. Genossenschaft (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige Genossenschaft (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>G</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 268100 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>260000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. juristische Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige juristische Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>261000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>EVTZ</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Europäischer Verbund für territoriale Zusammenarbeit (EVTZ)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>- Rechtsform nach europ. Gesellschaftsrecht; - keine Eintragung in dt. Register; - Juristische Person öffentlichen Rechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>262000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>rechtsf. AöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>rechtsfähige Anstalt des öffentlichen Rechts (rechtsf. AöR)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>268000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (juristische Person)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (juristische Person)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>268100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. juristische Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige juristische Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>268200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. juristische Person des Privatrechts (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige juristische Person des Privatrechts (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>vgl. § 1 Abs. 1 Nr.4 KStG</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 268100 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>268300</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. juristische Person des öffentlichen Rechts (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige juristische Person des öffentlichen Rechts (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 268100 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>268400</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. juristische Person, d. im HRA eingetragen ist (Justiz)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige juristische Person, die im Handelsregister Abteilung A eingetragen ist (Justiz)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>sind sonst.jur. Personen, die in das HRA eingetragen werden, z.B. wirtsch. tätige Vereine, wirtsch. tätige Stiftungen, juristische Personen d. ÖR die kaufmännische Eigenbetriebe führen (KöR, Eigenbetriebe, Sparkassen,...)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 268100 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>290000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. juristische Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische juristische Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>291000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. KöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Körperschaft des öffentlichen Rechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>überscheidet sich mit Codes "ausl. juristische Person (EU-Recht)" und "ausl. juristische Person (Nicht-EU-Recht)"</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>292000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. Genossenschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Genossenschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>G,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>überscheidet sich mit Codes "ausl. juristische Person (EU-Recht)" und "ausl. juristische Person (Nicht-EU-Recht)"</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>293000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. Kapitalgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Kapitalgesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>überscheidet sich mit Codes "ausl. juristische Person (EU-Recht)" und "ausl. juristische Person (Nicht-EU-Recht)"</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>293100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Ltd. (unsp.)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Limited Company (unspezifisch)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>294000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. juristische Person (EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische juristische Person (EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B,G,V,X</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>überschneidet sich mit Codes "ausl. KöR", "ausl. Kapitalgesellschaft", "ausl. Genossenschaft"</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>295000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl.juristische Person (Nicht-EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische juristische Person (Nicht-EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B,G,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>überschneidet sich mit Codes "ausl. KöR", "ausl. Kapitalgesellschaft", "ausl. Genossenschaft"</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>298000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (ausländische juristische Person)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (ausländische juristische Person)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B,G,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>298100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonstige ausl. juristische Person des privaten Rechts (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige ausländische juristische Person des privaten Rechts (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>B,G,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 268100 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>300000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Sonstige Personenvereinigung</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Sonstige Personenvereinigung</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>-</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>310000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>atypische stille Gesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>atypische stille Gesellschaft</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Innen-GbR ohne Rechtsfähigkeit</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>320000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Unterbeteiligung</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Unterbeteiligung</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Innen-GbR ohne Rechtsfähigkeit</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>330000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Gemeinschaft (z.B. Erben-, Grundstücks-)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gemeinschaft (z.B. Erben-, Grundstücks-)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Innen-GbR ohne Rechtsfähigkeit</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>340000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>(g)GmbH i.G.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Gesellschaft mit beschränkter Haftung in Gründung (GmbH i.G.); auch gemeinnützige Gesellschaft mit beschränkter Haftung in Gründung (gGmbH i.G.)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>350000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>(g)UG i.G.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Unternehmergesellschaft (haftungsbeschränkt) in Gründung (UG (haftungsbeschränkt) i.G.); auch gemeinnützige Unternehmergesellschaft (haftungsbeschränkt) in Gründung (gUG (haftunngsbeschränkt) i.G.)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>360000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nichtrechtsf. Verein</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nichtrechtsfähiger Verein</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>380000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (Personenvereinigung)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (Personenvereinigung)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>381000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. Personenvereinigung</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige Personenvereinigung</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>400000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Wirtsch. Tätigkeit einer nat. Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Wirtschaftliche Tätigkeit einer natürlichen Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>-</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>410000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>gew. Einzelunternehmen (ohne Hausgewerbe)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>gewerbliches Einzelunternehmen (ohne Hausgewerbe)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>411000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>e.K.; e.Kfm.; e.Kfr.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>eingetragenes gewerbliches Einzelunternehmen (e.K.; e.Kfm.; e.Kfr.)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>411100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>e.K.; e.Kfm.; e.Kfr. (Sitz in DE)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>eingetragenes gewerbliches Einzelunternehmen (e.K.; e.Kfm.; e.Kfr.) (Sitz in Deutschland)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>411200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>e.K.; e.Kfm.; e.Kfr. (Sitz im Ausland)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>eingetragenes gewerbliches Einzelunternehmen (e.K.; e.Kfm.; e.Kfr.) (Sitz im Ausland)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>412000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nicht eingetr. gew. Einzelunternehmen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nicht eingetragenes gewerbliches Einzelunternehmen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>z.B. Kleingewerbetreibende</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>412100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nicht eingetr. gew. Einzelunternehmen (Sitz in DE)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nicht eingetragenes gewerbliches Einzelunternehmen (Sitz in Deutschland)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>412200</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nicht eingetr. gew. Einzelunternehmen (Sitz im Ausland)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nicht eingetragenes gewerbliches Einzelunternehmen (Sitz im Ausland)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>420000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. wirtsch.Tätigkeit einer nat. Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige wirtschaftliche Tätigkeit einer natürlichen Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>421000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Freiberufler</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Freiberufler</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>422000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Land-/Forstwirt</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Land-/Forstwirt</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>423000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Hausgewerbe</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Hausgewerbe (und gleichgestellte Personen)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue> - arbeiten im Auftrag und auf Rechnung von Auftraggebern (z.B. Gewerbetreibende); - eingeschränkte Selbständigkeit; - Heimarbeiter sind abhängig Beschäftigte</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>424000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Beteiligung an gew. Personenges.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Beteiligung an gewerblichen Personengesellschaften</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Person, die Anteile an einer Personengesellschaft besitzt. Die Personengesellschaft ist gewerblich, wenn unter Beteiligung am allgemeinen wirtschaftlichen Verkehr eine selbständige, nachhaltige Betätigung ausgeführt wird, die darauf gerichtet ist, Gewinn zu erzielen und wenn es sich nicht um einen Betrieb der Land- und Forstwirtschaft oder um die Ausübung  eines freien Berufes handelt.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>428000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (wirtsch. Tätigkeit einer nat. Person)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (wirtschaftliche Tätigkeit einer natürlichen Person)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>428100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. wirtsch.Tätigkeit einer nat. Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige wirtschaftliche Tätigkeit einer natürlichen Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>z.B. Vergütungen für die Vollstreckung von Testamenten, für Vermögensverwaltung und für die Tätigkeit als Aufsichtsratsmitglied; Einkünfte, die ein Beteiligter an einer vermögensverwaltenden Gesellschaft oder Gemeinschaft, deren Zweck im Erwerb, Halten und in der Veräußerung von Anteilen an Kapitalgesellschaften besteht</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>490000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. wirtsch. Tätigkeit einer nat. Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische wirtschaftliche Tätigkeit einer natürlichen Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>491000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. gew. Einzelunternehmen (EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische gewerbliches Einzelunternehmen (EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>492000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. gew. Einzelunternehmen (Nicht-EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländisches gewerbliches Einzelunternehmen (Nicht-EU-Recht)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>500000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Wirtsch. Tätigkeit einer nicht-nat. Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Wirtschaftliche Tätigeit einer nicht-natürlichen Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>-</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>510000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nichtrechtsf. Stiftung des ÖR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nichtrechtsfähige Stiftung des öffentlichen Rechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>520000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nichtrechtsf. Stiftung des Privatrechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nichtrechtsfähige Stiftung des Privatrechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Vermögensmassen, die von der Stifterin oder dem Stifter mit einer festgelegten Zweckbestimmung auf eine juristische Person des Privatrecht oder öffentlichen Rechts zur treuhänderischen Verwaltung zum Zwecke der dauerhaften Zweckverfolgung übertragen wird</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>530000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nichtrechtsf. AöR</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nichtrechtsfähige Anstalt des öffentlichen Rechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>540000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Gewerbebetriebe von KöRs</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Betriebe gewerblicher Art von Körperschaften des öffentlichen Rechts</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>- Gewerblicher Betrieb in öffentlich-rechtlicher Trägerschaft, der nicht unter öffentlich-rechtliche; Versorgungs-, Verkehrs- und Hafenbetriebe fällt.; - Keine Rechtpersönlichkeit (z.B. Regibetrieb oder Eigenbetrieb), daher keine jur. Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>550000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Sondervermögen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Sondervermögen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>nicht rechtsfähige Vermögensmasse (Investmentvermögen) / Verwaltung durch JP / siehe § 1 Abs. 10 KAGB.</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>560000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. Zweckvermögen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstiges Zweckvermögen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>Sondervermögen mit bestimmten Zweck. Der Begriff „Zweckvermögen“ werde oft vorgeschoben, wenn der juristische Eigentümer eines Vermögens unbekannt sei oder vorsätzlich verschleiert werden solle. / vgl. § 1 Abs. 1 Nr. 5 KStG. </SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>580000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (wirtsch. Tätigkeit einer nicht-nat. Person)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (wirtschaftliche Tätigkeit einer nicht-natürlichen Person)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>581000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. wirtsch.Tätigkeit einer nicht-nat. Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige wirtschaftlicheTätigkeit einer nicht-natürlichen Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>590000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. wirtsch. Tätigkeit einer nicht-nat. Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische wirtschaftliche Tätigkeit einer nicht-natürlichen Person</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>591000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. Rechtsform, entspr. einem Zweckvermögen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Rechtsform, die einem Zweckvermögen nach § 1 Abs. 1 Nr. 5 KStG entspricht</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>600000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Ohne Rechtsform-Typ</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Ohne Rechtsform-Typ</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>-</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>610000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>nichtrechtsf. Verein, Anstalt, Stiftung und anderes Zweckvermögen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>nichtrechtsfähiger Verein, Anstalt, Stiftung und anderes Zweckvermögen</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>vgl. §1 KStG - gemeint sind nicht-rechtsfähige Organisationsformen. (für die rechtsfähigen existiert eigener Unterpunkt im KStG), also - nicht rechtsf. Verein - nicht rechtsf. AöR - nicht rechtsf. Stiftung</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>680000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (o. Rechtsform-Typ)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (ohne Rechtsform-Typ)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>681000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Freitext</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Freitext</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>682000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Freitext (Justiz)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Freitext (Justiz)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,V,X</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 681000 abzubilden. </SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>683000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Ersatzwert (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Ersatzwert (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>- Gilt in GINSTER für wirtsch. Tätige, als auch für wirtsch. Tätigkeiten</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 681000 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>683100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. nicht-nat. Rechtsform (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige nicht-nat. Rechtsform (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 681000 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>690000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. Rechtsform</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Rechtsform</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>691000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>ausl. Rechtsform, entspr. einer Personenvereinigung oder Vermögensmasse</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>ausländische Rechtsform, die einer Personenvereinigung oder Vermögensmasse i. S. des § 1 Abs. 1 Nr. 5 KStG entspricht</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue>x</SimpleValue>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue>§ 1 Abs.1 Nr.5 KStG: nichtrechtsfähige Vereine, nicht rechtsfähige Anstalten, nicht-rechtsfähige Stiftungen und andere Zweckvermögen des privaten Rechts;</SimpleValue>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>698000</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>Auffangtatbestände (ausl. Rechtsform)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>Auffangtatbestände (ausländische Rechtsform)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue/>
+         </Value>
+      </Row>
+      <Row>
+         <Value ColumnRef="Code">
+            <SimpleValue>698100</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-kurz">
+            <SimpleValue>sonst. ausl. Rechtsform (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Bezeichnung-lang">
+            <SimpleValue>sonstige ausländische Rechtsform (Steuer)</SimpleValue>
+         </Value>
+         <Value ColumnRef="Eintragungsart">
+            <SimpleValue>A,B,G,S,V,X,ohne</SimpleValue>
+         </Value>
+         <Value ColumnRef="Standardprofil">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Hinweise-fachlich">
+            <SimpleValue/>
+         </Value>
+         <Value ColumnRef="Mapping-in-Standardprofil">
+            <SimpleValue>Die tatsächliche Rechtsform sollte im Rahmen eines manuellen Clearings bestimmt werden. Ist dies nicht möglich, ist diese Rechtsform auf den Code 690000 abzubilden.</SimpleValue>
+         </Value>
+      </Row>
+   </SimpleCodeList>
+</gc:CodeList>
