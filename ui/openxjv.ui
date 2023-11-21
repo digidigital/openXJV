@@ -68,6 +68,9 @@
     </property>
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabs">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -82,6 +85,9 @@
       </property>
       <property name="cursor">
        <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
       </property>
       <property name="locale">
        <locale language="German" country="Germany"/>
@@ -359,6 +365,9 @@
                </property>
                <item row="0" column="0">
                 <layout class="QVBoxLayout" name="verticalLayout">
+                 <property name="spacing">
+                  <number>9</number>
+                 </property>
                  <property name="leftMargin">
                   <number>9</number>
                  </property>
@@ -394,7 +403,7 @@
                       <x>0</x>
                       <y>0</y>
                       <width>280</width>
-                      <height>142</height>
+                      <height>135</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_5">
@@ -416,7 +425,7 @@
                      <item row="1" column="0">
                       <widget class="QListWidget" name="favoritenView">
                        <property name="toolTip">
-                        <string>Doppelklick öffnet die Datei im externen Standardprogramm.</string>
+                        <string>Klick öffnet Vorschau, Doppelklick öffnet die Datei im externen Standardprogramm.</string>
                        </property>
                        <property name="toolTipDuration">
                         <number>2500</number>
@@ -428,16 +437,102 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="deleteFavoriteButton">
-                   <property name="toolTip">
-                    <string>Markierten Favoriteneintrag löschen</string>
+                  <widget class="QFrame" name="frame">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
-                   <property name="toolTipDuration">
-                    <number>2000</number>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
                    </property>
-                   <property name="text">
-                    <string></string>
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
                    </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <property name="lineWidth">
+                    <number>0</number>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <property name="spacing">
+                     <number>2</number>
+                    </property>
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SetNoConstraint</enum>
+                    </property>
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QPushButton" name="deleteFavoriteButton">
+                      <property name="font">
+                       <font>
+                        <family>Material Icons</family>
+                       </font>
+                      </property>
+                      <property name="toolTip">
+                       <string>Markierten Favoriteneintrag löschen</string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>2000</number>
+                      </property>
+                      <property name="text">
+                       <string></string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="saveFavouritesButton">
+                      <property name="font">
+                       <font>
+                        <family>Material Icons</family>
+                       </font>
+                      </property>
+                      <property name="toolTip">
+                       <string>Alle Favoriten in einem Verzeichnis ablegen.</string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>2000</number>
+                      </property>
+                      <property name="text">
+                       <string></string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="exportFavoritesButton">
+                      <property name="font">
+                       <font>
+                        <family>Material Icons</family>
+                       </font>
+                      </property>
+                      <property name="toolTip">
+                       <string>Favoriten als ZIP-Datei exportiern (Aktenauszug)</string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>2000</number>
+                      </property>
+                      <property name="text">
+                       <string></string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                 </layout>
@@ -735,6 +830,11 @@
                       <height>16777215</height>
                      </size>
                     </property>
+                    <property name="font">
+                     <font>
+                      <family>Material Icons</family>
+                     </font>
+                    </property>
                     <property name="toolTip">
                      <string>Technische Dateien ausfiltern</string>
                     </property>
@@ -838,7 +938,7 @@
             </widget>
            </widget>
           </widget>
-          <widget class="QWebEngineView" name="browser">
+          <widget class="QWebEngineView" name="browser" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>6</horstretch>
@@ -869,7 +969,7 @@
            <property name="autoFillBackground">
             <bool>false</bool>
            </property>
-           <property name="url">
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
@@ -1085,6 +1185,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="actionAktenverzeichnis_festlegen"/>
     <addaction name="separator"/>
     <addaction name="actionOnlineAufUpdatesPruefen"/>
+    <addaction name="actionAnwendungshinweise"/>
    </widget>
    <widget class="QMenu" name="menuUeber">
     <property name="title">
@@ -1116,8 +1217,12 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      <addaction name="actionDokumentenklasseColumn"/>
      <addaction name="actionEEB_HinweisColumn"/>
      <addaction name="actionEingangsdatumColumn"/>
+     <addaction name="actionErste_SnrColumn"/>
+     <addaction name="actionErstellungszeitpunktColumn"/>
      <addaction name="actionfrGeschaeftszeichenColumn"/>
      <addaction name="actionJustizkostenrelevanzColumn"/>
+     <addaction name="actionLetzte_SnrColumn"/>
+     <addaction name="actionNur_MetadatenColumn"/>
      <addaction name="actionScandatumColumn"/>
      <addaction name="actionVeraktungsdatumColumn"/>
      <addaction name="actionVersionsnummerColumn"/>
@@ -1131,6 +1236,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="actionNotizen"/>
     <addaction name="menuSpalten_ein_ausblenden"/>
     <addaction name="separator"/>
+    <addaction name="actionGrosse_Schrift"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuOptionen"/>
@@ -1141,6 +1247,11 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
   <widget class="QToolBar" name="toolBar">
    <property name="enabled">
     <bool>true</bool>
+   </property>
+   <property name="font">
+    <font>
+     <family>Material Icons</family>
+    </font>
    </property>
    <property name="windowTitle">
     <string>toolBar</string>
@@ -1169,6 +1280,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    <addaction name="actionOeffnen"/>
    <addaction name="actionZIP_ArchiveOeffnen"/>
    <addaction name="separator"/>
+   <addaction name="actionHistorieZurück"/>
+   <addaction name="actionHistorieVor"/>
+   <addaction name="separator"/>
    <addaction name="actionAktenverzeichnis_festlegen"/>
    <addaction name="separator"/>
    <addaction name="actionZuruecksetzen"/>
@@ -1193,6 +1307,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="toolTip">
     <string>Öffnen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionPDF_js">
@@ -1466,6 +1583,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    <property name="text">
     <string>Anleitung</string>
    </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
   </action>
   <action name="actionStyleFusion">
    <property name="text">
@@ -1483,6 +1603,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="iconText">
     <string></string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+O</string>
    </property>
   </action>
   <action name="actionSupport_anfragen">
@@ -1537,6 +1660,93 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
   <action name="actionAlleSpaltenMarkieren">
    <property name="text">
     <string>Alle Spalten markieren</string>
+   </property>
+  </action>
+  <action name="actionGrosse_Schrift">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Große Schrift</string>
+   </property>
+  </action>
+  <action name="actionErste_SnrColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Erste Seitennr.</string>
+   </property>
+  </action>
+  <action name="actionZweite_Seitennr">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Letzte Seitennr.</string>
+   </property>
+  </action>
+  <action name="actionErstellungszeitpunktColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Erstellungszeitpunkt</string>
+   </property>
+  </action>
+  <action name="actionNur_MetadatenColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Nur Metadaten</string>
+   </property>
+  </action>
+  <action name="actionLetzte_SnrColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Letzte Seitennr.</string>
+   </property>
+  </action>
+  <action name="actionAnwendungshinweise">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Anwendungshinweise</string>
+   </property>
+  </action>
+  <action name="actionHistorieZurück">
+   <property name="text">
+    <string>Aktenhistorie zurück</string>
+   </property>
+   <property name="iconText">
+    <string></string>
+   </property>
+   <property name="toolTip">
+    <string>In zuletzt geöffneten Akten zurückblättern </string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+PgDown</string>
+   </property>
+  </action>
+  <action name="actionHistorieVor">
+   <property name="text">
+    <string>Aktenhistorie vor</string>
+   </property>
+   <property name="iconText">
+    <string></string>
+   </property>
+   <property name="toolTip">
+    <string>In zuletzt geöffneten Akten vorblättern</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+PgUp</string>
    </property>
   </action>
  </widget>
