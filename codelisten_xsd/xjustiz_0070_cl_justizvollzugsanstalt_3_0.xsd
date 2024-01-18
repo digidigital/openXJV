@@ -1,0 +1,3272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.xjustiz.de"
+           xmlns:xoev-code="http://xoev.de/schemata/code/1_0"
+           targetNamespace="http://www.xjustiz.de"
+           version="3.0.0"
+           elementFormDefault="unqualified"
+           attributeFormDefault="unqualified">
+   <xs:annotation>
+      <xs:appinfo>
+         <standard>
+            <nameLang>Strukturierte Fachdaten für die Kommunikation im elektronischen Rechtsverkehr</nameLang>
+            <nameKurz>XJustiz</nameKurz>
+            <nameTechnisch>xjustiz</nameTechnisch>
+            <kennung>urn:xoev-de:blk-ag-it-standards:standard:xjustiz</kennung>
+            <beschreibung>XJustiz ist der bundesweit einheitliche Standard für den Austausch strukturierter elektronischer Informationen mit der Justiz.</beschreibung>
+         </standard>
+         <versionStandard>
+            <version>3.2.1</version>
+            <beschreibung>XJustiz beschreibt ein standardisiertes Datenaustauschformat für die elektronische Kommunikation innerhalb und mit der Justizverwaltung.</beschreibung>
+            <versionXOEVProfil>1.6.1</versionXOEVProfil>
+            <versionXOEVHandbuch>2.2</versionXOEVHandbuch>
+            <versionXGenerator>3.0.1</versionXGenerator>
+            <versionModellierungswerkzeug>19.0 SP3</versionModellierungswerkzeug>
+            <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+         </versionStandard>
+      </xs:appinfo>
+   </xs:annotation>
+   <xs:import schemaLocation="xoev-code.xsd"
+              namespace="http://xoev.de/schemata/code/1_0"/>
+   <xs:complexType name="Code.GDS.Justizvollzug">
+      <xs:annotation>
+         <xs:appinfo>
+            <codeliste>
+               <nameLang>GDS.Justizvollzug</nameLang>
+               <nameKurz>GDS.Justizvollzug</nameKurz>
+               <nameTechnisch>gds.justizvollzug</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:gds.justizvollzug</kennung>
+               <beschreibung>Diese Codeliste kann an allen Stellen eingebunden werden, wo Justizvollzugsanstalten fachlich benötigt werden.</beschreibung>
+               <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
+               <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
+            </codeliste>
+            <versionCodeliste>
+               <version>2.0</version>
+               <versionCodelistenHandbuch>1.0</versionCodelistenHandbuch>
+            </versionCodeliste>
+            <codelistenspalten>
+               <code>
+                  <spaltennameLang>Schlüssel</spaltennameLang>
+                  <datentyp>string</datentyp>
+                  <codeSpalte>true</codeSpalte>
+                  <verwendung>required</verwendung>
+                  <empfohleneCodeSpalte>true</empfohleneCodeSpalte>
+               </code>
+               <wert>
+                  <spaltennameLang>Wert</spaltennameLang>
+                  <datentyp>string</datentyp>
+                  <codeSpalte>false</codeSpalte>
+                  <verwendung>required</verwendung>
+                  <empfohleneCodeSpalte>false</empfohleneCodeSpalte>
+               </wert>
+            </codelistenspalten>
+            <genutzteCodeSpalte>code</genutzteCodeSpalte>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:restriction base="xoev-code:Code">
+            <xs:sequence>
+               <xs:element name="code">
+                  <xs:simpleType>
+                     <xs:restriction base="xs:token">
+                        <xs:enumeration value="1001">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Saarbrücken</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="101">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Flensburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1010">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ottweiler</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="102">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Itzehoe</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1020">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neunkirchen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1021">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neunkirchen (ZA Saarlouis)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1022">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA St. Ingbert</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="103">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kiel</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1030">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Lebach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="104">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lübeck</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1040">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Merzig</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="105">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lübeck (Schwarzenbek)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="106">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neumünster</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="107">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JA Schleswig (TA Neumünster)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="108">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schleswig</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="110">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Rendsburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1101">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Moabit)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1102">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Tegel)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1103">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JA Berlin (Jugendstrafanstalt)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1104">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (JVA für Frauen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1105">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Düppel)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1106">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Hakenfelde)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1107">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Plötzensee)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1108">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Heiligensee)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1109">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Charlottenburg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="111">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JA Schleswig</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1111">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Berlin-Neukölln</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1112">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin-Düppel</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1114">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Berlin (Moabit)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="112">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Moltsfelde</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1131">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JA Berlin (Jugendstrafanstalt)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1139">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Berlin (Jugendarrestanstalt)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1142">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (JVA für Frauen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1143">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (JVA für Frauen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1144">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (JVA für Frauen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1152">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Düppel)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1160">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Hakenfelde)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1172">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Berlin (Plötzensee)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1173">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Berlin (Plötzensee)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1191">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Berlin (Charlottenburg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1192">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Berlin (Plötzensee)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1194">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Berlin (Plötzensee)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1195">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Berlin (Plötzensee)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1197">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Krankenhaus Reinickendorf</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1198">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Berlin</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1199">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Berlin</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1202">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Königs Wusterhausen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1204">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Frankfurt/Oder</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1205">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Oranienburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1210">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>HAH Prötzel</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1211">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Brandenburg an der Havel</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1221">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Wriezen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1231">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Spremberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1233">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Luckau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1234">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Luckau-Duben</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1235">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neuruppin-Wulkow</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1238">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Cottbus-Dissenchen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1250">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Brandenburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1252">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Teupitz</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1266">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Neuruppin (Psychiatrie)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1280">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Eberswalde</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1300">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Eberswalde</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1301">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bützow</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1308">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Waldeck</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1310">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Wismar</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1332">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Stralsund</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1333">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neustrelitz</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1334">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ueckermünde</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1338">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neubrandenburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1339">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Ueckermünde</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1390">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Klinikum Hansestadt Stralsund</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1391">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Christopherus-Diakoniewerk</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1401">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bautzen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1402">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Chemnitz</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1403">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Dresden</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1404">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Görlitz</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1405">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Leipzig</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1406">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Plauen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1409">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Torgau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1410">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Waldheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1411">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Zeithain</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1412">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Zwickau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1416">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Chemnitz-Kaßberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1454">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Leipzig</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1455">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>UHA Leipzig (Außenstelle)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1457">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Arnsdorf (Fachkrankenhaus)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1501">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Magdeburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1505">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Magdeburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1506">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Naumburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1508">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Raßnitz</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1509">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Volkstedt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1510">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Volkstedt (ZwA Eisleben)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1521">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Halle III</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1522">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Dessau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1523">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Halle</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1594">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Magdeburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1595">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Halle</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1596">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Halle (Abt. Frauen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1598">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Uchtspringe</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1599">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Bernburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1603">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Weimar</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1604">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Gera</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1608">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Gera</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1609">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Tonna</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1613">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Zweiganstalt Unterwellenborn</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1614">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Untermaßfeld</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1621">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hohenleuben</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1622">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ichtershausen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1695">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Hildburghausen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1696">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Mühlhausen/Pfaffenrode</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1697">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Stadtroda</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1699">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Goldlauter (Suhl)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="190">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Neustadt (i. Holstein)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="191">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Schleswig</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="201">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Fuhlsbüttel</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="203">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Glasmoor</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="204">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hahnöfersand</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="206">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>UHA Hamburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="209">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Vierlande</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="210">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Bergedorf</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="212">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Billwerder</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="214">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Altengamme</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="290">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>FK Klinikum Nord</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="301">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Braunschweig</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="302">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Gifhorn</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="303">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Helmstedt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="304">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Peine</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="306">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bückeburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="308">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Burgdorf</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="310">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Celle</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="313">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Salinenmoor</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="315">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Bad Gandersheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="317">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Roßdorf Abt. Göttingen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="318">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Roßdorf Abt. Duderstadt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="319">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Roßdorf Abt. Einbeck</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="320">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Roßdorf Abt. Holzminden</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="322">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Roßdorf</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="324">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JA Hameln</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="325">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hameln (Freigängerabtl.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="326">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hannover (Abt. Langenhagen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="327">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hannover</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="328">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hannover (Bildungsstätte)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="329">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hannover (Freigängerabt.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="330">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hildesheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="333">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lingen und JVK</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="334">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lingen (Abt. Groß-Hesepe)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="336">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lingen - Damaschke</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="338">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lüneburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="339">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lüneburg (Abt. Brockw. Weg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="341">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Meppen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="343">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Oldenburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="344">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Oldenburg (ZA Delmenhorst)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="345">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Oldenburg (ZA Nordenham)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="346">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Oldenburg (Abt. Gerichtsstr.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="347">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lingen Abt. Osnabrück</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="348">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Sehnde</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="349">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Stade</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="350">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Cuxhaven</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="352">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Uelzen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="354">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Vechta</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="355">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Vechta (JVA f. Frauen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="356">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Vechta-Falkenrott</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="357">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Vechta</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="358">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Verden</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="359">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Achim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="360">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Vechta (ZA Nienburg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="362">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Wilhelmshaven</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="363">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Aurich</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="364">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Emden</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="367">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Wolfenbüttel</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="368">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Goslar (ZA Wolfenbüttel)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="378">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Bad Zwischenahn (Wehnen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="379">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Tiefenbrunn (Krkh. Rosdorf)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="380">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Rehburg-Loccum (Wunstorf)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="381">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Wunstorf</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="382">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Osnabrück</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="383">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Moringen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="384">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Lüneburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="385">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Lüneburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="386">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Königslutter</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="387">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Hildesheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="388">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Hildesheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="389">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Hannover</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="390">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Göttingen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="391">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Zeven-Brauel</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="392">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Neustadt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="393">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lingen Abt. Schinkelstraße</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="394">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Meppen (Außenarbeitsstelle)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="395">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Königslutter (ZwA Wolfenb.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="396">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Jever</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="397">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Stade (Abtl. Bremervörde)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="398">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Bersenbrück</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="399">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bad Gandersheim (Alfeld)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="400">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bremen-Oslebshausen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="401">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bremen-Blockland</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="402">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bremen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="403">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bremerhaven</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="490">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Bremen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="502">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Attendorn</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="503">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bielefeld-Senne</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="504">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bielefeld-Brackwede I</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="505">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bielefeld-Brackwede II</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="507">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bochum</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="508">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bochum-Langendreer</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="510">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Castrop-Rauxel</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="511">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Münster(Hafthaus Coesfeld)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="512">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Detmold</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="513">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Dinslaken</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="514">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Dortmund</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="516">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Düsseldorf</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="517">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Duisburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="518">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Duisburg-Hamborn</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="519">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Fröndenberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="520">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Essen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="521">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Geldern</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="522">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Gelsenkirchen (Sozialth.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="523">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hagen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="524">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hamm</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="525">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Heinsberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="526">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Herford</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="528">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hövelhof</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="529">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Iserlohn</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="530">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kleve</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="531">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Köln</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="532">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Krefeld</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="533">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Leverkusen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="534">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Moers-Kapellen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="535">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mönchengladbach-Giesenkirchen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="536">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mönchengladbach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="537">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Moers</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="538">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mülheim/a.d. Ruhr</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="539">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Münster</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="540">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neuss</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="541">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Oberhausen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="542">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Recklinghausen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="543">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Remscheid</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="544">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Remscheid-Zweiganstalt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="545">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Rheinbach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="546">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwerte</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="547">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Siegburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="548">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Siegen (ZwA der JVA Attendorn)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="549">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Werl</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="550">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Willich I</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="551">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Wuppertal</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="552">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Willich II</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="553">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Aachen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="554">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Euskirchen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="555">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Gelsenkirchen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="563">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Gütersloh</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="564">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Bedburg-Hau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="565">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Bonn</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="566">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Düren</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="567">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Düsseldorf</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="568">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Haldem</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="569">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Langenfeld</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="570">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Lippstadt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="571">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Lippstadt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="572">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Marsberg (Westf. Therapiez.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="573">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Köln</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="574">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Viersen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="575">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Bottrop</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="576">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Düsseldorf-Gerresheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="579">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Lünen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="582">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Remscheid</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="583">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Wetter</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="584">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Hemer</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="585">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Rheine</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="588">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Köln (Außenstelle)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="589">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bielefeld-Brackwede I</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="590">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Büren</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="591">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Düren (Übergangshaus Köln)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="594">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Solingen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="595">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Wuppertal (Hafthaus Barmen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="596">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Marsberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="597">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Gütersloh</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="598">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Herne</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="601">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Butzbach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="602">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Darmstadt (geschl. Vollzug)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="603">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Dieburg (geschl. Vollzug)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="604">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Frankfurt/Main</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="605">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Frankfurt/Main II</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="606">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Frankfurt/Main III</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="607">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Frankfurt/Main IV</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="608">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Fulda</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="609">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kassel I</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="610">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Kassel II</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="611">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Limburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="612">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Rockenberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="613">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwalmstadt (geschl. Vollzug)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="614">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Wiesbaden</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="615">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Weiterstadt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="616">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Offenbach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="620">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Gelnhausen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="621">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Gießen (geschl. Vollzug)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="622">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hanau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="623">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kassel III (Zweiganstalt)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="628">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Frankfurt/Main III - OV</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="631">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Kaufungen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="641">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Gießen (offener Vollzug)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="642">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Darmstadt (offener Vollzug)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="643">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Dieburg (offener Vollzug)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="648">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Fulda (offener Vollzug)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="650">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwalmstadt (Kornhaus)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="660">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hünfeld</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="677">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Frankfurt/Main IV (OV)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="688">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Friedberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="689">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Offenbach E.f.A.</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="690">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kassel (off. Vz. Hafenstr.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="691">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Marburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="692">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Haina</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="693">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Hadamar</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="694">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Eltville</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="696">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Groß-Gerau (Rockenberg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="697">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kassel (off. Vz. Baunatal)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="698">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kassel (off. Vz. Aspenstr.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="701">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Diez</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="702">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Frankenthal</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="704">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Koblenz</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="705">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Ludwigshafen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="706">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mainz</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="707">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Schifferstadt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="708">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Trier</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="709">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Wittlich</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="710">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Wittlich</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="711">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Zweibrücken</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="713">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Worms</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="714">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Rohrbach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="793">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Klingenmünster</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="794">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Andernach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="795">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Alzey</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="796">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Zweibrücken-Birkhausen (ZwA)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="797">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Trier (ZwA Saarburg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="798">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mainz (Wonsheim)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="799">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Bad Neuenahr</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="801">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Adelsheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="802">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mosbach (Baden)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="803">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Tauberbischofsheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="806">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bruchsal</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="810">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Freiburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="811">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Freiburg (Waldkirch)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="812">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Freiburg (Holzmarkt)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="813">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Freiburg (Tennenbacher Str.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="814">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Freiburg (Emmendingen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="815">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Heilbronn</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="816">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Heilbronn (Hohrainhof)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="820">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Asperg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="821">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Asperg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="822">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Crailsheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="825">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Karlsruhe</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="826">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kislau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="827">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Rastatt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="830">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Konstanz</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="831">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Konstanz (AS. Singen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="832">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Konstanz (Krkh. Reichenau)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="835">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Heimsheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="836">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ludwigsburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="840">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mannheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="841">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mannheim (Heidelberg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="845">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Offenburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="846">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Offenburg (ZA Kehl)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="848">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Offenburg (ZA Kenzingen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="849">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Offenburg (ZA Bühl)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="850">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Pforzheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="851">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Calw</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="852">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Pforzheim (ZA Sachsenheim)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="855">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ravensburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="856">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ravensburg (ZwA Bettenreute)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="860">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Rottenburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="861">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hohenstein (ZA Rottenburg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="862">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Tübingen (ZA Rottenburg)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="865">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Rottweil</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="866">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Oberndorf</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="868">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hechingen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="870">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwäbisch-Gmünd</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="871">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwäb.-Gmünd (ZwA Heidenh.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="872">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwäb.-Gmünd (ZwA Ellwang.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="873">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwäb.-Gmünd (Zweiganstalt)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="874">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lauchheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="875">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwäbisch-Hall</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="876">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwäbisch-Hall</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="877">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schwäbisch-Hall</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="880">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Stuttgart</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="881">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Leonberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="884">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ulm (Zweiganstalt)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="885">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ulm</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="886">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Bad Schussenried</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="887">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ulm</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="888">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Emmendingen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="889">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Weinsberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="890">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Waldshut-Tiengen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="891">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Lörrach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="892">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Villingen-Schwenningen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="893">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Göppingen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="894">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Müllheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="895">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Wiesloch</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="897">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Weissenau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="898">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Wiesloch</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="899">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Zwiefalten</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="901">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Aichach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="902">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Amberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="903">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ansbach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="904">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Aschaffenburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="905">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Augsburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="906">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bad Neustadt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="907">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bad Reichenhall</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="908">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bamberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="909">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bayreuth</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="910">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Bernau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="911">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ebrach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="912">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Eichstätt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="913">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Erding</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="914">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>SOZ Erlangen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="915">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Garmisch Partenkirchen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="916">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Hof</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="917">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Ingolstadt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="918">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kaisheim</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="919">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kempten</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="920">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Kronach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="921">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Landsberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="922">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Landshut</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="923">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Laufen in Oberbayern</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="924">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Memmingen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="925">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Mühldorf am Inn</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="926">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA München</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="927">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neuburg a. d. Donau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="928">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neuburg-Herrenwörth</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="929">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Neu-Ulm</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="930">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Niederschönenfeld</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="931">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Nürnberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="932">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Passau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="933">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Regensburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="934">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Schweinfurt</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="935">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Straubing</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="936">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Traunstein</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="937">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Weiden</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="939">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA Würzburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="944">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Landau</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="982">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Deggendorf(Mainkofen)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="983">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Lohr</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="984">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Werneck</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="985">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Regensburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="986">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Parsberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="987">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Straubing</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="988">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>LKH Erlangen</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="989">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Kaufbeuren</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="990">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Haar</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="991">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Günzburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="992">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Wasserburg (Gabersee)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="993">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Bayreuth</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="994">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVK Ansbach</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="995">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Nürnberg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="996">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA München (Jugendarrest-Anst.)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="997">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JVA München(Frauenanstalt)</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="998">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Hof</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="999">
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <wert>JAA Augsburg</wert>
+                              </xs:appinfo>
+                           </xs:annotation>
+                        </xs:enumeration>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:element>
+            </xs:sequence>
+            <xs:attribute name="listURI"
+                          type="xs:anyURI"
+                          use="optional"
+                          fixed="urn:xoev-de:xjustiz:codeliste:gds.justizvollzug"/>
+            <xs:attribute name="listVersionID"
+                          type="xs:normalizedString"
+                          use="optional"
+                          fixed="2.0"/>
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+</xs:schema>
