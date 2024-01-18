@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="256"
+   viewBox="0 -960 10240 10240"
+   width="256"
+   version="1.1"
+   id="svg27271"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs27275" />
+  <path
+     d="M 3680,6320 H 6560 V 5600 H 3680 Z m 0,-1440 H 6560 V 4160 H 3680 Z m -720,2880 q -297,0 -508.5,-211.5 Q 2240,7337 2240,7040 V 1280 Q 2240,983 2451.5,771.5 2663,560 2960,560 h 2880 l 2160,2160 v 4320 q 0,297 -211.5,508.5 Q 7577,7760 7280,7760 Z M 5480,3080 V 1280 H 2960 V 7040 H 7280 V 3080 Z M 2960,1280 V 3080 1280 7040 Z"
+     id="path27269"
+     style="fill:#808080;stroke-width:9" />
+</svg>
