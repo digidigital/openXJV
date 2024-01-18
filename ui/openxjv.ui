@@ -1217,6 +1217,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      <addaction name="actionDokumentenklasseColumn"/>
      <addaction name="actionEEB_HinweisColumn"/>
      <addaction name="actionEingangsdatumColumn"/>
+     <addaction name="actionErsetzenderScanColumn"/>
      <addaction name="actionErste_SnrColumn"/>
      <addaction name="actionErstellungszeitpunktColumn"/>
      <addaction name="actionfrGeschaeftszeichenColumn"/>
@@ -1234,6 +1235,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="actionNachrichtenkopf"/>
     <addaction name="actionFavoriten"/>
     <addaction name="actionNotizen"/>
+    <addaction name="actionMetadaten"/>
     <addaction name="menuSpalten_ein_ausblenden"/>
     <addaction name="separator"/>
     <addaction name="actionGrosse_Schrift"/>
@@ -1747,6 +1749,22 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+PgUp</string>
+   </property>
+  </action>
+  <action name="actionMetadaten">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Metadaten</string>
+   </property>
+  </action>
+  <action name="actionErsetzenderScanColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Ersetzender Scan</string>
    </property>
   </action>
  </widget>
