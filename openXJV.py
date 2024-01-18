@@ -2,7 +2,7 @@
 # coding: utf-8
 '''
     openXJV.py - a viewer for XJustiz-Data
-    Copyright (C) 2022 - 2023 Björn Seipel
+    Copyright (C) 2022 - 2024 Björn Seipel
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ from PyQt6.QtGui import (
     QPainter, 
     QFontDatabase,
     QDesktopServices,
-    QPainter 
+    QPainter
 )
 from PyQt6.QtWidgets import (
  
@@ -92,12 +92,12 @@ from PyQt6.QtWebEngineCore import QWebEngineSettings
 from appdirs import AppDirs
 
 
-from helperScripts import parser240, parser321, parser331, parser341
+from helperScripts import parser240, parser321, parser331, parser341, parser351
 
 import pypdfium2 as pdfium
 
 global VERSION 
-VERSION = '0.6.3'
+VERSION = '0.6.4'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=15, set_bold=False, color=QColor(0, 0, 0)):
@@ -145,7 +145,6 @@ class TextObject():
 
     def update_range_from(self, value):
         self.range_from.setMaximum(value)
-
 
 class printPdfWorker(QObject):
     '''Worker class for long running PDF print task'''
@@ -332,6 +331,7 @@ class UI(QMainWindow):
             'posteingangsdatum',
             'veraktungsdatum',
             'scanDatum',
+            'ersetzenderScan',
             'anzeigename',
             'dokumententyp',
             'dokumentklasse',
@@ -353,33 +353,34 @@ class UI(QMainWindow):
         ]
 
         self.docHeaderColumnsSettings={
-            #key                              headertext                              action for menu-item /config                     default visibility  width of column                 
-            ''                               :{'headertext':''                      ,'setting':None                                  ,'default':True , 'width':10},
-            ''                               :{'headertext':''                      ,'setting':None                                  ,'default':True , 'width':10},
-            'nummerImUebergeordnetenContainer':{'headertext':'#'                      ,'setting':None                                  ,'default':True , 'width':45},
-            'ersteSeitennummer'               :{'headertext':'Erste\nSeitennr.'       ,'setting':self.actionErste_SnrColumn            ,'default':False,  'width':45},
-            'letzteSeitennummer'              :{'headertext':'Letzte\nSeitennr.'      ,'setting':self.actionLetzte_SnrColumn           ,'default':False,  'width':45},            
-            'dateiname'                       :{'headertext':'Dateiname'              ,'setting':None                                  ,'default':True , 'width':None},
-            'anzeigename'                     :{'headertext':'Anzeige-\nname'         ,'setting':None                                  ,'default':True , 'width':None},
-            'nurMetadaten'                    :{'headertext':'Nur\nMetadaten'         ,'setting':self.actionNur_MetadatenColumn        ,'default':False, 'width':45},
-            'datumDesSchreibens'              :{'headertext':'Datum'                  ,'setting':self.actionDatumColumn                ,'default':True , 'width':95},
-            'erstellungszeitpunkt'            :{'headertext':'Erstellungs-\nzeitpunkt','setting':self.actionEingangsdatumColumn        ,'default':True,  'width':195},
-            'posteingangsdatum'               :{'headertext':'Eingang'                ,'setting':self.actionErstellungszeitpunktColumn ,'default':False, 'width':195},
-            'veraktungsdatum'                 :{'headertext':'Veraktung'              ,'setting':self.actionVeraktungsdatumColumn      ,'default':True,  'width':95},
-            'scanDatum'                       :{'headertext':'Scandatum'              ,'setting':self.actionScandatumColumn            ,'default':False, 'width':95},
-            'dokumententyp'                   :{'headertext':'Typ'                    ,'setting':self.actionDokumententypColumn        ,'default':True , 'width':None},
-            'dokumentklasse'                  :{'headertext':'Klasse'                 ,'setting':self.actionDokumentenklasseColumn     ,'default':True , 'width':None},
-            'bestandteil'                     :{'headertext':'Bestandteil'            ,'setting':self.actionBestandteilColumn          ,'default':True , 'width':None},
-            'versionsnummer'                  :{'headertext':'Version-\nnr.'          ,'setting':self.actionVersionsnummerColumn       ,'default':False, 'width':None},
-            'dateiname.bezugsdatei'           :{'headertext':'Bezug\nzu'              ,'setting':self.actionBezugsdateinameColumn      ,'default':False, 'width':None},
-            'ruecksendungEEB.erforderlich'    :{'headertext':'EEB'                    ,'setting':self.actionEEB_HinweisColumn          ,'default':True,  'width':45},
-            'zustellung41StPO'                :{'headertext':'§41\nStPO'              ,'setting':self.actionZustellung_StPO_41Column   ,'default':False, 'width':40},
-            'akteneinsicht'                   :{'headertext':'Akten-\neinsicht'       ,'setting':self.actionAkteneinsichtColumn        ,'default':False, 'width':60},
-            'absenderAnzeigename'             :{'headertext':'Absender'               ,'setting':self.actionAbsenderColumn             ,'default':False, 'width':None},
-            'adressatAnzeigename'             :{'headertext':'Adressat'               ,'setting':self.actionAdressatColumn             ,'default':False, 'width':None},
-            'justizkostenrelevanz'            :{'headertext':'Kosten-\nrele-\nvanz'   ,'setting':self.actionJustizkostenrelevanzColumn ,'default':False, 'width':58},
-            'fremdesGeschaeftszeichen'        :{'headertext':'fr. Gz.'                ,'setting':self.actionfrGeschaeftszeichenColumn  ,'default':False, 'width':None},
-            'vertraulichkeitsstufe'           :{'headertext':'Vertraulich'            ,'setting':self.actionVertraulichkeitsstufeColumn,'default':False, 'width':None},           
+            #key                              headertext                              action for menu-item /config                     default visibility width of column (no real effect - set to auto width if not None)                 
+            ''                               :{'headertext':''                      ,'setting':None                                  ,'default':True    ,'width':10},
+            ''                               :{'headertext':''                      ,'setting':None                                  ,'default':True    ,'width':10},
+            'nummerImUebergeordnetenContainer':{'headertext':'#'                      ,'setting':None                                  ,'default':True    ,'width':45},
+            'ersteSeitennummer'               :{'headertext':'Erste\nSeitennr.'       ,'setting':self.actionErste_SnrColumn            ,'default':False   ,'width':45},
+            'letzteSeitennummer'              :{'headertext':'Letzte\nSeitennr.'      ,'setting':self.actionLetzte_SnrColumn           ,'default':False   ,'width':45},            
+            'dateiname'                       :{'headertext':'Dateiname'              ,'setting':None                                  ,'default':True    ,'width':None},
+            'anzeigename'                     :{'headertext':'Anzeige-\nname'         ,'setting':None                                  ,'default':True    ,'width':200},
+            'nurMetadaten'                    :{'headertext':'Nur\nMetadaten'         ,'setting':self.actionNur_MetadatenColumn        ,'default':False   ,'width':45},
+            'datumDesSchreibens'              :{'headertext':'Datum'                  ,'setting':self.actionDatumColumn                ,'default':True    ,'width':95},
+            'erstellungszeitpunkt'            :{'headertext':'Erstellungs-\nzeitpunkt','setting':self.actionEingangsdatumColumn        ,'default':True    ,'width':195},
+            'posteingangsdatum'               :{'headertext':'Eingang'                ,'setting':self.actionErstellungszeitpunktColumn ,'default':False   ,'width':195},
+            'veraktungsdatum'                 :{'headertext':'Veraktung'              ,'setting':self.actionVeraktungsdatumColumn      ,'default':True    ,'width':95},
+            'scanDatum'                       :{'headertext':'Scandatum'              ,'setting':self.actionScandatumColumn            ,'default':False   ,'width':95},
+            'ersetzenderScan'                 :{'headertext':'Ersetzender\nScan'      ,'setting':self.actionErsetzenderScanColumn      ,'default':False   ,'width':40},
+            'dokumententyp'                   :{'headertext':'Typ'                    ,'setting':self.actionDokumententypColumn        ,'default':True    ,'width':None},
+            'dokumentklasse'                  :{'headertext':'Klasse'                 ,'setting':self.actionDokumentenklasseColumn     ,'default':True    ,'width':200},
+            'bestandteil'                     :{'headertext':'Bestandteil'            ,'setting':self.actionBestandteilColumn          ,'default':True    ,'width':None},
+            'versionsnummer'                  :{'headertext':'Version-\nnr.'          ,'setting':self.actionVersionsnummerColumn       ,'default':False   ,'width':None},
+            'dateiname.bezugsdatei'           :{'headertext':'Bezug\nzu'              ,'setting':self.actionBezugsdateinameColumn      ,'default':False   ,'width':None},
+            'ruecksendungEEB.erforderlich'    :{'headertext':'EEB'                    ,'setting':self.actionEEB_HinweisColumn          ,'default':True    ,'width':45},
+            'zustellung41StPO'                :{'headertext':'§41\nStPO'              ,'setting':self.actionZustellung_StPO_41Column   ,'default':False   ,'width':40},
+            'akteneinsicht'                   :{'headertext':'Akten-\neinsicht'       ,'setting':self.actionAkteneinsichtColumn        ,'default':False   ,'width':60},
+            'absenderAnzeigename'             :{'headertext':'Absender'               ,'setting':self.actionAbsenderColumn             ,'default':False   ,'width':None},
+            'adressatAnzeigename'             :{'headertext':'Adressat'               ,'setting':self.actionAdressatColumn             ,'default':False   ,'width':None},
+            'justizkostenrelevanz'            :{'headertext':'Kosten-\nrele-\nvanz'   ,'setting':self.actionJustizkostenrelevanzColumn ,'default':False   ,'width':58},
+            'fremdesGeschaeftszeichen'        :{'headertext':'fr. Gz.'                ,'setting':self.actionfrGeschaeftszeichenColumn  ,'default':False   ,'width':None},
+            'vertraulichkeitsstufe'           :{'headertext':'Vertraulich'            ,'setting':self.actionVertraulichkeitsstufeColumn,'default':False   ,'width':None},           
         }
          
         self.isDocColumnEmpty={}
@@ -435,9 +436,10 @@ class UI(QMainWindow):
         self.actionZIP_ArchiveOeffnen.triggered.connect(self.__selectZipFiles)
         self.actionUeberOpenXJV.triggered.connect(self.__displayInfo)
         self.actionAnleitung.triggered.connect(self.__openManual)
-        self.actionSupport_anfragen.triggered.connect(self.__supportAnfragen)
+        self.actionSupport_anfragen.triggered.connect(self.__supportAnfragen)       
         self.actionAktenverzeichnis_festlegen.triggered.connect(lambda:self.__chooseStartFolder())
-        self.inhaltView.clicked.connect(lambda clicked: self.__updateSelectedInhalt(clicked, self.akte))
+        self.inhaltView.clicked.connect(self.__updateSelectedInhalt)
+        # Connection in __setInhaltView: self.inhaltView.selectionModel().selectionChanged.connect(self.__updateSelectedInhalt)
         self.docTableView.doubleClicked.connect(self.__dClickDocTableAction)
         self.docTableView.selectionModel().selectionChanged.connect(self.__browseDocTableAction)
         self.termineTableView.clicked.connect(self.__setTerminDetailView)
@@ -454,6 +456,7 @@ class UI(QMainWindow):
         self.actionNachrichtenkopf.triggered.connect(self.__updateSettings)
         self.actionAnwendungshinweise.triggered.connect(self.__updateSettings)
         self.actionFavoriten.triggered.connect(self.__updateSettings)
+        self.actionMetadaten.triggered.connect(self.__updateSettings)
         self.actionNotizen.triggered.connect(self.__updateSettings)
         self.actionLeereSpaltenAusblenden.triggered.connect(self.__updateSettings)
         self.actionOnlineAufUpdatesPruefen.triggered.connect(self.__updateSettings)
@@ -548,14 +551,17 @@ class UI(QMainWindow):
         
         QDesktopServices.openUrl(QUrl("mailto:%s?subject=Supportanfrage zu openXJV %s unter %s&body=%s" % (self.supportMail, VERSION, platform.platform() ,str(mailbody)), QUrl.ParsingMode.TolerantMode ))
     
-    def __updateSelectedInhalt(self, val, akte):
+    def __updateSelectedInhalt(self):
+        val = self.inhaltView.currentIndex() 
+        akte = self.akte 
+    
         aktenID=val.siblingAtColumn(val.column()+1).data()
         self.__setMetadata(akte, aktenID)
         self.__setDocumentTable(aktenID)
         if self.actionAnwendungshinweise.isChecked() and self.docTableView.rowCount() == 0: 
                 self.__informIfNoDocsVisible()
         self.__filtersTriggered()   
-    
+           
     def __filtersTriggered(self):
         filteredRows = self.__filterTableRows(self.docTableView, self.plusFilter.text(), self.minusFilter.text())
         
@@ -689,8 +695,22 @@ class UI(QMainWindow):
         self.docTableView.setColumnCount(0)  
         
         data=[]
+        if akteID == 'Alle_Dokumente':
+            rows = self.akte.getFileRows()
+            for akteID in self.akte.alleAktenIDs:
+                rows.extend(self.akte.getFileRows(akteID))
+        else:
+            rows = self.akte.getFileRows(akteID)
+        
+        filename = []
         #sort data & add action Icons
-        for row in self.akte.getFileRows(akteID):
+        for row in rows:
+            
+            #Ensure documents with the same filename are displayed only one time  
+            if row['dateiname'] in filename:
+                continue
+            else:
+                filename.append(row['dateiname']) 
             rowData= []
             
             #Bookmark+ icon, Open external icon in "Material Font"
@@ -827,7 +847,7 @@ class UI(QMainWindow):
     def __setMetadata(self, nachricht, aktenID=None):
         
         text=TextObject(newline='\n')
-        if aktenID is None or aktenID=='':
+        if aktenID is None or aktenID=='' or aktenID == 'Alle_Dokumente':
             
             if nachricht.nachricht.get('vertraulichkeit'):
                 text.addLine('Vertraulichkeitsstufe', nachricht.nachricht['vertraulichkeit'].get('vertraulichkeitsstufe'))
@@ -840,6 +860,7 @@ class UI(QMainWindow):
                 ['eigeneID','Abs. Nachr.-ID'],
                 ['fremdeID','Empf. Nachr.-ID'],
                 ['prozessID','Prozess-ID'],
+                ['routingInformationAusSafe', 'Routinginformation'],
                 ['produktName','Software'],
                 ['produktHersteller','Hersteller'],
                 ['produktVersion','Version'],
@@ -857,9 +878,8 @@ class UI(QMainWindow):
                     eeb = 'Abgabe angefordert'
                 text.addLine('EEB', eeb)
                 
-                if akte.get('aktentyp'):
-                    for aktenzeichen in akte['aktenzeichen']:
-                        text.addLine('Aktenzeichen', aktenzeichen['aktenzeichen.freitext'])
+                for aktenzeichen in akte['aktenzeichen']:
+                    text.addLine('Aktenzeichen', aktenzeichen['aktenzeichen.freitext'])
             
                 for person in akte['personen']:
                     name=self.akte.beteiligtenverzeichnis.get(person)
@@ -957,7 +977,7 @@ class UI(QMainWindow):
                 outzip.write(file, os.path.basename(file))
           
     def __exportToFolderAction(self):
-        # Zielordner in Dialog abfragen
+        '''Fragt Zielordner in Dialog ab und exportiert Dateien'''
         msgBox=QMessageBox()
         msgBox.setWindowTitle("Information")
         msgBox.setIcon(QMessageBox.Icon.Information)
@@ -998,18 +1018,28 @@ class UI(QMainWindow):
         treeModel = QStandardItemModel()
         rootNode = treeModel.invisibleRootItem()
         
+        if (len(schriftgutobjekte['dokumente'])>0 or len(schriftgutobjekte['akten'])>0):
+            alle_dokumente = StandardItem('Alle Inhalte anzeigen')
+            alle_dokumente.setIcon(QIcon(os.path.join(self.scriptRoot, 'icons', 'double_arrow_down_icon.png')))
+            alle_key       = StandardItem('Alle_Dokumente')
+            rootNode.appendRow([alle_dokumente, alle_key])            
+                
         if len(schriftgutobjekte['dokumente'])>0:
-            dokumente = StandardItem('Dokumente')
+            dokumente = StandardItem('Einzeldokumente')
+            dokumente.setIcon(QIcon(os.path.join(self.scriptRoot, 'icons', 'dokument_icon.png')))
             key       = StandardItem(None)
             rootNode.appendRow([dokumente, key])
         
         if len(schriftgutobjekte['akten'])>0:
             self.__getAktenSubBaum(schriftgutobjekte['akten'], rootNode) 
-
+            
         self.inhaltView.setModel(treeModel)
         self.inhaltView.setColumnHidden(1, True)
         self.inhaltView.expandAll()
-    
+        self.inhaltView.setCurrentIndex(treeModel.index(0,0))
+        # Re-connect nach jedem Laden / Setzen eines Models
+        self.inhaltView.selectionModel().selectionChanged.connect(self.__updateSelectedInhalt)
+        
     def __addFavorite(self, filename):
         '''Fügt eine Datei zu den  Favoriten hinzu'''
         self.favorites.add(filename) 
@@ -1094,7 +1124,7 @@ class UI(QMainWindow):
         if self.akte.nachricht['eigeneID']:
             filepath = os.path.join(self.dirs.user_data_dir , self.akte.nachricht['eigeneID'])
             if os.path.exists(filepath):
-                with open(filepath , 'r') as favoriteFile:
+                with open(filepath , 'r', encoding = 'utf-8') as favoriteFile:
                     for filename in favoriteFile.readlines():
                         self.favorites.add(filename.rstrip("\n"))
             
@@ -1105,7 +1135,7 @@ class UI(QMainWindow):
         if self.akte.nachricht['eigeneID']:
             filepath = os.path.join(self.dirs.user_data_dir , self.akte.nachricht['eigeneID'])
             if self.favorites:
-                with open(filepath , 'w') as favoriteFile:
+                with open(filepath , 'w', encoding = 'utf-8') as favoriteFile:
                     for filename in self.favorites: 
                         favoriteFile.write(filename + '\n')
             elif os.path.exists(filepath):
@@ -1117,7 +1147,7 @@ class UI(QMainWindow):
         if self.akte.nachricht['eigeneID']:
             filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + self.akte.nachricht['eigeneID'])
             if os.path.exists(filepath):
-                with open(filepath , 'r') as notesFile:
+                with open(filepath , 'r', encoding = 'utf-8') as notesFile:
                     self.notizenText.setPlainText(notesFile.read())
          
     def __saveNotes(self):
@@ -1127,7 +1157,7 @@ class UI(QMainWindow):
             if self.akte.nachricht['eigeneID']:
                 filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + self.akte.nachricht['eigeneID'])
                 if re.sub(r"[\n\t\s]*", "", notizen):
-                    with open(filepath , 'w') as notesFile:
+                    with open(filepath , 'w', encoding = 'utf-8') as notesFile:
                         notesFile.write(notizen)
                 elif os.path.exists(filepath):
                     os.remove(filepath)
@@ -1138,14 +1168,18 @@ class UI(QMainWindow):
         for einzelakte in akten.values():
            
             if einzelakte['aktentyp']:
-                name = einzelakte['aktentyp']
-                for aktenzeichen in einzelakte['aktenzeichen']:
+                name = einzelakte['anzeigename'] if not einzelakte['anzeigename'] in ('', None) else einzelakte['aktentyp']
+            elif einzelakte['teilaktentyp'] != '': 
+                name = einzelakte['anzeigename'] if not einzelakte['anzeigename'] in ('', None) else einzelakte['teilaktentyp']             
+            else:
+                name = "Akte"
+            
+            for aktenzeichen in einzelakte['aktenzeichen']:
                     if aktenzeichen['aktenzeichen.freitext']:
                         name += ' ' + aktenzeichen['aktenzeichen.freitext']
-            elif einzelakte['teilaktentyp'] != '': 
-                name = einzelakte['teilaktentyp']
-                 
+                     
             value = StandardItem(name)
+            value.setIcon(QIcon(os.path.join(self.scriptRoot, 'icons', 'aktenbox_icon.png')))
             key   = StandardItem(einzelakte['id'])
             
             if len(einzelakte['teilakten'])>0:
@@ -1171,10 +1205,19 @@ class UI(QMainWindow):
         filenameColumn=self.docTableAttributes.index('dateiname')+2
         filename=self.docTableView.item(currentIndex.row(), filenameColumn).text()
         
-        if self.settings.value('pdfViewer', 'PDFjs')!='nativ' and filename.lower().endswith(".pdf"):
-            self.__openFileInBrowser(filename)
-        
-        
+        if self.settings.value('pdfViewer', 'PDFjs')!='nativ':
+            supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt')
+            # Check if a preview-file in PDF-format exists if 
+            # used as viewer for exported case files
+            # make sure the preview file is loaded in the browser  
+            if not filename.lower().endswith(supportedFiles):
+                previewFilepath = os.path.join(self.basedir , filename + '.pdf')
+                if os.path.exists(previewFilepath): 
+                    filename = filename + '.pdf'
+                    
+            if filename.lower().endswith(supportedFiles):
+                self.__openFileInBrowser(filename)
+              
         
     def __openFileInBrowser(self, filename):
         filepath = os.path.join(self.basedir , filename)
@@ -1196,11 +1239,18 @@ class UI(QMainWindow):
                 filePath = filepath.replace("\\","/")
             else:
                 filePath = filepath
-            self.url=self.viewerPaths[self.settings.value('pdfViewer', 'PDFjs')] + "%s" % (filePath)
             
-            if darkdetect.isDark() and self.settings.value('pdfViewer', 'PDFjs')=='PDFjs':
-                self.url+='&darkmode=True'
+            if filename.lower().endswith(".pdf"):
+                self.url=self.viewerPaths[self.settings.value('pdfViewer', 'PDFjs')] + "%s" % (filePath)
                 
+                if darkdetect.isDark() and self.settings.value('pdfViewer', 'PDFjs')=='PDFjs':
+                    self.url+='&darkmode=True'
+            
+            else:
+                winslash = '/' if sys.platform.lower().startswith('win') else ''    
+            
+                self.url =" file://%s%s" % (winslash, filePath)
+  
             self.browser.setUrl(QUrl.fromUserInput(self.url))
         else: 
             self.statusBar.showMessage('Datei existiert nicht: %s' % filename) 
@@ -1208,8 +1258,18 @@ class UI(QMainWindow):
     def __getFavoriteViewAction (self, val):     
         filename =  self.favoritenView.currentIndex().data()
     
-        if self.settings.value('pdfViewer', 'PDFjs')!='nativ' and filename.lower().endswith(".pdf"):
-            self.__openFileInBrowser(filename)
+        if self.settings.value('pdfViewer', 'PDFjs')!='nativ':
+            supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt')
+            # Check if a preview-file in PDF-format exists if 
+            # used as viewer for exported case files
+            # make sure the preview file is loaded in the browser  
+            if not filename.lower().endswith(supportedFiles):
+                previewFilepath = os.path.join(self.basedir , filename + '.pdf')
+                if os.path.exists(previewFilepath): 
+                    filename = filename + '.pdf'
+                    
+            if filename.lower().endswith(supportedFiles):
+                self.__openFileInBrowser(filename)
             
     def __getDClickFavoriteViewAction (self, val):
              
@@ -1262,8 +1322,6 @@ class UI(QMainWindow):
             # Windows loses focus loading ZIP-files
             self.activateWindow()
         
-         
-
     def __fileHistory(self, direction):
         '''Blättert durch die Aktenhistorie und lädt die nächste / letzte Akte in der Liste'''
 
@@ -1307,7 +1365,7 @@ class UI(QMainWindow):
         self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
         try:
             type=None
-            with open(file) as fp:
+            with open(file, 'r', encoding='utf-8') as fp:
                 while True:
                     line = fp.readline()
                     if not line:
@@ -1315,19 +1373,12 @@ class UI(QMainWindow):
                     
                     line=line.replace(" ", "")
                     
-                    if 'xjustizVersion="2.4.0"' in line:
-                        type="2.4.0"
-                        break
-                    if 'xjustizVersion="3.2.1"' in line:
-                        type="3.2.1"
-                        break 
-                    if 'xjustizVersion="3.3.1"' in line:
-                        type="3.3.1"
-                        break 
-                    if 'xjustizVersion="3.4.1"' in line:
-                        type="3.4.1"
-                        break 
+                    searchForVersion = re.search('xjustizVersion\W*=\W*[^\d](\d+\.\d+\.\d+)[^\d]', line)
                     
+                    if searchForVersion:
+                        type = searchForVersion.group(1)
+                        break
+
             if   type=="2.4.0":
                 self.akte=parser240(file)
             elif type=="3.2.1":
@@ -1335,24 +1386,21 @@ class UI(QMainWindow):
             elif type=="3.3.1":
                 self.akte=parser331(file)
             elif type=="3.4.1":
-                self.akte=parser341(file)    
+                self.akte=parser341(file)   
             else:
-                #self.statusBar.showMessage('Konnte keine unterstützte XJustiz-Version auslesen: %s - Versuche 3.4.1' % file)
-                #self.app.restoreOverrideCursor()
-                #return None
-
-                # Neuer Ansatz - Wähle neueste Version, falls kein unterstützter Standard gefunden wird
-                self.akte=parser341(file)
-
+                # Wähle neueste Version, falls kein unterstützter Standard gefunden wird
+                self.akte=parser351(file)        
+            
         except Exception as e:
             self.statusBar.showMessage('Fehler beim Öffnen der Datei: %s' % file)
             self.app.restoreOverrideCursor()
             self.lastExceptionString=str(e)
+            raise e
             return None 
         
         self.app.restoreOverrideCursor()
         
-        self.__setDocumentTable()
+        self.__setDocumentTable('Alle_Dokumente')
         self.__setInhaltView(self.akte.schriftgutobjekte)
         self.__setNachrichtenkopf(self.akte.absender, self.akte.empfaenger, self.akte.nachricht)   
         self.__setMetadata(self.akte)
@@ -1402,6 +1450,7 @@ class UI(QMainWindow):
                 self.settings.setValue(key , value['setting'].isChecked())
         self.settings.setValue('nachrichtenkopf' , self.actionNachrichtenkopf.isChecked())
         self.settings.setValue('favoriten' , self.actionFavoriten.isChecked())
+        self.settings.setValue('metadaten' , self.actionMetadaten.isChecked())
         self.settings.setValue('notizen' , self.actionNotizen.isChecked())
         self.settings.setValue('leereSpalten' , self.actionLeereSpaltenAusblenden.isChecked())
         self.settings.setValue('grosseSchrift' , self.actionGrosse_Schrift.isChecked())
@@ -1498,6 +1547,7 @@ class UI(QMainWindow):
                     value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
         self.actionNachrichtenkopf.setChecked           (True if str(self.settings.value('nachrichtenkopf', 'true')).lower()=='true'     else False)
         self.actionFavoriten.setChecked                 (True if str(self.settings.value('favoriten', 'true')).lower()      =='true'     else False)
+        self.actionMetadaten.setChecked                 (True if str(self.settings.value('metadaten', 'false')).lower()      =='true'     else False)
         self.actionNotizen.setChecked                   (True if str(self.settings.value('notizen', 'false')).lower()       =='true'     else False)
         self.actionLeereSpaltenAusblenden.setChecked    (True if str(self.settings.value('leereSpalten', 'true')).lower()   =='true'     else False)
         self.actionChromium.setChecked                  (True if     self.settings.value('pdfViewer', 'PDFjs')              =='chromium' else False)
@@ -1517,6 +1567,7 @@ class UI(QMainWindow):
                 value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
         self.actionNachrichtenkopf.setChecked       (True)
         self.actionFavoriten.setChecked             (True)
+        self.actionMetadaten.setChecked             (False)
         self.actionNotizen.setChecked               (False)
         self.actionLeereSpaltenAusblenden.setChecked(True)  
         self.actionPDF_js.setChecked                (True)  
@@ -1533,6 +1584,7 @@ class UI(QMainWindow):
     def __updateVisibleViews(self):
         self.nachrichtenkopf.setVisible(self.actionNachrichtenkopf.isChecked())
         self.favoriten.setVisible(self.actionFavoriten.isChecked())
+        self.metadaten.setVisible(self.actionMetadaten.isChecked())
         self.notizen.setVisible(self.actionNotizen.isChecked())
         
     def __openManual(self):
@@ -1782,25 +1834,32 @@ class UI(QMainWindow):
     def __rollenTemplate(self, rollen):
         text=''
         for rolle in rollen:
-            if rolle.get('rollenbezeichnung') and rolle.get('rollennummer'):
- 
-                text+='<b>Rolle'
-                if rolle.get('rollenID'):
-                    text+=' in Instanz '
-                    delimiter=''
-                    for rollenID in rolle['rollenID']:
-                        text+='%s%s' % (delimiter, rollenID.get('ref.instanznummer'))
-                        delimiter=', ' 
-                    text+=':</b> <u>%s</u><br>' % self.akte.rollenverzeichnis.get(str(rolle.get('rollennummer')))
+            text+='<b>Rolle'
+            if rolle.get('rollenID'):
+                text+=' in Instanz '
+                delimiter=''
+                for rollenID in rolle['rollenID']:
+                    text+='%s%s' % (delimiter, rollenID.get('ref.instanznummer'))
+                    delimiter=', ' 
+                text+=':</b> <u>%s</u><br>' % self.akte.rollenverzeichnis.get(str(rolle.get('rollennummer')))
+            else:
+                if rolle.get('rollenbezeichnung'):
+                    text+=':</b> %s %s<br>' % (rolle.get('rollenbezeichnung'), rolle.get('nr'))
                 else:
-                    if rolle.get('rollenbezeichnung'):
-                        text+=':</b> %s %s<br>' % (rolle.get('rollenbezeichnung'), rolle.get('nr'))
-                if rolle.get('naehereBezeichnung'):
-                    text+='Nähere Bezeichnung: %s<br>' % rolle['naehereBezeichnung']
+                    text+='</b><br>'    
+            if rolle.get('naehereBezeichnung'):
+                text+='Nähere Bezeichnung: %s<br>' % rolle['naehereBezeichnung']
+            if rolle.get('sonstigeBezeichnung'):
+                for bezeichnung in rolle.get('sonstigeBezeichnung'):
+                    text+='Sonstige Bezeichnung: %s<br>' % bezeichnung       
+            if rolle.get('dienstbezeichnung'):
+                for bezeichnung in rolle.get('dienstbezeichnung'):
+                    text+='Dienstbezeichnung: %s<br>' % bezeichnung   
+            if rolle.get('referenz'):
                 for referenz in rolle.get('referenz'):
                     text+='Bezug zu: %s<br>' %  self.akte.rollenverzeichnis.get(str(referenz))  
-                if rolle.get('geschaeftszeichen'):
-                    text+='Geschäftszeichen: %s<br>' % rolle['geschaeftszeichen']
+            if rolle.get('geschaeftszeichen'):
+                text+='Geschäftszeichen: %s<br>' % rolle['geschaeftszeichen']
         return text
              
     def __anschriftTemplate (self, anschriften, heading='Postalische Anschrift'):   
@@ -2245,12 +2304,13 @@ class UI(QMainWindow):
                 text.addRaw(self.__rollenTemplate(beteiligung['rolle']))
                 
             beteiligter=beteiligung['beteiligter']
-                   
-            if beteiligter['type']=='GDS.Organisation':
+      
+            beteiligtentyp=beteiligter.get('type')
+            if beteiligtentyp=='GDS.Organisation':
                 text.addRaw(self.__orgTemplate(beteiligter))
-            if beteiligter['type']=='GDS.RA.Kanzlei':
+            elif beteiligtentyp=='GDS.RA.Kanzlei':
                 text.addRaw(self.__kanzleiTemplate(beteiligter))
-            if beteiligter['type']=='GDS.NatuerlichePerson':  
+            elif beteiligtentyp=='GDS.NatuerlichePerson':  
                 text.addRaw(self.__natPersonTemplate(beteiligter))
             text.addRaw('__________________________________________________________________________________<br><br>')
            
@@ -2358,7 +2418,7 @@ class UI(QMainWindow):
                                         
 def launchApp():
 
-    print ("QT_VERSION_STR: %s" % QT_VERSION_STR)
+    print("QT_VERSION_STR: %s" % QT_VERSION_STR)
     print('Disabling Chromium-Sandbox for compatibility reasons (Seems to be unavailable on Debian / Ubuntu based systems anyway).')
     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
     os.environ["QTWEBENGINE_CHROMIUM_FLAGS"]  = "--log-level=3"
