@@ -2172,6 +2172,7 @@ class UI(QMainWindow):
         text.addLine('Registergericht', registrierung['auswahl_registerbehoerde']['inlaendischesRegistergericht']['gericht'])
         text.addLine('Registerart', registrierung['auswahl_registerbehoerde']['inlaendischesRegistergericht']['registerart'])  
         text.addLine('Ausländische Registerbehörde', registrierung['auswahl_registerbehoerde'].get('auslaendischeRegisterbehoerde'))
+        text.addLine('Ausländische Registerbehörde (lokaler Name)', registrierung['auswahl_registerbehoerde'].get('auslaendischeRegisterbehoerdeName'))
         text.addLine('Registerbehörde', registrierung['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbehoerde'])
         text.addLine('Registerbezeichnung', registrierung['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbezeichnung'])
                             
