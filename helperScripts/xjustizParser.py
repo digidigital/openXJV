@@ -71,7 +71,10 @@ class parser321():
         path =self._addNS(path)
 
         try:
-            if code: path += '/code'            
+            if code=='name':
+                path += '/name'     
+            elif code==True: 
+                path += '/code'            
             return element.find(path).text.strip()
         except AttributeError:
             return ''
@@ -1722,8 +1725,8 @@ class parser341(parser331):
         data['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbehoerde']   =self._findElementText('./auswahl_registerbehoerde/sonstigeRegisterbehoerde/registerbehoerde', registrierung)
         data['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbezeichnung']=self._findElementText('./auswahl_registerbehoerde/sonstigeRegisterbehoerde/registerbezeichnung', registrierung)
         
-        data['auswahl_registerbehoerde']['auslaendischeRegisterbehoerde']=self.lookup.xjustizValue ("GDS.BRIS-ListOfRegisters", self._findElementText("./auswahl_registerbehoerde/auslaendischeRegisterbehoerde", registrierung, code=True), verNo = self._getListVersion("./auswahl_registerbehoerde/auslaendischeRegisterbehoerde", element=registrierung))
-                    
+        data['auswahl_registerbehoerde']['auslaendischeRegisterbehoerde']=self.lookup.xjustizValue ("GDS.BRIS-ListOfRegisters", self._findElementText("./auswahl_registerbehoerde/auslaendischeRegisterbehoerde", registrierung, code=True), getFromColumnRef='English-name-of-register', verNo = self._getListVersion("./auswahl_registerbehoerde/auslaendischeRegisterbehoerde", element=registrierung))                    
+        
         return data
     
     def _parseStaat(self, staat):
@@ -2667,6 +2670,9 @@ class parser351(parser341):
                 document={}
                 for simpleValue in simpleValues:
                     document[simpleValue]=self._findElementText('.//'+simpleValue, documentNode)
+                    
+                if document['scanDatum']!='' and document['ersetzenderScan']=='':
+                        document['ersetzenderScan']='true'
                 document['vertraulichkeitsstufe']=self.lookup.xjustizValue ("GDS.Vertraulichkeitsstufe", self._findElementText(".//vertraulichkeitsstufe", element=documentNode , code=True), verNo = self._getListVersion(".//vertraulichkeitsstufe", element=documentNode )) 
                 document['dokumentklasse']       =self.lookup.xjustizValue ("GDS.Dokumentklasse", self._findElementText(".//dokumentklasse", element=documentNode , code=True), verNo = self._getListVersion(".//dokumentklasse", element=documentNode )) 
                 document['dokumententyp']        =self.lookup.xjustizValue ("GDS.Dokumenttyp", self._findElementText(".//dokumententyp", element=documentNode , code=True), verNo = self._getListVersion(".//dokumententyp", element=documentNode ))  
@@ -2778,3 +2784,38 @@ class parser351(parser341):
         self.nachricht['vertraulichkeit']['vertraulichkeitsgrund'] = self._findElementText("./nachrichtenkopf/vertraulichkeit/vertraulichkeitsgrund")
         
         return self.nachricht
+    
+    def _parseRechtsform(self, rechtsform):
+        data={}
+        data['rechtsform']         = self.lookup.xjustizValue ('Rechtsformen', self._findElementText("./rechtsform", rechtsform, code=True), verNo = self._getListVersion("./rechtsform", element=rechtsform))
+        data['weitereBezeichnung'] = self._findElementText('./weitereBezeichnung', rechtsform)
+        
+        return data
+        
+    def _parseRegistrierung(self, registrierung):
+        data={}
+        
+        items=(
+            'registernummer',
+            'reid',
+            'lei',
+            'euid'             
+        )
+        
+        for item in items:
+            data[item]= self._findElementText('./' + item, registrierung)
+        
+        data['auswahl_registerbehoerde']={}
+        
+        data['auswahl_registerbehoerde']['inlaendischesRegistergericht']={}
+        data['auswahl_registerbehoerde']['inlaendischesRegistergericht']['gericht']=self.lookup.xjustizValue ("GDS.Gerichte", self._findElementText("./auswahl_registerbehoerde/inlaendischesRegistergericht/gericht", registrierung, code=True), verNo = self._getListVersion("./auswahl_registerbehoerde/inlaendischesRegistergericht/gericht", element=registrierung))
+        data['auswahl_registerbehoerde']['inlaendischesRegistergericht']['registerart']=self.lookup.xjustizValue ("GDS.Registerart", self._findElementText("./auswahl_registerbehoerde/inlaendischesRegistergericht/registerart", registrierung, code=True), verNo = self._getListVersion("./auswahl_registerbehoerde/inlaendischesRegistergericht/registerart", element=registrierung))
+        
+        data['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']={}
+        data['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbehoerde']   =self._findElementText('./auswahl_registerbehoerde/sonstigeRegisterbehoerde/registerbehoerde', registrierung)
+        data['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbezeichnung']=self._findElementText('./auswahl_registerbehoerde/sonstigeRegisterbehoerde/registerbezeichnung', registrierung)
+        
+        data['auswahl_registerbehoerde']['auslaendischeRegisterbehoerde']=self.lookup.xjustizValue ("GDS.BRIS-ListOfRegisters", self._findElementText("./auswahl_registerbehoerde/auslaendischeRegisterbehoerde", registrierung, code=True), getFromColumnRef='English-name-of-register', verNo = self._getListVersion("./auswahl_registerbehoerde/auslaendischeRegisterbehoerde", element=registrierung))
+        data['auswahl_registerbehoerde']['auslaendischeRegisterbehoerdeName']=self._findElementText("./auswahl_registerbehoerde/auslaendischeRegisterbehoerde", registrierung, code='name')                    
+        
+        return data
