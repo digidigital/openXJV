@@ -515,9 +515,9 @@ class UI(QMainWindow):
 
         if darkdetect.isDark():
             self.url+='?darkmode=True'
-
+        
         self.browser.setUrl(QUrl.fromUserInput(self.url))
-    
+  
     def __displayInfo(self):
         QMessageBox.information(self, "Information",
         "openXJV " + VERSION + "\n"
@@ -1147,8 +1147,14 @@ class UI(QMainWindow):
         if self.akte.nachricht['eigeneID']:
             filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + self.akte.nachricht['eigeneID'])
             if os.path.exists(filepath):
-                with open(filepath , 'r', encoding = 'utf-8') as notesFile:
-                    self.notizenText.setPlainText(notesFile.read())
+                try:
+                    with open(filepath , 'r', encoding = 'utf-8') as notesFile:
+                        notes_text=notesFile.read()
+                except Exception:
+                    # Unter Windows wurden "alte" Notizen ggf. nicht als UTF-8 gespeichert und werfen Fehler
+                    with open(filepath , 'r') as notesFile:
+                        notes_text=notesFile.read()
+                self.notizenText.setPlainText(notes_text)
          
     def __saveNotes(self):
         '''Speichert die Favoriten in einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht.'''
