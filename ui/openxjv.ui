@@ -1167,6 +1167,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     </property>
     <addaction name="actionOeffnen"/>
     <addaction name="actionZIP_ArchiveOeffnen"/>
+    <addaction name="actionPDFExport"/>
     <addaction name="actionSchliessen"/>
    </widget>
    <widget class="QMenu" name="menuOptionen">
@@ -1206,6 +1207,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      <addaction name="actionSpaltenkonfiguration"/>
      <addaction name="separator"/>
      <addaction name="actionAlleSpaltenMarkieren"/>
+     <addaction name="actionAlleSpaltenAbwaehlen"/>
      <addaction name="separator"/>
      <addaction name="actionAbsenderColumn"/>
      <addaction name="actionAdressatColumn"/>
@@ -1765,6 +1767,19 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="text">
     <string>Ersetzender Scan</string>
+   </property>
+  </action>
+  <action name="actionPDFExport">
+   <property name="text">
+    <string>PDF-Export</string>
+   </property>
+   <property name="toolTip">
+    <string>Auswahl unter &quot;Dateien&quot; nach PDF exportieren  </string>
+   </property>
+  </action>
+  <action name="actionAlleSpaltenAbwaehlen">
+   <property name="text">
+    <string>Alle Spalten abwählen</string>
    </property>
   </action>
  </widget>
