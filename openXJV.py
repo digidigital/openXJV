@@ -17,6 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
+# TODO Implementiere  __exportPDF()
+# TODO Wenn möglich: Hervorheben der Favoriten im Export (Inhaltsverzeichnis etc.)
 
 #on ubuntu package sudo apt install libxcb-cursor0 in case of xcb-error
 
@@ -27,6 +29,7 @@ import urllib.request
 import subprocess
 import platform
 import darkdetect
+
 import multiprocessing
 from threading import Thread
 from shutil import copyfile
@@ -34,6 +37,8 @@ from pathlib import Path
 from zipfile import ZipFile
 from tempfile import TemporaryDirectory
 from itertools import count
+from pikepdf import Pdf, OutlineItem
+from fpdf import FPDF
 from PIL import (
     Image
 )
@@ -97,7 +102,7 @@ from helperScripts import parser240, parser321, parser331, parser341, parser351
 import pypdfium2 as pdfium
 
 global VERSION 
-VERSION = '0.6.4'
+VERSION = '0.6.5'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=15, set_bold=False, color=QColor(0, 0, 0)):
@@ -431,6 +436,7 @@ class UI(QMainWindow):
 
         ####connections####
         self.actionOeffnen.triggered.connect(lambda:self.getFile())
+        self.actionPDFExport.triggered.connect(self.__exportPDF)
         self.actionHistorieVor.triggered.connect(lambda:self.__fileHistory('forward'))
         self.actionHistorieZurück.triggered.connect(lambda:self.__fileHistory('backward'))
         self.actionZIP_ArchiveOeffnen.triggered.connect(self.__selectZipFiles)
@@ -463,6 +469,7 @@ class UI(QMainWindow):
         self.actionnativ.triggered.connect(self.__viewerSwitch)
         self.actionPDF_js.triggered.connect(self.__viewerSwitch)
         self.actionChromium.triggered.connect(self.__viewerSwitch)
+        self.actionAlleSpaltenAbwaehlen.triggered.connect(self.__uncheckAllColumns)
         self.actionAlleSpaltenMarkieren.triggered.connect(self.__checkAllColumns)
         self.browser.page().profile().downloadRequested.connect(self.__downloadRequested)
         self.browser.page().printRequested.connect(self.__printRequested)
@@ -522,7 +529,7 @@ class UI(QMainWindow):
         QMessageBox.information(self, "Information",
         "openXJV " + VERSION + "\n"
         "Lizenz: GPL v3\n"
-        "(c) 2022 - 2023 Björn Seipel\nKontakt: " + self.supportMail + "\nWebsite: https://openXJV.de\n\n" 
+        "(c) 2022 - 2024 Björn Seipel\nKontakt: " + self.supportMail + "\nWebsite: https://openXJV.de\n\n" 
         "Die Anwendung nutzt folgende Komponenten:\n"
         "Qt6 - LGPLv3\n"
         "PyQT6 - GNU GPL v3\n"
@@ -535,6 +542,8 @@ class UI(QMainWindow):
         "Pillow - The open source HPND License\n"
         "darkdetect - BSD license\n"
         "pypdfium2 - Apace 2.0 / BSD 3 Clause\n"
+        "pikepdf - MPL-2.0 license\n"
+        "fpdf2 - LGPL v3.0\n"
         "python 3.x - PSF License\n\n"
         "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden."
         )
@@ -551,6 +560,149 @@ class UI(QMainWindow):
         
         QDesktopServices.openUrl(QUrl("mailto:%s?subject=Supportanfrage zu openXJV %s unter %s&body=%s" % (self.supportMail, VERSION, platform.platform() ,str(mailbody)), QUrl.ParsingMode.TolerantMode ))
     
+    def __displayMessage(self, message, title = 'Hinweis', icon = QMessageBox.Icon.Information):
+        '''Zeigt ein Info Pop-up an'''
+        msgBox=QMessageBox()
+        msgBox.setIcon(icon)
+        msgBox.setWindowTitle(title)
+        msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)       
+        msgBox.setText(message)
+        msgBox.exec()
+        
+    def __exportPDF(self):
+        '''Exportiert die unter "Dateien" angezeigten Dateien in eine einzelne PDF-Datei.'''    
+        filenameColumn = None
+        displaynameColumn = None
+        try:
+            for headeritem in range(len(self.docTableAttributes)+2):
+                if self.docTableView.horizontalHeaderItem(headeritem).text() == "Dateiname":
+                    filenameColumn = headeritem
+                elif 'Anzeige-' in self.docTableView.horizontalHeaderItem(headeritem).text():
+                    displaynameColumn = headeritem    
+        except Exception as e:
+            message='Es konnten keine Dateien für den Export ermittelt werden.'    
+            self.__displayMessage(message) 
+            self.lastExceptionString = str(e) + message + ' Spalte "Dateiname" wurde nicht gefunden oder leere Tabelle.'       
+            self.statusBar.showMessage(message)
+            return None
+        
+        exportFilename,  extension = QFileDialog.getSaveFileName(self, 
+                                     "Zieldatei wählen",                        
+                                     '',
+                                     "PDF-Dateien (*.pdf *.PDF)")
+        
+        if exportFilename: 
+            if not exportFilename.lower().endswith('.pdf'):
+                exportFilename = exportFilename + '.pdf'
+        else:
+            return
+                
+        if filenameColumn:
+            try:
+                notSupported = []
+                
+                pdf = Pdf.new()
+                page_count = 0
+                
+                with TemporaryDirectory() as localTempDir:
+                    with pdf.open_outline() as outline: 
+                        favoriten = OutlineItem('Favoriten')
+                        outline.root.append(favoriten)
+                        # if page_count== 0:
+                        # TODO create XJustiz-Deckblatt
+                        # - Nachrichtenkopf
+                        # - Beteiligtendaten
+                        # - Instanzdaten
+                        # else:
+                        for row in range(self.docTableView.rowCount()):
+                            if not self.docTableView.isRowHidden(row):
+                                attachFile = None
+                                filename = self.docTableView.item(row, filenameColumn).text()
+                                if filename and os.path.exists(os.path.join(self.basedir , filename)): 
+                                    if filename.lower().endswith(('.pks', '.xml', '.p7s', '.pkcs7', '.csv', '.txt')):
+                                        tempPDF = FPDF()
+                                        tempPDF.set_font("helvetica")
+                                        tempPDF.add_page()
+                                        contents = Path(os.path.join(self.basedir , filename)).read_text()
+                                        tempPDF.write(text = contents)
+                                        tempPDFFile = os.path.join(localTempDir , filename + '.pdf')
+                                        tempPDF.output(tempPDFFile)
+                                        attachFile = tempPDFFile
+                                            
+                                    elif filename.lower().endswith(('.jpg', '.tiff', '.png')):
+                                        # TODO Test .tiff
+                                        # TODO Querformat einpassen
+                                        tempPDF = FPDF()
+                                        tempPDF.add_page()
+                                        image = os.path.join(self.basedir , filename)
+                                        tempPDF.set_draw_color(r=255, g=255, b=255)
+                                        rect = 10, 10, 190, 277
+                                        tempPDF.rect(*rect)
+                                        tempPDF.image(
+                                            image,
+                                            *rect,
+                                            keep_aspect_ratio=True
+                                        ) 
+                                        tempPDFFile = os.path.join(localTempDir , filename + '.pdf')
+                                        tempPDF.output(tempPDFFile)
+                                        attachFile = tempPDFFile  
+                                        
+                                    elif filename.lower().endswith(('.pdf')):
+                                        attachFile = os.path.join(self.basedir , filename)
+                                    else:                
+                                        previewFilepath = os.path.join(self.basedir , filename + '.pdf')
+                                        if os.path.exists(previewFilepath): 
+                                            attachFile = previewFilepath
+                                        else:
+                                            notSupported.append(filename)
+                            else:
+                                continue
+                                
+                            if attachFile:
+                                src = Pdf.open(attachFile)
+                               
+                                outlineName = filename
+                                
+                                # TODO Test if tag Anzeigename does not exist in xjustiz nachricht
+                                if displaynameColumn:
+                                    outlineName = self.docTableView.item(row, displaynameColumn).text()
+                                    if len(outlineName)==0:
+                                        outlineName = filename
+                                  
+                                oi = OutlineItem(outlineName, page_count)
+                                  
+                                if filename in self.favorites:
+                                    favoriten.children.append(oi)
+                                
+                                outline.root.append(oi)
+                                page_count += len(src.pages)
+                                pdf.pages.extend(src.pages)                
+                    
+                        if len(favoriten.children) == 0:
+                            outline.root.remove(favoriten)
+                            
+                    if len(pdf.pages)>0:
+                        pdf.save(exportFilename)
+                    
+                        if len(notSupported)!=0:
+                            msgText='Nicht alle in der Tabelle "Dateien" angezeigten Dokumente konnten nach PDF konvertiert werden. Vermutlich wird ein externes Programm zur Konvertierung benötigt.\n\nFolgende Dateien wurden daher nicht exportiert:\n'      
+                            for item in notSupported:
+                                msgText += str(item) + "\n"                       
+                        else:
+                            msgText='Alle in der Tabelle "Dateien" angezeigten Dokumente wurden erfolgreich exportiert. Zum Ändern der Auswahl Filter setzen oder anderen "Inhalt" auswählen.'     
+                        
+                        self.__displayMessage(msgText)    
+                    
+                    else:
+                        self.__displayMessage('Es wurde keine PDF-Datei erstellt, da die Dateiformate der gewählten Dateien nicht unterstützt werden oder die Dateien nicht gefunden werden konnten.')   
+                                                   
+            except Exception as e:
+                msgText='Bei der Erzeugung der PDF-Datei ist ein Fehler aufgetreten.'
+                self.statusBar.showMessage(msgText)
+                self.__displayMessage(msgText, title = 'Fehler', icon = QMessageBox.Icon.Warning)
+                self.lastExceptionString=str(e)  
+
+                        
     def __updateSelectedInhalt(self):
         val = self.inhaltView.currentIndex() 
         akte = self.akte 
@@ -731,7 +883,7 @@ class UI(QMainWindow):
             self.docTableView.setRowCount(len(data))
             self.docTableView.setColumnCount(len(data[0]))
             
-            #Add columns with icons for "add to favorits" and "open external"
+            #Add columns with icons for "add to favorites" and "open external"
             self.docTableView.setHorizontalHeaderItem(0, self.__tableItem('', self.buttonFont))
             if self.docHeaderColumnsSettings['']['width']:
                 self.docTableView.setColumnWidth(0, self.docHeaderColumnsSettings['']['width'])
@@ -938,13 +1090,11 @@ class UI(QMainWindow):
     
     def __exportZipAction(self):
         '''Exportiert die Dateien der Favoritenliste nach Auswahl eines Dateinamens in eine Zip-Datei'''
-        msgBox=QMessageBox()
-        msgBox.setIcon(QMessageBox.Icon.Information)
-        msgBox.setWindowTitle("Information")
-        msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+        message=''
         
         if not self.favorites:
-            msgText='Aktion nicht verfügbar. Die Favoritenliste ist leer!'
+            message = 'Aktion nicht verfügbar. Die Favoritenliste ist leer!'
+            self.__displayMessage(message)
         else:
             zipPath , extension = QFileDialog.getSaveFileName(None, "In ZIP-Datei exportieren",
                                                 self.settings.value("defaultFolder", ''), "ZIP-Dateien (*.zip *.ZIP)")
@@ -959,16 +1109,16 @@ class UI(QMainWindow):
                 filelist.append(os.path.join(self.basedir , self.settings.value("lastFile", None)))    
                 try:
                     self.__createZip(zipPath, filelist)
-                    msgText='Die Dateien wurden erfolgreich exportiert - %s' % zipPath
+                    message = 'Die Dateien wurden erfolgreich exportiert - %s' % zipPath
+                    self.__displayMessage(message)
                 except Exception as e:
-                    msgText='Bei der Erzeugung der Zip-Datei ist ein Fehler aufgetreten.'      
-                    msgBox.setIcon(QMessageBox.Icon.Warning)
+                    message = 'Bei der Erzeugung der Zip-Datei ist ein Fehler aufgetreten.'
+                    self.__displayMessage(message, title = 'Fehler', icon = QMessageBox.Icon.Warning)      
                     self.lastExceptionString=str(e)        
             else:
                 return
-        msgBox.setText(msgText)
-        self.statusBar.showMessage(msgText)
-        msgBox.exec()
+    
+        self.statusBar.showMessage(message)
             
     def __createZip (self, zipname, filelist):
         '''Erzeugt aus einer Liste von Dateien in eine Zip-Datei'''
@@ -978,13 +1128,11 @@ class UI(QMainWindow):
           
     def __exportToFolderAction(self):
         '''Fragt Zielordner in Dialog ab und exportiert Dateien'''
-        msgBox=QMessageBox()
-        msgBox.setWindowTitle("Information")
-        msgBox.setIcon(QMessageBox.Icon.Information)
-        msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+        message = ''
         
         if not self.favorites:
-            msgText='Aktion nicht verfügbar. Die Favoritenliste ist leer!'
+            message='Aktion nicht verfügbar. Die Favoritenliste ist leer!'
+            self.__displayMessage(message) 
         else:
             folder = QFileDialog.getExistingDirectory(None, "Exportverzeichnis wählen",
                                             str(self.settings.value("defaultFolder", '')),
@@ -996,16 +1144,17 @@ class UI(QMainWindow):
                         targetpath = os.path.join(folder , filename)
                         copyfile(filepath, targetpath)               
                     copyfile(self.settings.value("lastFile", None), os.path.join(folder , self.xmlFile))
-                    msgText='Die Dateien wurden erfolgreich nach %s kopiert.' % folder    
+                    message='Die Dateien wurden erfolgreich nach %s kopiert.' % folder    
+                    self.__displayMessage(message) 
                 except Exception as e:
-                    msgText='Es ist ein Fehler während des Kopiervorgangs aufgetreten.'
-                    msgBox.setIcon(QMessageBox.Icon.Warning) 
+                    message='Es ist ein Fehler während des Kopiervorgangs aufgetreten.'
+                    self.__displayMessage(message, title='Fehler', icon = QMessageBox.Icon.Warning) 
                     self.lastExceptionString = str(e)
             else:
                 return
-        msgBox.setText(msgText)
-        self.statusBar.showMessage(msgText)
-        msgBox.exec()
+
+        self.statusBar.showMessage(message)
+
          
     def __isSet(self, value):
         '''Ersetzt einen leeren String '' mit 'nicht angegeben'.'''
@@ -1585,6 +1734,13 @@ class UI(QMainWindow):
         for key, value in self.docHeaderColumnsSettings.items():
             if value['setting']:
                 value['setting'].setChecked(True)       
+        self.__updateSettings()
+        
+    def __uncheckAllColumns(self):
+        '''Löscht den Haken in den Ansichtsoptionen bei allen Spalten'''
+        for key, value in self.docHeaderColumnsSettings.items():
+            if value['setting']:
+                value['setting'].setChecked(False)       
         self.__updateSettings()
         
     def __updateVisibleViews(self):
