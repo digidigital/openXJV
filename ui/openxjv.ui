@@ -341,6 +341,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>190</height>
+               </size>
+              </property>
               <property name="title">
                <string>Favoriten</string>
               </property>
@@ -402,7 +408,7 @@
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>280</width>
+                      <width>282</width>
                       <height>135</height>
                      </rect>
                     </property>
@@ -424,6 +430,12 @@
                      </property>
                      <item row="1" column="0">
                       <widget class="QListWidget" name="favoritenView">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>100</height>
+                        </size>
+                       </property>
                        <property name="toolTip">
                         <string>Klick öffnet Vorschau, Doppelklick öffnet die Datei im externen Standardprogramm.</string>
                        </property>
@@ -585,7 +597,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>281</width>
+                     <width>283</width>
                      <height>68</height>
                     </rect>
                    </property>
@@ -848,6 +860,11 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="filterLeeren">
+                    <property name="font">
+                     <font>
+                      <family>Ubuntu</family>
+                     </font>
+                    </property>
                     <property name="toolTip">
                      <string>Alle Filter zurücksetzen</string>
                     </property>
@@ -856,6 +873,76 @@
                     </property>
                     <property name="text">
                      <string>Filter leeren</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="fakeSpacer">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>20</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>16777214</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <family>Material Icons</family>
+                     </font>
+                    </property>
+                    <property name="layoutDirection">
+                     <enum>Qt::LeftToRight</enum>
+                    </property>
+                    <property name="text">
+                     <string></string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="actionOCRall">
+                    <property name="maximumSize">
+                     <size>
+                      <width>25</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <family>Material Icons</family>
+                     </font>
+                    </property>
+                    <property name="toolTip">
+                     <string>Nicht durchsuchbare PDF-Dateien mit Texterkennung  durchsuchbar machen</string>
+                    </property>
+                    <property name="text">
+                     <string></string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="suchbegriffeText">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="toolTip">
+                     <string>Durch Leerzeichen getrennte Suchbegriffe. Alle Suchbegriffe müssen im Dokument gefunden werden</string>
                     </property>
                    </widget>
                   </item>
@@ -941,7 +1028,7 @@
           <widget class="QWebEngineView" name="browser" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>6</horstretch>
+             <horstretch>8</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
@@ -1168,6 +1255,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="actionOeffnen"/>
     <addaction name="actionZIP_ArchiveOeffnen"/>
     <addaction name="actionPDFExport"/>
+    <addaction name="actionTexterkennung"/>
     <addaction name="actionSchliessen"/>
    </widget>
    <widget class="QMenu" name="menuOptionen">
@@ -1182,7 +1270,18 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      <addaction name="actionChromium"/>
      <addaction name="actionnativ"/>
     </widget>
+    <widget class="QMenu" name="menuPDF_Export">
+     <property name="title">
+      <string>PDF Export</string>
+     </property>
+     <addaction name="actionDeckblattBeiExport"/>
+     <addaction name="actionFavoritenExportieren"/>
+     <addaction name="actionDateidatumExportieren"/>
+     <addaction name="actionNurFavoritenExportieren"/>
+     <addaction name="actionPDFnachExportOeffnen"/>
+    </widget>
     <addaction name="menuPDF_Viewer"/>
+    <addaction name="menuPDF_Export"/>
     <addaction name="actionAktenverzeichnis_festlegen"/>
     <addaction name="separator"/>
     <addaction name="actionOnlineAufUpdatesPruefen"/>
@@ -1238,6 +1337,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="actionFavoriten"/>
     <addaction name="actionNotizen"/>
     <addaction name="actionMetadaten"/>
+    <addaction name="actionSucheAnzeigen"/>
     <addaction name="menuSpalten_ein_ausblenden"/>
     <addaction name="separator"/>
     <addaction name="actionGrosse_Schrift"/>
@@ -1284,6 +1384,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    <addaction name="actionOeffnen"/>
    <addaction name="actionZIP_ArchiveOeffnen"/>
    <addaction name="separator"/>
+   <addaction name="actionTexterkennungAktuellesPDF"/>
+   <addaction name="actionPDFExport"/>
+   <addaction name="separator"/>
    <addaction name="actionHistorieZurück"/>
    <addaction name="actionHistorieVor"/>
    <addaction name="separator"/>
@@ -1293,6 +1396,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    <addaction name="separator"/>
    <addaction name="actionSupport_anfragen"/>
    <addaction name="actionNeueVersion"/>
+   <addaction name="separator"/>
   </widget>
   <action name="actionUeberOpenXJV">
    <property name="enabled">
@@ -1310,7 +1414,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <string></string>
    </property>
    <property name="toolTip">
-    <string>Öffnen</string>
+    <string>XJustiz-Datei öffnen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -1773,13 +1877,103 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    <property name="text">
     <string>PDF-Export</string>
    </property>
+   <property name="iconText">
+    <string></string>
+   </property>
    <property name="toolTip">
-    <string>Auswahl unter &quot;Dateien&quot; nach PDF exportieren  </string>
+    <string>Aktuell aufgelistete Dateien in einer PDF-Datei zusammenfassen</string>
    </property>
   </action>
   <action name="actionAlleSpaltenAbwaehlen">
    <property name="text">
     <string>Alle Spalten abwählen</string>
+   </property>
+  </action>
+  <action name="actionDeckblattBeiExport">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Deckblatt erzeugen</string>
+   </property>
+  </action>
+  <action name="actionDateidatumExportieren">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Datum an Verzeichniseinträge anhängen</string>
+   </property>
+   <property name="toolTip">
+    <string>Dateidatum in Inhaltsverzeichnis übernehmen</string>
+   </property>
+  </action>
+  <action name="actionFavoritenExportieren">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Favoritenast im Inhaltsverzeichnis erzeugen</string>
+   </property>
+   <property name="toolTip">
+    <string>Favoriten in Inhaltsverzeichnis übernehmen</string>
+   </property>
+  </action>
+  <action name="actionNurFavoritenExportieren">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Nur die unter &quot;Dateien&quot; sichtbaren Favoriten exportieren</string>
+   </property>
+  </action>
+  <action name="actionPDFnachExportOeffnen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>PDF nach Export öffnen</string>
+   </property>
+  </action>
+  <action name="actionSucheAnzeigen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Suche anzeigen</string>
+   </property>
+  </action>
+  <action name="actionTexterkennung">
+   <property name="text">
+    <string>Texterkennung</string>
+   </property>
+  </action>
+  <action name="actionTexterkennungAktuellesPDF">
+   <property name="text">
+    <string>PDF-Texterkennung</string>
+   </property>
+   <property name="iconText">
+    <string></string>
+   </property>
+   <property name="toolTip">
+    <string>Wendet Texterkennung auf aktuell geladene PDF-Datei an</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Material Icons</family>
+    </font>
    </property>
   </action>
  </widget>
