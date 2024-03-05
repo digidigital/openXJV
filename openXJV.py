@@ -17,20 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
-# TODO Implementiere  __exportPDF()
-# TODO Wenn möglich: Hervorheben der Favoriten im Export (Inhaltsverzeichnis etc.)
 
 #on ubuntu package sudo apt install libxcb-cursor0 in case of xcb-error
 
 import os
-import sys
 import re
+import sys
+import time
+import json
 import urllib.request
 import subprocess
+if os.name == 'nt':
+    from subprocess import CREATE_NO_WINDOW
 import platform
 import darkdetect
-
 import multiprocessing
+import concurrent.futures
+import pypdfium2 as pdfium
 from threading import Thread
 from shutil import copyfile
 from pathlib import Path
@@ -45,6 +48,7 @@ from PIL import (
 from PIL.ImageQt import ImageQt
 from PyQt6.QtCore import (
     QT_VERSION_STR, 
+    QEventLoop, 
     QSettings, 
     QCoreApplication, 
     QUrl, 
@@ -73,10 +77,10 @@ from PyQt6.QtGui import (
     QPainter, 
     QFontDatabase,
     QDesktopServices,
-    QPainter
+    QPainter,
+    QPixmap
 )
 from PyQt6.QtWidgets import (
- 
     QToolTip,
     QHeaderView,
     QDialog,
@@ -90,19 +94,23 @@ from PyQt6.QtWidgets import (
     QSpinBox,
     QLabel,
     QPushButton,
-    QFormLayout
+    QFormLayout,
+    QSplashScreen,
 )
-from PyQt6.QtWebEngineWidgets import QWebEngineView 
-from PyQt6.QtWebEngineCore import QWebEngineSettings
+from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWebEngineCore import QWebEngineSettings, QWebEngineProfile, QWebEnginePage  
 from appdirs import AppDirs
-
-
-from helperScripts import parser240, parser321, parser331, parser341, parser351
-
-import pypdfium2 as pdfium
-
+from helperScripts import (
+    CreateDeckblatt, 
+    parser240, 
+    parser321, 
+    parser331, 
+    parser341, 
+    parser351,
+    PDFocr
+)
 global VERSION 
-VERSION = '0.6.5'
+VERSION = '0.7.0'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=15, set_bold=False, color=QColor(0, 0, 0)):
@@ -145,83 +153,47 @@ class TextObject():
         else:
             return ''
 
-    def update_range_to(self, value):
-        self.range_to.setMinimum(value)
-
-    def update_range_from(self, value):
-        self.range_from.setMaximum(value)
-
-class printPdfWorker(QObject):
-    '''Worker class for long running PDF print task'''
+class SearchWorker(QObject):
     finished = pyqtSignal()
-    progress = pyqtSignal(int)
-
-    def __init__(self, pdf=None, printer=None, parent=None):
-        super().__init__(parent)
-        if pdf == None:
-            raise AttributeError('pdf (Type:str, Path or pyFPDF-Object) needs to be passed to printWorker')
-        
-        if isinstance(pdf, str) or isinstance(pdf, Path) or not os.path.exists(pdf):
-            self.pdf_file = Path(pdf)            
-        else:
-            raise TypeError('pdf not of Type str, Path or file does not exist')    
-        self._printer=printer
-        self.painter=QPainter(printer)
-                                         
-    def run(self):
-        """Long-running print task."""    
-           
-        rect = self.painter.viewport()
-
-        pdf = pdfium.PdfDocument(self.pdf_file)
-        n_pages = len(pdf)  
-        printRange=[]
-        
-        fromPage = self._printer.fromPage()
-        toPage = self._printer.toPage()  
-        printRange = range(n_pages) if fromPage == 0 else range(fromPage-1, toPage)  
-        
-        page_indices = [i for i in printRange]  
-        
-        renderer = pdf.render(
-            pdfium.PdfBitmap.to_pil,
-            page_indices = page_indices,
-            scale = 200/72,  # 200dpi resolution
-        )
-        
-        for i, pil_image, pageNumber in zip(page_indices, renderer, count(1)):
-            
-            if pageNumber > 1:
-                self._printer.newPage()
-
-            pilWidth, pilHeight = pil_image.size
-            imageRatio = pilHeight/pilWidth
-            viewportRatio= rect.height()/rect.width()   
-            
-            # Rotate image if orientation is not the same as print format orientation
-            if (viewportRatio < 1 and imageRatio > 1) or (viewportRatio > 1 and imageRatio < 1): 
-                pil_image = pil_image.transpose(Image.ROTATE_90)
-                pilWidth, pilHeight = pil_image.size  
-                imageRatio = pilHeight/pilWidth
-  
-            # Adjust drawing area to available viewport 
-            if viewportRatio > imageRatio:
-                y=int(rect.width()/(pilWidth/pilHeight))                   
-                printArea=QRect(0,0,rect.width(),y)
+    result = pyqtSignal(list)
+    def run(self, directory_to_scan, script_root):
+        """Preparing the SearchStore."""
+        leere_dateien = 0
+        leere_PDF = 0
+        search_store={}
+        exception_text=None
+        try:
+            kwargs={'capture_output':True, 
+            'text':True}    
+            if os.name == 'nt':
+                kwargs['creationflags']=CREATE_NO_WINDOW
+                
+            # Nicht alle Module der Suche sind threadsafe.    
+            # Das externe Programm nutzt Multiprocessing. Daten werden als JSON-String geliefert   
+            if os.name == 'nt' and getattr(sys, 'frozen', False):
+                # search_tool ist ein mit pyinstaller gefrorenes Python Script
+                command = ["search_tool", directory_to_scan]
+            else:       
+                command = ["python" , os.path.join(script_root, "helperScripts", "search_tool.py"), directory_to_scan]
+            text_extraction_result = subprocess.run(command, **kwargs)
+            if text_extraction_result.returncode == 0:
+                search_store=json.loads(text_extraction_result.stdout)
+                for filename in search_store.keys():
+                    leere_dateien = leere_dateien+1 if search_store[filename] == '' else leere_dateien      
+                    if filename.lower().endswith('.pdf'):
+                        leere_PDF = leere_PDF+1 if search_store[filename] == '' else leere_PDF 
             else:
-                x = int(pilWidth/pilHeight*rect.height())
-                printArea=QRect(0,0,x,rect.height())
-            
-            image = ImageQt(pil_image)    
-
-            # Print image                   
-            self.painter.drawImage(printArea, image)
-            firstPage=False
-            self.progress.emit(int(pageNumber*100/len(page_indices)))
+                raise Exception (f'Fehler bei der Textextraktion mit search_tool')     
         
-        # Cleanup        
-        pdf.close()
-        self.painter.end()
+        except Exception as e:
+            exception_text=str(e)
+                    
+        result =(leere_dateien,
+                 leere_PDF,
+                 search_store,
+                 exception_text)  
+           
+        self.result.emit(result)
         self.finished.emit()
 
 class UI(QMainWindow):
@@ -235,12 +207,9 @@ class UI(QMainWindow):
 
         self.tempDir=TemporaryDirectory()
         self.tempfile=''
-        # Needed for pyinstaller onefile...
-        try:
-            self.scriptRoot = sys._MEIPASS
-        except Exception:
-            self.scriptRoot = os.path.dirname(os.path.realpath(__file__))
         
+        self.scriptRoot = os.path.dirname(os.path.realpath(__file__))
+      
         if sys.platform.lower().startswith('win'):
             windowIcon=QIcon(os.path.join(self.scriptRoot, 'icons', 'openxjv_desktop.ico'))
         else:
@@ -257,6 +226,11 @@ class UI(QMainWindow):
             windowIcon.addFile(icon256,(QSize(256,256)))
         self.setWindowIcon(windowIcon)
         
+        self.searchStore={} 
+        self.searchLock=True
+        
+        self.loadedPDFpath=''
+ 
         self.lastExceptionString=''
 
         self.dirs = AppDirs("OpenXJV", "digidigital", version="0.1")
@@ -291,16 +265,40 @@ class UI(QMainWindow):
         self.setWindowTitle('openXJV %s' % VERSION)
         
         #Hide "New version" icon
-        self.newVersionIndicator=self.toolBar.actions()[11]
+        self.newVersionIndicator=self.toolBar.actions()[14]
         self.newVersionIndicator.setVisible(False)
+
+        # Add tesseract, jbig2dec and search_tool to windows PATH 
+        if os.name == 'nt': 
+            if os.path.exists(os.path.join(self.scriptRoot,'bin','search_tool', 'search_tool.exe')):
+                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','search_tool')}"  
+            if not PDFocr.tesseractAvailable():
+                if os.path.exists(os.path.join(self.scriptRoot,'bin','jbig2dec', 'jbig2dec.exe')):
+                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','jbig2dec')}"    
+                if os.path.exists(os.path.join(self.scriptRoot,'bin','tesseract', 'tesseract.exe')):
+                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','tesseract')}"     
+        # Hide OCR options if Tesseract not available
+        if not PDFocr.tesseractAvailable():
+            self.OCRenabled=False
+            self.actionTexterkennungAktuellesPDF.setVisible(False)
+            self.actionTexterkennung.setVisible(False)
+        else:
+            self.OCRenabled=True
         
+        self.actionOCRall.setVisible(False)
+            
         ###Prepare settings###
         self.settings = QSettings('openXJV','digidigital')
 
+
+        self.browserProfile = QWebEngineProfile.defaultProfile()
+        self.browserProfile.setHttpCacheType(QWebEngineProfile.HttpCacheType.NoCache)
+                
         self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled,True)
         self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ErrorPageEnabled,False)
         self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.NavigateOnDropEnabled,False)
-        
+                
+         
         ###set toolbarButtonwidth###        
         for child in self.toolBar.children():
             if child.__class__.__name__ == 'QToolButton':
@@ -312,6 +310,9 @@ class UI(QMainWindow):
         
         ###initial print lock state####
         self.printLock=False
+        
+        ###initial ocr lock state####
+        self.ocrLock=False
         
         ###set paths to PDF viewers###
         if sys.platform.lower().startswith('win'):
@@ -433,10 +434,12 @@ class UI(QMainWindow):
         elif lastfile:
             self.getFile(lastfile)
 
-
         ####connections####
         self.actionOeffnen.triggered.connect(lambda:self.getFile())
         self.actionPDFExport.triggered.connect(self.__exportPDF)
+        self.actionTexterkennung.triggered.connect(self.__texterkennung)
+        self.actionTexterkennungAktuellesPDF.triggered.connect(self.__texterkennungLoadedPDF)
+        self.actionOCRall.clicked.connect(self.__texterkennungAll)
         self.actionHistorieVor.triggered.connect(lambda:self.__fileHistory('forward'))
         self.actionHistorieZurück.triggered.connect(lambda:self.__fileHistory('backward'))
         self.actionZIP_ArchiveOeffnen.triggered.connect(self.__selectZipFiles)
@@ -445,12 +448,12 @@ class UI(QMainWindow):
         self.actionSupport_anfragen.triggered.connect(self.__supportAnfragen)       
         self.actionAktenverzeichnis_festlegen.triggered.connect(lambda:self.__chooseStartFolder())
         self.inhaltView.clicked.connect(self.__updateSelectedInhalt)
-        # Connection in __setInhaltView: self.inhaltView.selectionModel().selectionChanged.connect(self.__updateSelectedInhalt)
         self.docTableView.doubleClicked.connect(self.__dClickDocTableAction)
         self.docTableView.selectionModel().selectionChanged.connect(self.__browseDocTableAction)
         self.termineTableView.clicked.connect(self.__setTerminDetailView)
-        self.plusFilter.textChanged.connect(self.__filtersTriggered)
-        self.minusFilter.textChanged.connect(self.__filtersTriggered)
+        self.plusFilter.textChanged.connect(lambda:self.__filtersTriggered())
+        self.minusFilter.textChanged.connect(lambda:self.__filtersTriggered())
+        self.suchbegriffeText.textChanged.connect(self.__performSearch)
         self.filterLeeren.clicked.connect(self.__resetFilters)
         self.filterMagic.clicked.connect(self.__magicFilters)
         self.favoritenView.doubleClicked.connect(self.__getDClickFavoriteViewAction)
@@ -459,13 +462,6 @@ class UI(QMainWindow):
         self.saveFavouritesButton.clicked.connect(self.__exportToFolderAction)
         self.exportFavoritesButton.clicked.connect(self.__exportZipAction)
         self.actionZuruecksetzen.triggered.connect(self.__resetSettings)   
-        self.actionNachrichtenkopf.triggered.connect(self.__updateSettings)
-        self.actionAnwendungshinweise.triggered.connect(self.__updateSettings)
-        self.actionFavoriten.triggered.connect(self.__updateSettings)
-        self.actionMetadaten.triggered.connect(self.__updateSettings)
-        self.actionNotizen.triggered.connect(self.__updateSettings)
-        self.actionLeereSpaltenAusblenden.triggered.connect(self.__updateSettings)
-        self.actionOnlineAufUpdatesPruefen.triggered.connect(self.__updateSettings)
         self.actionnativ.triggered.connect(self.__viewerSwitch)
         self.actionPDF_js.triggered.connect(self.__viewerSwitch)
         self.actionChromium.triggered.connect(self.__viewerSwitch)
@@ -474,7 +470,27 @@ class UI(QMainWindow):
         self.browser.page().profile().downloadRequested.connect(self.__downloadRequested)
         self.browser.page().printRequested.connect(self.__printRequested)
         self.actionNeueVersion.triggered.connect(lambda triggered: QDesktopServices.openUrl(QUrl("https://openxjv.de")))
-        self.actionGrosse_Schrift.triggered.connect(self.__updateSettings)
+        
+        self.settingItems =[
+            self.actionGrosse_Schrift, 
+            self.actionOnlineAufUpdatesPruefen,
+            self.actionLeereSpaltenAusblenden,
+            self.actionNotizen,
+            self.actionMetadaten,
+            self.actionFavoriten,
+            self.actionNurFavoritenExportieren,
+            self.actionFavoritenExportieren,
+            self.actionDateidatumExportieren,
+            self.actionDeckblattBeiExport,
+            self.actionAnwendungshinweise,
+            self.actionNachrichtenkopf,
+            self.actionPDFnachExportOeffnen,
+            self.actionSucheAnzeigen
+            ]
+        
+        for setting in self.settingItems:
+            setting.triggered.connect(self.__updateSettings)    
+        
         for columnSetting in self.docHeaderColumnsSettings.values():
             if columnSetting['setting']:
                 columnSetting['setting'].triggered.connect(self.__updateSettings)
@@ -512,6 +528,10 @@ class UI(QMainWindow):
         self.settings.sync()
     
     def __loadEmptyViewer(self):
+        #Delete temporary loaded pdf file
+        if os.path.exists(self.tempfile):
+            os.remove(self.tempfile)
+        
         urlPath = self.scriptRoot.replace("\\","/")
 
         winslash = '/' if sys.platform.lower().startswith('win') else ''    
@@ -524,26 +544,29 @@ class UI(QMainWindow):
             self.url+='?darkmode=True'
         
         self.browser.setUrl(QUrl.fromUserInput(self.url))
-  
+        
     def __displayInfo(self):
         QMessageBox.information(self, "Information",
         "openXJV " + VERSION + "\n"
         "Lizenz: GPL v3\n"
         "(c) 2022 - 2024 Björn Seipel\nKontakt: " + self.supportMail + "\nWebsite: https://openXJV.de\n\n" 
         "Die Anwendung nutzt folgende Komponenten:\n"
+        "jbig2dec - AGPL License\n"
         "Qt6 - LGPLv3\n"
-        "PyQT6 - GNU GPL v3\n"
-        "appdirs - MIT License\n"
-        "lxml - BSD License\n"
-        "PDF.js - Apache 2.0 License\n"
-        "Ubuntu Font - UBUNTU FONT LICENCE Version 1.0\n"
-        "Material Icons Font - Apache 2.0 License\n"
+        "fpdf2 - LGPLv3\n"
         "pyinstaller - GPLv2 or later\n"
-        "Pillow - The open source HPND License\n"
+        "PyQT6 - GNU GPL v3\n"
+        "PDF.js - Apache 2.0 License\n"
+        "Tesseract - Apache 2.0 License\n"
+        "Material Icons Font - Apache 2.0 License\n"
+        "pypdfium2 - Apache 2.0 / BSD 3 Clause\n"
         "darkdetect - BSD license\n"
-        "pypdfium2 - Apace 2.0 / BSD 3 Clause\n"
+        "lxml - BSD License\n"
+        "Pillow - The open source HPND License\n"
         "pikepdf - MPL-2.0 license\n"
-        "fpdf2 - LGPL v3.0\n"
+        "appdirs - MIT License\n"
+        "docx2txt - - MIT License\n"
+        "Ubuntu Font - UBUNTU FONT LICENCE Version 1.0\n"
         "python 3.x - PSF License\n\n"
         "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden."
         )
@@ -568,17 +591,314 @@ class UI(QMainWindow):
         msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)       
         msgBox.setText(message)
         msgBox.exec()
+    
+    def __prepareSearchStore(self, reset_searchStore = True):
+        while True:
+            # Blockiere Event-Loop, wenn bereits eine Suche läuft
+            try: 
+                self.search_prep_thread.isRunning()
+            except Exception:
+                break    
+            self.app.processEvents(QEventLoop.ProcessEventsFlag['ExcludeUserInputEvents'])
+            
+        if reset_searchStore:
+                self.searchStore={}
         
-    def __exportPDF(self):
-        '''Exportiert die unter "Dateien" angezeigten Dateien in eine einzelne PDF-Datei.'''    
-        filenameColumn = None
-        displaynameColumn = None
+        # Txt-Daten nur in Speicher laden, wenn Suche sichbar und searchStore leer ist
+        if not self.actionSucheAnzeigen.isChecked() or len(self.searchStore) != 0:
+            return 
+
+        self.suchbegriffeText.clear()
+        self.searchLock=True
+        
+        # Test, ob ein Header vorhanden ist (fehlt bei leerer Schriftgutobjektstruktur) 
+        try:
+            self.docTableView.horizontalHeaderItem(0).text()
+        except AttributeError:
+            return
+        
+        self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor)) 
+        self.statusBar.showMessage('Daten zur Bereitstellung der Suchfunktion werden eingelesen')
+
+        self.search_prep_thread = QThread()
+        self.search_worker = SearchWorker()
+        self.search_worker.moveToThread(self.search_prep_thread)
+        self.search_prep_thread.started.connect(lambda: self.search_worker.run(self.basedir, self.scriptRoot))
+        self.search_worker.finished.connect(self.search_prep_thread.quit)
+        self.search_worker.finished.connect(self.search_worker.deleteLater)
+        self.search_worker.result.connect(self.__searchStoreReady)
+        self.search_prep_thread.finished.connect(self.search_prep_thread.deleteLater)
+        self.search_prep_thread.start()        
+
+    def __searchStoreReady(self, result):  
+        self.leereDateien = result[0]
+        self.leerePDF = result[1]
+        self.searchStore = result[2]
+        self.searchLock=False   
+        self.statusBar.showMessage(f'Die Suchfunktion steht bereit. {self.leereDateien} Dateien ({self.leerePDF} PDF-Dateien) enthalten keinen Text bzw. es konnte kein Text ausgelesen werden.')
+        if result[3]:
+            self.lastExceptionString=result[3]
+            self.statusBar.showMessage(f'Es ist ein Fehler bei der Aufbereitung der Daten für die Suche aufgetreten: {str(e)}')
+           
+        self.app.restoreOverrideCursor() 
+        
+        if self.leerePDF == 0:
+            self.actionOCRall.setVisible(False)
+        elif self.OCRenabled:
+            self.actionOCRall.setVisible(True)
+ 
+    def __performSearch(self):
+        # Ansicht zurücksetzen, falls bereits durch vorherige Suche gefiltert
+        self.__filtersTriggered(keepSearchTerms=True) 
+
+        if self.suchbegriffeText.text() == '':
+            return
+        elif self.searchLock:
+            self.suchbegriffeText.clearFocus()
+            self.suchbegriffeText.clear()
+            self.__displayMessage("Der Suchindex steht aktuell nicht zur Verfügung. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut.") 
+            return
+        
+        filenameColumn = None   
+            
         try:
             for headeritem in range(len(self.docTableAttributes)+2):
-                if self.docTableView.horizontalHeaderItem(headeritem).text() == "Dateiname":
-                    filenameColumn = headeritem
-                elif 'Anzeige-' in self.docTableView.horizontalHeaderItem(headeritem).text():
-                    displaynameColumn = headeritem    
+                    match self.docTableView.horizontalHeaderItem(headeritem).text():
+                        case "Dateiname":
+                            filenameColumn = headeritem
+                            break
+        except AttributeError:
+            return
+            
+        searchTerms = self.suchbegriffeText.text().split()   
+
+        if filenameColumn and len(searchTerms) != 0:
+            self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))  
+            for row in range(self.docTableView.rowCount()):
+                # Nur sichtbare Dateien durchsuchen 
+                if not self.docTableView.isRowHidden(row):    
+                    filename = self.docTableView.item(row, filenameColumn).text()
+                    if filename:
+
+                        hits = 0
+                     
+                        if self.searchStore.get(filename + '.pdf'):
+                            text = self.searchStore.get(filename + '.pdf')
+                        elif self.searchStore.get(filename):   
+                            text = self.searchStore.get(filename)  
+                        else:
+                            text = ''
+                        
+                        for term in searchTerms:
+                            if term.lower() in text:
+                                hits += 1
+
+                        if not hits == len(searchTerms) :
+                            self.docTableView.hideRow(row)
+      
+        statusMessage = 'Suche abgeschlossen.'                   
+        if self.leerePDF != 0:
+            statusMessage += f'  Bitte beachten Sie: {self.leerePDF} PDF-Dateien der Nachricht enthalten keinen durchsuchbaren Text.'
+        self.statusBar.showMessage(statusMessage)        
+        
+        self.app.restoreOverrideCursor()  
+
+    def __texterkennungAll(self):
+        '''Texterkennung für alle nicht durchsuchbaren Dateien im Verzeichnis der Nachricht (Die Dateien müssen nicht im XJustiz-Datensatz enthalten sein) Alle anderen Dateien werden einfach kopiert. )'''
+        if self.ocrLock:
+            self.__displayMessage('Es läuft bereits eine Texterkennung. Bitte warten Sie, bis der Vorgang abgeschlossen ist.')
+            return
+        
+        msgBox=QMessageBox()
+        msgBox.setIcon(QMessageBox.Icon.Information)
+        msgBox.setWindowTitle("Texterkennung durchführen?")
+        msgBox.setStandardButtons(QMessageBox.StandardButton.Yes  | QMessageBox.StandardButton.No)
+        buttonY = msgBox.button(QMessageBox.StandardButton.Yes )
+        buttonY.setText('Ja')
+        buttonN = msgBox.button(QMessageBox.StandardButton.No)
+        buttonN.setText('Nein')
+        msgBox.setDefaultButton(QMessageBox.StandardButton.No)
+        msgBox.setText("Die Suchfunktion wird ggf. nicht alle relevanten Dokumente finden können, da nicht alle bereitgestellten PDF-Dateien durchsuchbar sind.\n\nSoll für diese Dokumente eine Texterkennung durchgeführt werden und eine Kopie der Nachricht mit durchsuchbaren PDF-Dateien angelegt werden?\n\nDieser Vorgang kann einige Zeit in Anspruch nehmen und ggf. reagiert die Anwendung während der Bearbeitung nicht. Bitte haben Sie in diesem Fall ein wenig Geduld.\n\nHinweis: Schlechte Scans und handschriftliche Inhalte werden weiterhin nicht durchsuchbar sein oder fehlerhaften Text enthalten. Entsprechende Dateien werden weiterhin als nicht druchsuchbare Dateien im Suchhinweis angezeigt.")
+        msgBox.exec()
+        if msgBox.clickedButton() == buttonN:
+            return
+                
+        folder = QFileDialog.getExistingDirectory(self, 
+                                "Bitte ein leeres Verzeichnis zum Speichern der Nachrichtenkopie auswählen",
+                                self.settings.value("defaultFolder", ''), 
+                                QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)
+        if not folder:
+            return
+        
+        elif folder == self.basedir:
+            self.__displayMessage("Eine Kopie der Nachricht kann nicht im Verzeichnis der Originalnachricht erstellt werden!")
+            return                      
+        elif os.listdir(folder):
+            self.__displayMessage("Zur Erstellung der Nachrichtenkopie bitte ein leeres Verzeichnis angeben.")
+            return   
+        
+        time.sleep(2)
+        
+        self.actionOCRall.setVisible(False)
+        
+        self.ocrLock=True
+        
+        ocrQueue=[]
+        for filename in self.searchStore.keys():
+            self.app.processEvents(QEventLoop.ProcessEventsFlag['ExcludeUserInputEvents'])
+            sourcepath = os.path.join(self.basedir, filename)            
+            targetpath = os.path.join(folder, filename)
+            
+            if not os.path.exists(sourcepath) or not os.path.isfile(sourcepath):
+                continue
+            
+            if filename.lower().endswith('.pdf') and len(self.searchStore[filename])==0:
+                if PDFocr.checkIfSupported(sourcepath):
+                    ocrQueue.append({'sourcepath':sourcepath, 'targetpath':targetpath})
+                else:
+                    self.statusBar.showMessage(f'Kopiere: {sourcepath}') 
+                    self.statusBar.repaint()
+                    copyfile(sourcepath, targetpath)    
+            else:
+                self.statusBar.showMessage(f'Kopiere: {sourcepath}') 
+                self.statusBar.repaint()
+                copyfile(sourcepath, targetpath)  
+        
+        self.statusBar.showMessage(f'Starte Texterkennung für {str(len(ocrQueue))} Dokumente') 
+        self.statusBar.repaint()
+
+        self.OCRthread3=Thread(target=self.__ocrBatchWorker, args=(ocrQueue,))    
+        self.OCRthread3.start() 
+                       
+    def __reportOCRProgress(self, message):
+        self.statusBar.showMessage(f"{message}")        
+    
+    def __ocrFinished(self, seconds):       
+        message = f'Texterkennung abgeschlossen. Benötigte Zeit: {"{:.2f}".format(seconds)} Sekunden'
+        self.ocrLock=False
+        self.statusBar.showMessage(f"{message}")              
+    
+    def __ocrFileWorker(self, sourcepath, targetpath, open_when_done=True):
+        '''Worker-Funktion für einzelne OCR-Tasks'''
+        self.ocrLock=True
+        start=time.time()
+        try:
+            PDFocr(sourcepath, targetpath, open_when_done)
+        except Exception as e:
+             self.__displayMessage(f"Texterkennung fehlgeschlagen\n\n{e}")
+             self.ocrLock=False
+             self.lastExceptionString = str(e)
+             return
+        self.__ocrFinished(time.time()-start)
+             
+    def __ocrBatchWorker(self, jobs):    
+        '''Worker-Funktion für lange laufende Batch-OCR-Tasks'''
+        self.ocrLock=True
+        self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))   
+        start=time.time()
+        with concurrent.futures.ThreadPoolExecutor(int(round(multiprocessing.cpu_count()/2))) as executor:
+                future_ocr = {executor.submit(PDFocr, job['sourcepath'], job['targetpath'], False, int(round(multiprocessing.cpu_count()/2)), True): job for job in jobs}
+                for future in concurrent.futures.as_completed(future_ocr):
+                    thread = future_ocr[future]
+                    try:
+                        if future.result() != None:
+                            self.__reportOCRProgress(f"Texterkennung abgeschlossen für {thread['sourcepath']}") 
+                    except Exception as exc:
+                        emessage=f'OCR-Thread {thread} generated an exception: {str(exc)}'
+                        self.lastExceptionString = emessage                  
+        self.app.restoreOverrideCursor()
+        self.__ocrFinished(time.time()-start)
+                 
+    def __texterkennung(self, sourcepath=None):
+        '''Texterkennung für beliebige Dateien'''
+        if self.ocrLock:
+            self.__displayMessage('Es läuft bereits eine Texterkennung. Bitte warten Sie, bis der Vorgang abgeschlossen ist.')
+            return
+        
+        if not sourcepath:
+            sourcepath , check = QFileDialog.getOpenFileName(None, "PDF-Datei für die Texterkennung auswählen",
+                                                self.settings.value("defaultFolder", ''), "PDF-Dateien (*.pdf *.PDF)")
+            if not check:
+                return
+        
+        if not PDFocr.checkIfSupported(sourcepath):
+            self.__displayMessage('Die ausgewählte Datei kann nicht mit der Texterkennungsfunktion bearbeitet werden.\n\nMögliche Gründe:\n- Die Datei enthält bereits Text\n- Die Datei enthält mehr als ein Bild pro Seite\n- Die PDF-Datei ist defekt') 
+            return
+        
+        self.ocrLock=True
+        targetpath = os.path.join(Path(sourcepath).parents[0] , f'{Path(sourcepath).stem}.ocr.pdf')
+        
+        # In separatem Tread ausführen, um Event-Loop nicht zu blockieren 
+        self.OCRthread=Thread(target=self.__ocrFileWorker, args=(sourcepath, targetpath))    
+        self.OCRthread.start() 
+        self.statusBar.showMessage(f'Texterkennung für {sourcepath} gestartet') 
+        
+    def __texterkennungLoadedPDF(self):
+        '''Texterkennung für das aktuell in der Vorschau angezeigte PDF-Dokument'''
+        if self.ocrLock:
+            self.__displayMessage('Es läuft bereits eine Texterkennung. Bitte warten Sie, bis der Vorgang abgeschlossen ist.')
+            return          
+        if self.loadedPDFpath and os.path.exists(self.loadedPDFpath) and self.loadedPDFpath.lower().endswith('.pdf') and PDFocr.checkIfSupported(self.loadedPDFpath):
+            exportFilename,  extension = QFileDialog.getSaveFileName(self, 
+                                     "Zieldatei wählen",                        
+                                     '',
+                                     "PDF-Dateien (*.pdf *.PDF)")
+        
+            if exportFilename: 
+                if not exportFilename.lower().endswith('.pdf'):
+                    exportFilename = exportFilename + '.pdf'
+            else:
+                return     
+
+            self.ocrLock=True
+            
+            # In separaten Thread verschieben, um Event-Loop nicht zu blockieren       
+            try: 
+                self.OCR2thread=Thread(target=self.__ocrFileWorker, args=(self.loadedPDFpath, exportFilename))    
+                self.OCR2thread.start() 
+            except Exception as e:
+                self.lastExceptionString = str(e)
+                self.ocrLock=False
+                return
+
+            self.statusBar.showMessage(f'Texterkennung für {self.loadedPDFpath} gestartet. Das Dokument öffnet sich nach Abschluss automatisch.')     
+        else:
+            self.__displayMessage('Die in der Vorschau angezeigte Datei kann nicht mit der Texterkennungsfunktion bearbeitet werden.\n\nMögliche Gründe:\n- Die Datei enthält bereits Text\n- Die Datei enthält mehr als ein Bild pro Seite\n- In der Vorschau wird keine PDF-Datei angezeigt') 
+            self.ocrLock=False
+            return        
+    
+    def __exportPDF(self):
+        '''Exportiert die unter "Dateien" angezeigten Dateien in eine einzelne PDF-Datei.'''    
+        if self.actionNurFavoritenExportieren.isChecked() and len(self.favorites)==0:
+            self.__displayMessage('Der PDF-Export ist für die aktuelle Nachricht momentan nicht möglich.\n\nUnter "Optionen" wurde festgelegt, dass lediglich Favoriten exportiert werden sollen.\n\nEs wurden jedoch keine Dateien als Favoriten selektiert.\n\nBitte fügen Sie den Favoriten Dateien hinzu oder passen Sie die Exporteinstellungen an.')   
+            return
+        
+        filenameColumn = None
+        displaynameColumn = None
+        classColumn = None
+        dateColumn = None
+        scanColumn = None
+        filingColumn = None
+        receivedColumn = None
+        try:
+            for headeritem in range(len(self.docTableAttributes)+2):
+                match self.docTableView.horizontalHeaderItem(headeritem).text():
+                    case "Dateiname":
+                        filenameColumn = headeritem
+                    case "Klasse":
+                        classColumn = headeritem
+                    case "Datum":
+                        dateColumn = headeritem
+                    case "Scandatum":
+                        scanColumn = headeritem
+                    case "Veraktung":
+                        filingColumn = headeritem
+                    case "Eingang":
+                        receivedColumn = headeritem
+                    case "Anzeige-\nname":
+                        displaynameColumn = headeritem
+                    case _:
+                        pass                          
         except Exception as e:
             message='Es konnten keine Dateien für den Export ermittelt werden.'    
             self.__displayMessage(message) 
@@ -596,47 +916,69 @@ class UI(QMainWindow):
                 exportFilename = exportFilename + '.pdf'
         else:
             return
-                
+          
+        self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))   
         if filenameColumn:
             try:
                 notSupported = []
                 
                 pdf = Pdf.new()
                 page_count = 0
-                
+                file_count = 0
                 with TemporaryDirectory() as localTempDir:
                     with pdf.open_outline() as outline: 
                         favoriten = OutlineItem('Favoriten')
                         outline.root.append(favoriten)
-                        # if page_count== 0:
-                        # TODO create XJustiz-Deckblatt
-                        # - Nachrichtenkopf
-                        # - Beteiligtendaten
-                        # - Instanzdaten
-                        # else:
+                        
+                        # Deckblatt
+                        if self.actionDeckblattBeiExport.isChecked():
+                            attachFile = CreateDeckblatt(self).output(os.path.join(localTempDir , 'XJustiz-Deckblatt.pdf'))
+                            src = Pdf.open(attachFile)
+                            outline.root.append(OutlineItem('XJustiz-Deckblatt', 0))
+                            page_count += len(src.pages)
+                            pdf.pages.extend(src.pages)  
+                        
+                        # Dateien
                         for row in range(self.docTableView.rowCount()):
                             if not self.docTableView.isRowHidden(row):
                                 attachFile = None
                                 filename = self.docTableView.item(row, filenameColumn).text()
                                 if filename and os.path.exists(os.path.join(self.basedir , filename)): 
-                                    if filename.lower().endswith(('.pks', '.xml', '.p7s', '.pkcs7', '.csv', '.txt')):
-                                        tempPDF = FPDF()
+                                    
+                                    if filename not in self.favorites and self.actionNurFavoritenExportieren.isChecked():
+                                        continue
+                                    
+                                    file_count += 1
+                                    if filename.lower().endswith(('.xml', '.csv', '.txt')):
+
+                                        try:
+                                            try:
+                                                contents = Path(os.path.join(self.basedir , filename)).read_text(encoding='utf-8')
+                                            except UnicodeDecodeError:
+                                                contents = Path(os.path.join(self.basedir , filename)).read_text(encoding='cp1252')
+                                        except Exception as e:
+                                            file_count -= 1
+                                            notSupported.append(filename)
+
+                                        tempPDF = FPDF(orientation = "landscape" if filename.lower().endswith('.csv') else "portrait")
                                         tempPDF.set_font("helvetica")
                                         tempPDF.add_page()
-                                        contents = Path(os.path.join(self.basedir , filename)).read_text()
                                         tempPDF.write(text = contents)
                                         tempPDFFile = os.path.join(localTempDir , filename + '.pdf')
                                         tempPDF.output(tempPDFFile)
                                         attachFile = tempPDFFile
                                             
-                                    elif filename.lower().endswith(('.jpg', '.tiff', '.png')):
-                                        # TODO Test .tiff
-                                        # TODO Querformat einpassen
-                                        tempPDF = FPDF()
-                                        tempPDF.add_page()
+                                    elif filename.lower().endswith(('.jpg', '.jpeg','.tiff','.tif','.png')):
                                         image = os.path.join(self.basedir , filename)
+                                        with Image.open(image) as im:
+                                            imageOrientation = "landscape" if im.size[0] > im.size[1] else "portrait"
+                                            tempPDF = FPDF(orientation = imageOrientation)
+                                        tempPDF.add_page()
                                         tempPDF.set_draw_color(r=255, g=255, b=255)
-                                        rect = 10, 10, 190, 277
+                                        if imageOrientation == 'portrait':
+                                            rect = 10, 10, 190, 277
+                                        else:    
+                                            rect = 10, 10, 277, 190
                                         tempPDF.rect(*rect)
                                         tempPDF.image(
                                             image,
@@ -654,55 +996,82 @@ class UI(QMainWindow):
                                         if os.path.exists(previewFilepath): 
                                             attachFile = previewFilepath
                                         else:
-                                            notSupported.append(filename)
+                                            file_count -= 1
+                                            if not filename.lower().endswith(('.pkcs7', '.p7s','.pks')):
+                                                notSupported.append(filename) 
+                                elif filename and not os.path.exists(os.path.join(self.basedir , filename)) and not filename.lower().endswith(('.pkcs7', '.p7s','.pks')): 
+                                    notSupported.append(filename) 
                             else:
                                 continue
-                                
+                            
+                            #Dateien anhängen    
                             if attachFile:
                                 src = Pdf.open(attachFile)
-                               
+
+                                #Outline (Inhaltsverzeichnis) erstellen
                                 outlineName = filename
                                 
-                                # TODO Test if tag Anzeigename does not exist in xjustiz nachricht
                                 if displaynameColumn:
                                     outlineName = self.docTableView.item(row, displaynameColumn).text()
-                                    if len(outlineName)==0:
-                                        outlineName = filename
-                                  
+                                    if len(outlineName.strip())==0:
+                                        outlineName = self.docTableView.item(row, classColumn).text()
+                                          
+                                dateColumns = (dateColumn, filingColumn, scanColumn, receivedColumn)
+                                
+                                if any (dateColumns) and self.actionDateidatumExportieren.isChecked():
+                                    for column in dateColumns:
+                                        outlineDate = self.docTableView.item(row, column).text()
+                                        if outlineDate:
+                                            outlineName += f" {outlineDate}"
+                                            break
+                                    
                                 oi = OutlineItem(outlineName, page_count)
-                                  
+                                
                                 if filename in self.favorites:
                                     favoriten.children.append(oi)
                                 
                                 outline.root.append(oi)
                                 page_count += len(src.pages)
+                                self.statusBar.showMessage(f'Bearbeite: {filename}')
+                                self.statusBar.repaint()
                                 pdf.pages.extend(src.pages)                
                     
-                        if len(favoriten.children) == 0:
+                        if len(favoriten.children) == 0 or not self.actionFavoritenExportieren.isChecked():
                             outline.root.remove(favoriten)
                             
-                    if len(pdf.pages)>0:
+                    if file_count > 0:
+                        self.statusBar.showMessage(f'Speichere PDF-Datei: {exportFilename}')
+                        self.statusBar.repaint()
                         pdf.save(exportFilename)
-                    
+                        self.app.restoreOverrideCursor()
+                        
                         if len(notSupported)!=0:
-                            msgText='Nicht alle in der Tabelle "Dateien" angezeigten Dokumente konnten nach PDF konvertiert werden. Vermutlich wird ein externes Programm zur Konvertierung benötigt.\n\nFolgende Dateien wurden daher nicht exportiert:\n'      
+                            msgText='Nicht alle in der Tabelle "Dateien" angezeigten Dokumente konnten nach PDF konvertiert werden.\n\nEntweder wird ein externes Programm zur Konvertierung benötigt, es handelt sich nicht um Text- bzw. Bilddateien oder die Dateien konnten nicht gefudnen werden.\n\nFolgende Dateien wurden daher nicht exportiert:\n'      
                             for item in notSupported:
                                 msgText += str(item) + "\n"                       
                         else:
-                            msgText='Alle in der Tabelle "Dateien" angezeigten Dokumente wurden erfolgreich exportiert. Zum Ändern der Auswahl Filter setzen oder anderen "Inhalt" auswählen.'     
+                            msgText='Alle in der Tabelle "Dateien" angezeigten Dokumente\n(ggf. mit Ausnahme von Signaturdateien) wurden erfolgreich exportiert. Zum Ändern der Auswahl Filter setzen oder anderen "Inhalt" auswählen.'     
                         
+                        self.statusBar.showMessage('PDF-Export abgeschlossen.')
                         self.__displayMessage(msgText)    
-                    
+                        if self.actionPDFnachExportOeffnen.isChecked():
+                            self.__openFileExternal(exportFilename, ignoreWarnings=True, absolutePath=True)
                     else:
-                        self.__displayMessage('Es wurde keine PDF-Datei erstellt, da die Dateiformate der gewählten Dateien nicht unterstützt werden oder die Dateien nicht gefunden werden konnten.')   
+                        self.app.restoreOverrideCursor()
+                  
+                        if self.actionNurFavoritenExportieren.isChecked():
+                            self.__displayMessage('Der PDF-Export war nicht erfolgreich.\n\nUnter "Optionen" wurde festgelegt, dass von den unter "Dateien" sichtbaren Dateien lediglich Favoriten exportiert werden sollen.\n\nAlternativ kann es sein, dass die Dateiformate der gewählten Dateien nicht unterstützt werden oder die Dateien nicht gefunden werden konnten.')  
+                        else:
+                            self.__displayMessage('Es wurde keine PDF-Datei erstellt, da die Dateiformate der gewählten Dateien nicht unterstützt werden oder die Dateien nicht gefunden werden konnten.')   
+                        self.statusBar.showMessage('PDF-Export abgebrochen.')
                                                    
             except Exception as e:
+                self.app.restoreOverrideCursor()
                 msgText='Bei der Erzeugung der PDF-Datei ist ein Fehler aufgetreten.'
                 self.statusBar.showMessage(msgText)
                 self.__displayMessage(msgText, title = 'Fehler', icon = QMessageBox.Icon.Warning)
                 self.lastExceptionString=str(e)  
-
-                        
+                                   
     def __updateSelectedInhalt(self):
         val = self.inhaltView.currentIndex() 
         akte = self.akte 
@@ -711,10 +1080,13 @@ class UI(QMainWindow):
         self.__setMetadata(akte, aktenID)
         self.__setDocumentTable(aktenID)
         if self.actionAnwendungshinweise.isChecked() and self.docTableView.rowCount() == 0: 
-                self.__informIfNoDocsVisible()
+                self.__informIfNoDocsVisible()         
         self.__filtersTriggered()   
            
-    def __filtersTriggered(self):
+    def __filtersTriggered(self, keepSearchTerms=False):
+        if not keepSearchTerms:
+            self.suchbegriffeText.clear()
+
         filteredRows = self.__filterTableRows(self.docTableView, self.plusFilter.text(), self.minusFilter.text())
         
         for row in range(self.docTableView.rowCount()):
@@ -724,9 +1096,10 @@ class UI(QMainWindow):
 
         self.settings.setValue("minusFilter", self.minusFilter.text())
         self.settings.setValue("plusFilter", self.plusFilter.text())
+
    
     def __magicFilters(self):
-        '''Fügt dem -Filter Dateiendungen bekannter technsicher Dokumente hinzu'''
+        '''Fügt dem -Filter Dateiendungen bekannter technischer Dokumente hinzu'''
         filterItems=self.minusFilter.text().split()
         for fileextension in [".pks",  ".p7s", ".xml", ".pkcs7"]: 
             if fileextension not in filterItems:
@@ -734,9 +1107,10 @@ class UI(QMainWindow):
         self.__filtersTriggered()
         
     def __resetFilters(self):
-        '''Leert die Filter-Felder''' 
-        self.plusFilter.setText('')
-        self.minusFilter.setText('')
+        '''Leert die Filter-Felder und die Suchbegriffe''' 
+        self.suchbegriffeText.clear()    
+        self.plusFilter.clear()
+        self.minusFilter.clear()
         self.__filtersTriggered()
                 
     def __filterTableRows (self, tableObj, plusFilterStr, minusFilterStr):
@@ -779,8 +1153,7 @@ class UI(QMainWindow):
             self.termineTableView.horizontalHeader().setStretchLastSection(True)
             self.termineTableView.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignHCenter)
             self.termineTableView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
-           
-                                              
+                                                     
             columnCount=0
             for item in self.terminTableColumnsHeader:
                 headerItem=self.__tableItem(item, self.appFont)
@@ -831,8 +1204,7 @@ class UI(QMainWindow):
                 self.termineTableView.setItem(rowNo, 6, tempItem)
                 
                 rowNo+=1
-                
-            
+                           
             self.termineTableView.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)
             self.termineTableView.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)    
             self.termineTableView.setColumnWidth(3,40)
@@ -875,8 +1247,7 @@ class UI(QMainWindow):
             
             #add row
             data.append(rowData)
-            
-            
+                   
         #set data
         if data:
 
@@ -1316,8 +1687,8 @@ class UI(QMainWindow):
                         notesFile.write(notizen)
                 elif os.path.exists(filepath):
                     os.remove(filepath)
-        except AttributeError:
-            pass
+        except AttributeError as e:
+            self.lastExceptionString = str(e)
 
     def __getAktenSubBaum(self, akten, node):    
         for einzelakte in akten.values():
@@ -1361,7 +1732,7 @@ class UI(QMainWindow):
         filename=self.docTableView.item(currentIndex.row(), filenameColumn).text()
         
         if self.settings.value('pdfViewer', 'PDFjs')!='nativ':
-            supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt')
+            supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt', '.xml')
             # Check if a preview-file in PDF-format exists if 
             # used as viewer for exported case files
             # make sure the preview file is loaded in the browser  
@@ -1369,25 +1740,47 @@ class UI(QMainWindow):
                 previewFilepath = os.path.join(self.basedir , filename + '.pdf')
                 if os.path.exists(previewFilepath): 
                     filename = filename + '.pdf'
+                
+                elif filename.lower().endswith(('.tiff', '.tif')):
+                    try:
+                        with Image.open(os.path.join(self.basedir , filename)) as im:
+                            convertedImage = os.path.join(self.tempDir.name , filename + '.png')
+                            if not os.path.exists(convertedImage):
+                                im.save (convertedImage, "PNG")
+                    except Exception as e:
+                        self.lastExceptionString=str(e)
+                        self.statusBar.showMessage(f'Fehler beim Öffnen der Datei: {filename}')
+                        return None
                     
+                    filename = convertedImage
+                        
             if filename.lower().endswith(supportedFiles):
                 self.__openFileInBrowser(filename)
-              
+            else:
+                self.statusBar.showMessage(f'Der Dateityp {Path(filename).suffix} ist zur Anzeige in der Vorschau nicht geeignet.')  
         
     def __openFileInBrowser(self, filename):
         filepath = os.path.join(self.basedir , filename)
         if os.path.exists(filepath): 
             self.loadedPDFpath=filepath
             self.loadedPDFfilename=filename
-                        
-            #Clean up any old tempfile
-            if self.tempfile and os.path.isfile(self.tempfile):
+             
+            # IMPROVEMENT 
+            # TODO Ggf. Clean Up Temp Files wenn XJustiz-Datei geladen wird , um UX bei Nutzung von Netzlaufwerken zu verbessern            
+            # TODO Überprüfen, ob tmp-Verzeichnis auch für parallel laufende Prozesse (Druck, OCR) genutzt wird
+            
+            # Clean up any old tempfile
+            newTempfile = os.path.join(self.tempDir.name, filename)
+            if self.tempfile and os.path.isfile(self.tempfile) and not self.tempfile == newTempfile:
                 os.remove(self.tempfile)
 
             #Copy PDF to local temporary folder to circumvent CORS issues with PDFjs
             #if file is stored on e.g. a network share 
-            self.tempfile=os.path.join(self.tempDir.name, filename)
-            copyfile(filepath, self.tempfile)
+            self.tempfile = newTempfile
+            
+            if not os.path.exists(self.tempfile):
+                copyfile(filepath, self.tempfile)
+            
             filepath=self.tempfile
             
             if sys.platform.lower().startswith('win'):
@@ -1405,16 +1798,18 @@ class UI(QMainWindow):
                 winslash = '/' if sys.platform.lower().startswith('win') else ''    
             
                 self.url =" file://%s%s" % (winslash, filePath)
-  
+            
             self.browser.setUrl(QUrl.fromUserInput(self.url))
-        else: 
-            self.statusBar.showMessage('Datei existiert nicht: %s' % filename) 
+            self.statusBar.showMessage(f'Angezeigte Datei: {filename}') 
+        else:
+            self.statusBar.showMessage(f'Datei existiert nicht: {filename}')  
+            
     
     def __getFavoriteViewAction (self, val):     
         filename =  self.favoritenView.currentIndex().data()
     
         if self.settings.value('pdfViewer', 'PDFjs')!='nativ':
-            supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt')
+            supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt', '.xml')
             # Check if a preview-file in PDF-format exists if 
             # used as viewer for exported case files
             # make sure the preview file is loaded in the browser  
@@ -1422,10 +1817,25 @@ class UI(QMainWindow):
                 previewFilepath = os.path.join(self.basedir , filename + '.pdf')
                 if os.path.exists(previewFilepath): 
                     filename = filename + '.pdf'
+
+                elif filename.lower().endswith(('.tiff', 'tif')):
+                    try:
+                        with Image.open(os.path.join(self.basedir , filename)) as im:
+                            convertedImage = os.path.join(self.tempDir.name , filename + '.png')
+                            if not os.path.exists(convertedImage):
+                                im.save (convertedImage, "PNG")
+                    except Exception as e:
+                        self.lastExceptionString=str(e)
+                        self.statusBar.showMessage(f'Fehler beim Öffnen der Datei: {filename}') 
+                        return None
+                        
+                    filename = convertedImage
                     
             if filename.lower().endswith(supportedFiles):
                 self.__openFileInBrowser(filename)
-            
+            else:
+                self.statusBar.showMessage(f'Der Dateityp {Path(filename).suffix} ist zur Anzeige in der Vorschau nicht geeignet.')  
+    
     def __getDClickFavoriteViewAction (self, val):
              
         self.__openFileExternal(val.data()) 
@@ -1456,7 +1866,7 @@ class UI(QMainWindow):
             self.getFile(folder=self.tempPath.name)
             
     def getFile(self, file=None, folder=None):
-        #Notes eines ggf. geöffneten Datensatzes speichern
+        # Notes eines ggf. geöffneten Datensatzes speichern
         if len(self.notizenText.toPlainText()):
             self.__saveNotes()
         
@@ -1533,24 +1943,26 @@ class UI(QMainWindow):
                     if searchForVersion:
                         type = searchForVersion.group(1)
                         break
-
-            if   type=="2.4.0":
-                self.akte=parser240(file)
-            elif type=="3.2.1":
-                self.akte=parser321(file)
-            elif type=="3.3.1":
-                self.akte=parser331(file)
-            elif type=="3.4.1":
-                self.akte=parser341(file)   
-            else:
-                # Wähle neueste Version, falls kein unterstützter Standard gefunden wird
-                self.akte=parser351(file)        
+            
+            match type:                
+                case "2.4.0":
+                    self.akte=parser240(file)
+                case "3.2.1":
+                    self.akte=parser321(file)
+                case "3.3.1":
+                    self.akte=parser331(file)
+                case "3.4.1":
+                    self.akte=parser341(file)   
+                case other:
+                    # Wähle neueste Version, falls kein unterstützter Standard gefunden wird
+                    self.akte=parser351(file)        
             
         except Exception as e:
             self.statusBar.showMessage('Fehler beim Öffnen der Datei: %s' % file)
             self.app.restoreOverrideCursor()
             self.lastExceptionString=str(e)
-            raise e
+            # Debug 
+            # raise e
             return None 
         
         self.app.restoreOverrideCursor()
@@ -1570,9 +1982,10 @@ class UI(QMainWindow):
         self.xmlFile=os.path.basename(file)
         #Load empty viewer                     
         self.__loadEmptyViewer()   
-        self.statusBar.showMessage('Eingelesene Datei: %s - XJustiz-Version: %s' % (file, type))
         self.settings.setValue("lastFile", file)
-        self.__addToHistory(file)
+        self.__addToHistory(file)     
+        self.statusBar.showMessage(f'Eingelesene Datei: {file} - XJustiz-Version: {type}')
+        self.__prepareSearchStore()
 
     def __informIfNoDocsVisible(self):
         '''Überprüft, ob Dokumente angezeigt werden und gibt Hinweis aus.'''
@@ -1610,6 +2023,12 @@ class UI(QMainWindow):
         self.settings.setValue('leereSpalten' , self.actionLeereSpaltenAusblenden.isChecked())
         self.settings.setValue('grosseSchrift' , self.actionGrosse_Schrift.isChecked())
         self.settings.setValue('anwendungshinweise' , self.actionAnwendungshinweise.isChecked())
+        self.settings.setValue('deckblatt' , self.actionDeckblattBeiExport.isChecked())
+        self.settings.setValue('dateidatumExportieren' , self.actionDateidatumExportieren.isChecked())
+        self.settings.setValue('favoritenExportieren' , self.actionFavoritenExportieren.isChecked()) 
+        self.settings.setValue('nurFavoritenExportieren' , self.actionNurFavoritenExportieren.isChecked())
+        self.settings.setValue('PDFnachExportOeffnen' , self.actionPDFnachExportOeffnen.isChecked())
+        self.settings.setValue('sucheAnzeigen' , self.actionSucheAnzeigen.isChecked())
         
         if self.actionChromium.isChecked():
             self.settings.setValue('pdfViewer', 'chromium')
@@ -1622,6 +2041,7 @@ class UI(QMainWindow):
          
         self.__updateVisibleColumns()
         self.__updateVisibleViews()
+        self.__prepareSearchStore(reset_searchStore=False)
         self.__toggleFontsizes()
         
     def __viewerSwitch(self):
@@ -1694,23 +2114,31 @@ class UI(QMainWindow):
         for key, value in self.docHeaderColumnsSettings.items(): 
             if value['setting']:
                 setTo = str(self.settings.value(key, 'default'))
-                if setTo.lower() == 'true':
-                    value['setting'].setChecked(True) 
-                elif setTo.lower() == 'false':
-                    value['setting'].setChecked(False)
-                else:    
-                    value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
-        self.actionNachrichtenkopf.setChecked           (True if str(self.settings.value('nachrichtenkopf', 'true')).lower()=='true'     else False)
-        self.actionFavoriten.setChecked                 (True if str(self.settings.value('favoriten', 'true')).lower()      =='true'     else False)
-        self.actionMetadaten.setChecked                 (True if str(self.settings.value('metadaten', 'false')).lower()      =='true'     else False)
-        self.actionNotizen.setChecked                   (True if str(self.settings.value('notizen', 'false')).lower()       =='true'     else False)
-        self.actionLeereSpaltenAusblenden.setChecked    (True if str(self.settings.value('leereSpalten', 'true')).lower()   =='true'     else False)
-        self.actionChromium.setChecked                  (True if     self.settings.value('pdfViewer', 'PDFjs')              =='chromium' else False)
-        self.actionnativ.setChecked                     (True if     self.settings.value('pdfViewer', 'PDFjs')              =='nativ'    else False)     
-        self.actionGrosse_Schrift.setChecked            (True if str(self.settings.value('grosseSchrift', 'false')).lower() =='true'     else False)
-        self.actionAnwendungshinweise.setChecked        (True if str(self.settings.value('anwendungshinweise', 'true')).lower() =='true' else False)
-        self.actionOnlineAufUpdatesPruefen.setChecked   (True if str(self.settings.value('checkUpdates', 'true')).lower()   =='true'     else False)
-        
+                match setTo.lower():
+                    case "true":
+                        value['setting'].setChecked(True)    
+                    case "false":
+                        value['setting'].setChecked(False) 
+                    case other:        
+                         value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
+                         
+        self.actionNachrichtenkopf.setChecked           (True if str(self.settings.value('nachrichtenkopf', 'true')).lower()          =='true'     else False)
+        self.actionFavoriten.setChecked                 (True if str(self.settings.value('favoriten', 'true')).lower()                =='true'     else False)
+        self.actionMetadaten.setChecked                 (True if str(self.settings.value('metadaten', 'false')).lower()               =='true'     else False)
+        self.actionNotizen.setChecked                   (True if str(self.settings.value('notizen', 'false')).lower()                 =='true'     else False)
+        self.actionLeereSpaltenAusblenden.setChecked    (True if str(self.settings.value('leereSpalten', 'true')).lower()             =='true'     else False)
+        self.actionChromium.setChecked                  (True if     self.settings.value('pdfViewer', 'PDFjs')                        =='chromium' else False)
+        self.actionnativ.setChecked                     (True if     self.settings.value('pdfViewer', 'PDFjs')                        =='nativ'    else False)     
+        self.actionGrosse_Schrift.setChecked            (True if str(self.settings.value('grosseSchrift', 'false')).lower()           =='true'     else False)
+        self.actionAnwendungshinweise.setChecked        (True if str(self.settings.value('anwendungshinweise', 'true')).lower()       =='true'     else False)
+        self.actionOnlineAufUpdatesPruefen.setChecked   (True if str(self.settings.value('checkUpdates', 'true')).lower()             =='true'     else False)
+        self.actionDeckblattBeiExport.setChecked        (True if str(self.settings.value('deckblatt', 'true')).lower()                =='true'     else False)
+        self.actionDateidatumExportieren.setChecked     (True if str(self.settings.value('dateidatumExportieren' , 'true')).lower()   =='true'     else False)
+        self.actionFavoritenExportieren.setChecked      (True if str(self.settings.value('favoritenExportieren' , 'true')).lower()    =='true'     else False)
+        self.actionNurFavoritenExportieren.setChecked   (True if str(self.settings.value('nurFavoritenExportieren' , 'false')).lower()=='true'     else False)        
+        self.actionPDFnachExportOeffnen.setChecked      (True if str(self.settings.value('PDFnachExportOeffnen', 'true')).lower()     =='true'     else False)        
+        self.actionSucheAnzeigen.setChecked             (True if str(self.settings.value('sucheAnzeigen', 'false')).lower()           =='true'     else False)  
+    
         self.__viewerSwitch()
         self.__updateVisibleViews()
         self.__toggleFontsizes()
@@ -1748,6 +2176,10 @@ class UI(QMainWindow):
         self.favoriten.setVisible(self.actionFavoriten.isChecked())
         self.metadaten.setVisible(self.actionMetadaten.isChecked())
         self.notizen.setVisible(self.actionNotizen.isChecked())
+        
+        # Suche
+        self.fakeSpacer.setVisible(self.actionSucheAnzeigen.isChecked())
+        self.suchbegriffeText.setVisible(self.actionSucheAnzeigen.isChecked())
         
     def __openManual(self):
         manualPath = os.path.join(self.scriptRoot , 'docs', 'openXJV_Benutzerhandbuch.pdf')
@@ -1947,12 +2379,12 @@ class UI(QMainWindow):
         ]
                 
         if self.akte.grunddaten.get('verfahrensnummer'):
-            text.addLine('<b><i>Verfahrensnummer:</i></b>', self.akte.grunddaten['verfahrensnummer'])
+            text.addLine('<b><i>Verfahrensnummer</i></b>', self.akte.grunddaten['verfahrensnummer'])
             
         keys=list(self.akte.grunddaten['instanzen'].keys())
         for key in keys:
             instanz=self.akte.grunddaten['instanzen'][key]
-            hr='________________________________________________________________________________________________<br><br>'
+            hr='_______________________________________<br><br>'
             text.addRaw("%s<b>Instanz %s</b><br>%s<b><i>Instanzdaten</i></b><br>" % (hr, key, hr))       
             if instanz.get('auswahl_instanzbehoerde'):
                 text.addLine('<b>Behörde</b>', instanz['auswahl_instanzbehoerde'].get('name'))
@@ -2475,7 +2907,7 @@ class UI(QMainWindow):
                 text.addRaw(self.__kanzleiTemplate(beteiligter))
             elif beteiligtentyp=='GDS.NatuerlichePerson':  
                 text.addRaw(self.__natPersonTemplate(beteiligter))
-            text.addRaw('__________________________________________________________________________________<br><br>')
+            text.addRaw('_______________________________________<br><br>')
            
         self.beteiligteText.setHtml(text.getText())
         
@@ -2595,7 +3027,10 @@ def launchApp():
     app.setObjectName('openXJV')
     app.setApplicationName('openXJV %s' % VERSION)
     app.setApplicationVersion(VERSION)
-    
+
+    splash_screen = QPixmap(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons', 'SplashScreen.png'))
+    splash = QSplashScreen(splash_screen, Qt.WindowType.WindowStaysOnTopHint)
+    splash.show()
     #Parse sys.argv
     file=None
     ziplist=None
@@ -2611,7 +3046,9 @@ def launchApp():
     widget = UI(file=file, ziplist=ziplist, app=app)
     widget.setWindowFlags((widget.windowFlags() & ~Qt.WindowType.WindowFullscreenButtonHint) | Qt.WindowType.CustomizeWindowHint )
     app.aboutToQuit.connect(widget.cleanUp)
+    splash.finish(widget)
     widget.showMaximized()
+    
     sys.exit(app.exec())
     
 if __name__ == "__main__":
