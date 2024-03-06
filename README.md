@@ -22,4 +22,4 @@ oder zum Download auf https://openxjv.de
 
 Die Installation ist mit einem Installer für Windows, einem AppImage für Linux (jeweils unter https://github.com/digidigital/openXJV/releases) und plattformübergreifend (Windows, Linux, macOS) mittels pip möglich > https://pypi.org/project/openXJV/
 
-Björn Seipel
+2024-03-06 Björn Seipel
