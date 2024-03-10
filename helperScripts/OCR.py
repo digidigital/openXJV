@@ -19,7 +19,8 @@ from PIL import Image, ImageEnhance
 
 def run_args(return_text=True):
     kwargs={'capture_output':True, 
-            'text':return_text}
+            'text':return_text,
+            'timeout':600}
     
     # Prevent console pop-ups in pyinstaller GUI-Applications
     if os.name == 'nt':
@@ -28,7 +29,7 @@ def run_args(return_text=True):
     return kwargs
 
 class PDFocr():
-    def __init__(self, file=None, outpath='./output.pdf', open_when_done=False, threads=0, omp_thread_limit=False):     
+    def __init__(self, file=None, outpath='./output.pdf', open_when_done=False, threads=0):     
         
         if not PDFocr.tesseractAvailable():
             raise RuntimeError('Tesseract und / oder deutsche Sprachdateien nicht verfügbar.')
@@ -36,13 +37,6 @@ class PDFocr():
         if not file or not file.lower().endswith('.pdf'):
             raise FileNotFoundError('No PDF-Document available')
 
-        # Disable Tesseract multithreading in order 
-        # to speed up parallel processing of the extracted images  
-        if omp_thread_limit:
-            os.environ['OMP_THREAD_LIMIT']='1' 
-        else:
-            os.environ.pop('OMP_THREAD_LIMIT', None)
-        
         self.posix = os.name == 'posix'
         
         self.startOCR(file, outpath, threads)
@@ -77,7 +71,9 @@ class PDFocr():
             pdf =  pdfium.PdfDocument(filepath)  
             for page_number in range (len(pdf)):
                 if len(pdf[page_number].get_textpage().get_text_bounded()):
+                    pdf.close()
                     return False  
+            pdf.close()
             return True
         except Exception as e:
             # In case of any error return False    
@@ -158,7 +154,7 @@ class PDFocr():
             except models.image.HifiPrintImageNotTranscodableError:
                 originalPDF = pdfium.PdfDocument(file)    
                 pdfimage = originalPDF[pageNumber].render(scale = 150/72).to_pil()
-            
+                originalPDF.close()
             # In case even pypdfium fails create an empty A4 dummy page   
             # The result will be a page without text
             except Exception as e:   
@@ -183,7 +179,7 @@ class PDFocr():
                 tesseract_image = os.path.join(tmpdir, f'{uuid4().hex}.png')
                 pdfimage.save ((tesseract_image),"PNG", dpi=(150,150))
                 
-                tesseract_command = f"tesseract {tesseract_image} stdout --psm 0 --dpi 150 -c min_characters_to_try=10"
+                tesseract_command = f"tesseract {tesseract_image} stdout --psm 0 --dpi 150 -c min_characters_to_try=15"
                 
                 osd_output = subprocess.run(shlex.split(tesseract_command, self.posix), **run_args())
                 

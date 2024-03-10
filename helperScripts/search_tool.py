@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
-import json
+import orjson as json
 import concurrent.futures
 from Search import get_document_text
 from multiprocessing import cpu_count, freeze_support
@@ -11,8 +11,7 @@ VERSION = '0.1'
 def parse_text(filename, filepath):
     text = ''
     try:
-        if not filename.lower().endswith(('.cer', '.zip', '.p7s', '.pks', '.pkcs7', '.doc', '.xls', '.tiff', '.tif', '.png', '.jpg')) and not 'laufzettel' in filepath:
-            text = get_document_text(filepath, lower_case=True)
+        text = get_document_text(filepath, lower_case=True).replace('\r', '').replace('\n', '').replace('-', '').replace("", '')
     except Exception as e:
         pass
     return filename, text
@@ -38,11 +37,11 @@ if __name__ == "__main__":
                         try:
                             if future.result() != None:
                                 filename=future.result()[0]
-                                text=future.result()[1] 
-                                result[filename] = text
+                                text=future.result()[1]
+                                result[str(filename)] = text
                         except Exception as e:
-                            pass 
-            print(json.dumps(result))                     
+                            pass  
+            sys.stdout.buffer.write(json.dumps(result))                   
         except Exception as e:
             print(e)
             sys.exit(1)    

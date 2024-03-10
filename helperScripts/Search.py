@@ -49,7 +49,8 @@ class PDF(Baseclass):
         for page_number in range (len(pdf)):
             textpage = pdf[page_number].get_textpage()
             self.text += textpage.get_text_bounded()
-               
+        pdf.close()
+
 class DOCX(Baseclass):
     def __init__(self, path) -> None:
         super().__init__(path)
@@ -59,9 +60,12 @@ class TXT(Baseclass):
     def __init__(self, path) -> None:
         super().__init__(path)
         try:
-            self.text = Path(path).read_text(encoding='utf-8')
-        except UnicodeDecodeError:
-            self.text = Path(path).read_text(encoding='cp1252')
+            try:
+                self.text = Path(path).read_text(encoding='utf-8')
+            except UnicodeDecodeError:
+                self.text = Path(path).read_text(encoding='cp1252')
+        except:
+            raise Exception(path)
 
 class XLSX(Baseclass):
     def __init__(self, path) -> None:
@@ -131,18 +135,16 @@ def get_document_text(path = None, lower_case = False):
         text = XLSX(path).text
     elif path.lower().endswith(('.xml', '.html')): 
         text = XML(path).text
-    elif path.lower().endswith(('.cer', '.zip', '.p7s', '.pks', '.pkcs7', '.doc', '.xls', '.tiff', '.tif', '.png', '.jpg')):
-        text = ''    
-    else:  
-        raise ValueError(f"File not supported: {path}") 
-       
+    else:
+        return ''
+
     return text.lower() if lower_case else text
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
         try:
-            print(get_document_text(file_path, lower_case=True), end='')
+            print(get_document_text(file_path, lower_case=False), end='')
         except Exception as e:
             print(e)
             sys.exit(1)        
