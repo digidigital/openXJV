@@ -24,7 +24,7 @@ import os
 import re
 import sys
 import time
-import json
+import orjson as json
 import urllib.request
 import subprocess
 if os.name == 'nt':
@@ -34,6 +34,7 @@ import darkdetect
 import multiprocessing
 import concurrent.futures
 import pypdfium2 as pdfium
+from uuid import uuid4
 from threading import Thread
 from shutil import copyfile
 from pathlib import Path
@@ -163,8 +164,7 @@ class SearchWorker(QObject):
         search_store={}
         exception_text=None
         try:
-            kwargs={'capture_output':True, 
-            'text':True}    
+            kwargs={'capture_output':True}  
             if os.name == 'nt':
                 kwargs['creationflags']=CREATE_NO_WINDOW
                 
@@ -183,7 +183,7 @@ class SearchWorker(QObject):
                     if filename.lower().endswith('.pdf'):
                         leere_PDF = leere_PDF+1 if search_store[filename] == '' else leere_PDF 
             else:
-                raise Exception (f'Fehler bei der Textextraktion mit search_tool')     
+                raise Exception (f'Fehler bei der Textextraktion mit search_tool {text_extraction_result.stderr}')     
         
         except Exception as e:
             exception_text=str(e)
@@ -270,13 +270,20 @@ class UI(QMainWindow):
 
         # Add tesseract, jbig2dec and search_tool to windows PATH 
         if os.name == 'nt': 
+            
             if os.path.exists(os.path.join(self.scriptRoot,'bin','search_tool', 'search_tool.exe')):
                     os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','search_tool')}"  
             if not PDFocr.tesseractAvailable():
                 if os.path.exists(os.path.join(self.scriptRoot,'bin','jbig2dec', 'jbig2dec.exe')):
                     os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','jbig2dec')}"    
                 if os.path.exists(os.path.join(self.scriptRoot,'bin','tesseract', 'tesseract.exe')):
-                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','tesseract')}"     
+                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','tesseract')}"
+                    os.environ['TESSDATA_PREFIX'] = f"{os.path.join(self.scriptRoot,'bin','tesseract', 'tessdata')}"
+            os.environ['PATH'] += f";{self.scriptRoot}"
+        
+        # Limit Tesseract Multithreading
+        os.environ['OMP_THREAD_LIMIT']='2' 
+        
         # Hide OCR options if Tesseract not available
         if not PDFocr.tesseractAvailable():
             self.OCRenabled=False
@@ -421,19 +428,9 @@ class UI(QMainWindow):
         #######load browsing history #####
        
         self.browsingHistory = self.__loadHistory()
-       
-        #########load initial files##########
-        lastfile=self.settings.value("lastFile", None)
-        if file and file.lower().endswith('xml'):
-            self.getFile(file)
-        elif ziplist:
-            for zip in ziplist:
-                if not zip.lower().endswith('zip'):
-                    sys.exit("Fehler: Die übergebene Liste enthält nicht ausschließlich ZIP-Dateien.")
-            self.getZipFiles(files=ziplist)    
-        elif lastfile:
-            self.getFile(lastfile)
 
+        self.actionHistorieVor.setAutoRepeat(False)  
+        self.actionHistorieZurück.setAutoRepeat(False)     
         ####connections####
         self.actionOeffnen.triggered.connect(lambda:self.getFile())
         self.actionPDFExport.triggered.connect(self.__exportPDF)
@@ -505,7 +502,21 @@ class UI(QMainWindow):
         #Check for updates
         if self.actionOnlineAufUpdatesPruefen.isChecked():
             self.__checkForUpdates(updateIndicator=self.newVersionIndicator)
-    
+        
+        #########load initial files##########
+        lastfile=self.settings.value("lastFile", None)
+        if file and file.lower().endswith('xml'):
+            self.getFile(file)
+        elif ziplist:
+            for zip in ziplist:
+                if not zip.lower().endswith('zip'):
+                    message = f'Fehler: Die übergebene Liste enthält nicht ausschließlich ZIP-Dateien: {zip}'
+                    self.statusBar.showMessage(message)
+                    self.lastExceptionString = message
+            self.getZipFiles(files=ziplist)    
+        elif lastfile:
+            self.getFile(lastfile)
+
     def __fixGnomeDarkPalette(self):
         xjvPalette = self.palette()
         for role in QPalette.ColorRole:
@@ -526,6 +537,7 @@ class UI(QMainWindow):
     def cleanUp(self):
         self.__saveNotes() 
         self.settings.sync()
+        self.tempDir.cleanup()
     
     def __loadEmptyViewer(self):
         #Delete temporary loaded pdf file
@@ -559,13 +571,14 @@ class UI(QMainWindow):
         "PDF.js - Apache 2.0 License\n"
         "Tesseract - Apache 2.0 License\n"
         "Material Icons Font - Apache 2.0 License\n"
+        "orjson -  Apache 2.0 / MIT Licenses\n"
         "pypdfium2 - Apache 2.0 / BSD 3 Clause\n"
         "darkdetect - BSD license\n"
         "lxml - BSD License\n"
         "Pillow - The open source HPND License\n"
-        "pikepdf - MPL-2.0 license\n"
+        "pikepdf - MPL-2.0 License\n"
         "appdirs - MIT License\n"
-        "docx2txt - - MIT License\n"
+        "docx2txt - MIT License\n"
         "Ubuntu Font - UBUNTU FONT LICENCE Version 1.0\n"
         "python 3.x - PSF License\n\n"
         "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden."
@@ -583,21 +596,29 @@ class UI(QMainWindow):
         
         QDesktopServices.openUrl(QUrl("mailto:%s?subject=Supportanfrage zu openXJV %s unter %s&body=%s" % (self.supportMail, VERSION, platform.platform() ,str(mailbody)), QUrl.ParsingMode.TolerantMode ))
     
-    def __displayMessage(self, message, title = 'Hinweis', icon = QMessageBox.Icon.Information):
+    def __displayMessage(self, message, title = 'Hinweis', icon = QMessageBox.Icon.Information, modal=True):
         '''Zeigt ein Info Pop-up an'''
-        msgBox=QMessageBox()
+        msgBox=QMessageBox(self)
         msgBox.setIcon(icon)
         msgBox.setWindowTitle(title)
         msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)       
         msgBox.setText(message)
-        msgBox.exec()
+        if modal:
+            msgBox.exec()
+        else:
+            msgBox.setModal(False)
+            msgBox.show()
     
     def __prepareSearchStore(self, reset_searchStore = True):
         while True:
             # Blockiere Event-Loop, wenn bereits eine Suche läuft
             try: 
-                self.search_prep_thread.isRunning()
-            except Exception:
+                if self.search_prep_thread.isRunning():
+                    # Breschränke Overhead mit sleep
+                    time.sleep(0.3)
+                else:
+                    break
+            except:
                 break    
             self.app.processEvents(QEventLoop.ProcessEventsFlag['ExcludeUserInputEvents'])
             
@@ -606,7 +627,7 @@ class UI(QMainWindow):
         
         # Txt-Daten nur in Speicher laden, wenn Suche sichbar und searchStore leer ist
         if not self.actionSucheAnzeigen.isChecked() or len(self.searchStore) != 0:
-            return 
+            return False
 
         self.suchbegriffeText.clear()
         self.searchLock=True
@@ -628,7 +649,9 @@ class UI(QMainWindow):
         self.search_worker.finished.connect(self.search_worker.deleteLater)
         self.search_worker.result.connect(self.__searchStoreReady)
         self.search_prep_thread.finished.connect(self.search_prep_thread.deleteLater)
-        self.search_prep_thread.start()        
+        self.search_prep_thread.start() 
+        
+        return True       
 
     def __searchStoreReady(self, result):  
         self.leereDateien = result[0]
@@ -638,7 +661,7 @@ class UI(QMainWindow):
         self.statusBar.showMessage(f'Die Suchfunktion steht bereit. {self.leereDateien} Dateien ({self.leerePDF} PDF-Dateien) enthalten keinen Text bzw. es konnte kein Text ausgelesen werden.')
         if result[3]:
             self.lastExceptionString=result[3]
-            self.statusBar.showMessage(f'Es ist ein Fehler bei der Aufbereitung der Daten für die Suche aufgetreten: {str(e)}')
+            self.statusBar.showMessage(f'Es ist ein Fehler bei der Aufbereitung der Daten für die Suche aufgetreten: {self.lastExceptionString}')
            
         self.app.restoreOverrideCursor() 
         
@@ -718,14 +741,14 @@ class UI(QMainWindow):
         buttonN = msgBox.button(QMessageBox.StandardButton.No)
         buttonN.setText('Nein')
         msgBox.setDefaultButton(QMessageBox.StandardButton.No)
-        msgBox.setText("Die Suchfunktion wird ggf. nicht alle relevanten Dokumente finden können, da nicht alle bereitgestellten PDF-Dateien durchsuchbar sind.\n\nSoll für diese Dokumente eine Texterkennung durchgeführt werden und eine Kopie der Nachricht mit durchsuchbaren PDF-Dateien angelegt werden?\n\nDieser Vorgang kann einige Zeit in Anspruch nehmen und ggf. reagiert die Anwendung während der Bearbeitung nicht. Bitte haben Sie in diesem Fall ein wenig Geduld.\n\nHinweis: Schlechte Scans und handschriftliche Inhalte werden weiterhin nicht durchsuchbar sein oder fehlerhaften Text enthalten. Entsprechende Dateien werden weiterhin als nicht druchsuchbare Dateien im Suchhinweis angezeigt.")
+        msgBox.setText("Soll für die nicht durchsuchbaren Dokumente eine Texterkennung durchgeführt werden und eine Kopie der Nachricht mit durchsuchbaren PDF-Dateien angelegt werden?\n\nDieser Vorgang kann einige Zeit in Anspruch nehmen und ggf. reagiert die Anwendung während der Bearbeitung nicht. Bitte haben Sie in diesem Fall ein wenig Geduld.\n\nHinweis: Schlechte Scans und handschriftliche Inhalte werden weiterhin nicht durchsuchbar sein oder fehlerhaften Text enthalten. Entsprechende Dateien werden ggf. weiterhin als nicht druchsuchbare Dateien im Suchhinweis angezeigt.")
         msgBox.exec()
         if msgBox.clickedButton() == buttonN:
             return
                 
         folder = QFileDialog.getExistingDirectory(self, 
                                 "Bitte ein leeres Verzeichnis zum Speichern der Nachrichtenkopie auswählen",
-                                self.settings.value("defaultFolder", ''), 
+                                self.settings.value("defaultFolder", str(self.homedir)), 
                                 QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)
         if not folder:
             return
@@ -737,6 +760,7 @@ class UI(QMainWindow):
             self.__displayMessage("Zur Erstellung der Nachrichtenkopie bitte ein leeres Verzeichnis angeben.")
             return   
         
+        # Filedialog schließt sich nicht immer ohne "sleep"
         time.sleep(2)
         
         self.actionOCRall.setVisible(False)
@@ -752,16 +776,14 @@ class UI(QMainWindow):
             if not os.path.exists(sourcepath) or not os.path.isfile(sourcepath):
                 continue
             
+            self.statusBar.showMessage('Dateien werden in das Zielverzeichnis kopiert oder für die Texterkennung ausgewählt.') 
+            self.statusBar.repaint()
             if filename.lower().endswith('.pdf') and len(self.searchStore[filename])==0:
                 if PDFocr.checkIfSupported(sourcepath):
                     ocrQueue.append({'sourcepath':sourcepath, 'targetpath':targetpath})
                 else:
-                    self.statusBar.showMessage(f'Kopiere: {sourcepath}') 
-                    self.statusBar.repaint()
                     copyfile(sourcepath, targetpath)    
             else:
-                self.statusBar.showMessage(f'Kopiere: {sourcepath}') 
-                self.statusBar.repaint()
                 copyfile(sourcepath, targetpath)  
         
         self.statusBar.showMessage(f'Starte Texterkennung für {str(len(ocrQueue))} Dokumente') 
@@ -776,7 +798,7 @@ class UI(QMainWindow):
     def __ocrFinished(self, seconds):       
         message = f'Texterkennung abgeschlossen. Benötigte Zeit: {"{:.2f}".format(seconds)} Sekunden'
         self.ocrLock=False
-        self.statusBar.showMessage(f"{message}")              
+        self.statusBar.showMessage(message)              
     
     def __ocrFileWorker(self, sourcepath, targetpath, open_when_done=True):
         '''Worker-Funktion für einzelne OCR-Tasks'''
@@ -791,13 +813,15 @@ class UI(QMainWindow):
              return
         self.__ocrFinished(time.time()-start)
              
-    def __ocrBatchWorker(self, jobs):    
+    def __ocrBatchWorker(self, jobs, open_when_done=False, threads=None):    
         '''Worker-Funktion für lange laufende Batch-OCR-Tasks'''
         self.ocrLock=True
         self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))   
+        if not threads:
+            threads = int(round(multiprocessing.cpu_count()/2))
         start=time.time()
-        with concurrent.futures.ThreadPoolExecutor(int(round(multiprocessing.cpu_count()/2))) as executor:
-                future_ocr = {executor.submit(PDFocr, job['sourcepath'], job['targetpath'], False, int(round(multiprocessing.cpu_count()/2)), True): job for job in jobs}
+        with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+                future_ocr = {executor.submit(PDFocr, job['sourcepath'], job['targetpath'], open_when_done, threads): job for job in jobs}
                 for future in concurrent.futures.as_completed(future_ocr):
                     thread = future_ocr[future]
                     try:
@@ -817,7 +841,7 @@ class UI(QMainWindow):
         
         if not sourcepath:
             sourcepath , check = QFileDialog.getOpenFileName(None, "PDF-Datei für die Texterkennung auswählen",
-                                                self.settings.value("defaultFolder", ''), "PDF-Dateien (*.pdf *.PDF)")
+                                str(self.homedir), "PDF-Dateien (*.pdf *.PDF)")
             if not check:
                 return
         
@@ -841,7 +865,7 @@ class UI(QMainWindow):
         if self.loadedPDFpath and os.path.exists(self.loadedPDFpath) and self.loadedPDFpath.lower().endswith('.pdf') and PDFocr.checkIfSupported(self.loadedPDFpath):
             exportFilename,  extension = QFileDialog.getSaveFileName(self, 
                                      "Zieldatei wählen",                        
-                                     '',
+                                     str(self.homedir),
                                      "PDF-Dateien (*.pdf *.PDF)")
         
             if exportFilename: 
@@ -908,7 +932,7 @@ class UI(QMainWindow):
         
         exportFilename,  extension = QFileDialog.getSaveFileName(self, 
                                      "Zieldatei wählen",                        
-                                     '',
+                                     str(self.homedir),
                                      "PDF-Dateien (*.pdf *.PDF)")
         
         if exportFilename: 
@@ -1468,7 +1492,7 @@ class UI(QMainWindow):
             self.__displayMessage(message)
         else:
             zipPath , extension = QFileDialog.getSaveFileName(None, "In ZIP-Datei exportieren",
-                                                self.settings.value("defaultFolder", ''), "ZIP-Dateien (*.zip *.ZIP)")
+                                                str(self.homedir), "ZIP-Dateien (*.zip *.ZIP)")
                 
             if zipPath and not zipPath.lower().endswith('.zip'):
                 zipPath = zipPath + '.zip'
@@ -1506,7 +1530,7 @@ class UI(QMainWindow):
             self.__displayMessage(message) 
         else:
             folder = QFileDialog.getExistingDirectory(None, "Exportverzeichnis wählen",
-                                            str(self.settings.value("defaultFolder", '')),
+                                            str(self.settings.value("defaultFolder", str(self.homedir))),
                                             QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)       
             if folder and self.favorites:       
                 try:
@@ -1771,8 +1795,15 @@ class UI(QMainWindow):
             
             # Clean up any old tempfile
             newTempfile = os.path.join(self.tempDir.name, filename)
+            
             if self.tempfile and os.path.isfile(self.tempfile) and not self.tempfile == newTempfile:
-                os.remove(self.tempfile)
+                try:
+                    # Workaround für Pyinstaller - Offenbar gibt WebengineView 
+                    # die Datei bei laufender OCR nicht schnell genug frei
+                    # tempverzecihnis wird beim beenden der Anwendung aufgeräumt.
+                    os.remove(self.tempfile)
+                except:
+                    pass
 
             #Copy PDF to local temporary folder to circumvent CORS issues with PDFjs
             #if file is stored on e.g. a network share 
@@ -1832,7 +1863,11 @@ class UI(QMainWindow):
                     filename = convertedImage
                     
             if filename.lower().endswith(supportedFiles):
-                self.__openFileInBrowser(filename)
+                try:
+                    self.__openFileInBrowser(filename)
+                except Exception as e:
+                    self.lastExceptionString=str(e)
+                    self.statusBar.showMessage(f'(Temporärer) Fehler beim Laden der Datei: {filename}')
             else:
                 self.statusBar.showMessage(f'Der Dateityp {Path(filename).suffix} ist zur Anzeige in der Vorschau nicht geeignet.')  
     
@@ -1843,19 +1878,19 @@ class UI(QMainWindow):
     
     def __selectZipFiles(self):
         files , check = QFileDialog.getOpenFileNames(None, "XJustiz-ZIP-Archive öffnen",
-                                               str(self.settings.value("defaultFolder", self.homedir)), "XJustiz-Archive (*.zip *.ZIP)")
+                                               str(self.settings.value("defaultFolder", str(self.homedir))), "XJustiz-Archive (*.zip *.ZIP)")
         if check:
             self.getZipFiles(files)
     
     def getZipFiles(self, files=None):
         if files:
             self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
-            self.tempPath=TemporaryDirectory()
-            
+            tempPath=os.path.join(self.tempDir.name, str(uuid4()))
+            Path(tempPath).mkdir(parents=True, exist_ok=True)
             for file in files:
                 try:
                     with ZipFile(file, 'r') as zip: 
-                        zip.extractall(self.tempPath.name)    
+                        zip.extractall(tempPath)    
                 except Exception as e:
                     self.app.restoreOverrideCursor()
                     self.statusBar.showMessage(file + ' konnte nicht entpackt werden.')
@@ -1863,7 +1898,7 @@ class UI(QMainWindow):
                     return
             
             self.app.restoreOverrideCursor()
-            self.getFile(folder=self.tempPath.name)
+            self.getFile(folder=tempPath)
             
     def getFile(self, file=None, folder=None):
         # Notes eines ggf. geöffneten Datensatzes speichern
@@ -1883,26 +1918,36 @@ class UI(QMainWindow):
                                                folder, "XJustiz-Dateien (*.xml *.XML)")
             if check:
                 self.__loadFile(file)
-                
+                self.__checkFiltersAndRows()
+
             # Windows loses focus loading ZIP-files
             self.activateWindow()
-        
+
+    def __checkFiltersAndRows(self):
+        if self.actionAnwendungshinweise.isChecked():
+                self.__informIfFiltersSet()           
+                if self.docTableView.rowCount() == 0: 
+                    self.__informIfNoDocsVisible()        
+
     def __fileHistory(self, direction):
         '''Blättert durch die Aktenhistorie und lädt die nächste / letzte Akte in der Liste'''
 
-        while len(self.browsingHistory)>0:
+        if len(self.browsingHistory)>0:
+            
             if direction == 'forward':
                 self.browsingHistory.insert(0, self.browsingHistory.pop())
             else:
                 self.browsingHistory.append(self.browsingHistory.pop(0))
-            if os.path.exists(self.browsingHistory[0]):
-                self.getFile(self.browsingHistory.pop(0))
-                break
-        
-        if self.actionAnwendungshinweise.isChecked():
-                self.__informIfFiltersSet()           
-                if self.docTableView.rowCount() == 0: 
-                    self.__informIfNoDocsVisible()
+            
+
+            while len(self.browsingHistory)>0:
+                if os.path.exists(self.browsingHistory[0]):
+                    self.getFile(self.browsingHistory.pop(0))
+                    break
+                else:
+                    self.browsingHistory.pop(0)
+
+            self.__checkFiltersAndRows()
 
     def __addToHistory(self, file):
         '''Fügt die zuletzt geöffnete XJustiz-Datei in die Historienliste ein'''
@@ -1985,13 +2030,14 @@ class UI(QMainWindow):
         self.settings.setValue("lastFile", file)
         self.__addToHistory(file)     
         self.statusBar.showMessage(f'Eingelesene Datei: {file} - XJustiz-Version: {type}')
-        self.__prepareSearchStore()
+        if not self.__prepareSearchStore():
+            self.actionOCRall.setVisible(False)
 
     def __informIfNoDocsVisible(self):
         '''Überprüft, ob Dokumente angezeigt werden und gibt Hinweis aus.'''
         if not self.docTableView.rowCount():
-            QMessageBox.information(self, "Anwendungshinweis", "Es werden aktuell keine Dateien angezeigt, da der ausgewählte Inhalt keine Dateien enthält.\n\nBitte wählen Sie einen anzuzeigenden Inhalt in der Box 'Inhalt' durch Anklicken aus.\n\n(Anwendungshinweise können unter 'Optionen' ausgeschaltet werden.)")
- 
+             self.__displayMessage("Es werden aktuell keine Dateien angezeigt, da der ausgewählte Inhalt keine Dateien enthält.\n\nBitte wählen Sie einen anzuzeigenden Inhalt in der Box 'Inhalt' durch Anklicken aus.\n\n(Anwendungshinweise können unter 'Optionen' ausgeschaltet werden.", "Anwendungshinweis", modal=False)
+   
     def __informIfFiltersSet(self):
         '''Überprüft, ob Filterbegriffe gesetzt wurden und informiert per Pop-up'''
         minusFilterText=self.minusFilter.text().replace(" ","")
@@ -2001,12 +2047,12 @@ class UI(QMainWindow):
             minusFilterText=minusFilterText.replace(extension, "")
 
         if minusFilterText or self.plusFilter.text():
-            QMessageBox.information(self, "Anwendungshinweis", "Es sind eigene Filterbegriffe gesetzt.\n\nDaher werden ggf. nicht alle Dokumente angezeigt.\nBei Bedarf den Button 'Filter leeren' anklicken, um die Filter zu löschen.\n\n(Anwendungshinweise können unter 'Optionen' ausgeschaltet werden.)")
- 
+            self.__displayMessage("Es sind eigene Filterbegriffe gesetzt.\n\nDaher werden ggf. nicht alle Dokumente angezeigt.\nBei Bedarf den Button 'Filter leeren' anklicken, um die Filter zu löschen.\n\n(Anwendungshinweise können unter 'Optionen' ausgeschaltet werden.)", "Anwendungshinweis", modal=False)
+
     def __chooseStartFolder(self):
         '''Öffnet Dialog, um ein Default-Verzeichnis festzulegen, das beim Aufruf von "Datei öffnen" geöffnet wird.'''       
         folder = QFileDialog.getExistingDirectory(None, "Standardverzeichnis wählen",
-                                        str(self.settings.value("defaultFolder", '')),
+                                        str(self.settings.value("defaultFolder", str(self.homedir))),
                                         QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)
          
         if folder:
@@ -2244,7 +2290,7 @@ class UI(QMainWindow):
     def __printToFileRequested(self, fileExtension):
         file = QFileDialog.getSaveFileName(self, 
                                 "Zieldatei wählen",                        
-                                '',
+                                str(self.homedir),
                                 fileExtension,
                                 fileExtension,
                                 QFileDialog.Option.DontResolveSymlinks)
