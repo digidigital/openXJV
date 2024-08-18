@@ -1,8 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <style>
+    html, body {
+      height: 100%;
+    }
+    
+    html {
+        display: table;
+        margin: auto;
+    }
+    
+    body {
+        display: table-cell;
+        vertical-align: middle;
+    }
+  </style>
 </head>
 <body>
+  <img id="icon" width=55em src="./unknown_file.svg" />
     <script>
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -13,6 +29,14 @@
             document.body.style.color = "black";
             document.body.style.background = "#efefef";
           }
+        
+        if (urlParams.has('unknown')) {
+            document.getElementById("icon").style.display = "inline";
+          } else {
+            document.getElementById("icon").style.display = "none";
+           
+          }
     </script>
+    
 </body>
 </html>
