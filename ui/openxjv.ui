@@ -198,7 +198,7 @@
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="absenderText">
                     <property name="contextMenuPolicy">
-                     <enum>Qt::DefaultContextMenu</enum>
+                     <enum>Qt::CustomContextMenu</enum>
                     </property>
                     <property name="acceptDrops">
                      <bool>false</bool>
@@ -223,6 +223,12 @@
                   </item>
                   <item row="2" column="1">
                    <widget class="QLineEdit" name="empfaengerText">
+                    <property name="contextMenuPolicy">
+                     <enum>Qt::CustomContextMenu</enum>
+                    </property>
+                    <property name="acceptDrops">
+                     <bool>false</bool>
+                    </property>
                     <property name="readOnly">
                      <bool>true</bool>
                     </property>
@@ -237,6 +243,12 @@
                   </item>
                   <item row="3" column="1">
                    <widget class="QLineEdit" name="erstellungszeitpunktText">
+                    <property name="contextMenuPolicy">
+                     <enum>Qt::CustomContextMenu</enum>
+                    </property>
+                    <property name="acceptDrops">
+                     <bool>false</bool>
+                    </property>
                     <property name="readOnly">
                      <bool>true</bool>
                     </property>
@@ -261,6 +273,12 @@
                   </item>
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="absenderAktenzeichenText">
+                    <property name="contextMenuPolicy">
+                     <enum>Qt::CustomContextMenu</enum>
+                    </property>
+                    <property name="acceptDrops">
+                     <bool>false</bool>
+                    </property>
                     <property name="toolTip">
                      <string>Absenderaktenzeichen</string>
                     </property>
@@ -287,6 +305,12 @@
                   </item>
                   <item row="2" column="1">
                    <widget class="QLineEdit" name="empfaengerAktenzeichenText">
+                    <property name="contextMenuPolicy">
+                     <enum>Qt::CustomContextMenu</enum>
+                    </property>
+                    <property name="acceptDrops">
+                     <bool>false</bool>
+                    </property>
                     <property name="toolTip">
                      <string>Empfängeraktenzeichen</string>
                     </property>
@@ -307,6 +331,12 @@
                   </item>
                   <item row="3" column="1">
                    <widget class="QLineEdit" name="sendungsprioritaetText">
+                    <property name="contextMenuPolicy">
+                     <enum>Qt::CustomContextMenu</enum>
+                    </property>
+                    <property name="acceptDrops">
+                     <bool>false</bool>
+                    </property>
                     <property name="readOnly">
                      <bool>true</bool>
                     </property>
@@ -408,7 +438,7 @@
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>282</width>
+                      <width>326</width>
                       <height>135</height>
                      </rect>
                     </property>
@@ -429,7 +459,13 @@
                       <number>0</number>
                      </property>
                      <item row="1" column="0">
-                      <widget class="QListWidget" name="favoritenView">
+                      <widget class="QTableWidget" name="favTableView">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
@@ -442,6 +478,63 @@
                        <property name="toolTipDuration">
                         <number>2500</number>
                        </property>
+                       <property name="inputMethodHints">
+                        <set>Qt::ImhMultiLine</set>
+                       </property>
+                       <property name="sizeAdjustPolicy">
+                        <enum>QAbstractScrollArea::AdjustToContents</enum>
+                       </property>
+                       <property name="autoScroll">
+                        <bool>true</bool>
+                       </property>
+                       <property name="autoScrollMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="editTriggers">
+                        <set>QAbstractItemView::NoEditTriggers</set>
+                       </property>
+                       <property name="showDropIndicator" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="dragDropOverwriteMode">
+                        <bool>false</bool>
+                       </property>
+                       <property name="alternatingRowColors">
+                        <bool>true</bool>
+                       </property>
+                       <property name="selectionMode">
+                        <enum>QAbstractItemView::SingleSelection</enum>
+                       </property>
+                       <property name="selectionBehavior">
+                        <enum>QAbstractItemView::SelectRows</enum>
+                       </property>
+                       <property name="textElideMode">
+                        <enum>Qt::ElideMiddle</enum>
+                       </property>
+                       <property name="verticalScrollMode">
+                        <enum>QAbstractItemView::ScrollPerPixel</enum>
+                       </property>
+                       <property name="showGrid">
+                        <bool>false</bool>
+                       </property>
+                       <property name="cornerButtonEnabled">
+                        <bool>false</bool>
+                       </property>
+                       <attribute name="horizontalHeaderMinimumSectionSize">
+                        <number>200</number>
+                       </attribute>
+                       <attribute name="horizontalHeaderDefaultSectionSize">
+                        <number>200</number>
+                       </attribute>
+                       <attribute name="horizontalHeaderStretchLastSection">
+                        <bool>true</bool>
+                       </attribute>
+                       <attribute name="verticalHeaderVisible">
+                        <bool>false</bool>
+                       </attribute>
+                       <attribute name="verticalHeaderMinimumSectionSize">
+                        <number>21</number>
+                       </attribute>
                       </widget>
                      </item>
                     </layout>
@@ -544,6 +637,24 @@
                       </property>
                      </widget>
                     </item>
+                    <item>
+                     <widget class="QPushButton" name="exportFavsToPdfButton">
+                      <property name="font">
+                       <font>
+                        <family>Material Icons</family>
+                       </font>
+                      </property>
+                      <property name="toolTip">
+                       <string>Favoriten als PDF-Datei exportieren</string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>2000</number>
+                      </property>
+                      <property name="text">
+                       <string></string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </widget>
                  </item>
@@ -597,7 +708,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>283</width>
+                     <width>239</width>
                      <height>68</height>
                     </rect>
                    </property>
@@ -666,6 +777,9 @@
                     <width>0</width>
                     <height>0</height>
                    </size>
+                  </property>
+                  <property name="contextMenuPolicy">
+                   <enum>Qt::DefaultContextMenu</enum>
                   </property>
                   <property name="acceptDrops">
                    <bool>false</bool>
@@ -941,6 +1055,9 @@
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="contextMenuPolicy">
+                     <enum>Qt::DefaultContextMenu</enum>
+                    </property>
                     <property name="toolTip">
                      <string>Durch Leerzeichen getrennte Suchbegriffe. Alle Suchbegriffe müssen im Dokument gefunden werden</string>
                     </property>
@@ -979,6 +1096,12 @@
                   </property>
                   <property name="textElideMode">
                    <enum>Qt::ElideMiddle</enum>
+                  </property>
+                  <property name="verticalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                  </property>
+                  <property name="showGrid">
+                   <bool>false</bool>
                   </property>
                   <property name="sortingEnabled">
                    <bool>true</bool>
@@ -1019,7 +1142,11 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
               <item row="0" column="0">
-               <widget class="QPlainTextEdit" name="notizenText"/>
+               <widget class="QPlainTextEdit" name="notizenText">
+                <property name="contextMenuPolicy">
+                 <enum>Qt::DefaultContextMenu</enum>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -1175,6 +1302,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
                 <bool>false</bool>
                </property>
                <widget class="QTableWidget" name="termineTableView">
+                <property name="contextMenuPolicy">
+                 <enum>Qt::NoContextMenu</enum>
+                </property>
                 <property name="toolTip">
                  <string>Klick aktualisiert Detailansicht des gewählten Termins</string>
                 </property>
@@ -1210,6 +1340,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
                 </attribute>
                </widget>
                <widget class="QTextEdit" name="terminDetailView">
+                <property name="contextMenuPolicy">
+                 <enum>Qt::DefaultContextMenu</enum>
+                </property>
                 <property name="toolTip">
                  <string>Detailinformationen zum gewählten Termin</string>
                 </property>
@@ -1252,10 +1385,29 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <property name="title">
      <string>Datei</string>
     </property>
+    <widget class="QMenu" name="menuPDF_Export_2">
+     <property name="title">
+      <string>PDF-Export</string>
+     </property>
+     <addaction name="actionPDFExport"/>
+     <addaction name="actionFavPDFExport"/>
+    </widget>
+    <widget class="QMenu" name="menuDatenhygiene">
+     <property name="title">
+      <string>Datenhygiene</string>
+     </property>
+     <addaction name="actionVerlaufLoeschen"/>
+     <addaction name="actionNotizUndSuchdatenbankLoeschen"/>
+    </widget>
     <addaction name="actionOeffnen"/>
     <addaction name="actionZIP_ArchiveOeffnen"/>
-    <addaction name="actionPDFExport"/>
+    <addaction name="actionNachrichtSchliessen"/>
+    <addaction name="separator"/>
+    <addaction name="menuPDF_Export_2"/>
     <addaction name="actionTexterkennung"/>
+    <addaction name="separator"/>
+    <addaction name="menuDatenhygiene"/>
+    <addaction name="separator"/>
     <addaction name="actionSchliessen"/>
    </widget>
    <widget class="QMenu" name="menuOptionen">
@@ -1275,6 +1427,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
       <string>PDF Export</string>
      </property>
      <addaction name="actionDeckblattBeiExport"/>
+     <addaction name="actionNotizenaufDeckblattausgeben"/>
      <addaction name="actionFavoritenExportieren"/>
      <addaction name="actionDateidatumExportieren"/>
      <addaction name="actionNurFavoritenExportieren"/>
@@ -1673,7 +1826,10 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
   </action>
   <action name="actionSchliessen">
    <property name="text">
-    <string>Schließen</string>
+    <string>openXJV beenden</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
   <action name="actionChromium">
@@ -1875,7 +2031,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
   </action>
   <action name="actionPDFExport">
    <property name="text">
-    <string>PDF-Export</string>
+    <string>Nur Dateiansicht</string>
    </property>
    <property name="iconText">
     <string></string>
@@ -1935,6 +2091,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    <property name="text">
     <string>Nur die unter &quot;Dateien&quot; sichtbaren Favoriten exportieren</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionPDFnachExportOeffnen">
    <property name="checkable">
@@ -1974,6 +2133,43 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <font>
      <family>Material Icons</family>
     </font>
+   </property>
+  </action>
+  <action name="actionNotizenaufDeckblattausgeben">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Notizen auf Deckblatt ausgeben</string>
+   </property>
+   <property name="toolTip">
+    <string>Deckblatt wird die Notizen enthalten</string>
+   </property>
+  </action>
+  <action name="actionFavPDFExport">
+   <property name="text">
+    <string>Nur Favoritenansicht</string>
+   </property>
+  </action>
+  <action name="actionVerlaufLoeschen">
+   <property name="text">
+    <string>Verlauf löschen</string>
+   </property>
+  </action>
+  <action name="actionNotizUndSuchdatenbankLoeschen">
+   <property name="text">
+    <string>Notiz-, Favoriten- und Suchdatenbank leeren</string>
+   </property>
+  </action>
+  <action name="actionNachrichtSchliessen">
+   <property name="text">
+    <string>Schließen</string>
+   </property>
+   <property name="toolTip">
+    <string>Aktuelle XJustiz-Nachricht schließen</string>
    </property>
   </action>
  </widget>
