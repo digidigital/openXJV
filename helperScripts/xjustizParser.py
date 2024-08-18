@@ -1531,12 +1531,39 @@ class parser331(parser321):
         ## Terminsdaten ##
         self.termine=self._getTermine()
         
+        ## Erweiterungen (allgemeine Suche - nicht dokumenten- oder aktenspezifisch) ##
+        self.erweiterungen = self._parseErweiterungen()
+        
         ####### Schriftgutobjekte #######
 
         self.schriftgutobjekte['anschreiben'] = self._findElementText("./schriftgutobjekte/anschreiben/ref.sgo")
         self.schriftgutobjekte['dokumente']   = self._parseDokumente()
         self.schriftgutobjekte['akten']       = self._parseAkten()
+    
+    def _parseErweiterungen(self):
+        '''Sucht in allen anwendungsspezifischen Erweiterungen - Workaround, da Nachrichtenkopf / Grunddaten bisher keine Erweiterung erlauben'''
+        erweiterungen={}
+        # Suche nach unterstützten Erweiterungen
+        for erweiterung in self._findAllElements (".//anwendungsspezifischeErweiterung"):
+            temp_erweiterung={}
 
+            kennung = self._findElementText("./kennung", erweiterung)
+            if kennung == "openXJV_beteiligung_klartext":     
+                temp_erweiterung['kennung'] = kennung
+                temp_erweiterung['name'] = self._findElementText("./name", erweiterung) 
+                temp_erweiterung['text'] = self._findElementText(".//wert", erweiterung)
+                erweiterungen[kennung] = temp_erweiterung
+                continue
+            
+            if kennung == "openXJV_instanzdaten_klartext":     
+                temp_erweiterung['kennung'] = kennung
+                temp_erweiterung['name'] = self._findElementText("./name", erweiterung) 
+                temp_erweiterung['text'] = self._findElementText(".//wert", erweiterung)
+                erweiterungen[kennung] = temp_erweiterung    
+                continue
+            
+        return erweiterungen
+    
 class parser341(parser331):  
     def __init__(self, filename=None):
         super().__init__(filename)
@@ -1847,8 +1874,7 @@ class parser240(parser321):
         orgData['umsatzsteuerID'] = ''
         
         return orgData
-
-    
+  
     def _parseRechtsform(self, rechtsform):
         data={}
         data['rechtsform']         = self.lookup.xjustizValue ("GDS.Rechtsform", self._findElementText("./rechtsform", rechtsform, code=True), verNo = self._getListVersion("./rechtsform", element=rechtsform))
@@ -1988,8 +2014,7 @@ class parser240(parser321):
         personData['zustaendigeInstitution']=[]
         
         return personData
-    
-       
+         
     def _parseAuskunftssperre(self, auskunftssperre):
         data={}
         
@@ -2038,8 +2063,7 @@ class parser240(parser321):
             anschrift['ort.unbekannt']='true'      
    
         return anschrift
-        
-    
+          
     def _parseGeburt(self, geburt):
         data={}
            
@@ -2266,7 +2290,6 @@ class parser240(parser321):
         aktenzeichenParts['aktenzeichen.strukturiert']={}
         aktenzeichenParts['auswahl_az.vergebendeStation']=''    
         return aktenzeichenParts
-
 
     # funktion def self._parseDokumente(docNode) returns dict
     def _parseDokumente(self, path='./dokument', element=None):
