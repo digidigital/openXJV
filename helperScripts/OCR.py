@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import numpy as np
 import time
 import concurrent.futures
 import shlex
@@ -29,17 +30,19 @@ def run_args(return_text=True):
     return kwargs
 
 class PDFocr():
-    def __init__(self, file=None, outpath='./output.pdf', open_when_done=False, threads = 0):     
+    def __init__(self, file=None, outpath='./output.pdf', open_when_done=False, threads=0, skip_osd=False):     
         
         if not PDFocr.tesseractAvailable():
             raise RuntimeError('Tesseract und / oder deutsche Sprachdateien nicht verfügbar.')
-        
+
         if not file or not file.lower().endswith('.pdf'):
             raise FileNotFoundError('Kein PDF-Dokument übergeben bzw. gefunden')
 
+        self.gocr_available=True if shutil.which('gocr049') else False
+
         self.posix = os.name == 'posix'
         
-        self.startOCR(file, outpath, threads)
+        self.startOCR(file, outpath, threads, skip_osd)
               
         if open_when_done and os.path.exists(outpath):
                 if platform.startswith('linux'):
@@ -84,13 +87,15 @@ class PDFocr():
             # and jbig2dec is installed
             list_languages = subprocess.run(["tesseract", "--list-langs"], **run_args())
             if list_languages.returncode == 0 and 'deu' in list_languages.stdout:
-                if shutil.which('jbig2dec'):
+                if shutil.which('jbig2dec'): 
                     return True    
+                else:
+                    pass
         except Exception as e:
             return False     
         return False
     
-    def startOCR (self, file, outpath, threads=0): 
+    def startOCR (self, file, outpath, threads=0, skip_osd=False): 
         pdf = Pdf.open(file)
         
         # Fix for cases where some PDFs reference ALL images on ALL pages
@@ -107,14 +112,13 @@ class PDFocr():
         textPages={}
         self.text = ''
             
-        #start = time.time()
         with TemporaryDirectory() as tmpdir:
             if threads == 0:
                 threads = cpu_count()-1
             
             # Some multithreading :)
             with concurrent.futures.ThreadPoolExecutor(threads) as executor:
-                future_page_analyzer = {executor.submit(self.ocrPage, pageCollection[pageNumber], pageNumber, tmpdir, file): pageNumber for pageNumber in range(len(pdf.pages))}
+                future_page_analyzer = {executor.submit(self.ocrPage, pageCollection[pageNumber], pageNumber, tmpdir, file, skip_osd): pageNumber for pageNumber in range(len(pdf.pages))}
                 for future in concurrent.futures.as_completed(future_page_analyzer):
                     thread = future_page_analyzer[future]
                     try:
@@ -128,13 +132,53 @@ class PDFocr():
                 for pageNumber in range(len(pageCollection)):
                     src = textPages[pageNumber]
                     ocrPdf.pages.extend(src.pages)
-                ocrPdf.save(outpath)     
-        #print(f'Duration: {time.time()-start} with {threads} Threads')    
+                ocrPdf.save(outpath)        
         
         pageCollection.clear()
         pdf.close() 
-                
-    def ocrPage(self, PDF, pageNumber, tmpdir, file):  
+
+    def word_count(self, text, lang='deu')->int:
+        
+        word_list_deu = [
+            'ab', 'am', 'an', 'gu', 'ge', 'en', 'er', 'ch', 'an', 'de', 
+            'ei', 'in', 'te', 'un', 'um', 'nn', 'mm', 'tt', 're', 'ig', 
+            'sam', 'bar', 'los', 'ich', 'ein', 'der', 'ver', 'sch', 'die', 'und', 
+            'che', 'den', 'ung', 'heit', 'keit', 'nis', 'aft']
+        
+        word_list_eng = [
+            'th', 'he', 'in', 'er', 'an', 're', 'rd', 'on', 'at', 'en', 'nd',
+            'the', 'and', 'ing', 'ent', 'ion', 'her', 'for', 'tha', 'ter', 
+            'ere', 'al', 'ar', 'as', 'ed', 'is', 'it', 'or', 'ou', 'st', 've']
+        
+        counter=0
+        text = text.lower()
+
+        word_list = word_list_deu if lang =='deu' else word_list_eng
+
+        for word in word_list:
+            counter += text.count(word)
+        
+        return counter
+
+    def is_page_empty(self, pil_image, threshold=0.03):
+        # Load the image
+        image = pil_image.convert('L') if pil_image.mode != 'L' else pil_image
+
+        # Convert the image to a numpy array
+        image_array = np.array(image)
+
+        # Binarize the image
+        binary_image = (image_array < 128).astype(np.uint8)
+
+        # Calculate the percentage of black pixels
+        black_pixels = np.sum(binary_image == 0)
+        total_pixels = binary_image.size
+        black_percentage = black_pixels / total_pixels
+
+        # Check if the black percentage is below the threshold
+        return black_percentage < threshold
+
+    def ocrPage(self, PDF, pageNumber, tmpdir, file, skip_osd=False):  
         ocrExceptions=''
         
         try:
@@ -145,9 +189,9 @@ class PDFocr():
                 page_rotation = 0
             
             try:
-                #Try to render page with pypdfium at 150dpi
+                #Try to render page with pypdfium at 200dpi
                 originalPDF = pdfium.PdfDocument(file)    
-                pdfimage = originalPDF[pageNumber].render(scale = 150/72).to_pil()
+                pdfimage = originalPDF[pageNumber].render(scale = 200/72).to_pil()
                 page_rotation = 0
                 originalPDF.close()
                            
@@ -163,9 +207,9 @@ class PDFocr():
                     image = listOfImages[0]
                     pdfimage = PdfImage(PDF.pages[0].images[image]).as_pil_image() 
             
-                    # Resize image to 150 DPI based on A4
-                    limitA = 1240
-                    limitB = 1754
+                    # Resize image to 300 DPI based on A4
+                    limitA = 1654
+                    limitB = 2338
                     if pdfimage.size[0] < pdfimage.size[1] and pdfimage.size[0] > limitA:  
                         targetSize = (limitA, int(limitA/pdfimage.size[0]*pdfimage.size[1])) 
                         pdfimage=pdfimage.resize(targetSize)
@@ -177,44 +221,78 @@ class PDFocr():
                     ocrExceptions+=e
                     # In case even pikepdf fails create an empty A4 dummy page   
                     # The result will be a page without text   
-                    pdfimage = Image.new("RGBA", (1240, 1754), (255, 0, 0, 0))
+                    pdfimage = Image.new("RGBA", (1654, 2338), (255, 0, 0, 0))
                     page_rotation = 0
 
                   
             # Convert to RGB and enhance contrast (a bit)
             pdfimage=pdfimage.convert(mode='RGB')
-            pdfimage = ImageEnhance.Contrast(pdfimage).enhance(2.3)
+            pdfimage = ImageEnhance.Contrast(pdfimage).enhance(2.4)
             
             # Analyze rotation
-            try:
-                tesseract_image = os.path.join(tmpdir, f'{uuid4().hex}.png')
-                pdfimage.save ((tesseract_image),"PNG", dpi=(150,150))
-                 
-                tesseract_image_path = str(tesseract_image).replace('\\','\\\\') if os.name == 'nt' else str(tesseract_image)
-                
-                tesseract_command = f"tesseract {tesseract_image_path} stdout --psm 0 --dpi 150 -c min_characters_to_try=43"
+            tesseract_image = os.path.join(tmpdir, f'{uuid4().hex}.png')
+            pdfimage.save ((tesseract_image),"PNG", dpi=(200,200))
+            tesseract_image_path = str(tesseract_image).replace('\\','\\\\') if os.name == 'nt' else str(tesseract_image)
+            
+            # Check if page is empty (less than 3% black)
+            if self.is_page_empty(pdfimage, threshold=0.03):
+                skip_osd=True
 
-                osd_output = subprocess.run(shlex.split(tesseract_command, posix=self.posix), **run_args())
-                
-                angle = re.search(r'Orientation in degrees: \d+', osd_output.stdout).group().split(':')[-1].strip()
-                confidence= re.search(r'Orientation confidence: \d+\.\d+', osd_output.stdout).group().split(':')[-1].strip()
-                
-                if angle and float(confidence) >= 1.5:
-                    rotateDegrees = int(angle)
-                else:
-                    rotateDegrees = 0 
-                
-            except Exception as e:
-                rotateDegrees = 0           
+            # Check orientation
+            if skip_osd:
+                rotateDegrees = 0 
+               
+            else:
+                if not self.gocr_available:
+                    try:                 
+                        # TODO double check if rotation is correctly interpreted
+                        tesseract_command = f"tesseract {tesseract_image_path} stdout -l deu --psm 0 --dpi 200 -c min_characters_to_try=43"
 
+                        osd_output = subprocess.run(shlex.split(tesseract_command, posix=self.posix), **run_args())
+                        
+                        angle = re.search(r'Orientation in degrees: \d+', osd_output.stdout).group().split(':')[-1].strip()
+                        confidence= re.search(r'Orientation confidence: \d+\.\d+', osd_output.stdout).group().split(':')[-1].strip()
+        
+                        if angle and float(confidence) >= 1.5:
+                            rotateDegrees = int(angle)
+                        else:
+                            rotateDegrees = 0 
+                        
+                    except Exception as e:
+                        rotateDegrees = 0                     
+                else: 
+                    try:
+                        max_count=-1
+                        gocr_result=0
+                        result_img=''
+                        # rotate pages and do quick gocr ocr to get orientation 
+                        for angle in [0,180,90,270]:
+                            gocr_image=pdfimage.rotate(angle, expand = 1)
+                            gocr_image_path = os.path.join(tmpdir, f'{uuid4().hex}.pbm')
+                            gocr_image.save ((gocr_image_path), dpi=(200,200))
+                            gocr_image_path = str(gocr_image_path).replace('\\','\\\\') if os.name == 'nt' else str(gocr_image_path)
+                            gocr_command = f'gocr049 -i {gocr_image_path} -m 8 -m 16 -m 32 -C "abcdeghiklmnorstuv" -a 30 -f ASCII'
+                            command=shlex.split(gocr_command, posix=self.posix)
+                            gocr_output = subprocess.run(command, **run_args())
+                            
+                            word_count = self.word_count(gocr_output.stdout)
+                            if word_count > max_count:
+                                max_count=word_count
+                                gocr_result=angle 
+                                if max_count > 300:
+                                    break                            
+                        rotateDegrees = gocr_result
+                    except Exception as e:
+                        rotateDegrees = 0    
+            
             # Rotate image upright        
             if not rotateDegrees == 0:
                 pdfimage= pdfimage.rotate(rotateDegrees, expand = 1) 
-                pdfimage.save (tesseract_image,"PNG", dpi=(150,150)) 
+                pdfimage.save (tesseract_image,"PNG", dpi=(200,200)) 
             del pdfimage
 
             # OCR with tesseract and create transparent PDF
-            tesseract_command = f"tesseract {tesseract_image_path} stdout -c textonly_pdf=1 --dpi 150 -l deu pdf"
+            tesseract_command = f"tesseract {tesseract_image_path} stdout -c textonly_pdf=1 --dpi 200 -l deu pdf"
             pdf_output = subprocess.run(shlex.split(tesseract_command, posix=self.posix), **run_args(return_text=False))
         
             os.remove(tesseract_image) 
