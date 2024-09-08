@@ -19,11 +19,6 @@
 '''
 #on ubuntu package sudo apt install libxcb-cursor0 in case of xcb-error
 
-# 0.8.4 Changelog
-# - fix deleteFavoriteButton ohne Funktion 
-# - restore compatibility with 3.9
-# - fix für Export von Verfügungen
-
 import os
 import re
 import sys
