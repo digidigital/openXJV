@@ -3,8 +3,8 @@
            xmlns:tns="http://www.xjustiz.de"
            xmlns:xoev-code="http://xoev.de/schemata/code/1_0"
            targetNamespace="http://www.xjustiz.de"
-           version="3.1.0"
-           elementFormDefault="unqualified"
+           version="1.0.0"
+           elementFormDefault="qualified"
            attributeFormDefault="unqualified">
    <xs:annotation>
       <xs:appinfo>
@@ -28,142 +28,137 @@
    </xs:annotation>
    <xs:import schemaLocation="xoev-code.xsd"
               namespace="http://xoev.de/schemata/code/1_0"/>
-   <xs:complexType name="Code.REG.Dokumentstatus.Typ3">
+   <xs:complexType name="Code.KLAVER.Anspruchsart.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>REG.Dokumentstatus</nameLang>
-               <nameKurz>REG.Dokumentstatus</nameKurz>
-               <nameTechnisch>reg.dokumentstatus</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:reg.dokumentstatus</kennung>
-               <beschreibung>Beschreibt den Status der beim Handels-, Genossenschafts-, Partnerschafts- und Vereinsregister vorhandenen Dokumente.</beschreibung>
+               <nameLang>KLAVER.Anspruchsart</nameLang>
+               <nameKurz>KLAVER.Anspruchsart</nameKurz>
+               <nameTechnisch>klaver.anspruchsart</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.anspruchsart</kennung>
+               <beschreibung>Diese Codeliste enhält Anspruchsarten</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
             <xs:sequence>
-               <xs:element name="code" type="xs:token"/>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
             </xs:sequence>
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:reg.dokumentstatus"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.anspruchsart"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.REG.Eintragungstyp.Typ3">
+   <xs:complexType name="Code.KLAVER.Antrag.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>REG.Eintragungstyp</nameLang>
-               <nameKurz>REG.Eintragungstyp</nameKurz>
-               <nameTechnisch>reg.eintragungstyp</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:reg.eintragungstyp</kennung>
-               <beschreibung>Beschreibt die im Handels-, Genossenschafts-, Partnerschafts- und Vereinsregister einzutragenden Eintragungstypen.</beschreibung>
+               <nameLang>KLAVER.Antrag</nameLang>
+               <nameKurz>KLAVER.Antrag</nameKurz>
+               <nameTechnisch>klaver.antrag</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.antrag</kennung>
+               <beschreibung>Diese Codeliste enhält Antragsarten</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
             <xs:sequence>
-               <xs:element name="code" type="xs:token"/>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
             </xs:sequence>
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:reg.eintragungstyp"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.antrag"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.REG.Registerzeichenwechselgrund.Typ3">
+   <xs:complexType name="Code.KLAVER.FGR.Anspruchshoehe.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>REG.Registerzeichenwechselgrund</nameLang>
-               <nameKurz>REG.Registerzeichenwechselgrund</nameKurz>
-               <nameTechnisch>reg.registerzeichenwechselgrund</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:reg.registerzeichenwechselgrund</kennung>
-               <beschreibung>Mögliche Gründe dafür, dass sich das Registerzeichen eines Rechtsträgers geändert hat (häufig auch verbunden mit einer veränderten Zuständigkeit der Registerstelle).</beschreibung>
+               <nameLang>KLAVER..FGR.Anspruchshöhe</nameLang>
+               <nameKurz>KLAVER..FGR.Anspruchshöhe</nameKurz>
+               <nameTechnisch>klaver.fgr.anspruchshoehe</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.fgr.anspruchshoehe</kennung>
+               <beschreibung>Diese Codeliste enhält Anspruchssarten</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
             <xs:sequence>
-               <xs:element name="code" type="xs:token"/>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
             </xs:sequence>
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:reg.registerzeichenwechselgrund"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.fgr.anspruchshoehe"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.REG.Status_Rechtstraeger.Typ3">
+   <xs:complexType name="Code.KLAVER.KFV.Anlass.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>REG.Status_Rechtstraeger</nameLang>
-               <nameKurz>REG.Status_Rechtstraeger</nameKurz>
-               <nameTechnisch>reg.status-rechtstraeger</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:reg.status-rechtstraeger</kennung>
-               <beschreibung>Beschreibt den Status der im Handels-, Genossenschafts-, Partnerschafts- und Vereinsregister eingetragenen Firmen und Namen.</beschreibung>
+               <nameLang>KLAVER.Anlass</nameLang>
+               <nameKurz>KLAVER.Anlass</nameKurz>
+               <nameTechnisch>klaver.anlass</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.anlass</kennung>
+               <beschreibung>Diese Codeliste enhält Anlassarten</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
             <xs:sequence>
-               <xs:element name="code" type="xs:token"/>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
             </xs:sequence>
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:reg.status-rechtstraeger"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.anlass"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.REG.Vertragsart.Typ3">
+   <xs:complexType name="Code.KLAVER.KFV.Kostentatbestand.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>REG.Vertragsart</nameLang>
-               <nameKurz>REG.Vertragsart</nameKurz>
-               <nameTechnisch>reg.vertragsart</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:reg.vertragsart</kennung>
-               <beschreibung>In dieser Codeliste stehen Vertragsarten für Rechtsträger.</beschreibung>
+               <nameLang>KLAVER.KFV.Kostentatbestand</nameLang>
+               <nameKurz>KLAVER.KFV.Kostentatbestand</nameKurz>
+               <nameTechnisch>klaver.kfv.kostentatbestand</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.kfv.kostentatbestand</kennung>
+               <beschreibung>Diese Codeliste enhält Kostentatbestandsarten</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
             <xs:sequence>
-               <xs:element name="code" type="xs:token"/>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
             </xs:sequence>
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:reg.vertragsart"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.kfv.kostentatbestand"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>

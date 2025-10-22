@@ -3,7 +3,7 @@
            xmlns:tns="http://www.xjustiz.de"
            xmlns:xoev-code="http://xoev.de/schemata/code/1_0"
            targetNamespace="http://www.xjustiz.de"
-           version="3.2.0"
+           version="1.3.1"
            elementFormDefault="unqualified"
            attributeFormDefault="unqualified">
    <xs:annotation>
@@ -28,20 +28,19 @@
    </xs:annotation>
    <xs:import schemaLocation="xoev-code.xsd"
               namespace="http://xoev.de/schemata/code/1_0"/>
-   <xs:complexType name="Code.STRAF.Fahrerlaubnisart.Typ3">
+   <xs:complexType name="Code.MFKREG.ArtDerOeffentlichenBekanntmachung.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>STRAF.Fahrerlaubnisart</nameLang>
-               <nameKurz>STRAF.Fahrerlaubnisart</nameKurz>
-               <nameTechnisch>straf.fahrerlaubnisart</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:straf.fahrerlaubnisart</kennung>
-               <beschreibung>Diese Codeliste ist vorgesehen für das Element Personendaten/Fuehrerschein/Fahrerlaubnisart.</beschreibung>
+               <nameLang>MFKREG.ArtDerÖffentlichenBekanntmachung</nameLang>
+               <nameKurz>MFKREG.ArtDerÖffentlichenBekanntmachung</nameKurz>
+               <nameTechnisch>mfkreg.artderoeffentlichenbekanntmachung</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:mfkreg.artderoeffentlichenbekanntmachung</kennung>
+               <beschreibung>Im Zusammenhang mit der Berichtigung oder Änderung einer Bekanntmachung soll das Gericht die Art der Bekanntmachung angeben. Diese Codeliste enthält alle vorgesehenen Bekanntmachungsarten.</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
@@ -51,25 +50,24 @@
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:straf.fahrerlaubnisart"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:mfkreg.artderoeffentlichenbekanntmachung"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.STRAF.Fahrzeugantrieb.Typ3">
+   <xs:complexType name="Code.MFKREG.Gliederungspunkte.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>STRAF.Fahrzeugantrieb</nameLang>
-               <nameKurz>STRAF.Fahrzeugantrieb</nameKurz>
-               <nameTechnisch>straf.fahrzeugantrieb</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:straf.fahrzeugantrieb</kennung>
-               <beschreibung>Diese Codeliste ist vorgesehen für das Element Fahrzeug/Antrieb.</beschreibung>
+               <nameLang>MFKREG.Gliederungspunkte</nameLang>
+               <nameKurz>MFKREG.Gliederungspunkte</nameKurz>
+               <nameTechnisch>mfkreg.gliederungspunkte</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:mfkreg.gliederungspunkte</kennung>
+               <beschreibung>Codeliste der möglichen Überschriften der Bekanntmachungen.</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
@@ -79,25 +77,24 @@
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:straf.fahrzeugantrieb"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:mfkreg.gliederungspunkte"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.STRAF.Fahrzeugart.Typ3">
+   <xs:complexType name="Code.MFKREG.Rechtsbelehrungen.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>STRAF.Fahrzeugart</nameLang>
-               <nameKurz>STRAF.Fahrzeugart</nameKurz>
-               <nameTechnisch>straf.fahrzeugart</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:straf.fahrzeugart</kennung>
-               <beschreibung>Diese Codeliste ist vorgesehen für das Element Fahrzeug/Fahrzeugart.</beschreibung>
+               <nameLang>MFKREG.Rechtsbelehrungen</nameLang>
+               <nameKurz>MFKREG.Rechtsbelehrungen</nameKurz>
+               <nameTechnisch>mfkreg.rechtsbelehrungen</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:mfkreg.rechtsbelehrungen</kennung>
+               <beschreibung>Codeliste für die Vorlagen des BfJ für die Rechtsbelehrungen</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
@@ -107,25 +104,24 @@
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:straf.fahrzeugart"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:mfkreg.rechtsbelehrungen"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.STRAF.Fuehrerscheinklasse.Typ3">
+   <xs:complexType name="Code.MFKREG.Registerauszugsart.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>STRAF.Fuehrerscheinklasse</nameLang>
-               <nameKurz>STRAF.Fuehrerscheinklasse</nameKurz>
-               <nameTechnisch>straf.fuehrerscheinklasse</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:straf.fuehrerscheinklasse</kennung>
-               <beschreibung>Diese Codeliste ist vorgesehen für das Element Personendaten/Fuehrerschein/Fuehrerscheinklasse.</beschreibung>
+               <nameLang>MFKREG.Registerauszugsart</nameLang>
+               <nameKurz>MFKREG.Registerauszugsart</nameKurz>
+               <nameTechnisch>mfkreg.registerauszugsart</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:mfkreg.registerauszugsart</kennung>
+               <beschreibung>Codeliste der Registerauszugsarten</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
@@ -135,25 +131,24 @@
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:straf.fuehrerscheinklasse"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:mfkreg.registerauszugsart"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.STRAF.Personenbezug.Typ3">
+   <xs:complexType name="Code.MFKReg.Bekanntmachungsart.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>STRAF.Personenbezug</nameLang>
-               <nameKurz>STRAF.Personenbezug</nameKurz>
-               <nameTechnisch>straf.personenbezug</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:straf.personenbezug</kennung>
-               <beschreibung>Diese Codeliste ist vorgesehen für das Element Fahrzeug/Personenbezug/Art.</beschreibung>
+               <nameLang>MFKREG.Bekanntmachungsart</nameLang>
+               <nameKurz>MFKREG.Bekanntmachungsart</nameKurz>
+               <nameTechnisch>mfkreg.bekanntmachungsart</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:mfkreg.bekanntmachungsart</kennung>
+               <beschreibung>Mit der Codeliste kann angegeben werden, ob es sich bei der Bekanntmachung einer Entscheidung um einen Beschluss oder um eine Urteilsverkündung handelt.</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
@@ -163,25 +158,24 @@
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:straf.personenbezug"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:mfkreg.bekanntmachungsart"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
-   <xs:complexType name="Code.STRAF.Strafverfolgungshindernis.Typ3">
+   <xs:complexType name="Code.MFKReg.Klageart.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>STRAF.Strafverfolgungshindernis</nameLang>
-               <nameKurz>STRAF.Strafverfolgungshindernis</nameKurz>
-               <nameTechnisch>straf.strafverfolgungshindernis</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:straf.strafverfolgungshindernis</kennung>
-               <beschreibung>Diese Codeliste ist vorgesehen für das Element Personendaten/Strafverfolgungshindernis.</beschreibung>
+               <nameLang>MFKREG.Klageart</nameLang>
+               <nameKurz>MFKREG.Klageart</nameKurz>
+               <nameTechnisch>mfkreg.klageart</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:mfkreg.klageart</kennung>
+               <beschreibung>Die Codeliste enthält die verschiedenen Arten von Verbandsklagen. Im Verbandsklageregister können sowohl Musterfeststellungsklagen als auch Abhilfeklagen geführt werden. Beide Klagearten können auch zusammen geführt werden.</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
@@ -191,7 +185,7 @@
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:straf.strafverfolgungshindernis"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:mfkreg.klageart"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>

@@ -3,7 +3,7 @@
            xmlns:tns="http://www.xjustiz.de"
            xmlns:xoev-code="http://xoev.de/schemata/code/1_0"
            targetNamespace="http://www.xjustiz.de"
-           version="3.1.0"
+           version="1.0.0"
            elementFormDefault="unqualified"
            attributeFormDefault="unqualified">
    <xs:annotation>
@@ -28,20 +28,19 @@
    </xs:annotation>
    <xs:import schemaLocation="xoev-code.xsd"
               namespace="http://xoev.de/schemata/code/1_0"/>
-   <xs:complexType name="Code.GDS.Justizvollzug.Typ3">
+   <xs:complexType name="Code.RAST.Belastungsart.Typ3">
       <xs:annotation>
          <xs:appinfo>
             <codeliste>
-               <nameLang>GDS.Justizvollzug</nameLang>
-               <nameKurz>GDS.Justizvollzug</nameKurz>
-               <nameTechnisch>gds.justizvollzug</nameTechnisch>
-               <kennung>urn:xoev-de:xjustiz:codeliste:gds.justizvollzug</kennung>
-               <beschreibung>Diese Codeliste kann an allen Stellen eingebunden werden, wo Justizvollzugsanstalten fachlich benötigt werden.</beschreibung>
+               <nameLang>RAST.Belastungsart</nameLang>
+               <nameKurz>RAST.Belastungsart</nameKurz>
+               <nameTechnisch>rast.belastungsart</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:rast.belastungsart</kennung>
+               <beschreibung>Diese Codeliste enhält Belastungsarten</beschreibung>
                <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
                <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
             </codeliste>
          </xs:appinfo>
-         <xs:documentation>Die Werte einer Codeliste vom Code-Typ 3 können im XRepository eingesehen werden. Nähere Details sind im Kapitel "Codelisten vom Code-Typ 3" beschrieben.</xs:documentation>
       </xs:annotation>
       <xs:complexContent>
          <xs:restriction base="xoev-code:Code">
@@ -51,7 +50,34 @@
             <xs:attribute name="listURI"
                           type="xs:anyURI"
                           use="optional"
-                          fixed="urn:xoev-de:xjustiz:codeliste:gds.justizvollzug"/>
+                          fixed="urn:xoev-de:xjustiz:codeliste:rast.belastungsart"/>
+            <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="Code.RAST.Inhaber.Eigentums.Verhaeltnis.Typ3">
+      <xs:annotation>
+         <xs:appinfo>
+            <codeliste>
+               <nameLang>RAST.Inhaber.Eigentums.Verhältnis</nameLang>
+               <nameKurz>RAST.Inhaber.Eigentums.Verhältnis</nameKurz>
+               <nameTechnisch>rast.inhaber.eigentums.verhaeltnis</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:rast.inhaber.eigentums.verhaeltnis</kennung>
+               <beschreibung>Diese Codeliste enthält das Inhaber-Eigentums-Verhältnis</beschreibung>
+               <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
+               <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
+            </codeliste>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:restriction base="xoev-code:Code">
+            <xs:sequence>
+               <xs:element name="code" type="xs:token"/>
+            </xs:sequence>
+            <xs:attribute name="listURI"
+                          type="xs:anyURI"
+                          use="optional"
+                          fixed="urn:xoev-de:xjustiz:codeliste:rast.inhaber.eigentums.verhaeltnis"/>
             <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
          </xs:restriction>
       </xs:complexContent>

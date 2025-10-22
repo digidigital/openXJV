@@ -16,12 +16,12 @@
             <beschreibung>XJustiz ist der bundesweit einheitliche Standard für den Austausch strukturierter elektronischer Informationen mit der Justiz.</beschreibung>
          </standard>
          <versionStandard>
-            <version>3.5.1</version>
+            <version>3.6.2</version>
             <beschreibung>XJustiz beschreibt ein standardisiertes Datenaustauschformat für die elektronische Kommunikation innerhalb und mit der Justizverwaltung.</beschreibung>
-            <versionXOEVProfil>1.7.2</versionXOEVProfil>
+            <versionXOEVProfil>3.0.2</versionXOEVProfil>
             <versionXOEVHandbuch>2.3.1</versionXOEVHandbuch>
-            <versionXGenerator>3.1.1</versionXGenerator>
-            <versionModellierungswerkzeug>19.0 SP3</versionModellierungswerkzeug>
+            <versionXGenerator>3.2.3</versionXGenerator>
+            <versionModellierungswerkzeug>2021x</versionModellierungswerkzeug>
             <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
          </versionStandard>
       </xs:appinfo>
