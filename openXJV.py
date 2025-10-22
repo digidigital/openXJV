@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
+
 #on ubuntu package sudo apt install libxcb-cursor0 in case of xcb-error
 
 import os
@@ -117,7 +118,7 @@ from helperScripts import (
     PDFocr
 )
 global VERSION 
-VERSION = '0.8.4'
+VERSION = '0.8.0'
 
 class StandardItem(QStandardItem):
     def __init__(self, txt='', id='root', font_size=15, set_bold=False, color=QColor(0, 0, 0)):
@@ -192,7 +193,7 @@ class SearchWorker(QObject):
                         leere_dateien = leere_dateien+1 if search_store[filename] == '' else leere_dateien      
                         if filename.lower().endswith('.pdf'):
                             leere_PDF = leere_PDF+1 if search_store[filename] == '' else leere_PDF 
-                        db_query = 'INSERT OR REPLACE INTO plaintext (uuid, filename, text, basedir) VALUES (?, ? ,?, ?);'
+                        db_query = 'INSERT INTO plaintext (uuid, filename, text, basedir) VALUES (?, ? ,?, ?);'
                         self.db_cursor.execute(db_query, (message_id, filename, search_store[filename], directory_to_scan))
             else:
                 raise Exception (f'Fehler bei der Textextraktion mit search_tool {text_extraction_result.stderr}')     
@@ -258,11 +259,11 @@ class UI(QMainWindow):
         self.__create_db_if_not_exist()
         
         #Translations
-        translation_path = os.path.normcase(os.path.join(QLibraryInfo.path(QLibraryInfo.LibraryPath(10)),  "qt_de.qm")) 
+        translation_path = QLibraryInfo.path(QLibraryInfo.LibraryPath(10))
         translator = QTranslator(app)
-        if translator.load(translation_path):
+        if translator.load(os.path.join(translation_path, "qt_de.qm")): 
             app.installTranslator(translator)  
-
+              
         #Don't use Path.home() directly in case we are in a snap package
         self.homedir = os.environ.get('SNAP_REAL_HOME', Path.home())
         
@@ -300,8 +301,6 @@ class UI(QMainWindow):
             
             if os.path.exists(os.path.join(self.scriptRoot,'bin','search_tool', 'search_tool.exe')):
                     os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','search_tool')}"  
-            if os.path.exists(os.path.join(self.scriptRoot,'bin','gocr', 'gocr049.exe')):
-                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','gocr')}" 
             if not PDFocr.tesseractAvailable():
                 if os.path.exists(os.path.join(self.scriptRoot,'bin','jbig2dec', 'jbig2dec.exe')):
                     os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','jbig2dec')}"    
@@ -633,6 +632,7 @@ class UI(QMainWindow):
     
     def __copyToClipboard(self, text):
         clipboard = QApplication.clipboard()
+        print(text)
         clipboard.setText(text)
         self.statusBar.showMessage("Inhalt wurde in die Zwischenablage kopiert.")        
             
@@ -666,14 +666,7 @@ class UI(QMainWindow):
         contextMenu.exec(self.docTableView.mapToGlobal(pos))
     
     def __notizUndSuchdatenbankLoeschen(self):
-        #os.remove(self.db_path)
-        with sqlite3.connect(self.db_path) as db_connection:
-            db_cursor = db_connection.cursor()
-            db_cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-            tables = db_cursor.fetchall()
-            for table_name in tables:
-                db_cursor.execute(f'DROP TABLE {table_name[0]};')
-            db_connection.commit()        
+        os.remove(self.db_path)
         self.__create_db_if_not_exist()
         self.statusBar.showMessage('Die Datenbank wurde gelöscht und eine neue, leere Datenbank wurde angelegt.')
         
@@ -685,7 +678,7 @@ class UI(QMainWindow):
             self.db_cursor.execute('''
                 CREATE TABLE IF NOT EXISTS favorites (
                 uuid TEXT,
-                filename TEXT,
+                filename TEXT PRIMARY KEY,
                 position INTEGER
                 )
             ''')   
@@ -797,8 +790,10 @@ class UI(QMainWindow):
                     position+=1
                 self.favorites.insert(position,filename)     
                 self.__setFavorites()
+                
                 if position == len(self.favorites):
-                    position -= 1  
+                    position -= 1
+                  
                 self.favTableView.selectRow(position)
                 self.__saveFavorites()
             except ValueError:
@@ -867,7 +862,6 @@ class UI(QMainWindow):
         "PDF.js - Apache 2.0 License\n"
         "Tesseract - Apache 2.0 License\n"
         "Material Icons Font - Apache 2.0 License\n"
-        "NumPy -BSD License\n"
         "orjson -  Apache 2.0 / MIT Licenses\n"
         "pypdfium2 - Apache 2.0 / BSD 3 Clause\n"
         "darkdetect - BSD license\n"
@@ -876,7 +870,6 @@ class UI(QMainWindow):
         "pikepdf - MPL-2.0 License\n"
         "appdirs - MIT License\n"
         "docx2txt - MIT License\n"
-        "gocr - GNU GPL\n"
         "Ubuntu Font - UBUNTU FONT LICENCE Version 1.0\n"
         "python 3.x - PSF License\n\n"
         "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden."
@@ -940,25 +933,6 @@ class UI(QMainWindow):
         self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor)) 
         self.statusBar.showMessage('Daten zur Bereitstellung der Suchfunktion werden eingelesen')
         
-        # Versuche bestehenden Searchstore aus SearchStore.json auszulesen
-        search_store_json_path = os.path.join(self.basedir , 'search_store.json')
-        if len(self.searchStore) == 0 and os.path.isfile(search_store_json_path):
-            with open(search_store_json_path, 'rb') as f:
-                self.searchStore = json.loads(f.read())
-                leereDateien = 0
-                leerePDF = 0
-                for key in self.searchStore:
-                    text = self.searchStore[key] 
-                    if len(text) == 0:
-                        leereDateien +=1
-                        if key.lower().endswith('.pdf'):
-                            leerePDF += 1 
-            
-            if len(self.searchStore) > 0:
-                self.__searchStoreReady((leereDateien,leerePDF,self.searchStore,False)) 
-                return True
-
-        # Versuche bestehenden SearchStore aus Datenbank auszulesen
         if len(self.searchStore) == 0:
             with sqlite3.connect(self.db_path) as db_connection:
                 db_cursor = db_connection.cursor()       
@@ -980,7 +954,7 @@ class UI(QMainWindow):
             if len(self.searchStore) > 0:
                 self.__searchStoreReady((leereDateien,leerePDF,self.searchStore,False)) 
                 return True
-        # Erzeuge neuen SearchStore durch Umwandlung der Dateien in "Reintext"    
+            
         if len(self.searchStore) == 0:
             self.search_prep_thread = QThread()
             self.search_worker = SearchWorker()
@@ -1029,9 +1003,10 @@ class UI(QMainWindow):
             
         try:
             for headeritem in range(len(self.docTableAttributes)+2):
-                    if self.docTableView.horizontalHeaderItem(headeritem).text() == "Dateiname":
-                        filenameColumn = headeritem
-                        break
+                    match self.docTableView.horizontalHeaderItem(headeritem).text():
+                        case "Dateiname":
+                            filenameColumn = headeritem
+                            break
         except AttributeError:
             return
             
@@ -1110,20 +1085,17 @@ class UI(QMainWindow):
         
         self.ocrLock=True
         
-        self.statusBar.showMessage('Dateien werden in das Zielverzeichnis kopiert oder für die Texterkennung ausgewählt.') 
-        self.statusBar.repaint()
         ocrQueue=[]
         for filename in self.searchStore.keys():
             self.app.processEvents(QEventLoop.ProcessEventsFlag['ExcludeUserInputEvents'])
-            # Bestimmte Dateien der Quellnachricht ignorieren und NICHT kopieren
-            if filename in ('search_store.json'):
-                continue
-            
             sourcepath = os.path.join(self.basedir, filename)            
             targetpath = os.path.join(folder, filename)
+            
             if not os.path.exists(sourcepath) or not os.path.isfile(sourcepath):
                 continue
             
+            self.statusBar.showMessage('Dateien werden in das Zielverzeichnis kopiert oder für die Texterkennung ausgewählt.') 
+            self.statusBar.repaint()
             if filename.lower().endswith('.pdf') and len(self.searchStore[filename])==0:
                 if PDFocr.checkIfSupported(sourcepath):
                     ocrQueue.append({'sourcepath':sourcepath, 'targetpath':targetpath})
@@ -1166,7 +1138,7 @@ class UI(QMainWindow):
         self.ocrLock=True
         self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))   
         if not threads:
-            threads = multiprocessing.cpu_count()-1
+            threads = int(round(multiprocessing.cpu_count()/2))
         start=time.time()
         with concurrent.futures.ThreadPoolExecutor(threads) as executor:
                 future_ocr = {executor.submit(PDFocr, job['sourcepath'], job['targetpath'], open_when_done, threads): job for job in jobs}
@@ -1198,18 +1170,8 @@ class UI(QMainWindow):
             return
         
         self.ocrLock=True
+        targetpath = os.path.join(Path(sourcepath).parents[0] , f'{Path(sourcepath).stem}.ocr.pdf')
         
-        # Eindeutigen Dateinamen finden, falls Name bereits vergeben
-        ocr_marker='ocr'
-        counter=0
-        while True:
-            targetpath = os.path.join(Path(sourcepath).parents[0] , f'{Path(sourcepath).stem}.{ocr_marker}.pdf')
-            if os.path.isfile(targetpath):
-                counter+=1
-                ocr_marker=f'ocr({counter})'
-            else:
-                break
-
         # In separatem Tread ausführen, um Event-Loop nicht zu blockieren 
         self.OCRthread=Thread(target=self.__ocrFileWorker, args=(sourcepath, targetpath))    
         self.OCRthread.start() 
@@ -1271,25 +1233,25 @@ class UI(QMainWindow):
             column_range = tableWidget.columnCount()
                     
             for headeritem in range(column_range):
-                headertext = tableWidget.horizontalHeaderItem(headeritem).text()
-                if headertext == "Dateiname":
-                    filenameColumn = headeritem
-                elif headertext == "Klasse":
-                    classColumn = headeritem
-                elif headertext == "Datum":
-                    dateColumn = headeritem
-                elif headertext == "Scandatum":
-                    scanColumn = headeritem
-                elif headertext == "Veraktung":
-                    filingColumn = headeritem
-                elif headertext == "Eingang":
-                    receivedColumn = headeritem
-                elif headertext == "Anzeige-\nname":
-                    displaynameColumn = headeritem
-                elif headertext == "Anzeigename":
-                    displaynameColumn = headeritem
-                else:
-                    pass                       
+                match tableWidget.horizontalHeaderItem(headeritem).text():
+                    case "Dateiname":
+                        filenameColumn = headeritem
+                    case "Klasse":
+                        classColumn = headeritem
+                    case "Datum":
+                        dateColumn = headeritem
+                    case "Scandatum":
+                        scanColumn = headeritem
+                    case "Veraktung":
+                        filingColumn = headeritem
+                    case "Eingang":
+                        receivedColumn = headeritem
+                    case "Anzeige-\nname":
+                        displaynameColumn = headeritem
+                    case "Anzeigename":
+                        displaynameColumn = headeritem    
+                    case _:
+                        pass                        
         except Exception as e:
             message='Es konnten keine Dateien für den Export ermittelt werden.'    
             self.__displayMessage(message) 
@@ -1327,10 +1289,10 @@ class UI(QMainWindow):
                         # Deckblatt
                         if self.actionDeckblattBeiExport.isChecked():
                             attachFile = CreateDeckblatt(self).output(os.path.join(localTempDir , 'XJustiz-Deckblatt.pdf'))
-                            with Pdf.open(attachFile) as src:
-                                outline.root.append(OutlineItem('XJustiz-Deckblatt', 0))
-                                page_count += len(src.pages)
-                                pdf.pages.extend(src.pages)  
+                            src = Pdf.open(attachFile)
+                            outline.root.append(OutlineItem('XJustiz-Deckblatt', 0))
+                            page_count += len(src.pages)
+                            pdf.pages.extend(src.pages)  
                         
                         # Dateien
                         for row in range(tableWidget.rowCount()):
@@ -1400,17 +1362,15 @@ class UI(QMainWindow):
                             
                             #Dateien anhängen    
                             if attachFile:
+                                src = Pdf.open(attachFile)
+
                                 #Outline (Inhaltsverzeichnis) erstellen
                                 outlineName = filename
                                 
                                 if displaynameColumn != None:
-                                    displayName = tableWidget.item(row, displaynameColumn).text()
-                                    if len(displayName.strip())>0:
-                                        outlineName = displayName
-                                    elif classColumn != None :
-                                        className = tableWidget.item(row, classColumn).text()
-                                        if len(className.strip())>0:
-                                            outlineName = className 
+                                    outlineName = tableWidget.item(row, displaynameColumn).text()
+                                    if len(outlineName.strip())==0:
+                                        outlineName = tableWidget.item(row, classColumn).text()
                                           
                                 dateColumns = (dateColumn, filingColumn, scanColumn, receivedColumn)
                                 
@@ -1429,12 +1389,10 @@ class UI(QMainWindow):
                                     favoriten.children.append(oi)
                                 
                                 outline.root.append(oi)
-                                
-                                with Pdf.open(attachFile) as src:
-                                    page_count += len(src.pages)
-                                    self.statusBar.showMessage(f'Bearbeite: {filename}')
-                                    self.statusBar.repaint()
-                                    pdf.pages.extend(src.pages)                
+                                page_count += len(src.pages)
+                                self.statusBar.showMessage(f'Bearbeite: {filename}')
+                                self.statusBar.repaint()
+                                pdf.pages.extend(src.pages)                
                     
                         if tableWidget == self.favTableView or len(favoriten.children) == 0 or not self.actionFavoritenExportieren.isChecked():
                             outline.root.remove(favoriten)
@@ -1446,7 +1404,7 @@ class UI(QMainWindow):
                         self.app.restoreOverrideCursor()
                         
                         if len(notSupported)!=0:
-                            msgText='Nicht alle in der Tabelle "Dateien" angezeigten Dokumente konnten nach PDF konvertiert werden.\n\nEntweder wird ein externes Programm zur Konvertierung benötigt, es handelt sich nicht um Text- bzw. Bilddateien oder die Dateien konnten nicht gefunden werden.\n\nFolgende Dateien wurden daher nicht exportiert:\n'      
+                            msgText='Nicht alle in der Tabelle "Dateien" angezeigten Dokumente konnten nach PDF konvertiert werden.\n\nEntweder wird ein externes Programm zur Konvertierung benötigt, es handelt sich nicht um Text- bzw. Bilddateien oder die Dateien konnten nicht gefudnen werden.\n\nFolgende Dateien wurden daher nicht exportiert:\n'      
                             for item in notSupported:
                                 msgText += str(item) + "\n"                       
                         else:
@@ -1975,7 +1933,7 @@ class UI(QMainWindow):
              
     def __setFavorites(self):
         '''Aktualisiert die Einträge in der Favoriten-View und initiiert die Speicherung der Werte'''
-        # Ggf. angepasste Spaltenbreite auslesen, um sie nach Update der Ansicht wieder setzen zu können
+        # Ggf. angepasste Spaltenbreite auslesen, um sie nach Update der ansicht wieder setzen zu können
         column_zero_width = self.favTableView.columnWidth(0)
         column_one_width = self.favTableView.columnWidth(1)
         
@@ -1992,7 +1950,7 @@ class UI(QMainWindow):
             for row in rows:
                 rowData= []
                 
-                #Ensure documents with the same filename are displayed only one time (can be part of multiple parts like Akten and Teilakten) 
+                #Ensure documents with the same filename are displayed only one time  
                 if row['dateiname'] in filename:
                     continue
                 elif row['dateiname'] == favorite:
@@ -2000,7 +1958,7 @@ class UI(QMainWindow):
                 else:
                     continue
                 
-                rowData+=self.__arrangeData(row, ('anzeigename', 'dateiname', 'datumDesSchreibens', 'veraktungsdatum', 'dokumentklasse'))
+                rowData+=self.__arrangeData(row, ('anzeigename', 'dateiname', 'datumDesSchreibens', 'veraktungsdatum'))
                 #add row
                 data.append(rowData)        
         
@@ -2012,11 +1970,9 @@ class UI(QMainWindow):
             self.favTableView.setHorizontalHeaderItem(1, self.__tableItem('Dateiname', self.appFont))
             self.favTableView.setHorizontalHeaderItem(2, self.__tableItem('Datum', self.appFont))
             self.favTableView.setHorizontalHeaderItem(3, self.__tableItem('Veraktung', self.appFont))
-            self.favTableView.setHorizontalHeaderItem(4, self.__tableItem('Klasse', self.appFont))
-            # Datum + Klasse für Übersichtlichkeit ausblenden
+            # Datum für Übersichtlichkeit ausblenden
             self.favTableView.hideColumn(2)
             self.favTableView.hideColumn(3)
-            self.favTableView.hideColumn(4)
 
             self.docTableView.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
             self.docTableView.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
@@ -2104,12 +2060,10 @@ class UI(QMainWindow):
                 return filename    
                         
     def __removeFavorite(self):
-        '''Entfernt den in der aktuell aktiven View markierten Eintrag aus der Liste der Favoriten.'''   
+        '''Entfernt in der aktuell akiven View markierten Eintrag aus der Liste der Favoriten.'''  
         focusWidget = self.focusWidget()
-        if focusWidget in (self.favTableView, self.docTableView): # Wenn Tastenkombination oder Rechtsklickmenü in Tabelle ausgeführt wird
-            filename = self.__getCurrentItemFilename(focusWidget) # Datei, die in der jeweiligen Tabelle markiert ist wählen
-        elif focusWidget == self.deleteFavoriteButton: # Wenn Favoriten-Löschen Button geklickt wird
-            filename = self.__getCurrentItemFilename(self.favTableView) # In Favoritenliste markierte Datei wählen
+        if focusWidget in (self.favTableView, self.docTableView):
+            filename = self.__getCurrentItemFilename(focusWidget)
         else:
             return
             
@@ -2136,7 +2090,7 @@ class UI(QMainWindow):
             self.statusBar.showMessage(filename + ' aus Favoriten entfernt.')
             
     def __loadFavorites(self):
-        '''Lädt die Favoriten aus der Datenbank. Favoriten aus Altversionen aus einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht. Die Dateien werden nach Import und Speicherung in der Datenbank gelöscht'''
+        '''Lädt die Favoriten aus einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht.'''
         self.favorites.clear()
         eigeneID = self.akte.nachricht.get('eigeneID') 
         if eigeneID:
@@ -2164,33 +2118,29 @@ class UI(QMainWindow):
         self.__setFavorites()
          
     def __saveFavorites(self):
-        '''Speichert die Favoriten in der Datenbank.'''
+        '''Speichert die Favoriten in einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht.'''
         eigeneID = self.akte.nachricht.get('eigeneID')
         if eigeneID:
-            try:
-                with sqlite3.connect(self.db_path) as db_connection:
-                    db_cursor = db_connection.cursor()   
-                    db_query = '''
-                        DELETE FROM favorites WHERE uuid = ?;                  
-                    '''
-                    db_cursor.execute(db_query, (eigeneID,))  
-                    if self.favorites:                 
-                        for filename, position in zip(self.favorites, range(len(self.favorites))) : 
-                            db_query = '''
-                                INSERT OR REPLACE INTO favorites (uuid, filename, position) VALUES (?, ?, ?);                  
-                            '''
-                            db_cursor.execute(db_query, (eigeneID, filename, position))                           
-            except Exception as e:
-                self.lastExceptionString = str(e)
-
+            with sqlite3.connect(self.db_path) as db_connection:
+                db_cursor = db_connection.cursor()   
+                db_query = '''
+                    DELETE FROM favorites WHERE uuid = ?;                  
+                '''
+                db_cursor.execute(db_query, (eigeneID,))  
+                if self.favorites:                 
+                    for filename, position in zip(self.favorites, range(len(self.favorites))) : 
+                        db_query = '''
+                            INSERT INTO favorites (uuid, filename, position) VALUES (?, ?, ?);                  
+                        '''
+                        db_cursor.execute(db_query, (eigeneID, filename, position))                           
+    
     def __loadNotes(self):
-        '''Lädt die Notizen aus der Datenbank - Für Notizen aus Altversionen aus einer Datei, deren Dateinamen dem Wert der notizen + 'eigeneID' entspricht. Die Datei wird anschließend gelöscht, da die Notizen danach in der Datenbank abgelegt werden.'''
+        '''Lädt die Notizen aus einer Datei, deren Dateinamen dem Wert der notizen + 'eigeneID' entspricht.'''
         self.notizenText.clear()
         eigeneID = self.akte.nachricht.get('eigeneID')
         if eigeneID:
             filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + eigeneID)
-            if os.path.exists(filepath): 
-                # Lade Notizen der Altversionen und lösche die Notizdateien
+            if os.path.exists(filepath):
                 try:
                     with open(filepath , 'r', encoding = 'utf-8') as notesFile:
                         notes_text=notesFile.read()
@@ -2199,7 +2149,7 @@ class UI(QMainWindow):
                     with open(filepath , 'r') as notesFile:
                         notes_text=notesFile.read()
                 self.__saveNotes()
-                os.remove(filepath) # Datei löschen - wird in DB gespeichert
+                os.remove(filepath)
             else:
                 with sqlite3.connect(self.db_path) as db_connection:
                     db_cursor = db_connection.cursor()   
@@ -2216,9 +2166,9 @@ class UI(QMainWindow):
             self.notizenText.setPlainText(notes_text)
          
     def __saveNotes(self):
-        '''Speichert die Notizen in der Datenbank.'''
+        '''Speichert die Favoriten in einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht.'''
         try:
-            notizen = self.notizenText.toPlainText()
+            notizen=self.notizenText.toPlainText()
             eigeneID = self.akte.nachricht.get('eigeneID')
             if eigeneID:
                 with sqlite3.connect(self.db_path) as db_connection:
@@ -2232,8 +2182,6 @@ class UI(QMainWindow):
                         INSERT OR REPLACE INTO last_access (uuid, timestamp) VALUES (?, ?);                  
                     '''
                     db_cursor.execute(db_query, (eigeneID, str(int(time.time()))))  
-        except AttributeError:
-            pass        
         except Exception as e:
             self.lastExceptionString = str(e)
 
@@ -2324,7 +2272,7 @@ class UI(QMainWindow):
                 try:
                     # Workaround für Pyinstaller - Offenbar gibt WebengineView 
                     # die Datei bei laufender OCR nicht schnell genug frei
-                    # Tempverzeichnis wird beim beenden der Anwendung aufgeräumt.
+                    # tempverzecihnis wird beim beenden der Anwendung aufgeräumt.
                     os.remove(self.tempfile)
                 except:
                     pass
@@ -2363,10 +2311,7 @@ class UI(QMainWindow):
     
     def __getFavoriteViewAction (self, val):     
         filename = self.favTableView.item(self.favTableView.currentRow(),1).text()
-        
-        if self.loadedPDFfilename == filename:
-            return
-        
+    
         if self.settings.value('pdfViewer', 'PDFjs')!='nativ':
             supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt', '.xml')
             # Check if a preview-file in PDF-format exists if 
@@ -2440,7 +2385,8 @@ class UI(QMainWindow):
             
     def getFile(self, file=None, folder=None):
         # Notes eines ggf. geöffneten Datensatzes speichern
-        self.__saveNotes()
+        if len(self.notizenText.toPlainText()):
+            self.__saveNotes()
         
         if file and os.path.exists(file):
             self.__loadFile(file)
@@ -2532,17 +2478,18 @@ class UI(QMainWindow):
                         type = searchForVersion.group(1)
                         break
             
-            if type == "2.4.0":
-                self.akte = parser240(file)
-            elif type == "3.2.1":
-                self.akte = parser321(file)
-            elif type == "3.3.1":
-                self.akte = parser331(file)
-            elif type == "3.4.1":
-                self.akte = parser341(file)
-            else:
-                # Wähle neueste Version, falls kein unterstützter Standard gefunden wird
-                self.akte = parser351(file)    
+            match type:                
+                case "2.4.0":
+                    self.akte=parser240(file)
+                case "3.2.1":
+                    self.akte=parser321(file)
+                case "3.3.1":
+                    self.akte=parser331(file)
+                case "3.4.1":
+                    self.akte=parser341(file)   
+                case other:
+                    # Wähle neueste Version, falls kein unterstützter Standard gefunden wird
+                    self.akte=parser351(file)        
             
         except Exception as e:
             self.statusBar.showMessage('Fehler beim Öffnen der Datei: %s' % file)
@@ -2703,12 +2650,13 @@ class UI(QMainWindow):
         for key, value in self.docHeaderColumnsSettings.items(): 
             if value['setting']:
                 setTo = str(self.settings.value(key, 'default'))
-                if setTo.lower() == "true":
-                    value['setting'].setChecked(True)
-                elif setTo.lower() == "false":
-                    value['setting'].setChecked(False)
-                else:
-                    value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
+                match setTo.lower():
+                    case "true":
+                        value['setting'].setChecked(True)    
+                    case "false":
+                        value['setting'].setChecked(False) 
+                    case other:        
+                         value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
                          
         self.actionNachrichtenkopf.setChecked            (True if str(self.settings.value('nachrichtenkopf', 'true')).lower()            =='true'     else False)
         self.actionFavoriten.setChecked                  (True if str(self.settings.value('favoriten', 'true')).lower()                  =='true'     else False)
@@ -3620,7 +3568,7 @@ def launchApp():
     print("QT_VERSION_STR: %s" % QT_VERSION_STR)
     print('Disabling Chromium-Sandbox for compatibility reasons (Seems to be unavailable on Debian / Ubuntu based systems anyway).')
     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
-    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"]  = "--log-level=3 --disable-web-security"
+    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"]  = "--log-level=3"
     os.environ["QT_FONT_DPI"] = "96"
     
     if sys.platform.lower().startswith('win'):
