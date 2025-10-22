@@ -185,7 +185,7 @@ class CodelistReader:
         ns = '{http://www.w3.org/2001/XMLSchema}'
         for filename in os.listdir(path_to_xsd_lists):
             
-            if re.search("_cl_.*\.xsd$",filename) :   
+            if re.search(r"_cl_.*\.xsd$",filename) :   
             
                 content = ET.parse(os.path.join(path_to_xsd_lists, filename)).getroot()
                 if not "1.6" in content.find('.//versionXOEVProfil').text:

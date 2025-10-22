@@ -26,19 +26,21 @@ class CreateDeckblatt():
       pdf.set_y(pdf.get_y() + vertical_space_between_sections)
       with pdf.use_font_face(FontFace(emphasis="BOLD")):
         pdf.multi_cell(w = 0, border = 0, fill = True,  text=heading, new_x=XPos.LEFT, new_y=YPos.NEXT, padding=1)  
-      pdf.multi_cell(w = 0, border = 0, text = content, new_x=XPos.LEFT, new_y=YPos.NEXT, padding=1)   
-   
+      pdf.multi_cell(w = 0, border = 0, text = content, markdown=True, new_x=XPos.LEFT, new_y=YPos.NEXT, padding=1)   
+      
   def output(self, filename):
     if filename:
       pdf = FPDF()
       pdf.add_font('Ubuntu', fname=path.join(path.dirname(path.realpath(__file__)), '..', 'fonts', 'ubuntu-font-family-0.83', 'Ubuntu-R.ttf'))
       pdf.add_font('Ubuntu', style ='B', fname=path.join(path.dirname(path.realpath(__file__)), '..', 'fonts', 'ubuntu-font-family-0.83', 'Ubuntu-B.ttf'))
+      pdf.add_font('Ubuntu', style ='I', fname=path.join(path.dirname(path.realpath(__file__)), '..', 'fonts', 'ubuntu-font-family-0.83', 'Ubuntu-RI.ttf'))
+      pdf.add_font('Ubuntu', style ='BI', fname=path.join(path.dirname(path.realpath(__file__)), '..', 'fonts', 'ubuntu-font-family-0.83', 'Ubuntu-BI.ttf'))
       pdf.set_font("Ubuntu", size = 12)
       
       pdf.add_page()
       # Überschrift
       with pdf.use_font_face(FontFace(emphasis="BOLD", size_pt = 32)):
-          pdf.write(text='XJustiz-Deckblatt\n')  
+          pdf.write(text='Deckblatt\n')  
       
       # Meta-Daten-Tabelle    
       bold_style = FontFace(emphasis="BOLD")
