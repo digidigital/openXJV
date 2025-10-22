@@ -3,7 +3,7 @@
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
   <property name="windowModality">
-   <enum>Qt::NonModal</enum>
+   <enum>Qt::WindowModality::NonModal</enum>
   </property>
   <property name="enabled">
    <bool>true</bool>
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="contextMenuPolicy">
-   <enum>Qt::PreventContextMenu</enum>
+   <enum>Qt::ContextMenuPolicy::PreventContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>openXJV</string>
@@ -38,7 +38,7 @@
    <bool>false</bool>
   </property>
   <property name="tabShape">
-   <enum>QTabWidget::Rounded</enum>
+   <enum>QTabWidget::TabShape::Rounded</enum>
   </property>
   <property name="dockNestingEnabled">
    <bool>false</bool>
@@ -103,7 +103,7 @@
         <item row="0" column="0">
          <widget class="QSplitter" name="splitter_9">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="handleWidth">
            <number>5</number>
@@ -125,7 +125,7 @@
             </size>
            </property>
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
+            <enum>Qt::Orientation::Vertical</enum>
            </property>
            <property name="handleWidth">
             <number>5</number>
@@ -144,7 +144,7 @@
              </sizepolicy>
             </property>
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="handleWidth">
              <number>5</number>
@@ -184,7 +184,7 @@
               <item row="0" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <property name="sizeConstraint">
-                 <enum>QLayout::SetNoConstraint</enum>
+                 <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
                 </property>
                 <item>
                  <layout class="QFormLayout" name="formLayout">
@@ -198,7 +198,7 @@
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="absenderText">
                     <property name="contextMenuPolicy">
-                     <enum>Qt::CustomContextMenu</enum>
+                     <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
                     </property>
                     <property name="acceptDrops">
                      <bool>false</bool>
@@ -224,7 +224,7 @@
                   <item row="2" column="1">
                    <widget class="QLineEdit" name="empfaengerText">
                     <property name="contextMenuPolicy">
-                     <enum>Qt::CustomContextMenu</enum>
+                     <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
                     </property>
                     <property name="acceptDrops">
                      <bool>false</bool>
@@ -244,7 +244,7 @@
                   <item row="3" column="1">
                    <widget class="QLineEdit" name="erstellungszeitpunktText">
                     <property name="contextMenuPolicy">
-                     <enum>Qt::CustomContextMenu</enum>
+                     <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
                     </property>
                     <property name="acceptDrops">
                      <bool>false</bool>
@@ -274,7 +274,7 @@
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="absenderAktenzeichenText">
                     <property name="contextMenuPolicy">
-                     <enum>Qt::CustomContextMenu</enum>
+                     <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
                     </property>
                     <property name="acceptDrops">
                      <bool>false</bool>
@@ -306,7 +306,7 @@
                   <item row="2" column="1">
                    <widget class="QLineEdit" name="empfaengerAktenzeichenText">
                     <property name="contextMenuPolicy">
-                     <enum>Qt::CustomContextMenu</enum>
+                     <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
                     </property>
                     <property name="acceptDrops">
                      <bool>false</bool>
@@ -332,7 +332,7 @@
                   <item row="3" column="1">
                    <widget class="QLineEdit" name="sendungsprioritaetText">
                     <property name="contextMenuPolicy">
-                     <enum>Qt::CustomContextMenu</enum>
+                     <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
                     </property>
                     <property name="acceptDrops">
                      <bool>false</bool>
@@ -356,7 +356,7 @@
               </sizepolicy>
              </property>
              <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+              <enum>Qt::Orientation::Horizontal</enum>
              </property>
              <property name="handleWidth">
               <number>5</number>
@@ -381,7 +381,7 @@
                <string>Favoriten</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
               </property>
               <property name="flat">
                <bool>false</bool>
@@ -419,16 +419,16 @@
                  <item>
                   <widget class="QScrollArea" name="scrollArea_2">
                    <property name="frameShape">
-                    <enum>QFrame::NoFrame</enum>
+                    <enum>QFrame::Shape::NoFrame</enum>
                    </property>
                    <property name="frameShadow">
-                    <enum>QFrame::Plain</enum>
+                    <enum>QFrame::Shadow::Plain</enum>
                    </property>
                    <property name="lineWidth">
                     <number>0</number>
                    </property>
                    <property name="sizeAdjustPolicy">
-                    <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                    <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustIgnored</enum>
                    </property>
                    <property name="widgetResizable">
                     <bool>true</bool>
@@ -438,8 +438,8 @@
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>326</width>
-                      <height>135</height>
+                      <width>306</width>
+                      <height>137</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_5">
@@ -479,10 +479,10 @@
                         <number>2500</number>
                        </property>
                        <property name="inputMethodHints">
-                        <set>Qt::ImhMultiLine</set>
+                        <set>Qt::InputMethodHint::ImhMultiLine</set>
                        </property>
                        <property name="sizeAdjustPolicy">
-                        <enum>QAbstractScrollArea::AdjustToContents</enum>
+                        <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
                        </property>
                        <property name="autoScroll">
                         <bool>true</bool>
@@ -491,7 +491,7 @@
                         <number>0</number>
                        </property>
                        <property name="editTriggers">
-                        <set>QAbstractItemView::NoEditTriggers</set>
+                        <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
                        </property>
                        <property name="showDropIndicator" stdset="0">
                         <bool>false</bool>
@@ -503,16 +503,16 @@
                         <bool>true</bool>
                        </property>
                        <property name="selectionMode">
-                        <enum>QAbstractItemView::SingleSelection</enum>
+                        <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
                        </property>
                        <property name="selectionBehavior">
-                        <enum>QAbstractItemView::SelectRows</enum>
+                        <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
                        </property>
                        <property name="textElideMode">
-                        <enum>Qt::ElideMiddle</enum>
+                        <enum>Qt::TextElideMode::ElideMiddle</enum>
                        </property>
                        <property name="verticalScrollMode">
-                        <enum>QAbstractItemView::ScrollPerPixel</enum>
+                        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
                        </property>
                        <property name="showGrid">
                         <bool>false</bool>
@@ -556,10 +556,10 @@
                     </size>
                    </property>
                    <property name="frameShape">
-                    <enum>QFrame::NoFrame</enum>
+                    <enum>QFrame::Shape::NoFrame</enum>
                    </property>
                    <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
+                    <enum>QFrame::Shadow::Raised</enum>
                    </property>
                    <property name="lineWidth">
                     <number>0</number>
@@ -569,7 +569,7 @@
                      <number>2</number>
                     </property>
                     <property name="sizeConstraint">
-                     <enum>QLayout::SetNoConstraint</enum>
+                     <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
                     </property>
                     <property name="leftMargin">
                      <number>0</number>
@@ -664,10 +664,10 @@
              </widget>
              <widget class="QSplitter" name="splitter">
               <property name="frameShape">
-               <enum>QFrame::NoFrame</enum>
+               <enum>QFrame::Shape::NoFrame</enum>
               </property>
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Orientation::Vertical</enum>
               </property>
               <property name="childrenCollapsible">
                <bool>false</bool>
@@ -708,8 +708,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>237</width>
-                     <height>68</height>
+                     <width>238</width>
+                     <height>69</height>
                     </rect>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_6">
@@ -734,10 +734,10 @@
                        <number>4000</number>
                       </property>
                       <property name="frameShape">
-                       <enum>QFrame::NoFrame</enum>
+                       <enum>QFrame::Shape::NoFrame</enum>
                       </property>
                       <property name="sizeAdjustPolicy">
-                       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                       <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustIgnored</enum>
                       </property>
                      </widget>
                     </item>
@@ -779,7 +779,7 @@
                    </size>
                   </property>
                   <property name="contextMenuPolicy">
-                   <enum>Qt::DefaultContextMenu</enum>
+                   <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
                   </property>
                   <property name="acceptDrops">
                    <bool>false</bool>
@@ -791,10 +791,10 @@
                    <number>1500</number>
                   </property>
                   <property name="inputMethodHints">
-                   <set>Qt::ImhMultiLine</set>
+                   <set>Qt::InputMethodHint::ImhMultiLine</set>
                   </property>
                   <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                   <enum>QFrame::Shape::StyledPanel</enum>
                   </property>
                   <property name="lineWidth">
                    <number>1</number>
@@ -803,16 +803,16 @@
                    <number>0</number>
                   </property>
                   <property name="sizeAdjustPolicy">
-                   <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                   <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustIgnored</enum>
                   </property>
                   <property name="lineWrapMode">
-                   <enum>QTextEdit::NoWrap</enum>
+                   <enum>QTextEdit::LineWrapMode::NoWrap</enum>
                   </property>
                   <property name="readOnly">
                    <bool>true</bool>
                   </property>
                   <property name="textInteractionFlags">
-                   <set>Qt::TextSelectableByMouse</set>
+                   <set>Qt::TextInteractionFlag::TextSelectableByMouse</set>
                   </property>
                   <property name="placeholderText">
                    <string/>
@@ -832,7 +832,7 @@
              </sizepolicy>
             </property>
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="handleWidth">
              <number>5</number>
@@ -854,7 +854,7 @@
               </size>
              </property>
              <property name="inputMethodHints">
-              <set>Qt::ImhNone</set>
+              <set>Qt::InputMethodHint::ImhNone</set>
              </property>
              <property name="title">
               <string>Dateien</string>
@@ -866,7 +866,7 @@
                  <number>6</number>
                 </property>
                 <property name="sizeConstraint">
-                 <enum>QLayout::SetNoConstraint</enum>
+                 <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
                 </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout">
@@ -893,10 +893,10 @@
                   <item>
                    <spacer name="horizontalSpacer">
                     <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                     <enum>Qt::Orientation::Horizontal</enum>
                     </property>
                     <property name="sizeType">
-                     <enum>QSizePolicy::Fixed</enum>
+                     <enum>QSizePolicy::Policy::Fixed</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -929,10 +929,10 @@
                   <item>
                    <spacer name="horizontalSpacer_2">
                     <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                     <enum>Qt::Orientation::Horizontal</enum>
                     </property>
                     <property name="sizeType">
-                     <enum>QSizePolicy::Fixed</enum>
+                     <enum>QSizePolicy::Policy::Fixed</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -1016,13 +1016,13 @@
                      </font>
                     </property>
                     <property name="layoutDirection">
-                     <enum>Qt::LeftToRight</enum>
+                     <enum>Qt::LayoutDirection::LeftToRight</enum>
                     </property>
                     <property name="text">
                      <string></string>
                     </property>
                     <property name="alignment">
-                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -1056,7 +1056,7 @@
                      </sizepolicy>
                     </property>
                     <property name="contextMenuPolicy">
-                     <enum>Qt::DefaultContextMenu</enum>
+                     <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
                     </property>
                     <property name="toolTip">
                      <string>Durch Leerzeichen getrennte Suchbegriffe. Alle Suchbegriffe müssen im Dokument gefunden werden</string>
@@ -1074,10 +1074,10 @@
                    <number>2000</number>
                   </property>
                   <property name="inputMethodHints">
-                   <set>Qt::ImhMultiLine</set>
+                   <set>Qt::InputMethodHint::ImhMultiLine</set>
                   </property>
                   <property name="editTriggers">
-                   <set>QAbstractItemView::NoEditTriggers</set>
+                   <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
                   </property>
                   <property name="showDropIndicator" stdset="0">
                    <bool>false</bool>
@@ -1089,16 +1089,16 @@
                    <bool>true</bool>
                   </property>
                   <property name="selectionMode">
-                   <enum>QAbstractItemView::SingleSelection</enum>
+                   <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
                   </property>
                   <property name="selectionBehavior">
-                   <enum>QAbstractItemView::SelectRows</enum>
+                   <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
                   </property>
                   <property name="textElideMode">
-                   <enum>Qt::ElideMiddle</enum>
+                   <enum>Qt::TextElideMode::ElideMiddle</enum>
                   </property>
                   <property name="verticalScrollMode">
-                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                   <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
                   </property>
                   <property name="showGrid">
                    <bool>false</bool>
@@ -1144,7 +1144,7 @@
               <item row="0" column="0">
                <widget class="QPlainTextEdit" name="notizenText">
                 <property name="contextMenuPolicy">
-                 <enum>Qt::DefaultContextMenu</enum>
+                 <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
                 </property>
                </widget>
               </item>
@@ -1152,7 +1152,7 @@
             </widget>
            </widget>
           </widget>
-          <widget class="QWebEngineView" name="browser" native="true">
+          <widget class="QWebEngineView" name="browser">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>8</horstretch>
@@ -1183,7 +1183,7 @@
            <property name="autoFillBackground">
             <bool>false</bool>
            </property>
-           <property name="url" stdset="0">
+           <property name="url">
             <url>
              <string>about:blank</string>
             </url>
@@ -1201,7 +1201,7 @@
         <item row="0" column="0">
          <widget class="QSplitter" name="splitter_7">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="handleWidth">
            <number>5</number>
@@ -1232,17 +1232,20 @@
                <bool>false</bool>
               </property>
               <property name="lineWrapMode">
-               <enum>QTextEdit::NoWrap</enum>
+               <enum>QTextEdit::LineWrapMode::NoWrap</enum>
               </property>
               <property name="readOnly">
                <bool>true</bool>
               </property>
               <property name="html">
                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
@@ -1250,7 +1253,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QSplitter" name="splitter_6">
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
+            <enum>Qt::Orientation::Vertical</enum>
            </property>
            <property name="childrenCollapsible">
             <bool>false</bool>
@@ -1279,7 +1282,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::NoWrap</enum>
+                <enum>QTextEdit::LineWrapMode::NoWrap</enum>
                </property>
                <property name="readOnly">
                 <bool>true</bool>
@@ -1296,14 +1299,14 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
              <item row="0" column="0">
               <widget class="QSplitter" name="splitter_8">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="childrenCollapsible">
                 <bool>false</bool>
                </property>
                <widget class="QTableWidget" name="termineTableView">
                 <property name="contextMenuPolicy">
-                 <enum>Qt::NoContextMenu</enum>
+                 <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
                 </property>
                 <property name="toolTip">
                  <string>Klick aktualisiert Detailansicht des gewählten Termins</string>
@@ -1312,7 +1315,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
                  <number>2500</number>
                 </property>
                 <property name="editTriggers">
-                 <set>QAbstractItemView::NoEditTriggers</set>
+                 <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
                 </property>
                 <property name="showDropIndicator" stdset="0">
                  <bool>false</bool>
@@ -1321,10 +1324,10 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
                  <bool>true</bool>
                 </property>
                 <property name="selectionMode">
-                 <enum>QAbstractItemView::SingleSelection</enum>
+                 <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
                 </property>
                 <property name="selectionBehavior">
-                 <enum>QAbstractItemView::SelectRows</enum>
+                 <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
                 </property>
                 <property name="sortingEnabled">
                  <bool>true</bool>
@@ -1341,7 +1344,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
                </widget>
                <widget class="QTextEdit" name="terminDetailView">
                 <property name="contextMenuPolicy">
-                 <enum>Qt::DefaultContextMenu</enum>
+                 <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
                 </property>
                 <property name="toolTip">
                  <string>Detailinformationen zum gewählten Termin</string>
@@ -1353,7 +1356,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
                  <bool>false</bool>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QTextEdit::NoWrap</enum>
+                 <enum>QTextEdit::LineWrapMode::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1457,6 +1460,18 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      <property name="title">
       <string>Dokumente</string>
      </property>
+     <widget class="QMenu" name="menuGeheimhaltung">
+      <property name="title">
+       <string>Geheimhaltung</string>
+      </property>
+      <addaction name="actionGeheimhaltungsgradColumn"/>
+      <addaction name="actionEinstufungsfristColumn"/>
+      <addaction name="actionEinstufungsdatumColumn"/>
+      <addaction name="actionHerausgeberColumn"/>
+      <addaction name="actionEinstufungsendeColumn"/>
+      <addaction name="actionGeheimBemerkungColumn"/>
+      <addaction name="actionVertraulichZuBehandelnColumn"/>
+     </widget>
      <addaction name="actionSpaltenkonfiguration"/>
      <addaction name="separator"/>
      <addaction name="actionAlleSpaltenMarkieren"/>
@@ -1476,6 +1491,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      <addaction name="actionErste_SnrColumn"/>
      <addaction name="actionErstellungszeitpunktColumn"/>
      <addaction name="actionfrGeschaeftszeichenColumn"/>
+     <addaction name="menuGeheimhaltung"/>
      <addaction name="actionJustizkostenrelevanzColumn"/>
      <addaction name="actionLetzte_SnrColumn"/>
      <addaction name="actionNur_MetadatenColumn"/>
@@ -1495,6 +1511,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="menuSpalten_ein_ausblenden"/>
     <addaction name="separator"/>
     <addaction name="actionGrosse_Schrift"/>
+    <addaction name="actionDateitabelleLinksbuendig"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuOptionen"/>
@@ -1524,7 +1541,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     </size>
    </property>
    <property name="toolButtonStyle">
-    <enum>Qt::ToolButtonFollowStyle</enum>
+    <enum>Qt::ToolButtonStyle::ToolButtonFollowStyle</enum>
    </property>
    <property name="floatable">
     <bool>false</bool>
@@ -1787,7 +1804,6 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="font">
     <font>
-     <weight>75</weight>
      <bold>true</bold>
     </font>
    </property>
@@ -2111,6 +2127,9 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Suche anzeigen</string>
    </property>
@@ -2176,6 +2195,70 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
   <action name="actionNotesPDFExport">
    <property name="text">
     <string>Nur Notizen</string>
+   </property>
+  </action>
+  <action name="actionGeheimhaltungsgradColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Geheimhaltungsgrad</string>
+   </property>
+  </action>
+  <action name="actionEinstufungsfristColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Einstufungsfrist</string>
+   </property>
+  </action>
+  <action name="actionEinstufungsdatumColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Einstufungsdatum</string>
+   </property>
+  </action>
+  <action name="actionHerausgeberColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Herausgeber</string>
+   </property>
+  </action>
+  <action name="actionEinstufungsendeColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Einstufungsende</string>
+   </property>
+  </action>
+  <action name="actionGeheimBemerkungColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bemerkung</string>
+   </property>
+  </action>
+  <action name="actionVertraulichZuBehandelnColumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Vertraulichkeit</string>
+   </property>
+  </action>
+  <action name="actionDateitabelleLinksbuendig">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Dateitabelle linksbündig</string>
    </property>
   </action>
  </widget>
