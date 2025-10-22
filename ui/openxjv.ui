@@ -708,7 +708,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>239</width>
+                     <width>237</width>
                      <height>68</height>
                     </rect>
                    </property>
@@ -1391,6 +1391,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      </property>
      <addaction name="actionPDFExport"/>
      <addaction name="actionFavPDFExport"/>
+     <addaction name="actionNotesPDFExport"/>
     </widget>
     <widget class="QMenu" name="menuDatenhygiene">
      <property name="title">
@@ -2170,6 +2171,11 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="toolTip">
     <string>Aktuelle XJustiz-Nachricht schließen</string>
+   </property>
+  </action>
+  <action name="actionNotesPDFExport">
+   <property name="text">
+    <string>Nur Notizen</string>
    </property>
   </action>
  </widget>
