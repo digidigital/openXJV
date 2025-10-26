@@ -16,7 +16,7 @@ from sys import platform
 from pikepdf import Pdf, PdfImage, Page, Rectangle, PdfError, models, _cpphelpers 
 from tempfile import TemporaryDirectory
 import pypdfium2 as pdfium
-from PIL import Image, ImageEnhance 
+from PIL import Image, ImageEnhance, ImageFilter 
 
 def run_args(return_text=True):
     kwargs={'capture_output':True, 
@@ -38,7 +38,9 @@ class PDFocr():
         if not file or not file.lower().endswith('.pdf'):
             raise FileNotFoundError('Kein PDF-Dokument übergeben bzw. gefunden')
 
-        self.gocr_available=True if shutil.which('gocr049') else False
+        self.gocr_available = bool(
+            shutil.which("gocr") or shutil.which("gocr049")
+        )
 
         self.posix = os.name == 'posix'
         
@@ -225,9 +227,14 @@ class PDFocr():
                     page_rotation = 0
 
                   
-            # Convert to RGB and enhance contrast (a bit)
-            pdfimage=pdfimage.convert(mode='RGB')
-            pdfimage = ImageEnhance.Contrast(pdfimage).enhance(2.4)
+            # Graustufen
+            pdfimage = pdfimage.convert("L")
+
+            # Kontrast erhöhen
+            pdfimage = ImageEnhance.Contrast(pdfimage).enhance(1.4)
+
+            # Schärfen
+            pdfimage = pdfimage.filter(ImageFilter.SHARPEN)
             
             # Analyze rotation
             tesseract_image = os.path.join(tmpdir, f'{uuid4().hex}.png')
@@ -262,28 +269,39 @@ class PDFocr():
                         rotateDegrees = 0                     
                 else: 
                     try:
-                        max_count=-1
-                        gocr_result=0
-                        result_img=''
+                        max_count = -1
+                        gocr_result = 0
+
+                        # passenden gocr-Befehl suchen
+                        gocr_bin = shutil.which("gocr049") or shutil.which("gocr")
+                        if not gocr_bin:
+                            raise RuntimeError("Kein gocr/gocr049 im PATH gefunden")
+
                         # rotate pages and do quick gocr ocr to get orientation 
-                        for angle in [0,180,90,270]:
-                            gocr_image=pdfimage.rotate(angle, expand = 1)
+                        for angle in [0, 180, 90, 270]:
+                            gocr_image = pdfimage.rotate(angle, expand=1)
                             gocr_image_path = os.path.join(tmpdir, f'{uuid4().hex}.pbm')
-                            gocr_image.save ((gocr_image_path), dpi=(200,200))
-                            gocr_image_path = str(gocr_image_path).replace('\\','\\\\') if os.name == 'nt' else str(gocr_image_path)
-                            gocr_command = f'gocr049 -i {gocr_image_path} -m 8 -m 16 -m 32 -C "abcdeghiklmnorstuv" -a 30 -f ASCII'
-                            command=shlex.split(gocr_command, posix=self.posix)
+                            gocr_image.save(gocr_image_path, dpi=(200, 200))
+
+                            # Windows: Backslashes escapen
+                            if os.name == 'nt':
+                                gocr_image_path = gocr_image_path.replace('\\', '\\\\')
+
+                            gocr_command = f'{gocr_bin} -i {gocr_image_path} -m 8 -m 16 -m 32 -C "abcdeghiklmnorstuv" -a 30 -f ASCII'
+                            command = shlex.split(gocr_command, posix=self.posix)
                             gocr_output = subprocess.run(command, **run_args())
-                            
+
                             word_count = self.word_count(gocr_output.stdout)
                             if word_count > max_count:
-                                max_count=word_count
-                                gocr_result=angle 
+                                max_count = word_count
+                                gocr_result = angle
                                 if max_count > 300:
-                                    break                            
+                                    break
+
                         rotateDegrees = gocr_result
+
                     except Exception as e:
-                        rotateDegrees = 0    
+                        rotateDegrees = 0
             
             # Rotate image upright        
             if not rotateDegrees == 0:
