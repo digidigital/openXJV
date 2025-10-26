@@ -10,7 +10,7 @@ Dies ist z. B. **für die Akteneinsicht in Akten der Bundesanstalt für Arbeit (
 
 openXJV ist entstanden, da zum Zeitpunkt des Projektstarts keine plattformübergreifende Anzeigelösung bereit stand.
   
-**openXJV unterstützt den XJustiz-Standard in den Versionen 3.5.1, 3.4.1, 3.3.1, 3.2.1 sowie 2.4.1**. Es werden die wichtigsten Datentypen und Strukturen unterstützt - eine vollständige und abolut fehlerfreie Anzeige kann jedoch nicht garantiert werden. 
+**openXJV unterstützt den XJustiz-Standard in den Versionen 3.6.2, 3.5.1, 3.4.1, 3.3.1, 3.2.1 sowie 2.4.1**. Es werden die wichtigsten Datentypen und Strukturen unterstützt - eine vollständige und abolut fehlerfreie Anzeige kann jedoch nicht garantiert werden. 
 **Fachverfahren werden nicht unterstützt.**
 
 Ist die Texerkennung Tesseract inkl. der Erkennung für "Deutsch" und das Programm jbic2dec installiert, wird die Texerkennung für eingescannte - bisher nicht durchsuchbare - Dokumente unterstützt. Dies ermöglicht eine Volltextsuche über die Dokumenteninhalte. Der Windows-Installer und AppDir bringen die beiden Abhängigkeiten bereits mit. 
