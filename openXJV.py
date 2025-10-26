@@ -131,7 +131,7 @@ from helperScripts import (
 )
 from helperScripts.search_tool import extract_texts_from_directory
 global VERSION 
-VERSION = '0.8.8'
+VERSION = '0.8.9'
 
 class CustomWebEnginePage(QWebEnginePage):
     customPrintRequested = Signal()
@@ -216,19 +216,8 @@ class SearchWorker(QObject):
             kwargs = {'capture_output': True}
             if os.name == 'nt':
                 kwargs['creationflags'] = CREATE_NO_WINDOW
-
-            # Windows + PyInstaller: verwende externes Tool
-            if os.name == 'nt' and getattr(sys, 'frozen', False):
-                command = ["search_tool", directory_to_scan]
-                text_extraction_result = subprocess.run(command, **kwargs)
-                if text_extraction_result.returncode == 0:
-                    search_store = json.loads(text_extraction_result.stdout)
-                else:
-                    raise Exception(f'Fehler bei der Textextraktion mit search_tool: {text_extraction_result.stderr}')
-            
-            # Alle anderen Plattformen: verwende direktes Modul
-            else:
-                search_store = extract_texts_from_directory(directory_to_scan)
+    
+            search_store = extract_texts_from_directory(directory_to_scan)
 
             # Datenbankverarbeitung
             with sqlite3.connect(database) as db_connection:
@@ -259,6 +248,9 @@ class UI(QMainWindow, Ui_MainWindow):
     def __init__(self, file=None, ziplist=None, app=None):
         super(UI, self).__init__() 
         self.setupUi(self)
+        
+        self.lastExceptionString=''
+        
         if os.environ.get('USERDOMAIN')=='DGBRS': 
             self.supportMail="servicedesk@dgbrechtsschutz.de"
         else:
@@ -266,14 +258,42 @@ class UI(QMainWindow, Ui_MainWindow):
         self.app=app
         
         # System /tmp-folder not accessible by SNAP Libreoffice
-        if sys.platform.lower() == 'linux':
+        if sys.platform.lower().startswith("linux"):
             home_dir = os.path.expanduser("~")
             cache_dir = os.path.join(home_dir, ".cache")
-            tmpdir = cache_dir if os.path.isdir(cache_dir) else home_dir
+            tmpdir_base = cache_dir if os.path.isdir(cache_dir) else home_dir
+            tmpdir = os.path.join(tmpdir_base, ".openXJV")
+        elif sys.platform.lower().startswith("win"):
+            # Unter MSIX ist LOCALAPPDATA auf den Container gemappt:
+            # %LOCALAPPDATA%\Packages\<PackageFamilyName>\LocalCache
+            local_appdata = os.getenv("LOCALAPPDATA") or os.path.expanduser("~")
+            # Für temporäre Daten LocalCache verwenden
+            tmpdir_base = os.path.join(local_appdata, "Packages", 
+                                    os.getenv("PACKAGE_FAMILY_NAME",""), 
+                                    "LocalCache")
+            # Fallback falls nicht im Container
+            if not os.path.isdir(tmpdir_base):
+                tmpdir_base = local_appdata
+            tmpdir = os.path.join(tmpdir_base, "openXJV")
         else:
             tmpdir = None
 
-        self.tempDir = TemporaryDirectory(dir=tmpdir)
+        # Verzeichnis prüfen und ggf. erzeugen + ggf. alten Inhalt 
+        # aus Datenschutzgründen löschen
+        if tmpdir is not None:
+            try:
+                os.makedirs(tmpdir, exist_ok=True)
+                for entry in os.listdir(tmpdir):
+                    path = os.path.join(tmpdir, entry)
+                    if os.path.isfile(path) or os.path.islink(path):
+                        os.remove(path)
+                    elif os.path.isdir(path):
+                        rmtree(path)
+            except Exception as e:
+                self.lastExceptionString=f"Konnte tmpdir nicht vorbereiten: {str(e)}"
+                tmpdir = None
+
+        self.tempDir = TemporaryDirectory(dir=tmpdir) if tmpdir else TemporaryDirectory()
         self.tempfile = ''
 
         self.scriptRoot = os.path.dirname(os.path.realpath(__file__))
@@ -300,8 +320,6 @@ class UI(QMainWindow, Ui_MainWindow):
         self.loadedPDFpath=''
         self.loadedPDFfilename=''
  
-        self.lastExceptionString=''
-
         self.column_preferences={}
         
         self.dirs = AppDirs("OpenXJV", "digidigital", version="0.1")
@@ -523,7 +541,7 @@ class UI(QMainWindow, Ui_MainWindow):
         #### Load empty viewer ####
         self.__loadEmptyViewer()  
 
-        #### Kontextmenü erstellen ####
+        #### Kontextmenü für Dateitabelle erstellen ####
         self.docTableView.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.docTableView.customContextMenuRequested.connect(self.__showDocsContextMenu)
         #### Shortcut erstellen ####
@@ -533,7 +551,7 @@ class UI(QMainWindow, Ui_MainWindow):
         shortcutDelDocFromFav.setContext(Qt.ShortcutContext.WidgetShortcut) 
         shortcutDelDocFromFav.activated.connect(self.__removeFavorite)
         
-        #### Kontextmenü erstellen ####
+        #### Kontextmenü für Favoriten erstellen ####
         self.favTableView.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.favTableView.customContextMenuRequested.connect(self.__showFavContextMenu)
         #### Shortcut erstellen ####
@@ -618,6 +636,9 @@ class UI(QMainWindow, Ui_MainWindow):
         if self.windowHandle():
             self.windowHandle().screenChanged.connect(self.__onScreenChanged)       
 
+        # BrowserSignal verbinden
+        self.browser.loadFinished.connect(self.__on_load_finished)
+        
         # Other settings       
         self.settingItems =[
             self.actionGrosse_Schrift, 
@@ -2538,7 +2559,96 @@ class UI(QMainWindow, Ui_MainWindow):
             self.__loadEmptyViewer(unknown = True) 
             self.statusBar.showMessage(f'Datei existiert nicht: {filename}')  
             
-    
+    def __on_load_finished(self, ok):
+        '''Mouseevents im Bowserfenster um Anzeigeproblem mit asynchron gerenderten PDFs in PDF.js zu umgehen'''
+        if not ok or self.settings.value('pdfViewer', 'PDFjs')!='PDFjs':
+            return
+
+        def inject():
+                js = r"""
+                (function () {
+                function fire() {
+                    try {
+                    // Ziel-Elemente finden
+                    const container = document.getElementById('viewerContainer') || document.body;
+                    const canvas = document.querySelector('#viewerContainer canvas, canvas');
+
+                    // 1) Mausbewegung/Eingabe simulieren (User-Gesture)
+                    const target = canvas || container;
+                    if (target) {
+                        const rect = target.getBoundingClientRect();
+                        const cx = Math.max(1, Math.min(rect.width - 1, 10));
+                        const cy = Math.max(1, Math.min(rect.height - 1, 10));
+
+                        const evMove = new MouseEvent('mousemove', {
+                        bubbles: true, cancelable: true, view: window,
+                        clientX: rect.left + cx, clientY: rect.top + cy
+                        });
+                        target.dispatchEvent(evMove);
+
+                        const evDown = new MouseEvent('mousedown', {
+                        bubbles: true, cancelable: true, view: window,
+                        clientX: rect.left + cx, clientY: rect.top + cy, button: 0
+                        });
+                        target.dispatchEvent(evDown);
+                        const evUp = new MouseEvent('mouseup', {
+                        bubbles: true, cancelable: true, view: window,
+                        clientX: rect.left + cx, clientY: rect.top + cy, button: 0
+                        });
+                        target.dispatchEvent(evUp);
+                    }
+
+                    // 2) pdf.js intern zum Rendern zwingen
+                    if (window.PDFViewerApplication) {
+                        const app = window.PDFViewerApplication;
+                        if (typeof app.forceRendering === 'function') app.forceRendering();
+                        if (app.pdfViewer && typeof app.pdfViewer.update === 'function') app.pdfViewer.update();
+                    }
+
+                    // 3) Layout/Repaint im Browser anstoßen
+                    window.dispatchEvent(new Event('resize'));
+                    if (container) {
+                        // Sichtbarkeits-Toggle zur Reflow-Erzwingung
+                        const prev = container.style.display;
+                        container.style.display = 'none';
+                        void container.offsetHeight;
+                        container.style.display = prev || '';
+                    }
+
+                    // 4) Minimaler Scroll/Zoom-Nudge
+                    if (container) {
+                        container.scrollTop = container.scrollTop + 1;
+                        container.scrollTop = container.scrollTop - 1;
+                    }
+                    const z = document.body.style.zoom || '1';
+                    const f = parseFloat(z) || 1;
+                    document.body.style.zoom = String(f + 0.001);
+                    document.body.style.zoom = String(f);
+
+                    } catch (e) {}
+                }
+
+                // Direkt versuchen und mehrmals nachschießen, falls Ressourcen langsamer laden
+                fire();
+                setTimeout(fire, 200);
+                setTimeout(fire, 600);
+
+                // Auf pdf.js Events hören und erneut auslösen
+                const attach = () => {
+                    const app = window.PDFViewerApplication;
+                    if (!app || !app.eventBus) { setTimeout(attach, 100); return; }
+                    app.eventBus.on('documentloaded', fire);
+                    app.eventBus.on('pagesloaded', fire);
+                    app.eventBus.on('pagerendered', fire);
+                };
+                attach();
+                })();
+                """
+                self.browser.page().runJavaScript(js)
+
+        # kleiner Delay, damit DOM + pdf.js init starten konnten
+        QTimer.singleShot(150, inject)
+        
     def __getFavoriteViewAction (self, val):     
         filename = self.favTableView.item(self.favTableView.currentRow(),1).text()
         
@@ -3841,10 +3951,21 @@ class UI(QMainWindow, Ui_MainWindow):
                                         
 def launchApp():
     print("QT Version (PySide): %s" % qVersion())
-    print('Disabling Chromium-Sandbox for compatibility reasons (Seems to be unavailable on Debian / Ubuntu based systems anyway).')
+    print('Deaktiviere Chromium-Sandbox aus Kompatibilitätsgründen.')
+    # Sandbox deaktivieren 
     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
-    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"]  = "--log-level=3 --disable-web-security"
-    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1" 
+
+    # Chromium Flags
+    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = " ".join([
+        "--log-level=3",                 # weniger Logging
+        "--disable-web-security",        
+        "--num-raster-threads=4",        # mehrere Raster-Threads
+        "--disk-cache-size=268435456",   # 256 MB Cache
+        "--media-cache-size=134217728",  # 128 MB Media-Cache
+    ])
+
+    # Automatische DPI-Skalierung
+    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
 
     if sys.platform.lower().startswith('win'):
         os.environ["QT_QPA_PLATFORM"] = "windows:darkmode=2"
@@ -3880,9 +4001,9 @@ def launchApp():
     splash.finish(widget)
     widget.showMaximized()
 
-    # Nach 5 ms erneut in den maximierten Modus wechseln,
+    # Nach 10 ms erneut in den maximierten Modus wechseln,
     # falls Fenster durch das Laden der UI resized wird
-    QTimer.singleShot(5, widget.showMaximized) 
+    QTimer.singleShot(10, widget.showMaximized) 
 
     sys.exit(app.exec())
 
