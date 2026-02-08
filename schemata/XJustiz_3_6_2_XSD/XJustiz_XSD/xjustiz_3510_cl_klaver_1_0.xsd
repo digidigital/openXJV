@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.xjustiz.de"
+           xmlns:xoev-code="http://xoev.de/schemata/code/1_0"
+           targetNamespace="http://www.xjustiz.de"
+           version="1.0.0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+   <xs:annotation>
+      <xs:appinfo>
+         <standard>
+            <nameLang>Strukturierte Fachdaten für die Kommunikation im elektronischen Rechtsverkehr</nameLang>
+            <nameKurz>XJustiz</nameKurz>
+            <nameTechnisch>xjustiz</nameTechnisch>
+            <kennung>urn:xoev-de:blk-ag-it-standards:standard:xjustiz</kennung>
+            <beschreibung>XJustiz ist der bundesweit einheitliche Standard für den Austausch strukturierter elektronischer Informationen mit der Justiz.</beschreibung>
+         </standard>
+         <versionStandard>
+            <version>3.6.2</version>
+            <beschreibung>XJustiz beschreibt ein standardisiertes Datenaustauschformat für die elektronische Kommunikation innerhalb und mit der Justizverwaltung.</beschreibung>
+            <versionXOEVProfil>3.0.2</versionXOEVProfil>
+            <versionXOEVHandbuch>2.3.1</versionXOEVHandbuch>
+            <versionXGenerator>3.2.3</versionXGenerator>
+            <versionModellierungswerkzeug>2021x</versionModellierungswerkzeug>
+            <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+         </versionStandard>
+      </xs:appinfo>
+   </xs:annotation>
+   <xs:import schemaLocation="xoev-code.xsd"
+              namespace="http://xoev.de/schemata/code/1_0"/>
+   <xs:complexType name="Code.KLAVER.Anspruchsart.Typ3">
+      <xs:annotation>
+         <xs:appinfo>
+            <codeliste>
+               <nameLang>KLAVER.Anspruchsart</nameLang>
+               <nameKurz>KLAVER.Anspruchsart</nameKurz>
+               <nameTechnisch>klaver.anspruchsart</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.anspruchsart</kennung>
+               <beschreibung>Diese Codeliste enhält Anspruchsarten</beschreibung>
+               <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
+               <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
+            </codeliste>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:restriction base="xoev-code:Code">
+            <xs:sequence>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
+            </xs:sequence>
+            <xs:attribute name="listURI"
+                          type="xs:anyURI"
+                          use="optional"
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.anspruchsart"/>
+            <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="Code.KLAVER.Antrag.Typ3">
+      <xs:annotation>
+         <xs:appinfo>
+            <codeliste>
+               <nameLang>KLAVER.Antrag</nameLang>
+               <nameKurz>KLAVER.Antrag</nameKurz>
+               <nameTechnisch>klaver.antrag</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.antrag</kennung>
+               <beschreibung>Diese Codeliste enhält Antragsarten</beschreibung>
+               <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
+               <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
+            </codeliste>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:restriction base="xoev-code:Code">
+            <xs:sequence>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
+            </xs:sequence>
+            <xs:attribute name="listURI"
+                          type="xs:anyURI"
+                          use="optional"
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.antrag"/>
+            <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="Code.KLAVER.FGR.Anspruchshoehe.Typ3">
+      <xs:annotation>
+         <xs:appinfo>
+            <codeliste>
+               <nameLang>KLAVER..FGR.Anspruchshöhe</nameLang>
+               <nameKurz>KLAVER..FGR.Anspruchshöhe</nameKurz>
+               <nameTechnisch>klaver.fgr.anspruchshoehe</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.fgr.anspruchshoehe</kennung>
+               <beschreibung>Diese Codeliste enhält Anspruchssarten</beschreibung>
+               <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
+               <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
+            </codeliste>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:restriction base="xoev-code:Code">
+            <xs:sequence>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
+            </xs:sequence>
+            <xs:attribute name="listURI"
+                          type="xs:anyURI"
+                          use="optional"
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.fgr.anspruchshoehe"/>
+            <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="Code.KLAVER.KFV.Anlass.Typ3">
+      <xs:annotation>
+         <xs:appinfo>
+            <codeliste>
+               <nameLang>KLAVER.Anlass</nameLang>
+               <nameKurz>KLAVER.Anlass</nameKurz>
+               <nameTechnisch>klaver.anlass</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.anlass</kennung>
+               <beschreibung>Diese Codeliste enhält Anlassarten</beschreibung>
+               <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
+               <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
+            </codeliste>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:restriction base="xoev-code:Code">
+            <xs:sequence>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
+            </xs:sequence>
+            <xs:attribute name="listURI"
+                          type="xs:anyURI"
+                          use="optional"
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.anlass"/>
+            <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="Code.KLAVER.KFV.Kostentatbestand.Typ3">
+      <xs:annotation>
+         <xs:appinfo>
+            <codeliste>
+               <nameLang>KLAVER.KFV.Kostentatbestand</nameLang>
+               <nameKurz>KLAVER.KFV.Kostentatbestand</nameKurz>
+               <nameTechnisch>klaver.kfv.kostentatbestand</nameTechnisch>
+               <kennung>urn:xoev-de:xjustiz:codeliste:klaver.kfv.kostentatbestand</kennung>
+               <beschreibung>Diese Codeliste enhält Kostentatbestandsarten</beschreibung>
+               <herausgebernameLang>BLK-AG IT-Standards in der Justiz</herausgebernameLang>
+               <herausgebernameKurz>AG IT-Standards</herausgebernameKurz>
+            </codeliste>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:restriction base="xoev-code:Code">
+            <xs:sequence>
+               <xs:element name="code" type="xs:token" form="unqualified"/>
+            </xs:sequence>
+            <xs:attribute name="listURI"
+                          type="xs:anyURI"
+                          use="optional"
+                          fixed="urn:xoev-de:xjustiz:codeliste:klaver.kfv.kostentatbestand"/>
+            <xs:attribute name="listVersionID" type="xs:normalizedString" use="required"/>
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+</xs:schema>

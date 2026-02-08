@@ -1422,6 +1422,7 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
     <addaction name="menuPDF_Export_2"/>
     <addaction name="actionTexterkennung"/>
     <addaction name="separator"/>
+    <addaction name="actionXML_Validierung_XSD"/>
     <addaction name="menuDatenhygiene"/>
     <addaction name="separator"/>
     <addaction name="actionSchliessen"/>
@@ -1449,8 +1450,17 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
      <addaction name="actionNurFavoritenExportieren"/>
      <addaction name="actionPDFnachExportOeffnen"/>
     </widget>
+    <widget class="QMenu" name="menuPDF_Annotationen">
+     <property name="title">
+      <string>PDF Annotationen</string>
+     </property>
+     <addaction name="actionAutomatisch_speichern"/>
+     <addaction name="actionAktion_erfragen"/>
+     <addaction name="actionVerwerfen"/>
+    </widget>
     <addaction name="menuPDF_Viewer"/>
     <addaction name="menuPDF_Export"/>
+    <addaction name="menuPDF_Annotationen"/>
     <addaction name="actionAktenverzeichnis_festlegen"/>
     <addaction name="separator"/>
     <addaction name="actionOnlineAufUpdatesPruefen"/>
@@ -2271,6 +2281,47 @@ Es ist nicht die juristische Bezeichnung einer Instanz gemeint.</string>
    </property>
    <property name="text">
     <string>Dateitabelle linksbündig</string>
+   </property>
+  </action>
+  <action name="actionAutomatisch_speichern">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Automatisch speichern</string>
+   </property>
+   <property name="toolTip">
+    <string>Bei einem Wechsel der Dokumente in der Vorschau ungespeicherte Annotationen automatisch speichern (Original überschreiben).</string>
+   </property>
+  </action>
+  <action name="actionAktion_erfragen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aktion erfragen</string>
+   </property>
+   <property name="toolTip">
+    <string>Bei einem Wechsel der Dokumente in der Vorschau nachfragen, ob ungespeicherte Annotationen gespeichert werden sollen.</string>
+   </property>
+  </action>
+  <action name="actionVerwerfen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Verwerfen ohne Nachfrage</string>
+   </property>
+   <property name="toolTip">
+    <string>Bei einem Wechsel der Dokumente in der Vorschau ungespeicherte Annotationen verwerfen.</string>
+   </property>
+  </action>
+  <action name="actionXML_Validierung_XSD">
+   <property name="text">
+    <string>XML‑Validierung (XSD)</string>
    </property>
   </action>
  </widget>
