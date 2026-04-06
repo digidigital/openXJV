@@ -1,52 +1,59 @@
 #!/usr/bin/env python3
 # coding: utf-8
-'''
-    openXJV.py - a viewer for XJustiz-Data
-    2022 - 2025 Björn Seipel
+"""
+openXJV_modular.py - Migrated UI class for XJustiz-Data Viewer
+2022 - 2025 Björn Seipel
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; mitout even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-'''
-#for ubuntu package sudo apt install libxcb-cursor0 in case of xcb-error
+You should have received a copy of the GNU General Public License
+along mit this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+# For Ubuntu package: sudo apt install libxcb-cursor0 in case of xcb-error
 
 import traceback
 
 import os
 import re
 import sys
-import time
-import orjson as json
 import urllib.request
-import subprocess
+#import subprocess
 import sqlite3
-if os.name == 'nt':
-    from subprocess import CREATE_NO_WINDOW
+#if os.name == 'nt':
+#    from subprocess import CREATE_NO_WINDOW
 import platform
 import darkdetect
 import multiprocessing
-import concurrent.futures
-import pypdfium2 as pdfium
 from uuid import uuid4
-from threading import Thread
-from shutil import copyfile, rmtree
+from time import sleep
+from shutil import rmtree
 from pathlib import Path
-from zipfile import ZipFile
-from tempfile import TemporaryDirectory
-from itertools import count
-from pikepdf import Pdf, OutlineItem
-from fpdf import FPDF
+from tempfile import TemporaryDirectory, gettempdir
 
-# QT Imports
+# Plattformspezifische Imports für File-Locking
+_HAS_MSVCRT = False
+_HAS_FCNTL = False
+
+try:
+    if sys.platform == 'win32':
+        import msvcrt
+        _HAS_MSVCRT = True
+    else:
+        import fcntl
+        _HAS_FCNTL = True
+except ImportError:
+    # Fallback falls Imports nicht verfügbar sind
+    pass
+
+# QT-Imports
 from PySide6.QtCore import (
     qVersion,
     QEventLoop,
@@ -57,24 +64,16 @@ from PySide6.QtCore import (
     QSize,
     QRect,
     QLibraryInfo,
-    QObject,
     QThread,
-    Signal,       
     QEvent,
     QTranslator,
     QLocale,
     QTimer
 )
 
-from PySide6.QtPrintSupport import (
-    QPrinter,
-    QPrintDialog
-)
-
 from PySide6.QtGui import (
     QScreen,
     QStandardItemModel,
-    QStandardItem,
     QCursor,
     QIcon,
     QFont,
@@ -85,7 +84,7 @@ from PySide6.QtGui import (
     QKeySequence,
     QFontDatabase,
     QDesktopServices,
-    QPixmap
+    QPixmap,
 )
 
 from PySide6.QtWidgets import (
@@ -110,142 +109,217 @@ from PySide6.QtWidgets import (
 )
 
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWebEngineCore import QWebEngineSettings, QWebEngineProfile, QWebEnginePage
+from PySide6.QtWebEngineCore import QWebEngineSettings, QWebEngineProfile
+
+# PDF Viewer Widget
+from pdfjs_viewer import (
+    PDFViewerWidget,
+    PDFViewerConfig,
+    PDFFeatures,
+    PDFSecurityConfig,
+    PrintHandler,
+    configure_global_stability,
+    freeze_support as pdfjs_freeze_support,
+)
 
 from PySide6.QtCore import QFile
-## Ende QT imports
+## Ende QT-Imports
 
 from PIL import Image
 from PIL.ImageQt import ImageQt
 from appdirs import AppDirs
-from helperScripts import (
-    CreateDeckblatt, 
-    parser240, 
-    parser321, 
-    parser331, 
-    parser341, 
+
+# Modulare Komponenten
+from openxjv import __version__ as MODULAR_VERSION
+from openxjv.core import DatabaseManager, OCRHandler, PDFocr
+from openxjv.core.pdf_operations import (
+    PDFExportConfig,
+    PDFExportError,
+    export_pdf,
+    export_notes_to_pdf,
+)
+from openxjv.core.pdf_cover_page_template import CreateDeckblatt
+from openxjv.ui import Ui_MainWindow, TextObject, XJustizDisplayRenderer, CustomWebEnginePage, StandardItem, SearchWorker
+from openxjv.utils import SearchFilterManager, FileManager, SettingsManager
+from openxjv.parsers import (
+    parser240,
+    parser321,
+    parser331,
+    parser341,
     parser351,
     parser362,
-    PDFocr,
-    Ui_MainWindow
 )
-from helperScripts.search_tool import extract_texts_from_directory
-global VERSION 
-VERSION = '0.8.9'
+from openxjv.validators import XSDValidatorDialog
+global VERSION
+VERSION = '0.9.0'
 
-class CustomWebEnginePage(QWebEnginePage):
-    customPrintRequested = Signal()
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        super().printRequested.connect(self.forwardPrintRequested)
-        
-    def acceptNavigationRequest(self, url, nav_type, is_main_frame):
-        '''Öffnet externe Links im Standardbrowser des Betriebssystems'''
-        if url.scheme() == "file":
-            return super().acceptNavigationRequest(url, nav_type, is_main_frame)
 
-        QDesktopServices.openUrl(QUrl(url))
-        return False
-        
-    def forwardPrintRequested(self):
-        '''Leitet printRequested-Signal als customPrintRequested an extern weiter'''
-        # Workaround, da das externe printRequested-Signal bei Überschreiben der 
-        # QWebEnginePage "verloren" geht
-        self.customPrintRequested.emit()
+class SingleInstance:
+    """
+    Stellt sicher, dass nur eine Instanz der Anwendung gleichzeitig läuft.
 
-class StandardItem(QStandardItem):
-    def __init__(self, txt='', id='root', font_size=15, set_bold=False, color=QColor(0, 0, 0)):
-        super().__init__()
-        self.id=id
-        self.setEditable(False)
-        self.setText(txt)
-     
-class TextObject:
-    def __init__(self, delimiter=': ', newline='<br>'):
-        self.text = ''
-        self.delimiter = delimiter
-        self.newline = newline
-        self.headline = ''
-        self.ignoreEmptyText = False
+    Verwendet plattformspezifisches File-Locking (Windows, Linux, macOS).
+    Die Lock-Datei wird automatisch vom Betriebssystem freigegeben, wenn
+    die Anwendung beendet wird - auch bei unerwartetem Absturz.
 
-    def addLine(self, value1=None, value2=None, prepend=False):
-        """Fügt eine Zeile Text hinzu, sofern beide Textwerte nicht None sind.
-        Der Trenner wird in self.delimiter festgelegt.
+    Verwendung:
+        single_instance = SingleInstance('app_name')
+        if not single_instance.acquire():
+            print("Anwendung läuft bereits!")
+            sys.exit(1)
+        # ... Anwendung läuft ...
+        single_instance.release()  # Optional, wird automatisch aufgerufen
+    """
+
+    def __init__(self, app_name):
         """
-        if value1 and value2:
-            self.text += f"{value1}{self.delimiter}{value2}{self.newline}"
+        Initialisiert die SingleInstance-Prüfung.
 
-    def addRaw(self, text='', prepend=False):
-        """Fügt dem Text unveränderten Rohtext hinzu.
-        "prepend=True" fügt den Text am Textanfang ein.
+        Args:
+            app_name (str): Eindeutiger Name der Anwendung für die Lock-Datei
         """
-        if prepend:
-            self.text = f"{text}{self.text}"
-        else:
-            self.text += f"{text}"
+        self.app_name = app_name
+        self.lockfile_path = Path(gettempdir()) / f"{app_name}.lock"
+        self.fp = None
+        self._is_locked = False
 
-    def addHeading(self, headline, ignoreEmptyText=False):
-        """Fügt dem Text eine Überschrift hinzu."""
-        self.headline = f"<br><b><i>{headline}</b></i>{self.newline}"
-        self.ignoreEmptyText = bool(ignoreEmptyText)
-
-    def getText(self):
-        """Gibt den Text des Objektes zurück.
-        Sofern addHeading ohne ignoreEmptyText=True aufgerufen wurde,
-        wird auch bei gesetzter Überschrift ein leerer String zurückgegeben,
-        sofern der eigentliche Text leer ist.
+    def acquire(self):
         """
-        if self.ignoreEmptyText:
-            return f"{self.headline}{self.text}"
-        elif self.text:
-            return f"{self.headline}{self.text}"
-        else:
-            return ""
+        Versucht, die Anwendungs-Sperre zu erwerben.
 
-class SearchWorker(QObject):
-    finished = Signal()
-    result = Signal(list)
-    def run(self, directory_to_scan, script_root, database, message_id = None, ):
-        """Preparing the SearchStore."""
-        leere_dateien = 0
-        leere_PDF = 0
-        search_store={}
-        exception_text=None
+        Returns:
+            bool: True wenn erfolgreich (keine andere Instanz läuft),
+                  False wenn bereits eine Instanz läuft oder bei Fehler
+        """
+        # Fallback: Wenn File-Locking nicht verfügbar ist, immer erlauben
+        if sys.platform == 'win32' and not _HAS_MSVCRT:
+            return True
+        if sys.platform != 'win32' and not _HAS_FCNTL:
+            return True
+
         try:
-            # Standardargumente für subprocess
-            kwargs = {'capture_output': True}
-            if os.name == 'nt':
-                kwargs['creationflags'] = CREATE_NO_WINDOW
-    
-            search_store = extract_texts_from_directory(directory_to_scan)
+            # Lock-Datei öffnen/erstellen
+            self.fp = open(self.lockfile_path, 'w')
 
-            # Datenbankverarbeitung
-            with sqlite3.connect(database) as db_connection:
-                self.db_cursor = db_connection.cursor()
-                db_query = 'DELETE FROM plaintext WHERE uuid = ? AND basedir = ?;'
-                self.db_cursor.execute(db_query, (message_id, directory_to_scan))
+            # Plattformspezifisches Locking
+            if sys.platform == 'win32' and _HAS_MSVCRT:
+                # Windows: msvcrt.locking
+                try:
+                    msvcrt.locking(self.fp.fileno(), msvcrt.LK_NBLCK, 1)
+                except (OSError, IOError):
+                    # Lock konnte nicht erworben werden - andere Instanz läuft
+                    self.fp.close()
+                    self.fp = None
+                    return False
+            elif _HAS_FCNTL:
+                # Linux/macOS: fcntl
+                try:
+                    fcntl.flock(self.fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except (OSError, IOError):
+                    # Lock konnte nicht erworben werden - andere Instanz läuft
+                    self.fp.close()
+                    self.fp = None
+                    return False
 
-                for filename, text in search_store.items():
-                    if text == '':
-                        leere_dateien += 1
-                        if filename.lower().endswith('.pdf'):
-                            leere_PDF += 1
-                    db_query = 'INSERT OR REPLACE INTO plaintext (uuid, filename, text, basedir) VALUES (?, ?, ?, ?);'
-                    self.db_cursor.execute(db_query, (message_id, filename, text, directory_to_scan))
+            # Lock erfolgreich - PID in Datei schreiben
+            self.fp.write(str(os.getpid()))
+            self.fp.flush()
+            self._is_locked = True
+            return True
 
         except Exception as e:
-            exception_text = str(e)
+            # Bei jedem unerwarteten Fehler: Anwendung starten lassen
+            print(f"Warnung: SingleInstance-Prüfung fehlgeschlagen: {e}")
+            if self.fp:
+                try:
+                    self.fp.close()
+                except:
+                    pass
+                self.fp = None
+            return True
 
-                
-        result =(leere_dateien,
-                 leere_PDF,
-                 search_store,
-                 exception_text)  
-        self.result.emit(result)
-        self.finished.emit()
+    def release(self):
+        """
+        Gibt die Anwendungs-Sperre frei.
+
+        Wird automatisch beim Beenden aufgerufen, kann aber auch
+        manuell aufgerufen werden.
+        """
+        if not self._is_locked or not self.fp:
+            return
+
+        try:
+            # Plattformspezifisches Unlock (optional, OS macht das automatisch)
+            if sys.platform != 'win32' and _HAS_FCNTL:
+                try:
+                    fcntl.flock(self.fp.fileno(), fcntl.LOCK_UN)
+                except:
+                    pass
+
+            # Datei schließen
+            self.fp.close()
+            self.fp = None
+
+            # Lock-Datei löschen
+            try:
+                self.lockfile_path.unlink()
+            except:
+                pass
+
+        except Exception:
+            # Fehler beim Release ignorieren
+            pass
+        finally:
+            self._is_locked = False
+
+    def __enter__(self):
+        """Context Manager Support: Eintritt"""
+        return self.acquire()
+
+    def __exit__(self, *_args):
+        """Context Manager Support: Austritt"""
+        self.release()
+        return False
+
+    def __del__(self):
+        """Destruktor: Sperre freigeben beim Löschen des Objekts"""
+        self.release()
+
 
 class UI(QMainWindow, Ui_MainWindow):
-    def __init__(self, file=None, ziplist=None, app=None):
+    """Haupt-UI-Klasse für die openXJV-Anwendung.
+
+    Diese Klasse stellt die Hauptbenutzeroberfläche bereit for viewing and managing XJustiz legal data files.
+    It uses a modular architecture mit functionality delegated to specialized components:
+
+    - DatabaseManager: Handles all database operations (favorites, notes, search index)
+    - SearchFilterManager: Manages search and filtering operations
+    - OCRHandler: Handles OCR (text recognition) operations
+    - FileManager: Manages file operations (open, export, ZIP handling)
+    - XJustizDisplayRenderer: Renders XJustiz data templates
+    - SettingsManager: Type-safe settings management
+
+    The UI supports:
+    - Viewing XJustiz legal documents mit structured data display
+    - PDF preview mit multiple viewer options (PDF.js, Chromium, native)
+    - Full-text search across all attached documents
+    - Favorites management
+    - Notes attached to files
+    - Export to PDF and ZIP
+    - OCR for non-searchable PDFs
+    - Customizable view options and column visibility
+    """
+    # ========================================
+    # ABSCHNITT 1: INITIALISIERUNG & LEBENSZYKLUS
+    # ========================================
+    def __init__(self, app: QApplication, file=None, ziplist=None):
+        """Initialisiert das openXJV-Hauptfenster.
+
+        Argumente:
+            file: Optionaler Pfad zu einer XJustiz-Datei zum Laden beim Start
+            ziplist: Optionale Liste von ZIP-Dateien zum Extrahieren und Laden
+            app: QApplication-Instanz
+        """
         super(UI, self).__init__() 
         self.setupUi(self)
         
@@ -257,21 +331,21 @@ class UI(QMainWindow, Ui_MainWindow):
             self.supportMail="support@digidigital.de" 
         self.app=app
         
-        # System /tmp-folder not accessible by SNAP Libreoffice
+        # System /tmp-Ordner nicht zugänglich für SNAP Libreoffice
         if sys.platform.lower().startswith("linux"):
             home_dir = os.path.expanduser("~")
             cache_dir = os.path.join(home_dir, ".cache")
             tmpdir_base = cache_dir if os.path.isdir(cache_dir) else home_dir
             tmpdir = os.path.join(tmpdir_base, ".openXJV")
         elif sys.platform.lower().startswith("win"):
-            # Unter MSIX ist LOCALAPPDATA auf den Container gemappt:
+            # Unter MSIX wird LOCALAPPDATA auf den Container gemappt:
             # %LOCALAPPDATA%\Packages\<PackageFamilyName>\LocalCache
             local_appdata = os.getenv("LOCALAPPDATA") or os.path.expanduser("~")
-            # Für temporäre Daten LocalCache verwenden
+            # Verwende LocalCache für temporäre Daten
             tmpdir_base = os.path.join(local_appdata, "Packages", 
                                     os.getenv("PACKAGE_FAMILY_NAME",""), 
                                     "LocalCache")
-            # Fallback falls nicht im Container
+            # Fallback, falls nicht im Container
             if not os.path.isdir(tmpdir_base):
                 tmpdir_base = local_appdata
             tmpdir = os.path.join(tmpdir_base, "openXJV")
@@ -279,7 +353,7 @@ class UI(QMainWindow, Ui_MainWindow):
             tmpdir = None
 
         # Verzeichnis prüfen und ggf. erzeugen + ggf. alten Inhalt 
-        # aus Datenschutzgründen löschen
+        # for data protection reasons
         if tmpdir is not None:
             try:
                 os.makedirs(tmpdir, exist_ok=True)
@@ -290,11 +364,10 @@ class UI(QMainWindow, Ui_MainWindow):
                     elif os.path.isdir(path):
                         rmtree(path)
             except Exception as e:
-                self.lastExceptionString=f"Konnte tmpdir nicht vorbereiten: {str(e)}"
+                self.lastExceptionString=f"Konnte 'tmpdir' nicht erzeugen: {str(e)}"
                 tmpdir = None
 
         self.tempDir = TemporaryDirectory(dir=tmpdir) if tmpdir else TemporaryDirectory()
-        self.tempfile = ''
 
         self.scriptRoot = os.path.dirname(os.path.realpath(__file__))
       
@@ -313,10 +386,15 @@ class UI(QMainWindow, Ui_MainWindow):
             windowIcon.addFile(icon128,(QSize(128,128)))
             windowIcon.addFile(icon256,(QSize(256,256)))
         self.setWindowIcon(windowIcon)
-        
-        self.searchStore={} 
-        self.searchLock=True
-        
+
+        # Initialisiere Search/Filter Manager (Phase 2 Migration)
+        self.search_filter_manager = SearchFilterManager()
+        # Erhalte Rückwärtskompatibilität mit direktem Attributzugriff
+        self.searchStore = self.search_filter_manager.search_store
+        self.searchLock = self.search_filter_manager.search_lock
+        self.leereDateien = self.search_filter_manager.empty_files
+        self.leerePDF = self.search_filter_manager.empty_pdf
+
         self.loadedPDFpath=''
         self.loadedPDFfilename=''
  
@@ -325,21 +403,22 @@ class UI(QMainWindow, Ui_MainWindow):
         self.dirs = AppDirs("OpenXJV", "digidigital", version="0.1")
         os.makedirs(self.dirs.user_data_dir, exist_ok=True) 
         
-        self.db_name = 'openXJV_data.db' 
+        self.db_name = 'openXJV_data.db'
         self.db_path = os.path.join(self.dirs.user_data_dir, self.db_name)
-        self.__create_db_if_not_exist()
-        
-        #Translations
+        # Initialisiere modulare Komponenten
+        self.db_manager = DatabaseManager(self.db_path)
+
+        # Übersetzungen
         translation_path = os.path.normcase(os.path.join(QLibraryInfo.path(QLibraryInfo.LibraryPath(10)),  "qtbase_de.qm")) 
         translator = QTranslator(app)
     
         if translator.load(translation_path):
             app.installTranslator(translator)  
 
-        #Don't use Path.home() directly in case we are in a snap package
+        # Path.home() nicht direkt verwenden, falls wir in einem Snap-Paket sind
         self.homedir = os.environ.get('SNAP_REAL_HOME', Path.home())
-        
-        ###Load fonts###
+
+        ### Lade Schriftarten ###
         self.fontDir = self.scriptRoot + '/fonts/'
         
         fontFiles=[
@@ -348,10 +427,10 @@ class UI(QMainWindow, Ui_MainWindow):
             "ubuntu-font-family-0.83/Ubuntu-R.ttf"
         ] 
 
-        for font in fontFiles:          
-            QFontDatabase.addApplicationFont(self.fontDir + font) 
+        for font in fontFiles:
+            QFontDatabase.addApplicationFont(self.fontDir + font)
 
-        # Set Fonts
+        # Setze Schriftarten
         self.buttonFont=QFont('Material Icons')
         self.buttonFont.setWeight(QFont.Weight.Thin)
         self.iconFont=QFont('Material Icons')
@@ -360,16 +439,16 @@ class UI(QMainWindow, Ui_MainWindow):
         self.__setFontsizes()
        
         self.setWindowTitle(f'openXJV {VERSION}')
-        
-        #Hide "New version" icon
+
+        # Verstecke "Neue Version"-Symbol
         self.newVersionIndicator=self.toolBar.actions()[14]
         self.newVersionIndicator.setVisible(False)
 
-        # Add tesseract, jbig2dec and search_tool to windows PATH 
+        # Füge temporär tesseract, jbig2dec zum Windows-PATH hinzu 
         if os.name == 'nt': 
             
-            if os.path.exists(os.path.join(self.scriptRoot,'bin','search_tool', 'search_tool.exe')):
-                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','search_tool')}"  
+            #if os.path.exists(os.path.join(self.scriptRoot,'bin','search_tool', 'search_tool.exe')):
+            #        os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','search_tool')}"  
             if os.path.exists(os.path.join(self.scriptRoot,'bin','gocr', 'gocr049.exe')):
                     os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','gocr')}" 
             if not PDFocr.tesseractAvailable():
@@ -380,10 +459,10 @@ class UI(QMainWindow, Ui_MainWindow):
                     os.environ['TESSDATA_PREFIX'] = f"{os.path.join(self.scriptRoot,'bin','tesseract', 'tessdata')}"
             os.environ['PATH'] += f";{self.scriptRoot}"
         
-        # Limit Tesseract Multithreading
+        # Begrenze Tesseract Multithreading
         os.environ['OMP_THREAD_LIMIT']='2' 
         
-        # Hide OCR options if Tesseract not available
+        # Verstecke OCR-Optionen, falls Tesseract nicht verfügbar
         if not PDFocr.tesseractAvailable():
             self.OCRenabled=False
             self.actionTexterkennungAktuellesPDF.setVisible(False)
@@ -393,54 +472,108 @@ class UI(QMainWindow, Ui_MainWindow):
         
         self.actionOCRall.setVisible(False)
             
-        ###Prepare settings###
-        self.settings = QSettings('openXJV','digidigital')
+        ###Bereite Einstellungen vor###
+        self.settings_manager = SettingsManager('openXJV', 'digidigital')
+        # Erhalte Rückwärtskompatibilität - settings-Attribut zeigt nun auf die zugrundeliegenden QSettings
+        self.settings = self.settings_manager.settings
         
-        ### Set custom webengine page to intercept external links      
-        self.browser.setPage(CustomWebEnginePage(self.browser))
-        
-        ###Browser Settings
-        self.browserProfile = QWebEngineProfile.defaultProfile()
-        self.browserProfile.setHttpCacheType(QWebEngineProfile.HttpCacheType.NoCache)
-        self.browserProfile.setHttpAcceptLanguage("de-DE,de;q=0.9,en;q=0.8")
-        self.browserProfile.settings().setAttribute(QWebEngineSettings.WebAttribute.PdfViewerEnabled, True)        
-        
-        self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled,True)
-        self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ErrorPageEnabled,False)
-        self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.NavigateOnDropEnabled,False)
-        self.browser.resize(100, self.browser.height()) # Wert von 100 behebt Darstellungsproblem
+        ### Initialisiere PDF-Viewer Widget ###
+        # Lese gespeicherte Annotationseinstellung
+        saved_annotation_action = self.settings_manager.get_string('annotationAction', 'disabled')
+        if saved_annotation_action not in ('disabled', 'prompt', 'auto_save'):
+            saved_annotation_action = 'disabled'
+
+        pdf_config = PDFViewerConfig(
+            features=PDFFeatures(
+                print_enabled=True,
+                save_enabled=True,
+                load_enabled=False,  # Laden wird von openXJV gesteuert
+                highlight_enabled=True,
+                freetext_enabled=True,
+                ink_enabled=True,
+                stamp_enabled=False,
+                unsaved_changes_action=saved_annotation_action,
+            ),
+            security=PDFSecurityConfig(
+                allow_external_links=True,
+                confirm_before_external_link=True,
+                block_remote_content=True,
+                allowed_protocols=["http", "https", "mailto"],
+            ),
+            print_handler=PrintHandler.QT_DIALOG,
+            print_dpi=200,
+            print_fit_to_page=True,
+            disable_context_menu=True,
+        )
+        self.pdf_viewer = PDFViewerWidget(config=pdf_config)
+
+        # Ersetze das alte browser-Widget im Splitter durch das neue PDFViewerWidget
+        old_browser = self.browser
+        old_browser_index = self.splitter_9.indexOf(old_browser)
+        self.splitter_9.replaceWidget(old_browser_index, self.pdf_viewer)
+        old_browser.deleteLater()
+
+        # Verwende das interne QWebEngineView für Nicht-PDF-Dateien und Chromium-Modus
+        self.browser = self.pdf_viewer.backend.web_view
+
+        # Verbinde PDF-Viewer Signale
+        self.pdf_viewer.error_occurred.connect(lambda msg: self.statusBar.showMessage(msg))
+
+        # Setze Splitter-Eigenschaften für gleichmäßige Aufteilung
+        self.splitter_9.setStretchFactor(0, 1)  # Linke Seite (Dokumentenliste)
+        self.splitter_9.setStretchFactor(1, 1)  # Rechte Seite (PDF-Viewer)
+
+        # Browser-Einstellungen für Nicht-PDF-Inhalte (Bilder, HTML, etc.)
+        self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
+        self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ErrorPageEnabled, False)
+        self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.NavigateOnDropEnabled, False)
                       
         ###set toolbarButtonwidth###        
         for child in self.toolBar.children():
             if child.__class__.__name__ == 'QToolButton':
                 child.setFixedWidth(25)
         
-        #Adjust table header style         
+        #Passe table header Style an         
         self.docTableView.horizontalHeader().setHighlightSections(False)
         self.favTableView.horizontalHeader().setHighlightSections(False)
         self.termineTableView.horizontalHeader().setHighlightSections(False)  
         
-        ###initial print lock state####
-        self.printLock=False
-        
+        # printLock no longer needed - pdfjs_viewer handles print state internally
+
         ###initial ocr lock state####
-        self.ocrLock=False
+        # Initialisiere OCR-Handler
+        self.ocr_handler = OCRHandler(
+            status_bar=self.statusBar,
+            app=self.app,
+            home_dir=Path(self.homedir),
+            settings=self.settings,
+            display_message_callback=self.__displayMessage
+        )
+        # Erhalte Rückwärtskompatibilität mit direktem Attributzugriff
+        self.ocrLock = self.ocr_handler.ocr_lock
+
+        # Initialisiere Schlüsselattribute - erforderlich bevor __readSettings() aufgerufen wird
+        # Diese werden aktualisiert, wenn eine Datei tatsächlich geladen wird
+        self.basedir = ''
+        self.akte = {}  # Wird gefüllt, wenn eine XJV-Datei geladen wird
+        self._xsd_validator_dialog = None  # Einzelinstanz des Validierungsdialogs
+        self.favorites = []
+        self.loadedPDFfilename = ''
+        self.loadedPDFpath = ''
+
+        # Initialisiere Dateimanager
+        self.file_manager = FileManager(
+            app=self.app,
+            settings=self.settings,
+            homedir=str(self.homedir),
+            basedir=self.basedir,
+            temp_dir=self.tempDir
+        )
+
+        # viewerPaths no longer needed - pdfjs_viewer handles PDF.js paths internally
+        # Chromium mode uses direct file:// URLs            
         
-        ###set paths to PDF viewers###
-        if sys.platform.lower().startswith('win'):
-            urlPath = self.scriptRoot.replace("\\","/")
-            winslash='/'
-            pdfjsVariant="file://%s%s/html/pdfjs/web/viewer.html?file=" % (winslash, urlPath)  
-        else:
-            urlPath = self.scriptRoot
-            winslash=''
-            pdfjsVariant= "file://%s%s/html/pdfjs/web/viewer.html?file=" % (winslash, urlPath)    
-        self.viewerPaths={
-            "PDFjs":pdfjsVariant,   
-            "chromium":"file://%s" % winslash, 
-        }            
-        
-        ###columns/order to display in document view###
+        ###Spalten/Sortierreihenfolge für die Anzeige in der Dokumentenansicht###
         self.docTableAttributes = [
             'nummerImUebergeordnetenContainer',
             'nurMetadaten', 
@@ -479,7 +612,7 @@ class UI(QMainWindow, Ui_MainWindow):
         ]
 
         self.docHeaderColumnsSettings={
-            #key                              headertext                               action for menu-item /config                      default visibility width of column (no real effect - set to auto width if not None)                 
+            #Schlüssel                        Kopfzeilentext                           Aktion für Menüeintrag/Konfiguration              Standard-Sichtbarkeit Spaltenbreite (kein echter Effekt - wird auf auto gesetzt, falls nicht None)                 
             ''                               :{'headertext':''                       ,'setting':None                                   ,'default':True    ,'width':10},
             ''                               :{'headertext':''                       ,'setting':None                                   ,'default':True    ,'width':10},
             'nummerImUebergeordnetenContainer':{'headertext':'#'                       ,'setting':None                                   ,'default':True    ,'width':45},
@@ -520,25 +653,29 @@ class UI(QMainWindow, Ui_MainWindow):
          
         self.isDocColumnEmpty={}
         
-        ####initial settings####
+        ####Initiale Einstellungen####
         self.inhaltView.setHeaderHidden(True)
         
-        self.plusFilter.setText(self.settings.value("plusFilter", ''))
-        self.minusFilter.setText(self.settings.value("minusFilter", ''))
+        self.plusFilter.setText(self.settings_manager.get_string("plusFilter", ''))
+        self.minusFilter.setText(self.settings_manager.get_string("minusFilter", ''))
         self.__readSettings()
+        
+        #TODO: In späterer Version entfernen
+        ####Chromium als PDF-Viewer verbergen (Deprecated)####
+        self.actionChromium.setVisible(False) 
           
-        #better readability of inactive items on windows 10
+        # Bessere Lesbarkeit inaktiver items unter Windows 10 / 11
         if sys.platform.lower().startswith('win'):
             xjvPalette = self.palette()
             xjvPalette.setColor(QPalette.ColorRole.Highlight, QColor(150, 150, 255, 255))
             xjvPalette.setColor(QPalette.ColorRole.HighlightedText, QColor(255, 255, 255, 255))
             self.setPalette(xjvPalette)
         
-        #fix issue with palette used by gnome / ubuntu - set inactive colors to active colors
+        #Behebe Problem mit Palette unter Gnome / Ubuntu - setze inaktive Farben auf aktive Farben
         if sys.platform.lower() == 'linux': 
             self.__fixGnomeDarkPalette() 
              
-        #### Load empty viewer ####
+        #### Lade leeren Viewer ####
         self.__loadEmptyViewer()  
 
         #### Kontextmenü für Dateitabelle erstellen ####
@@ -575,12 +712,12 @@ class UI(QMainWindow, Ui_MainWindow):
         #########self.favoriteniew##########
         self.downloadFolder = ''
         
-        #######load browsing history ##### 
+        #######Lade Browser-Verlauf ##### 
         self.browsingHistory = self.__loadHistory()
 
         self.actionHistorieVor.setAutoRepeat(False)  
         self.actionHistorieZurück.setAutoRepeat(False)     
-        ####connections####
+        ####Verbindungen####
         self.actionOeffnen.triggered.connect(lambda:self.getFile())
         self.actionNachrichtSchliessen.triggered.connect(self.__resetAll)
         self.actionVerlaufLoeschen.triggered.connect(self.__deleteHistory)
@@ -618,13 +755,16 @@ class UI(QMainWindow, Ui_MainWindow):
         self.actionZuruecksetzen.triggered.connect(self.__resetSettings)   
         self.actionnativ.triggered.connect(self.__viewerSwitch)
         self.actionPDF_js.triggered.connect(self.__viewerSwitch)
-        self.actionChromium.triggered.connect(self.__viewerSwitch)
+        self.actionChromium.triggered.connect(self.__viewerSwitch) #TODO: In späterer Version entfernen
         self.actionAlleSpaltenAbwaehlen.triggered.connect(self.__uncheckAllColumns)
         self.actionAlleSpaltenMarkieren.triggered.connect(self.__checkAllColumns)
-        self.browser.page().profile().downloadRequested.connect(self.__downloadRequested)
-        self.browser.page().customPrintRequested.connect(self.__printRequested)
+        self.browser.page().profile().downloadRequested.connect(self.__downloadRequested) #TODO Gemeinsam mit Chromiumvieweroption entfernen
         self.actionNeueVersion.triggered.connect(lambda triggered: QDesktopServices.openUrl(QUrl("https://openxjv.de")))
-        
+        self.actionXML_Validierung_XSD.triggered.connect(self.__openXSDValidator)
+        self.actionAktion_erfragen.triggered.connect(self.__annotationSettingsSwitch)
+        self.actionAutomatisch_speichern.triggered.connect(self.__annotationSettingsSwitch)
+        self.actionVerwerfen.triggered.connect(self.__annotationSettingsSwitch)
+
         self.empfaengerText.customContextMenuRequested.connect(lambda event:self.__copyToClipboard(self.empfaengerText.text()))         
         self.erstellungszeitpunktText.customContextMenuRequested.connect(lambda event:self.__copyToClipboard(self.erstellungszeitpunktText.text()))
         self.absenderAktenzeichenText.customContextMenuRequested.connect(lambda event:self.__copyToClipboard(self.absenderAktenzeichenText.text()))
@@ -632,14 +772,11 @@ class UI(QMainWindow, Ui_MainWindow):
         self.sendungsprioritaetText.customContextMenuRequested.connect(lambda event:self.__copyToClipboard(self.sendungsprioritaetText.text()))
         self.absenderText.customContextMenuRequested.connect(lambda event:self.__copyToClipboard(self.absenderText.text()))
         
-        # Connect to screen change event
+        # Verbinde mit screen change event
         if self.windowHandle():
             self.windowHandle().screenChanged.connect(self.__onScreenChanged)       
 
-        # BrowserSignal verbinden
-        self.browser.loadFinished.connect(self.__on_load_finished)
-        
-        # Other settings       
+        # Weitere Einstellungen       
         self.settingItems =[
             self.actionGrosse_Schrift, 
             self.actionOnlineAufUpdatesPruefen,
@@ -670,167 +807,396 @@ class UI(QMainWindow, Ui_MainWindow):
         self.docTableView.horizontalHeader().sectionClicked.connect(self.docTableView.viewport().update)       
         self.favTableView.horizontalHeader().sectionClicked.connect(self.favTableView.viewport().update)       
           
-        #Check for updates
+        #Prüfe auf Updates
         if self.actionOnlineAufUpdatesPruefen.isChecked():
             self.__checkForUpdates(updateIndicator=self.newVersionIndicator)
         
-        #########load initial files##########
-        lastfile=self.settings.value("lastFile", None)
-        if file and file.lower().endswith('xml'):
-            self.getFile(file)
-        elif ziplist:
-            for zipfile in ziplist:
-                if not zipfile.lower().endswith('zip'):
-                    message = f'Fehler: Die übergebene Liste enthält nicht ausschließlich ZIP-Dateien: {zipfile}'
-                    self.statusBar.showMessage(message)
-                    self.lastExceptionString = message
-            self.getZipFiles(files=ziplist)    
-        elif lastfile:
-            self.getFile(lastfile)
-
+        #########Speichere initiale Dateien für verzögertes Laden##########
+        self._initial_file = file
+        self._initial_ziplist = ziplist
+ 
     def __del__(self):
         if os.path.isdir(self.tempDir.name):
             rmtree(self.tempDir.name)
-    
-    def __resetAll(self):
-        self.__loadEmptyViewer()
+
+    def setInitialSplitterSizes(self):
+        """Setzt die initialen Splitter-Größen, sodass der PDF-Viewer die Hälfte des Bildschirms einnimmt."""
+        total_width = self.splitter_9.width()
+        if total_width > 0:
+            self.splitter_9.setSizes([total_width // 2, total_width // 2])
+
+    def loadInitialFiles(self):
+        """Lädt die beim Start übergebenen oder zuletzt verwendeten Dateien."""
+        if self._initial_file and self._initial_file.lower().endswith('xml'):
+            self.getFile(self._initial_file)
+        elif self._initial_ziplist:
+            # Validiere ZIP-Dateien
+            for zf in self._initial_ziplist:
+                if not zf.lower().endswith('zip'):
+                    message = f'Fehler: Die übergebene Liste enthält nicht ausschließlich ZIP-Dateien: {zf}'
+                    self.statusBar.showMessage(message)
+                    self.lastExceptionString = message
+            self.getZipFiles(files=self._initial_ziplist)
+        else:
+            lastfile = self.settings_manager.get_string("lastFile", None)
+            if lastfile:
+                self.getFile(lastfile)
+
+    def cleanUp(self):
+        """Speichert Notizen und Einstellungen, löscht temporäres Verzeichnis vor dem Beenden des Programms."""
         self.__saveNotes() 
         self.settings.sync()
-        widgets = (self.termineTableView,
-                   self.terminDetailView,
-                   self.instanzenText,
-                   self.beteiligteText,    
-                   self.metadatenText,
-                   self.favTableView,
-                   self.docTableView,
-                   self.suchbegriffeText,
-                   self.absenderText,
-                   self.empfaengerText,
-                   self.erstellungszeitpunktText,
-                   self.absenderAktenzeichenText,
-                   self.empfaengerAktenzeichenText,
-                   self.sendungsprioritaetText,
-                   self.notizenText
+        self.tempDir.cleanup()
+
+    # ========================================
+    # ABSCHNITT 2: DATEIOPERATIONEN
+    # ========================================
+    def __loadFile(self, file):
+        """Lädt einen XJustiz-Datensatz und aktualisiert die Ansicht. Delegiert an FileManager."""
+        # Definiere Parser-Map für XJustiz-Versionen
+        parser_map = {
+            "2.4.0": parser240,
+            "3.2.1": parser321,
+            "3.3.1": parser331,
+            "3.4.1": parser341,
+            "3.5.1": parser351,
+            "default": parser362
+        }
+
+        # Success callback
+        def on_success(akte, file_path, version):
+            self.akte = akte
+            # Initialisiere XJustizDisplayRenderer mit geladener Akte
+            self.display_renderer = XJustizDisplayRenderer(self.akte)
+            self.__setDocumentTable('Alle_Dokumente')
+            self.__setInhaltView(self.akte.schriftgutobjekte)
+            self.__setNachrichtenkopf(self.akte.absender, self.akte.empfaenger, self.akte.nachricht)
+            self.__setMetadata(self.akte)
+            self.__filtersTriggered()
+            self.__loadFavorites()
+            self.__loadNotes()
+            self.__setInstanzenView()
+            self.__setBeteiligteView()
+            self.__setTerminTable(self.akte.termine)
+            self.terminDetailView.setHtml('')
+            self.basedir = os.path.dirname(os.path.realpath(file_path))
+            self.xmlFile = os.path.basename(file_path)
+            self.file_manager.set_basedir(self.basedir)
+            self.__loadEmptyViewer()
+            self.settings_manager.set_value("lastFile", file_path)
+            self.__addToHistory(file_path)
+            self.statusBar.showMessage(f'Eingelesene Datei: {file_path} - XJustiz-Version: {version}')
+            if not self.__prepareSearchStore():
+                self.actionOCRall.setVisible(False)
+
+        # Error callback
+        def on_error(file_path, exception):
+            self.statusBar.showMessage('Fehler beim Öffnen der Datei: %s' % file_path)
+            self.lastExceptionString = str(exception)
+
+        # Delegiere an FileManager
+        result = self.file_manager.load_file(
+            file_path=file,
+            parser_map=parser_map,
+            on_success=on_success,
+            on_error=on_error
         )
-        for widget in widgets:
-            widget.clear()
-        self.inhaltView.setModel(QStandardItemModel())
-        
-        table_widgets = (self.termineTableView,
-                         self.favTableView,
-                         self.docTableView,                                 
-        )
-        
-        for table in table_widgets:
-            table.setRowCount(0)
-            table.setColumnCount(0)  
-            
-        self.loadedPDFfilename = ''
-        self.loadedPDFpath = ''
-        self.favorites = []
-        self.searchStore = {}
-        self.akte = {}
-    
-    def __copyToClipboard(self, text):
-        clipboard = QApplication.clipboard()
-        clipboard.setText(text)
-        self.statusBar.showMessage("Inhalt wurde in die Zwischenablage kopiert.")        
-            
-    def __fixGnomeDarkPalette(self):
-        xjvPalette = self.palette()
-        for role in QPalette.ColorRole:
-            if not role.name in ('NColorRoles', 'ToolTipBase', 'ToolTipText'):
-                xjvPalette.setColor(QPalette.ColorGroup.Inactive, role, xjvPalette.color(QPalette.ColorGroup.Active, role))
-            xjvPalette.setColor(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ToolTipText,  QColor(0, 0, 0, 255))          
-        self.setPalette(xjvPalette)                
-        QToolTip.setPalette(xjvPalette)
 
-    def __onScreenChanged(self, screen: QScreen):
-        """Getrigget wenn Fenster auf anderenm Screen gezogen wird"""
-        self.__setFontsizes()
+        if result is None:
+            return None
 
-    def __showDocsContextMenu(self, pos):
-        '''Fügt Kontextmenü zur Dokentenansicht hinzu und zeigt dieses an'''
-        contextMenu = QMenu(self)
+    def getFile(self, file=None, folder=None):
+        """Lädt XJustiz-Datei nach Auswahl oder direkter Angabe. Delegiert an FileManager."""
+        # Notizen eines ggf. geöffneten Datensatzes speichern
+        self.__saveNotes()
 
-        # Menüoptionen hinzufügen
-        addDocToFavoritesAction = contextMenu.addAction("Auswahl zu Favoriten hinzufügen (Einfg)")
-        addDocToFavoritesAction.triggered.connect(self.__addDocToFavorites)
+        if file and os.path.exists(file):
+            self.__loadFile(file)
+        elif file and not os.path.exists(file):
+            pass
+        elif file is None:
+            # Delegate file selection to FileManager
+            file = self.file_manager.select_file_dialog(
+                folder=folder,
+                file_filter="XJustiz-Dateien (*.xml *.XML)"
+            )
 
-        addAllDocsToFavoritesAction = contextMenu.addAction("Alle Angezeigten zu Favoriten hinzufügen")
-        addAllDocsToFavoritesAction.triggered.connect(self.__addAllDocsToFavorites)
+            if file:
+                self.__loadFile(file)
+                self.__checkFiltersAndRows()
 
-        delDocsFromFavoritesAction = contextMenu.addAction("Auswahl aus Favoriten entfernen (Entf)")
-        delDocsFromFavoritesAction.triggered.connect(self.__removeFavorite)
-        
-        openDocExternalAction = contextMenu.addAction("Auswahl extern öffnen")
-        openDocExternalAction.triggered.connect(self.__openDocExternal)
-        
-        # Kontextmenü anzeigen
-        contextMenu.exec(self.docTableView.mapToGlobal(pos))
-    
-    def __notizUndSuchdatenbankLoeschen(self):
-        #os.remove(self.db_path)
-        with sqlite3.connect(self.db_path) as db_connection:
-            db_cursor = db_connection.cursor()
-            db_cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-            tables = db_cursor.fetchall()
-            for table_name in tables:
-                db_cursor.execute(f'DROP TABLE {table_name[0]};')
-            db_connection.commit()        
-        self.__create_db_if_not_exist()
-        self.statusBar.showMessage('Die Datenbank wurde gelöscht und eine neue, leere Datenbank wurde angelegt.')
-        
-    def __create_db_if_not_exist(self):
-        with sqlite3.connect(self.db_path) as db_connection:
-            self.db_cursor = db_connection.cursor()
-                
-            # Tabellen erstellen, falls sie noch nicht existieren
-            self.db_cursor.execute('''
-                CREATE TABLE IF NOT EXISTS favorites (
-                uuid TEXT,
-                filename TEXT,
-                position INTEGER
-                )
-            ''')   
+            # Windows verliert Fokus beim Laden von ZIP-Dateien
+            self.activateWindow()
+
+    def getZipFiles(self, files=None):
+        """Entpackt ZIP-Dateien in temporäres Verzeichnis. Delegiert an FileManager."""
+        if files:
+            # Error callback
+            def on_error(file_path, exception):
+                self.statusBar.showMessage(file_path + ' konnte nicht entpackt werden.')
+                self.lastExceptionString = str(exception)
+
+            # Delegate extraction to FileManager
+            tempPath = self.file_manager.extract_zip_files(
+                zip_files=files,
+                on_error=on_error
+            )
+
+            if tempPath:
+                self.getFile(folder=tempPath)    
+  
+    def __selectZipFiles(self):
+        """Wählt ZIP-Archive aus und entpackt sie. Delegiert an FileManager."""
+        # Delegate file selection to FileManager
+        files = self.file_manager.select_zip_files()
+
+        if files:
+            self.getZipFiles(files)    
             
-            self.db_cursor.execute('''
-                CREATE TABLE IF NOT EXISTS last_access (
-                uuid TEXT PRIMARY KEY,
-                timestamp INTEGER NOT NULL
-                )
-            ''')    
-            
-            self.db_cursor.execute('''
-                CREATE TABLE IF NOT EXISTS notes (
-                uuid TEXT PRIMARY KEY,
-                notes TEXT NOT NULL
-                )
-            ''')    
-            
-            self.db_cursor.execute('''
-                CREATE TABLE IF NOT EXISTS plaintext (
-                uuid TEXT,
-                filename TEXT NOT NULL,
-                text NOT NULL,
-                basedir NOT NULL
-                )
-            ''')    
-            
-    def __getCurrentDocTableFilename(self):
-        '''gibt den Dateinamen der aktuell in der Dokumentenansicht markierten Datei zurück'''
+    def __openDocExternal(self):
+        """Öffnet aktuell markierte Datei mit externem Standardprogramm."""
         if self.docTableView.currentRow()!=-1:
             filenameColumn=self.docTableAttributes.index('dateiname')+2
             filename=self.docTableView.item(self.docTableView.currentRow(), filenameColumn).text()
-            return filename
-              
+            self.__openFileExternal(filename)  
+
+    def __openFileExternal(self, filename, ignoreWarnings=False, absolutePath=False):
+        """Öffnet Datei mit externem Programm. Delegiert an FileManager."""
+        # Aktualisiere FileManager's basedir auf aktuellen Status
+        self.file_manager.set_basedir(self.basedir)
+
+        # Delegiere an FileManager
+        success = self.file_manager.open_file_external(
+            filename=filename,
+            ignore_warnings=ignoreWarnings,
+            absolute_path=absolutePath
+        )
+
+        # Zeige Fehlermeldung, wenn Datei nicht existiert
+        if not success and not ignoreWarnings:
+            self.statusBar.showMessage('Datei existiert nicht: ' + filename) 
+
+    def __openFileInBrowser(self, filename):
+        """Öffnet Datei im Browser-Viewer."""
+        # Bestimme vollständigen Pfad - filename kann bereits absolut sein (z.B. konvertierte TIFF-Dateien)
+        if os.path.isabs(filename):
+            filepath = filename
+        else:
+            filepath = os.path.join(self.basedir, filename)
+
+        if not os.path.exists(filepath):
+            self.statusBar.showMessage(f'Datei existiert nicht: {filename}')
+            return
+        
+        # Bereits geladenes Dokument nicht erneut laden
+        if self.loadedPDFpath == filepath:
+            return
+
+        self.loadedPDFpath = filepath
+        self.loadedPDFfilename = os.path.basename(filename)
+
+        # Plattformspezifische Pfadbehandlung
+        if sys.platform.lower().startswith('win'):
+            filePath = filepath.replace("\\", "/")
+        else:
+            filePath = filepath
+
+        if filename.lower().endswith(".pdf"):
+            viewer_mode = self.settings_manager.get_pdf_viewer()
+            if viewer_mode == 'PDFjs':
+                # Verwende pdfjs_viewer für PDF.js-Modus
+                self.pdf_viewer.load_pdf(filepath)
+            
+            #TODO: In späterer Version als PDF-Viewer entfernen    
+            elif viewer_mode == 'chromium': 
+                # Verwende Chromiums nativen PDF-Viewer (deprecated)
+                self.browser.setUrl(QUrl.fromLocalFile(filepath))
+            else:
+                # Native - extern öffnen
+                self.__openFileExternal(filepath)
+                return
+        else:
+            # Nicht-PDF-Dateien: Bilder, HTML, XML, Text - über Browser laden
+            winslash = '/' if sys.platform.lower().startswith('win') else ''
+            self.url = "file://%s%s" % (winslash, filePath)
+            self.browser.setUrl(QUrl.fromUserInput(self.url))
+
+        self.statusBar.showMessage(f'Angezeigte Datei: {os.path.basename(filename)}')  
+    
+    def __openManual(self):
+        manualPath = os.path.join(self.scriptRoot , 'docs', 'openXJV_Benutzerhandbuch.pdf')
+        self.__openFileExternal(manualPath, True, True)
+    
+    def __exportZipAction(self):
+        """Exportiert Dateien aus der Favoritenliste nach Auswahl eines Dateinamens in eine ZIP-Datei. Delegiert an FileManager."""
+        message = ''
+
+        if not self.favorites:
+            message = 'Aktion nicht verfügbar. Die Favoritenliste ist leer!'
+            self.__displayMessage(message)
+        else:
+            # Aktualisiere FileManager basedir
+            self.file_manager.set_basedir(self.basedir)
+
+            # Hole ZIP-Dateipfad vom Benutzer
+            zipPath = self.file_manager.save_file_dialog(
+                title="In ZIP-Datei exportieren",
+                file_filter="ZIP-Dateien (*.zip *.ZIP)",
+                default_extension=".zip"
+            )
+
+            if zipPath and self.favorites:
+                # Bereite Dateiliste vor (nur Favoriten, keine vollständigen Pfade)
+                try:
+                    # Delegiere an FileManager
+                    success = self.file_manager.export_to_zip(
+                        zip_path=zipPath,
+                        file_list=self.favorites,
+                        include_xml=True,
+                        xml_file=self.settings_manager.get_string("lastFile", None)
+                    )
+
+                    if success:
+                        message = 'Die Dateien wurden erfolgreich exportiert - %s' % zipPath
+                        self.__displayMessage(message)
+                    else:
+                        message = 'Bei der Erzeugung der Zip-Datei ist ein Fehler aufgetreten.'
+                        self.__displayMessage(message, title='Fehler', icon=QMessageBox.Icon.Warning)
+                except Exception as e:
+                    message = 'Bei der Erzeugung der Zip-Datei ist ein Fehler aufgetreten.'
+                    self.__displayMessage(message, title='Fehler', icon=QMessageBox.Icon.Warning)
+                    self.lastExceptionString = str(e)
+            else:
+                return
+
+        self.statusBar.showMessage(message)
+     
+    def __exportToFolderAction(self):
+        """Fragt Zielordner ab in Dialog und exportiert Dateien. Delegiert an FileManager."""
+        message = ''
+
+        if not self.favorites:
+            message = 'Aktion nicht verfügbar. Die Favoritenliste ist leer!'
+            self.__displayMessage(message)
+        else:
+            # Aktualisiere FileManager basedir
+            self.file_manager.set_basedir(self.basedir)
+
+            # Hole Ordner vom Benutzer
+            folder = self.file_manager.select_folder_dialog(title="Exportverzeichnis wählen")
+
+            if folder and self.favorites:
+                try:
+                    # Delegiere an FileManager
+                    success = self.file_manager.export_to_folder(
+                        folder_path=folder,
+                        file_list=self.favorites,
+                        include_xml=True,
+                        xml_file=self.settings_manager.get_string("lastFile", None)
+                    )
+
+                    if success:
+                        message = 'Die Dateien wurden erfolgreich nach %s kopiert.' % folder
+                        self.__displayMessage(message)
+                    else:
+                        message = 'Es ist ein Fehler während des Kopiervorgangs aufgetreten.'
+                        self.__displayMessage(message, title='Fehler', icon=QMessageBox.Icon.Warning)
+                except Exception as e:
+                    message = 'Es ist ein Fehler während des Kopiervorgangs aufgetreten.'
+                    self.__displayMessage(message, title='Fehler', icon=QMessageBox.Icon.Warning)
+                    self.lastExceptionString = str(e)
+            else:
+                return
+
+        self.statusBar.showMessage(message)
+    
+    #TODO Gemeinsam mit Chromiumvieweroption entfernen
+    def __downloadRequested(self, download):
+        if self.downloadFolder != '':
+            startFolder = self.downloadFolder
+        else:
+            startFolder = download.downloadDirectory()
+
+        folder = QFileDialog.getExistingDirectory(self, 
+                                "Speicherort wählen",
+                                startFolder,
+                                QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)
+    
+        if folder:
+            download.setDownloadDirectory(folder)
+            self.downloadFolder = folder
+            download.accept()
+     
+    # ========================================
+    # ABSCHNITT 3: VERLAUFSVERWALTUNG
+    # ========================================
+    def __fileHistory(self, direction):
+        """Blättert durch die Dateihistorie und lädt die nächste/vorherige Datei in der Liste."""
+
+        if len(self.browsingHistory)>0:
+            
+            if direction == 'forward':
+                self.browsingHistory.insert(0, self.browsingHistory.pop())
+            else:
+                self.browsingHistory.append(self.browsingHistory.pop(0))
+            
+
+            while len(self.browsingHistory)>0:
+                if os.path.exists(self.browsingHistory[0]):
+                    self.getFile(self.browsingHistory.pop(0))
+                    break
+                else:
+                    self.browsingHistory.pop(0)
+
+            self.__checkFiltersAndRows()
+
+    def __addToHistory(self, file):
+        """Fügt die zuletzt geöffnete XJustiz-Datei zur Verlaufsliste hinzu."""
+        if file in self.browsingHistory:
+            self.browsingHistory.remove(file)
+        self.browsingHistory.insert(0,file)
+
+        while len(self.browsingHistory)>10:
+            self.browsingHistory.pop()
+        
+        historyString=''
+        for filepath in self.browsingHistory:
+            historyString+=filepath + "\x07"
+        historyString=historyString.strip("\x07")
+        
+        self.settings_manager.set_value("history", historyString)
+
+    def __deleteHistory(self):
+        self.browsingHistory = []
+        self.settings_manager.set_value("history", '')
+        self.settings_manager.set_value("lastFile", None)
+        self.__updateSettings()
+        self.statusBar.showMessage('Der Verlauf wurde gelöscht.')
+
+    def __loadHistory(self):
+        """Lädt die zuletzt geladenen XJustiz-Dateien in Verlaufsliste."""
+        browsingHistory=self.settings_manager.get_string("history", '').split('\x07')
+        return browsingHistory
+     
+    # ========================================
+    # ABSCHNITT 4: FAVORITENVERWALTUNG
+    # ========================================      
+    def __addFavorite(self, filename):
+        """Fügt eine Datei zu den Favoriten hinzu und markiert die neue Zeile."""
+        if filename not in self.favorites:
+            self.favorites.append(filename) 
+            self.__setFavorites()
+            self.__saveFavorites() 
+                        
+        self.favTableView.selectRow(self.favTableView.findItems(filename, Qt.MatchFlag.MatchExactly)[0].row()) 
+
     def __addDocToFavorites(self):
-        '''Fügt das aktuell markierte Dokument in der Dokumentenansicht den Favoriten hinzu'''
+        """Fügt das aktuell in der Dokumentenansicht markierte Dokument zu den Favoriten hinzu."""
         filename = self.__getCurrentDocTableFilename()
         self.__addFavorite(filename) 
           
     def __addAllDocsToFavorites(self):
-        '''Fügt Alle Dokumente in der Dokumentenansicht den Favoriten hinzu'''
+        """Fügt den Favoriten alle Dokumente der Dokumentenansicht hinzu."""
         if self.docTableView.rowCount() > 0:
             filenameColumn=self.docTableAttributes.index('dateiname')+2
             for row in range(self.docTableView.rowCount()):
@@ -841,53 +1207,41 @@ class UI(QMainWindow, Ui_MainWindow):
                             self.favorites.append(filename)
             self.__setFavorites()
             self.__saveFavorites()              
-      
-    def __openDocExternal(self):
-        '''Öffnet aktuell markierte Datei mit externem Standardprogramm'''
-        if self.docTableView.currentRow()!=-1:
-            filenameColumn=self.docTableAttributes.index('dateiname')+2
-            filename=self.docTableView.item(self.docTableView.currentRow(), filenameColumn).text()
-            self.__openFileExternal(filename) 
-        
+           
+    def __removeFavorite(self):
+        """Entfernt den markierten Eintrag in der aktuell active view aus der Favoritenliste."""   
+        focusWidget = self.focusWidget()
+        if focusWidget in (self.favTableView, self.docTableView): # Wenn Tastenkombination oder Rechtsklickmenü in Tabelle ausgeführt wird
+            filename = self.__getCurrentItemFilename(focusWidget) # Datei, die in der jeweiligen Tabelle markiert ist wählen
+        elif focusWidget == self.deleteFavoriteButton: # Wenn Favoriten-Löschen Button geklickt wird
+            filename = self.__getCurrentItemFilename(self.favTableView) # In Favoritenliste markierte Datei wählen
+        else:
+            return
             
-    def __showFavContextMenu(self, pos):
-        '''Fügt Kontextmenü zur Favoritenansicht hinzu und zeigt dieses an'''
-        contextMenu = QMenu(self)
+        if filename and filename in self.favorites:     
+            self.favorites.remove(filename)
 
-        # Menüoptionen hinzufügen
-        moveFavUpAction = contextMenu.addAction("Nach oben verschieben (Strg + Pfeiltaste 'hoch')")
-        moveFavUpAction.triggered.connect(lambda:self.__moveFav('up'))
+            if self.favTableView.currentRow() <= self.favTableView.rowCount()-2:
+                next_row = self.favTableView.currentRow()
+            else:    
+                next_row = self.favTableView.rowCount()-2
+            
+            self.__setFavorites()
+            
+            # Nur aus Datenbank löschen, wenn eine Datei geladen ist (akte hat nachricht-Attribut)
+            if self.akte and hasattr(self.akte, 'nachricht'):
+                with sqlite3.connect(self.db_path) as db_connection:
+                    db_cursor = db_connection.cursor()
+                    db_query = '''
+                        DELETE FROM favorites WHERE uuid = ? AND filename = ?;
+                            '''
+                    eigeneID = self.akte.nachricht.get('eigeneID')
+                    db_cursor.execute(db_query, (eigeneID, filename))         
+            
+            self.favTableView.selectRow(next_row)   
+            
+            self.statusBar.showMessage(filename + ' aus Favoriten entfernt.')
 
-        moveFavDownAction = contextMenu.addAction("Nach unten verschieben (Strg + Pfeiltaste 'runter')")
-        moveFavDownAction.triggered.connect(lambda:self.__moveFav('down'))
-        
-        # Horizontaler Strich (Spacer) hinzufügen
-        separator = QFrame()
-        separator.setFrameShape(QFrame.Shape.HLine)
-        separator.setLineWidth(1)  # Optional: Setzen Sie die Linienbreite
-
-        contextMenu.addSeparator()  # Fügt horizontalen Strich hinzu
-        
-        openFavExternalAction = contextMenu.addAction("Auswahl extern öffnen")
-        openFavExternalAction.triggered.connect(self.__getDClickFavoriteViewAction)
-        
-        openAllPdfFavsExternalAction = contextMenu.addAction("Alle PDF-Dateien extern öffnen")
-        openAllPdfFavsExternalAction.triggered.connect(lambda:self.__openAllFavsExternalAction('.pdf'))
-        
-        openAllFavsExternalAction = contextMenu.addAction("Alle Dateien extern öffnen")
-        openAllFavsExternalAction.triggered.connect(self.__openAllFavsExternalAction)
-        
-        contextMenu.addSeparator()  # Fügt horizontalen Strich hinzu
-        
-        removeFavoriteAction = contextMenu.addAction("Markierten Eintrag entfernen (Entf)")
-        removeFavoriteAction.triggered.connect(self.__removeFavorite)
-        
-        delAllFavoritesAction = contextMenu.addAction("Alle Favoriten entfernen")
-        delAllFavoritesAction.triggered.connect(self.__delAllFavorites)
-        
-        # Kontextmenü anzeigen
-        contextMenu.exec(self.favTableView.mapToGlobal(pos))
-    
     def __moveFav(self, direction='up'):
         if self.favTableView.currentItem():
             filename = self.favTableView.item(self.favTableView.currentRow(), 1).text()
@@ -909,209 +1263,104 @@ class UI(QMainWindow, Ui_MainWindow):
                 pass
                         
     def __delAllFavorites(self):
-        '''Löscht alle Favoriten und aktualisiert Favoritenansicht'''
+        """Löscht alle Favoriten und aktualisiert die Favoritenansicht."""
         self.favorites.clear()
         self.__setFavorites()
         self.__saveFavorites() 
-   
-    def changeEvent(self, event):
-        if event.type() == QEvent.Type.PaletteChange:  
-            #workaround for gnome palette / ubuntu
-            if sys.platform.lower() == 'linux':
-                self.__fixGnomeDarkPalette()    
-               
-        return super(UI, self).changeEvent(event)
-    
-    def cleanUp(self):
-        '''Speichert Notizen und Settings, löscht eTemp-Verzeichnis vor dem Beenden des Programms'''
-        self.__saveNotes() 
-        self.settings.sync()
-        self.tempDir.cleanup()
-    
-    def __loadEmptyViewer(self, unknown = None):
-        '''Lädt leeren Viewer in das Vorschaufenster'''
-        
-        self.loadedPDFfilename=''
-        #Delete temporary loaded pdf file
-        if os.path.exists(self.tempfile):
-            os.remove(self.tempfile)
-        
-        urlPath = self.scriptRoot.replace("\\","/")
-
-        winslash = '/' if sys.platform.lower().startswith('win') else ''    
             
-        blankPage="file://%s%s/html/blank/blank.html" % (winslash, urlPath)
-        
-        self.url=blankPage 
+    def __loadFavorites(self):
+        self.favorites.clear()
+        # Lade Favoriten nur, wenn eine Datei geladen ist (akte hat nachricht-Attribut)
+        if self.akte and hasattr(self.akte, 'nachricht'):
+            eigeneID = self.akte.nachricht.get('eigeneID')
+            if eigeneID:
+                self.favorites = self.db_manager.load_favorites(eigeneID, self.dirs.user_data_dir)
+        self.__setFavorites()
 
-        separators  =('?','&')
-        req_strings = []        
-        if darkdetect.isDark():
-            req_strings.append('darkmode=True')
-        
-        if unknown:
-            req_strings.append('unknown=True')
-            
-        for req, no in zip(req_strings, range(len(req_strings))):
-            self.url += f'{separators[no]}{req}'
-        
-        self.browser.setUrl(QUrl.fromUserInput(self.url))
-        
-    def __displayInfo(self):
-        '''Blendet Info-Fenster (About) ein.'''
-        QMessageBox.information(self, "Information",
-        "openXJV " + VERSION + "\n"
-        "Lizenz: GPL v3\n"
-        "2022 - 2025 Björn Seipel\nKontakt: " + self.supportMail + "\nWebsite: https://openXJV.de\n\n" 
-        "Die Anwendung nutzt folgende Komponenten:\n"
-        "jbig2dec - AGPL License\n"
-        "Qt6 - LGPLv3\n"
-        "fpdf2 - LGPLv3\n"
-        "pyinstaller - GPLv2 or later\n"
-        "PySide6 - LGPLv3\n"
-        "PDF.js - Apache 2.0 License\n"
-        "Tesseract - Apache 2.0 License\n"
-        "Material Icons Font - Apache 2.0 License\n"
-        "NumPy -BSD License\n"
-        "orjson -  Apache 2.0 / MIT Licenses\n"
-        "pypdfium2 - Apache 2.0 / BSD 3 Clause\n"
-        "darkdetect - BSD license\n"
-        "lxml - BSD License\n"
-        "Pillow - The open source HPND License\n"
-        "pikepdf - MPL-2.0 License\n"
-        "appdirs - MIT License\n"
-        "docx2txt - MIT License\n"
-        "gocr - GNU GPL\n"
-        "Ubuntu Font - UBUNTU FONT LICENCE Version 1.0\n"
-        "python 3.x - PSF License\n\n"
-        "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden."
-        )
-    
-    def __supportAnfragen(self):
-        '''Öffnet Mailprogramm und belegt Inhalt mit den wichtigsten Informationen zu Einstellungen, den letzen Fehlern und Installationsumgebung vor.'''
-        mailbody="\n\n------ Ihre Anfrage bitte oberhalb dieser Linie einfügen ------\n\nEinstellungen\n"
-        
-        for key in self.settings.allKeys():
-            if key not in ['history', 'lastFile', 'defaultFolder']:  
-                mailbody+="%s - %s\n" % (str(key),str(self.settings.value(key))) 
-        
-        if len(self.lastExceptionString)>0:
-            mailbody+='\n\nLetzte Fehlermeldung\n' + self.lastExceptionString
-        
-        QDesktopServices.openUrl(QUrl("mailto:%s?subject=Supportanfrage zu openXJV %s unter %s&body=%s" % (self.supportMail, VERSION, platform.platform() ,str(mailbody)), QUrl.ParsingMode.TolerantMode ))
-    
-    def __displayMessage(self, message, title = 'Hinweis', icon = QMessageBox.Icon.Information, modal=True):
-        '''Zeigt ein Info Pop-up an'''
-        msgBox=QMessageBox(self)
-        msgBox.setIcon(icon)
-        msgBox.setWindowTitle(title)
-        msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)       
-        msgBox.setText(message)
-        if modal:
-            msgBox.exec()
-        else:
-            msgBox.setModal(False)
-            msgBox.show()
-    
-    def __prepareSearchStore(self, reset_searchStore = True):
-        while True:
-            # Blockiere Event-Loop, wenn bereits eine Suche läuft
-            try: 
-                if self.search_prep_thread.isRunning():
-                    # Breschränke Overhead mit sleep
-                    time.sleep(0.3)
-                else:
-                    break
-            except:
-                break    
-            self.app.processEvents(QEventLoop.ProcessEventsFlag['ExcludeUserInputEvents'])
-            
-        if reset_searchStore:
-                self.searchStore={}
-        
-        # Txt-Daten nur in Speicher laden, wenn Suche sichbar und searchStore leer ist
-        if not self.actionSucheAnzeigen.isChecked() or len(self.searchStore) != 0:
-            return False
-
-        self.suchbegriffeText.clear()
-        self.searchLock=True
-        
-        # Test, ob ein Header vorhanden ist (fehlt bei leerer Schriftgutobjektstruktur) 
-        try:
-            self.docTableView.horizontalHeaderItem(0).text()
-        except AttributeError:
+    def __saveFavorites(self):
+        # Speichere Favoriten nur, wenn eine Datei geladen ist (akte hat nachricht-Attribut)
+        if not self.akte or not hasattr(self.akte, 'nachricht'):
             return
-        
-        self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor)) 
-        self.statusBar.showMessage('Daten zur Bereitstellung der Suchfunktion werden eingelesen')
-        
-        # Versuche bestehenden Searchstore aus SearchStore.json auszulesen
-        search_store_json_path = os.path.join(self.basedir , 'search_store.json')
-        if len(self.searchStore) == 0 and os.path.isfile(search_store_json_path):
-            with open(search_store_json_path, 'rb') as f:
-                self.searchStore = json.loads(f.read())
-                leereDateien = 0
-                leerePDF = 0
-                for key in self.searchStore:
-                    text = self.searchStore[key] 
-                    if len(text) == 0:
-                        leereDateien +=1
-                        if key.lower().endswith('.pdf'):
-                            leerePDF += 1 
-            
-            if len(self.searchStore) > 0:
-                self.__searchStoreReady((leereDateien,leerePDF,self.searchStore,False)) 
-                return True
 
-        # Versuche bestehenden SearchStore aus Datenbank auszulesen
-        if len(self.searchStore) == 0:
-            with sqlite3.connect(self.db_path) as db_connection:
-                db_cursor = db_connection.cursor()       
-                db_query = '''
-                    SELECT filename, text FROM plaintext WHERE uuid = ? AND basedir = ?;                  
-                        '''
-                eigeneID = self.akte.nachricht.get('eigeneID')        
-                db_cursor.execute(db_query, (eigeneID, self.basedir))              
-                rows = db_cursor.fetchall()
-                leereDateien = 0
-                leerePDF = 0
-                for row in rows:
-                    self.searchStore[row[0]] = row[1]
-                    if len(row[1]) == 0:
-                        leereDateien +=1
-                        if row[0].lower().endswith('.pdf'):
-                            leerePDF += 1 
-            
-            if len(self.searchStore) > 0:
-                self.__searchStoreReady((leereDateien,leerePDF,self.searchStore,False)) 
-                return True
-        # Erzeuge neuen SearchStore durch Umwandlung der Dateien in "Reintext"    
-        if len(self.searchStore) == 0:
-            self.search_prep_thread = QThread()
-            self.search_worker = SearchWorker()
-            self.search_worker.moveToThread(self.search_prep_thread)
-            self.search_prep_thread.started.connect(lambda: self.search_worker.run(self.basedir, self.scriptRoot, self.db_path, self.akte.nachricht.get('eigeneID')))
-            self.search_worker.finished.connect(self.search_prep_thread.quit)
-            self.search_worker.finished.connect(self.search_worker.deleteLater)
-            self.search_worker.result.connect(self.__searchStoreReady)
-            self.search_prep_thread.finished.connect(self.search_prep_thread.deleteLater)
-            self.search_prep_thread.start() 
+        eigeneID = self.akte.nachricht.get('eigeneID')
+        if eigeneID:
+            try:
+                self.db_manager.save_favorites(eigeneID, self.favorites)
+            except Exception as e:
+                self.lastExceptionString = str(e)
+
+    # ========================================
+    # ABSCHNITT 5: NOTIZEN/DATENBANKOPERATIONEN
+    # ========================================
+    def __loadNotes(self):
+        self.notizenText.clear()
+        # Lade Notizen nur, wenn eine Datei geladen ist (akte hat nachricht-Attribut)
+        if self.akte and hasattr(self.akte, 'nachricht'):
+            eigeneID = self.akte.nachricht.get('eigeneID')
+            if eigeneID:
+                notes_text = self.db_manager.load_notes(eigeneID, self.dirs.user_data_dir)
+                if notes_text:
+                    self.notizenText.setPlainText(notes_text)
+
+    def __saveNotes(self):
+        # Speichere Notizen nur, wenn eine Datei geladen ist (akte hat nachricht-Attribut)
+        if not self.akte or not hasattr(self.akte, 'nachricht'):
+            return
+
+        eigeneID = self.akte.nachricht.get('eigeneID')
+        if eigeneID:
+            notes_text = self.notizenText.toPlainText()
+            self.db_manager.save_notes(eigeneID, notes_text)
+    
+    # ========================================
+    # ABSCHNITT 6: SUCH- UND FILTEROPERATIONEN
+    # ========================================    
+    def __prepareSearchStore(self, reset_searchStore = True):
+        """Bereitet den Suchindex vor. Delegiert an SearchFilterManager."""
+        # UUID sicher abrufen – akte kann ein leeres Dict {} sein
+        # oder ein Parser-Objekt mit .nachricht-Attribut
+        # Leeren String als Fallback verwenden, da SearchFilterManager einen String erwartet
+        if self.akte and hasattr(self.akte, 'nachricht'):
+            uuid = self.akte.nachricht.get('eigeneID', '')
         else:
-            self.__searchStoreReady((0,0,{},'Textaufbereitung fehlgeschlagen.')) 
-        
-        return True       
+            uuid = ''
 
-    def __searchStoreReady(self, result):  
-        self.leereDateien = result[0]
-        self.leerePDF = result[1]
-        self.searchStore = result[2]
-        self.searchLock=False   
-        self.statusBar.showMessage(f'Die Suchfunktion steht bereit. {self.leereDateien} Dateien ({self.leerePDF} PDF-Dateien) enthalten keinen Text bzw. es konnte kein Text ausgelesen werden.')
+        # Verwende SearchFilterManager's prepare_search_store-Methode
+        result = self.search_filter_manager.prepare_search_store(
+            app=self.app,
+            basedir=self.basedir,
+            db_path=self.db_path,
+            uuid=uuid,
+            script_root=self.scriptRoot,
+            search_worker_class=SearchWorker,
+            status_callback=lambda msg: self.statusBar.showMessage(msg),
+            ready_callback=self.__searchStoreReady,
+            reset_search_store=reset_searchStore,
+            search_visible=self.actionSucheAnzeigen.isChecked(),
+            table_has_header=True
+        )
+
+        # Aktualisiere lokale Referenzen auf Manager-Status
+        self.searchStore = self.search_filter_manager.search_store
+        self.searchLock = self.search_filter_manager.search_lock
+
+        # Lösche Sucheingabe beim Vorbereiten
+        if result:
+            self.suchbegriffeText.clear()
+
+        return result
+
+    def __searchStoreReady(self, result):
+        """Callback wenn Suchindex bereit ist. Aktualisiert lokale Referenzen."""
+        # Aktualisiere lokale Referenzen auf Manager-Status
+        self.leereDateien = self.search_filter_manager.empty_files
+        self.leerePDF = self.search_filter_manager.empty_pdf
+        self.searchStore = self.search_filter_manager.search_store
+        self.searchLock = self.search_filter_manager.search_lock
+
+        # Speichere Fehler, falls vorhanden
         if result[3]:
-            self.lastExceptionString=result[3]
-            self.statusBar.showMessage(f'Es ist ein Fehler bei der Aufbereitung der Daten für die Suche aufgetreten: {self.lastExceptionString}')
-           
-        self.app.restoreOverrideCursor() 
+            self.lastExceptionString = result[3] 
         
         if self.leerePDF == 0:
             self.actionOCRall.setVisible(False)
@@ -1119,593 +1368,357 @@ class UI(QMainWindow, Ui_MainWindow):
             self.actionOCRall.setVisible(True)
  
     def __performSearch(self):
-        # Ansicht zurücksetzen, falls bereits durch vorherige Suche gefiltert
-        self.__filtersTriggered(keepSearchTerms=True) 
+        """Führt Volltextsuche durch. Delegiert an SearchFilterManager."""
+        # Verwende SearchFilterManager's perform_search-Methode
+        self.search_filter_manager.perform_search(
+            table=self.docTableView,
+            search_terms_text=self.suchbegriffeText.text(),
+            app=self.app,
+            filename_column_name="Dateiname",
+            status_callback=lambda msg: self.statusBar.showMessage(msg),
+            clear_callback=lambda: (self.suchbegriffeText.clearFocus(), self.suchbegriffeText.clear()),
+            filters_callback=self.__filtersTriggered,
+            message_callback=self.__displayMessage
+        )
 
-        if self.suchbegriffeText.text() == '':
-            return
-        elif self.searchLock:
-            self.suchbegriffeText.clearFocus()
-            self.suchbegriffeText.clear()
-            self.__displayMessage("Der Suchindex steht aktuell nicht zur Verfügung. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut.") 
-            return
-        
-        filenameColumn = None   
-            
-        try:
-            for headeritem in range(len(self.docTableAttributes)+2):
-                    if self.docTableView.horizontalHeaderItem(headeritem).text() == "Dateiname":
-                        filenameColumn = headeritem
-                        break
-        except AttributeError:
-            return
-            
-        searchTerms = self.suchbegriffeText.text().split()   
-
-        if filenameColumn and len(searchTerms) != 0:
-            self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))  
-            #TODO Full text search in database
-            for row in range(self.docTableView.rowCount()):
-                # Nur sichtbare Dateien durchsuchen 
-                if not self.docTableView.isRowHidden(row):    
-                    filename = self.docTableView.item(row, filenameColumn).text()
-                    if filename:
-
-                        hits = 0
-                     
-                        if self.searchStore.get(filename + '.pdf'):
-                            text = self.searchStore.get(filename + '.pdf')
-                        elif self.searchStore.get(filename):   
-                            text = self.searchStore.get(filename)  
-                        else:
-                            text = ''
-                        
-                        for term in searchTerms:
-                            if term.lower() in text:
-                                hits += 1
-
-                        if not hits == len(searchTerms) :
-                            self.docTableView.hideRow(row)
-      
-        statusMessage = 'Suche abgeschlossen.'                   
-        if self.leerePDF != 0:
-            statusMessage += f'  Bitte beachten Sie: {self.leerePDF} PDF-Dateien der Nachricht enthalten keinen durchsuchbaren Text.'
-        self.statusBar.showMessage(statusMessage)        
-        
-        self.app.restoreOverrideCursor()  
-
-    def __texterkennungAll(self):
-        '''Texterkennung für alle nicht durchsuchbaren Dateien im Verzeichnis der Nachricht (Die Dateien müssen nicht im XJustiz-Datensatz enthalten sein) Alle anderen Dateien werden einfach kopiert. )'''
-        if self.ocrLock:
-            self.__displayMessage('Es läuft bereits eine Texterkennung. Bitte warten Sie, bis der Vorgang abgeschlossen ist.')
-            return
-        
-        msgBox=QMessageBox()
-        msgBox.setIcon(QMessageBox.Icon.Information)
-        msgBox.setWindowTitle("Texterkennung durchführen?")
-        msgBox.setStandardButtons(QMessageBox.StandardButton.Yes  | QMessageBox.StandardButton.No)
-        buttonY = msgBox.button(QMessageBox.StandardButton.Yes )
-        buttonY.setText('Ja')
-        buttonN = msgBox.button(QMessageBox.StandardButton.No)
-        buttonN.setText('Nein')
-        msgBox.setDefaultButton(QMessageBox.StandardButton.No)
-        msgBox.setText("Soll für die nicht durchsuchbaren Dokumente eine Texterkennung durchgeführt werden und eine Kopie der Nachricht mit durchsuchbaren PDF-Dateien angelegt werden?\n\nDieser Vorgang kann einige Zeit in Anspruch nehmen und ggf. reagiert die Anwendung während der Bearbeitung nicht. Bitte haben Sie in diesem Fall ein wenig Geduld.\n\nHinweis: Schlechte Scans und handschriftliche Inhalte werden weiterhin nicht durchsuchbar sein oder fehlerhaften Text enthalten. Entsprechende Dateien werden ggf. weiterhin als nicht druchsuchbare Dateien im Suchhinweis angezeigt.")
-        msgBox.exec()
-        if msgBox.clickedButton() == buttonN:
-            return
-                
-        folder = QFileDialog.getExistingDirectory(self, 
-                                "Bitte ein leeres Verzeichnis zum Speichern der Nachrichtenkopie auswählen",
-                                self.settings.value("defaultFolder", str(self.homedir)), 
-                                QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)
-        if not folder:
-            return
-        
-        elif folder == self.basedir:
-            self.__displayMessage("Eine Kopie der Nachricht kann nicht im Verzeichnis der Originalnachricht erstellt werden!")
-            return                      
-        elif os.listdir(folder):
-            self.__displayMessage("Zur Erstellung der Nachrichtenkopie bitte ein leeres Verzeichnis angeben.")
-            return   
-        
-        # Filedialog schließt sich nicht immer ohne "sleep"
-        time.sleep(2)
-        
-        self.actionOCRall.setVisible(False)
-        
-        self.ocrLock=True
-        
-        self.statusBar.showMessage('Dateien werden in das Zielverzeichnis kopiert oder für die Texterkennung ausgewählt.') 
-        self.statusBar.repaint()
-        ocrQueue=[]
-        for filename in self.searchStore.keys():
-            self.app.processEvents(QEventLoop.ProcessEventsFlag['ExcludeUserInputEvents'])
-            # Bestimmte Dateien der Quellnachricht ignorieren und NICHT kopieren
-            if filename in ('search_store.json'):
-                continue
-            
-            sourcepath = os.path.join(self.basedir, filename)            
-            targetpath = os.path.join(folder, filename)
-            if not os.path.exists(sourcepath) or not os.path.isfile(sourcepath):
-                continue
-            
-            if filename.lower().endswith('.pdf') and len(self.searchStore[filename])==0:
-                if PDFocr.checkIfSupported(sourcepath):
-                    ocrQueue.append({'sourcepath':sourcepath, 'targetpath':targetpath})
-                else:
-                    copyfile(sourcepath, targetpath)    
-            else:
-                copyfile(sourcepath, targetpath)  
-        
-        self.scan_folder_after_ocr = targetpath
-        
-        self.statusBar.showMessage(f'Starte Texterkennung für {str(len(ocrQueue))} Dokumente') 
-        self.statusBar.repaint()
-
-        self.OCRthread3=Thread(target=self.__ocrBatchWorker, args=(ocrQueue,))    
-        self.OCRthread3.start() 
-                       
-    def __reportOCRProgress(self, message):
-        self.statusBar.showMessage(f"{message}")        
+        # Aktualisiere lokale Referenzen
+        self.searchStore = self.search_filter_manager.search_store
+        self.searchLock = self.search_filter_manager.search_lock
+        self.leereDateien = self.search_filter_manager.empty_files
+        self.leerePDF = self.search_filter_manager.empty_pdf  
     
-    def __ocrFinished(self, seconds):       
-        message = f'Texterkennung abgeschlossen. Benötigte Zeit: {"{:.2f}".format(seconds)} Sekunden'
-        self.ocrLock=False
-        self.statusBar.showMessage(message)              
+    def __filtersTriggered(self, keepSearchTerms=False):
+        """Wendet Inklusiv- und Exklusivfilter an. Delegiert an SearchFilterManager."""
+        # Verwende SearchFilterManager's apply_filters-Methode
+        SearchFilterManager.apply_filters(
+            table=self.docTableView,
+            plus_filter_text=self.plusFilter.text(),
+            minus_filter_text=self.minusFilter.text(),
+            settings=self.settings,
+            clear_search_callback=lambda: self.suchbegriffeText.clear(),
+            keep_search_terms=keepSearchTerms
+        )
+
+    def __magicFilters(self):
+        """Fügt dem Filter Dateiendungen bekannter technischer Dokumente hinzu. Delegiert an SearchFilterManager."""
+        # Verwende SearchFilterManager's apply_magic_filters-Methode
+        SearchFilterManager.apply_magic_filters(
+            minus_filter_text=self.minusFilter.text(),
+            update_minus_filter_callback=lambda text: self.minusFilter.setText(text),
+            filters_callback=self.__filtersTriggered
+        )
+
+    def __resetFilters(self):
+        """Leert die Filterfelder und Suchbegriffe. Delegiert an SearchFilterManager."""
+        # Verwende SearchFilterManager's reset_filters-Methode
+        SearchFilterManager.reset_filters(
+            clear_search_callback=lambda: self.suchbegriffeText.clear(),
+            clear_plus_filter_callback=lambda: self.plusFilter.clear(),
+            clear_minus_filter_callback=lambda: self.minusFilter.clear(),
+            filters_callback=self.__filtersTriggered
+        )
     
-    def __ocrFileWorker(self, sourcepath, targetpath, open_when_done=True):
-        '''Worker-Funktion für einzelne OCR-Tasks'''
-        self.ocrLock=True
-        start=time.time()
-        try:
-            PDFocr(sourcepath, targetpath, open_when_done)
-        except Exception as e:
-             self.__displayMessage(f"Texterkennung fehlgeschlagen\n\n{e}")
-             self.ocrLock=False
-             self.lastExceptionString = str(e)
-             return
-        self.__ocrFinished(time.time()-start)
-             
-    def __ocrBatchWorker(self, jobs, open_when_done=False, threads=None):    
-        '''Worker-Funktion für lange laufende Batch-OCR-Tasks'''
-        self.ocrLock=True
-        self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))   
-        if not threads:
-            threads = multiprocessing.cpu_count()-1
-        start=time.time()
-        with concurrent.futures.ThreadPoolExecutor(threads) as executor:
-                future_ocr = {executor.submit(PDFocr, job['sourcepath'], job['targetpath'], open_when_done, threads): job for job in jobs}
-                for future in concurrent.futures.as_completed(future_ocr):
-                    thread = future_ocr[future]
-                    try:
-                        if future.result() != None:
-                            self.__reportOCRProgress(f"Texterkennung abgeschlossen für {thread['sourcepath']}") 
-                    except Exception as exc:
-                        emessage=f'OCR-Thread {thread} generated an exception: {str(exc)}'
-                        self.lastExceptionString = emessage                  
-        self.app.restoreOverrideCursor()
-        self.__ocrFinished(time.time()-start)
-                 
+    # ========================================
+    # ABSCHNITT 7: OCR/TEXTERKENNUNG
+    # ========================================    
     def __texterkennung(self, sourcepath=None):
-        '''Texterkennung für beliebige Dateien'''
-        if self.ocrLock:
-            self.__displayMessage('Es läuft bereits eine Texterkennung. Bitte warten Sie, bis der Vorgang abgeschlossen ist.')
-            return
-        
-        if not sourcepath:
-            sourcepath , check = QFileDialog.getOpenFileName(None, "PDF-Datei für die Texterkennung auswählen",
-                                str(self.homedir), "PDF-Dateien (*.pdf *.PDF)")
-            if not check:
-                return
-        
-        if not PDFocr.checkIfSupported(sourcepath):
-            self.__displayMessage('Die ausgewählte Datei kann nicht mit der Texterkennungsfunktion bearbeitet werden.\n\nMögliche Gründe:\n- Die Datei enthält bereits Text\n- Die Datei enthält mehr als ein Bild pro Seite\n- Die PDF-Datei ist defekt') 
-            return
-        
-        self.ocrLock=True
-        
-        # Eindeutigen Dateinamen finden, falls Name bereits vergeben
-        ocr_marker='ocr'
-        counter=0
-        while True:
-            targetpath = os.path.join(Path(sourcepath).parents[0] , f'{Path(sourcepath).stem}.{ocr_marker}.pdf')
-            if os.path.isfile(targetpath):
-                counter+=1
-                ocr_marker=f'ocr({counter})'
-            else:
-                break
+        """Texterkennung für beliebige Dateien. Delegiert an OCRHandler."""
+        # Verwende OCRHandler's perform_ocr-Methode
+        self.ocr_handler.perform_ocr(source_path=sourcepath, parent_widget=self)
 
-        # In separatem Tread ausführen, um Event-Loop nicht zu blockieren 
-        self.OCRthread=Thread(target=self.__ocrFileWorker, args=(sourcepath, targetpath))    
-        self.OCRthread.start() 
-        self.statusBar.showMessage(f'Texterkennung für {sourcepath} gestartet') 
+        # Aktualisiere lokale Referenz auf ocr_lock
+        self.ocrLock = self.ocr_handler.ocr_lock 
         
     def __texterkennungLoadedPDF(self):
-        '''Texterkennung für das aktuell in der Vorschau angezeigte PDF-Dokument'''
-        if self.loadedPDFfilename == '':
-            return
-        
-        if self.ocrLock:
-            self.__displayMessage('Es läuft bereits eine Texterkennung. Bitte warten Sie, bis der Vorgang abgeschlossen ist.')
-            return          
-        if self.loadedPDFpath and os.path.exists(self.loadedPDFpath) and self.loadedPDFpath.lower().endswith('.pdf') and PDFocr.checkIfSupported(self.loadedPDFpath):
-            exportFilename,  extension = QFileDialog.getSaveFileName(self, 
-                                     "Zieldatei wählen",                        
-                                     self.settings.value("defaultFolder", str(self.homedir)),
-                                     "PDF-Dateien (*.pdf *.PDF)")
-        
-            if exportFilename: 
-                if not exportFilename.lower().endswith('.pdf'):
-                    exportFilename = exportFilename + '.pdf'
-            else:
-                return     
+        """Texterkennung für das aktuell in der Vorschau angezeigte PDF-Dokument. Delegiert an OCRHandler."""
+        # Verwende OCRHandler's perform_ocr_on_loaded_pdf-Methode
+        self.ocr_handler.perform_ocr_on_loaded_pdf(
+            loaded_pdf_filename=self.loadedPDFfilename,
+            loaded_pdf_path=self.loadedPDFpath,
+            parent_widget=self
+        )
 
-            self.ocrLock=True
-            
-            # In separaten Thread verschieben, um Event-Loop nicht zu blockieren       
-            try: 
-                self.OCR2thread=Thread(target=self.__ocrFileWorker, args=(self.loadedPDFpath, exportFilename))    
-                self.OCR2thread.start() 
-            except Exception as e:
-                self.lastExceptionString = str(e)
-                self.ocrLock=False
-                return
-
-            self.statusBar.showMessage(f'Texterkennung für {self.loadedPDFpath} gestartet. Das Dokument öffnet sich nach Abschluss automatisch.')     
-        else:
-            self.__displayMessage('Die in der Vorschau angezeigte Datei kann nicht mit der Texterkennungsfunktion bearbeitet werden.\n\nMögliche Gründe:\n- Die Datei enthält bereits Text\n- Die Datei enthält mehr als ein Bild pro Seite\n- In der Vorschau wird keine PDF-Datei angezeigt') 
-            self.ocrLock=False
-            return        
+        # Aktualisiere lokale Referenz auf ocr_lock
+        self.ocrLock = self.ocr_handler.ocr_lock
+        # Aktualisiere letzten Exception-String, falls gesetzt
+        if self.ocr_handler.last_exception_string:
+            self.lastExceptionString = self.ocr_handler.last_exception_string        
     
+    def __texterkennungAll(self):
+        """Texterkennung für alle nicht durchsuchbaren Dateien. Delegiert an OCRHandler."""
+        # Verwende OCRHandler's perform_batch_ocr-Methode
+        self.ocr_handler.perform_batch_ocr(
+            base_dir=self.basedir,
+            search_store=self.searchStore,
+            parent_widget=self,
+            action_ocr_all=self.actionOCRall
+        )
+
+        # Aktualisiere lokale Referenzen
+        self.ocrLock = self.ocr_handler.ocr_lock
+        if hasattr(self.ocr_handler, 'scan_folder_after_ocr') and self.ocr_handler.scan_folder_after_ocr:
+            self.scan_folder_after_ocr = self.ocr_handler.scan_folder_after_ocr
+
+    # ========================================
+    # ABSCHNITT 8: PDF-EXPORTOPERATIONEN
+    # ========================================
     def __exportPDF(self, tableWidget):
-        '''Exportiert die unter "Dateien" angezeigten Dateien in eine einzelne PDF-Datei.'''    
+        """Exportiert die unter 'Dateien' angezeigten Dateien 'Files' in eine einzelne PDF-Datei. Delegiert an pdf_operations."""
         if self.akte == {} or tableWidget.columnCount() == 0 or tableWidget.rowCount() == 0:
             return
-        
-        if (self.actionNurFavoritenExportieren.isChecked() or tableWidget == self.favTableView) and len(self.favorites)==0:
-            self.__displayMessage('Der PDF-Export ist für die aktuelle Nachricht momentan nicht möglich.\n\nEs wurden bisher keine Favoriten gesetzt.\n\nEntweder Sie versuchen, die Faviten zu exportieren oder unter "Optionen" wurde festgelegt, dass lediglich Favoriten exportiert werden sollen.\n\nBitte fügen Sie den Favoriten Dateien hinzu oder passen Sie die Exporteinstellungen an.')   
-            return
-        filenameColumn = None
-        displaynameColumn = None
-        classColumn = None
-        dateColumn = None
-        scanColumn = None
-        filingColumn = None
-        receivedColumn = None
-        try:
-            column_range = tableWidget.columnCount()
-                    
-            for headeritem in range(column_range):
-                headertext = tableWidget.horizontalHeaderItem(headeritem).text()
-                if headertext == "Dateiname":
-                    filenameColumn = headeritem
-                elif headertext == "Klasse":
-                    classColumn = headeritem
-                elif headertext == "Datum":
-                    dateColumn = headeritem
-                elif headertext == "Scandatum":
-                    scanColumn = headeritem
-                elif headertext == "Veraktung":
-                    filingColumn = headeritem
-                elif headertext == "Eingang":
-                    receivedColumn = headeritem
-                elif headertext == "Anzeige-\nname":
-                    displaynameColumn = headeritem
-                elif headertext == "Anzeigename":
-                    displaynameColumn = headeritem
-                else:
-                    pass                       
-        except Exception as e:
-            message='Es konnten keine Dateien für den Export ermittelt werden.'    
-            self.__displayMessage(message) 
-            self.lastExceptionString = str(e) + message + ' Spalte "Dateiname" wurde nicht gefunden oder leere Tabelle.'       
-            self.statusBar.showMessage(message)
-            return None
-        
-        exportFilename,  extension = QFileDialog.getSaveFileName(self, 
-                                     "Zieldatei wählen",                        
-                                     self.settings.value("defaultFolder", str(self.homedir)),
-                                     "PDF-Dateien (*.pdf *.PDF)")
-        
-        if exportFilename: 
-            if not exportFilename.lower().endswith('.pdf'):
-                exportFilename = exportFilename + '.pdf'
-        else:
-            return
-          
-        self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))   
-        if filenameColumn:
-            try:
-                notSupported = []
-                
-                pdf = Pdf.new()
-                page_count = 0
-                file_count = 0
-                
-                # System /tmp-folder not accessible by SNAP Libreoffice
-                tmpdir = os.path.expanduser("~") if sys.platform.lower() == 'linux' else None
-                with TemporaryDirectory(dir = tmpdir) as localTempDir:
-                    with pdf.open_outline() as outline: 
-                        favoriten = OutlineItem('Favoriten')
-                        outline.root.append(favoriten)
-                        
-                        # Deckblatt
-                        if self.actionDeckblattBeiExport.isChecked():
-                            attachFile = CreateDeckblatt(self).output(os.path.join(localTempDir , 'Deckblatt.pdf'))
-                            with Pdf.open(attachFile) as src:
-                                outline.root.append(OutlineItem('Deckblatt', 0))
-                                page_count += len(src.pages)
-                                pdf.pages.extend(src.pages)  
-                        
-                        # Dateien
-                        for row in range(tableWidget.rowCount()):
-                            if not tableWidget.isRowHidden(row):
-                                attachFile = None
-                                filename = tableWidget.item(row, filenameColumn).text()
-                                if filename and os.path.exists(os.path.join(self.basedir , filename)): 
-                                    
-                                    if filename not in self.favorites and self.actionNurFavoritenExportieren.isChecked():
-                                        continue
-                                                             
-                                    if filename.lower().endswith(('.xml', '.csv', '.txt')):
-                                        try:
-                                            try:
-                                                contents = Path(os.path.join(self.basedir , filename)).read_text(encoding='utf-8')
-                                            except UnicodeDecodeError:
-                                                contents = Path(os.path.join(self.basedir , filename)).read_text(encoding='cp1252')
-                                        except Exception as e:
-                                            notSupported.append(filename)
-                                            continue
 
-                                        tempPDF = FPDF(orientation = "landscape" if filename.lower().endswith('.csv') else "portrait")
-                                        
-                                        tempPDF.add_font("Ubuntu", style="", fname=f"{self.fontDir}ubuntu-font-family-0.83/Ubuntu-R.ttf")
-                                        tempPDF.add_font("Ubuntu", style="b", fname=f"{self.fontDir}ubuntu-font-family-0.83/Ubuntu-B.ttf")
-                                        tempPDF.add_font("Ubuntu", style="i", fname=f"{self.fontDir}ubuntu-font-family-0.83/Ubuntu-RI.ttf")
-                                        tempPDF.add_font("Ubuntu", style="bi", fname=f"{self.fontDir}ubuntu-font-family-0.83/Ubuntu-BI.ttf")
-                                        tempPDF.set_font("Ubuntu")
-                                        
-                                        tempPDF.add_page()
-                                        tempPDF.write(text = contents)
-                                        tempPDFFile = os.path.join(localTempDir , filename + '.pdf')
-                                        tempPDF.output(tempPDFFile)
-                                        attachFile = tempPDFFile
-                                            
-                                    elif filename.lower().endswith(('.jpg', '.jpeg','.tiff','.tif','.png')):
-                                        image = os.path.join(self.basedir , filename)
-                                        try:
-                                            with Image.open(image) as im:
-                                                imageOrientation = "landscape" if im.size[0] > im.size[1] else "portrait"
-                                                tempPDF = FPDF(orientation = imageOrientation)
-                                        except Exception as e:
-                                            notSupported.append(filename)
-                                            continue    
-                                        tempPDF.add_page()
-                                        tempPDF.set_draw_color(r=255, g=255, b=255)
-                                        if imageOrientation == 'portrait':
-                                            rect = 10, 10, 190, 277
-                                        else:    
-                                            rect = 10, 10, 277, 190
-                                        tempPDF.rect(*rect)
-                                        tempPDF.image(
-                                            image,
-                                            *rect,
-                                            keep_aspect_ratio=True
-                                        ) 
-                                        tempPDFFile = os.path.join(localTempDir , filename + '.pdf')
-                                        tempPDF.output(tempPDFFile)
-                                        attachFile = tempPDFFile  
-                                        
-                                    elif filename.lower().endswith(('.pdf')):
-                                        try:
-                                            attachFile = os.path.join(self.basedir , filename)
-                                            #Try to open it to see if it is encrypted
-                                            with Pdf.open(attachFile) as src:
-                                                pass
-                                        except Exception as e:
-                                            notSupported.append(filename)
-                                            self.lastExceptionString = str(e)
-                                            continue 
-                                    else:                
-                                        previewFilepath = os.path.join(self.basedir , filename + '.pdf')
-                                        if os.path.exists(previewFilepath): 
-                                            attachFile = previewFilepath
-                                        else:
-                                            if not filename.lower().endswith(('.pkcs7', '.p7s','.pks')):
-                                                notSupported.append(filename)
-                                            continue    
-                                    file_count += 1
-                                elif filename and not os.path.exists(os.path.join(self.basedir , filename)) and not filename.lower().endswith(('.pkcs7', '.p7s','.pks')): 
-                                    notSupported.append(filename) 
-                                    continue
-                            else:
-                                continue
-                            
-                            #Dateien anhängen    
-                            if attachFile:
-                                #Outline (Inhaltsverzeichnis) erstellen
-                                outlineName = filename
-                                
-                                if displaynameColumn != None:
-                                    displayName = tableWidget.item(row, displaynameColumn).text()
-                                    if len(displayName.strip())>0:
-                                        outlineName = displayName
-                                    elif classColumn != None :
-                                        className = tableWidget.item(row, classColumn).text()
-                                        if len(className.strip())>0:
-                                            outlineName = className 
-                                          
-                                dateColumns = (dateColumn, filingColumn, scanColumn, receivedColumn)
-                                
-                                if any (dateColumns) and self.actionDateidatumExportieren.isChecked():
-                                    for column in dateColumns:
-                                        if column == None:
-                                            continue
-                                        outlineDate = tableWidget.item(row, column).text()
-                                        if outlineDate:
-                                            outlineName += f" {outlineDate}"
-                                            break
-                                    
-                                oi = OutlineItem(outlineName, page_count)
-                                
-                                if filename in self.favorites:
-                                    favoriten.children.append(oi)
-                                
-                                outline.root.append(oi)
-                                
-                                with Pdf.open(attachFile) as src:
-                                    page_count += len(src.pages)
-                                    self.statusBar.showMessage(f'Bearbeite: {filename}')
-                                    self.statusBar.repaint()
-                                    pdf.pages.extend(src.pages)                
-                    
-                        if tableWidget == self.favTableView or len(favoriten.children) == 0 or not self.actionFavoritenExportieren.isChecked():
-                            outline.root.remove(favoriten)
-                            
-                    if file_count > 0:
-                        self.statusBar.showMessage(f'Speichere PDF-Datei: {exportFilename}')
-                        self.statusBar.repaint()
-                        pdf.save(exportFilename)
-                        self.app.restoreOverrideCursor()
-                        
-                        if len(notSupported)!=0:
-                            msgText='Nicht alle in der Tabelle "Dateien" angezeigten Dokumente konnten nach PDF konvertiert werden.\n\nEntweder wird ein externes Programm zur Konvertierung benötigt, es handelt sich nicht um Text- bzw. Bilddateien, die Dateien konnten nicht gefunden werden oder sind verschlüsselt.\n\nFolgende Dateien wurden daher nicht exportiert:\n'      
-                            for item in notSupported:
-                                msgText += str(item) + "\n"                       
-                        else:
-                            msgText='Alle in der Tabelle "Dateien" angezeigten Dokumente\n(ggf. mit Ausnahme von Signaturdateien) wurden erfolgreich exportiert. Zum Ändern der Auswahl Filter setzen oder anderen "Inhalt" auswählen.'     
-                        
-                        self.statusBar.showMessage('PDF-Export abgeschlossen.')
-                        self.__displayMessage(msgText)    
-                        if self.actionPDFnachExportOeffnen.isChecked():
-                            self.__openFileExternal(exportFilename, ignoreWarnings=True, absolutePath=True)
-                    else:
-                        self.app.restoreOverrideCursor()
-                  
-                        if self.actionNurFavoritenExportieren.isChecked():
-                            self.__displayMessage('Der PDF-Export war nicht erfolgreich.\n\nUnter "Optionen" wurde festgelegt, dass von den unter "Dateien" sichtbaren Dateien lediglich Favoriten exportiert werden sollen.\n\nAlternativ kann es sein, dass die Dateiformate der gewählten Dateien nicht unterstützt werden oder die Dateien nicht gefunden werden konnten.')  
-                        else:
-                            self.__displayMessage('Es wurde keine PDF-Datei erstellt. Es werden keine Dateien angezeigt, die Dateiformate der gewählten Dateien werden nicht unterstützt oder die Dateien konnten nicht gefunden werden.')   
-                        self.statusBar.showMessage('PDF-Export abgebrochen.')
-                                                   
-            except Exception as e:
-                self.app.restoreOverrideCursor()
-                msgText='Bei der Erzeugung der PDF-Datei ist ein Fehler aufgetreten.'
-                self.statusBar.showMessage(msgText)
-                self.__displayMessage(msgText, title = 'Fehler', icon = QMessageBox.Icon.Warning)
-                self.lastExceptionString = str(e)  
+        if (self.actionNurFavoritenExportieren.isChecked() or tableWidget == self.favTableView) and len(self.favorites) == 0:
+            self.__displayMessage('Der PDF-Export ist für die aktuelle Nachricht momentan nicht möglich.\n\nEs wurden bisher keine Favoriten gesetzt.\n\nEntweder Sie versuchen, die Faviten zu exportieren oder unter "Optionen" wurde festgelegt, dass lediglich Favoriten exportiert werden sollen.\n\nBitte fügen Sie den Favoriten Dateien hinzu oder passen Sie die Exporteinstellungen an.')
+            return
+        # Hole Export-Dateinamen vom Benutzer
+        exportFilename, extension = QFileDialog.getSaveFileName(
+            self,
+            "Zieldatei wählen",
+            self.settings_manager.get_string("defaultFolder", str(self.homedir)),
+            "PDF-Dateien (*.pdf *.PDF)"
+        )
+
+        if not exportFilename:
+            return
+
+        if not exportFilename.lower().endswith('.pdf'):
+            exportFilename = exportFilename + '.pdf'
+
+        # Konfiguriere Export-Einstellungen
+        config = PDFExportConfig(
+            include_cover_page=self.actionDeckblattBeiExport.isChecked(),
+            include_favorites_only=self.actionNurFavoritenExportieren.isChecked(),
+            include_favorites_section=self.actionFavoritenExportieren.isChecked() and tableWidget != self.favTableView,
+            include_file_dates=self.actionDateidatumExportieren.isChecked(),
+            open_after_export=self.actionPDFnachExportOeffnen.isChecked(),
+            font_dir=self.fontDir,
+        )
+
+        # Definiere Deckblatt-Ersteller-Callback
+        # Hinweis: cover_path ist der vollständige Pfad zur Ausgabedatei, nicht nur ein Verzeichnis
+        def create_cover_page(cover_path: str) -> str:
+            return CreateDeckblatt(self).output(cover_path)
+
+        # Definiere Status-Callback
+        def status_callback(message: str):
+            self.statusBar.showMessage(message)
+            self.statusBar.repaint()
+
+        try:
+            self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
+
+            # Delegate to pdf_operations module
+            success, not_supported = export_pdf(
+                table_widget=tableWidget,
+                base_dir=self.basedir,
+                export_filename=exportFilename,
+                config=config,
+                favorites=self.favorites,
+                cover_page_creator=create_cover_page if config.include_cover_page else None,
+                status_callback=status_callback,
+            )
+
+            self.app.restoreOverrideCursor()
+
+            # Zeige Ergebnisse an
+            if success:
+                if len(not_supported) != 0:
+                    msgText = 'Nicht alle in der Tabelle "Dateien" angezeigten Dokumente konnten nach PDF konvertiert werden.\n\nEntweder wird ein externes Programm zur Konvertierung benötigt, es handelt sich nicht um Text- bzw. Bilddateien, die Dateien konnten nicht gefunden werden oder sind verschlüsselt.\n\nFolgende Dateien wurden daher nicht exportiert:\n'
+                    for item in not_supported:
+                        msgText += str(item) + "\n"
+                    msgText +='\nKonvertierte Dateien können von ihren Originalen abweichen und Informationen verlieren!\n\nVerbindlich sind ausschließlich die Originaldateien!'    
+                else:
+                    msgText = 'Alle in der Tabelle "Dateien" angezeigten Dokumente\n(ggf. mit Ausnahme von Signaturdateien) wurden erfolgreich exportiert. Zum Ändern der Auswahl Filter setzen oder anderen "Inhalt" auswählen.\n\nKonvertierte Dateien können von ihren Originalen abweichen und Informationen verlieren!\n\nVerbindlich sind ausschließlich die Originaldateien.'
+
+                self.statusBar.showMessage('PDF-Export abgeschlossen.')
+                self.__displayMessage(msgText)
+
+                if config.open_after_export:
+                    self.__openFileExternal(exportFilename, ignoreWarnings=True, absolutePath=True)
+            else:
+                if self.actionNurFavoritenExportieren.isChecked():
+                    self.__displayMessage('Der PDF-Export war nicht erfolgreich.\n\nUnter "Optionen" wurde festgelegt, dass von den unter "Dateien" sichtbaren Dateien lediglich Favoriten exportiert werden sollen.\n\nAlternativ kann es sein, dass die Dateiformate der gewählten Dateien nicht unterstützt werden oder die Dateien nicht gefunden werden konnten.')
+                else:
+                    self.__displayMessage('Es wurde keine PDF-Datei erstellt. Es werden keine Dateien angezeigt, die Dateiformate der gewählten Dateien werden nicht unterstützt oder die Dateien konnten nicht gefunden werden.')
+                self.statusBar.showMessage('PDF-Export abgebrochen.')
+
+        except PDFExportError as e:
+            self.app.restoreOverrideCursor()
+            msgText = 'Bei der Erzeugung der PDF-Datei ist ein Fehler aufgetreten.'
+            self.statusBar.showMessage(msgText)
+            self.__displayMessage(msgText, title='Fehler', icon=QMessageBox.Icon.Warning)
+            self.lastExceptionString = str(e)  
 
     def __notizPdfExport(self):
-        '''Exportiert die Notizen in eine PDF-Datei'''
-        notizenText=self.notizenText.toPlainText()
-        
+        """Exportiert die Notizen in eine PDF-Datei. Delegiert an pdf_operations."""
+        notizenText = self.notizenText.toPlainText()
+
         if not notizenText:
-            message='Es werden aktuell keine Notizen angezeigt, die exportiert werden könnten.'    
-            self.__displayMessage(message)       
+            message = 'Es werden aktuell keine Notizen angezeigt, die exportiert werden könnten.'
+            self.__displayMessage(message)
             self.statusBar.showMessage(message)
-            return 
-        
-        exportFilename,  extension = QFileDialog.getSaveFileName(self, 
-                                "Zieldatei wählen",                        
-                                self.settings.value("defaultFolder", str(self.homedir)),
-                                "PDF-Dateien (*.pdf *.PDF)")
-        
+            return
+
+        exportFilename, extension = QFileDialog.getSaveFileName(
+            self,
+            "Zieldatei wählen",
+            self.settings_manager.get_string("defaultFolder", str(self.homedir)),
+            "PDF-Dateien (*.pdf *.PDF)"
+        )
+
         if exportFilename:
             try:
                 if not exportFilename.lower().endswith('.pdf'):
                     exportFilename = exportFilename + '.pdf'
+
                 self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
-                pdf = FPDF()
-                pdf.add_font("Ubuntu", style="", fname=f"{self.fontDir}ubuntu-font-family-0.83/Ubuntu-R.ttf")
-                pdf.add_font("Ubuntu", style="b", fname=f"{self.fontDir}ubuntu-font-family-0.83/Ubuntu-B.ttf")
-                pdf.add_font("Ubuntu", style="i", fname=f"{self.fontDir}ubuntu-font-family-0.83/Ubuntu-RI.ttf")
-                pdf.add_font("Ubuntu", style="bi", fname=f"{self.fontDir}ubuntu-font-family-0.83/Ubuntu-BI.ttf")
-                pdf.add_page()  
-                pdf.set_font("Ubuntu", style='b', size=20)
-                pdf.multi_cell(w=0, text=Path(exportFilename).stem, padding=(0,0,5),new_x='LEFT', new_y='NEXT')
-                pdf.set_font("Ubuntu", style='', size=12)
-                pdf.multi_cell(w=0, text=notizenText, markdown=True)
-                pdf.output(exportFilename)
+
+                # Delegate to pdf_operations module
+                export_notes_to_pdf(
+                    notes_text=notizenText,
+                    export_filename=exportFilename,
+                    font_dir=self.fontDir,
+                    title=Path(exportFilename).stem
+                )
+
                 self.app.restoreOverrideCursor()
+
                 if self.actionPDFnachExportOeffnen.isChecked():
                     self.__openFileExternal(exportFilename, ignoreWarnings=True, absolutePath=True)
-            except Exception as e:
-                self.app.restoreOverrideCursor() 
-                message='Das Speichern der Notizen ist fehlgeschlagen.'    
-                self.__displayMessage(message) 
-                self.lastExceptionString = str(e) + message 
+
+            except PDFExportError as e:
+                self.app.restoreOverrideCursor()
+                message = 'Das Speichern der Notizen ist fehlgeschlagen.'
+                self.__displayMessage(message)
+                self.lastExceptionString = str(e) + message
                 self.statusBar.showMessage(message)
+
+    # ========================================
+    # ABSCHNITT 9: DRUCKOPERATIONEN
+    # ========================================
+    # Druckfunktionen wurden entfernt - pdfjs_viewer übernimmt das Drucken intern
+
+    # ========================================
+    # ABSCHNITT 10: ANSICHTS-/UI-AKTUALISIERUNGSMETHODEN
+    # ========================================
+    def __setDocumentTable(self, akteID=None):      
+       
+        #Leere tableWidget
+        self.docTableView.setRowCount(0)
+        self.docTableView.setColumnCount(0)  
+        
+        data=[]
+        if akteID == 'Alle_Dokumente':
+            rows = self.akte.getFileRows()
+            for singleID in self.akte.alleAktenIDs:
+                rows.extend(self.akte.getFileRows(singleID))
+        else:
+            rows = self.akte.getFileRows(akteID)
         
 
-    def __updateSelectedInhalt(self):
-        val = self.inhaltView.currentIndex() 
-        akte = self.akte 
-    
-        aktenID=val.siblingAtColumn(val.column()+1).data()
-        self.__setMetadata(akte, aktenID)
-        self.__setDocumentTable(aktenID)
-        self.__filtersTriggered()   
-
-    def __filtersTriggered(self, keepSearchTerms=False):
-        if not keepSearchTerms:
-            self.suchbegriffeText.clear()
-
-        filteredRows = set(self.__filterTableRows(
-            self.docTableView,
-            self.plusFilter.text(),
-            self.minusFilter.text()
-        ))
-
-        # Updates blockieren für bessere Performance
-        self.docTableView.setUpdatesEnabled(False)
-
-        rowCount = self.docTableView.rowCount()
-        for row in range(rowCount):
-            shouldShow = row in filteredRows
-            # Nur ändern, wenn nötig
-            if self.docTableView.isRowHidden(row) == shouldShow:
-                self.docTableView.setRowHidden(row, not shouldShow)
-
-        self.docTableView.setUpdatesEnabled(True)
-
-        # Filterwerte speichern
-        self.settings.setValue("minusFilter", self.minusFilter.text())
-        self.settings.setValue("plusFilter", self.plusFilter.text())
-   
-    def __magicFilters(self):
-        '''Fügt dem -Filter Dateiendungen bekannter technischer Dokumente hinzu'''
-        filterItems=self.minusFilter.text().split()
-        for fileextension in [".pks",  ".p7s", ".xml", ".pkcs7"]: 
-            if fileextension not in filterItems:
-                self.minusFilter.setText(self.minusFilter.text() + ' ' + fileextension)
-        self.__filtersTriggered()
+        seen_filenames = set()
         
-    def __resetFilters(self):
-        '''Leert die Filter-Felder und die Suchbegriffe''' 
-        self.suchbegriffeText.clear()    
-        self.plusFilter.clear()
-        self.minusFilter.clear()
-        self.__filtersTriggered()
+        #Sortiere Daten & füge Aktions-Icons hinzu
+        for row in rows:
+            
+            # TODO: ggf. als Option anbieten. Filtert unter Umständen 
+            # zu viele Dateien aus. Transfervermerke können sich z.B. 
+            # mit unterschiedlichen Anzeigenamen und Veraktungsdaten
+            # in der Akte befinden.
+            #
+            # Duplikate überspringen
+            #if row['dateiname'] in seen_filenames:
+            #    continue
+            
+            seen_filenames.add(row['dateiname'])
+
+            rowData = []
+            
+            #Lesezeichen+ Icon, Extern-öffnen Icon in "Material Font"
+            actionIcons= ['','']
+            
+            #Icons zuerst
+            rowData+=actionIcons
+            #Daten als zweites
+            rowData+=self.__arrangeData(row, self.docTableAttributes)
+            
+            #add row
+            data.append(rowData)
+                   
+        #set data
+        if data:
+
+            self.docTableView.setRowCount(len(data))
+            self.docTableView.setColumnCount(len(data[0]))
+            
+            #Füge Spalten mit Icons für "Zu Favoriten hinzufügen" und "Extern öffnen" hinzu
+            self.docTableView.setHorizontalHeaderItem(0, self.__tableItem('', self.buttonFont))
+            if self.docHeaderColumnsSettings['']['width']:
+                self.docTableView.setColumnWidth(0, self.docHeaderColumnsSettings['']['width'])
+                self.docTableView.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+            self.docTableView.setHorizontalHeaderItem(1,  self.__tableItem('', self.buttonFont))
+            if self.docHeaderColumnsSettings['']['width']:
+                self.docTableView.setColumnWidth(1, self.docHeaderColumnsSettings['']['width'])
+                self.docTableView.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
+            
+            columnCount=2
+            for item in self.docTableAttributes:
+                headerText=self.docHeaderColumnsSettings[item]['headertext']
+                self.docTableView.setHorizontalHeaderItem(columnCount, self.__tableItem(headerText, self.appFont))
+
+                # set width to auto for items that have a width defined (due to option to adjust font size width is ignored)...
+                if self.docHeaderColumnsSettings[item]['width']:
+                    self.docTableView.horizontalHeader().setSectionResizeMode(columnCount, QHeaderView.ResizeMode.ResizeToContents)
+            
+                columnCount+=1
                 
-    def __filterTableRows (self, tableObj, plusFilterStr, minusFilterStr):
-        rows=set()
-        if plusFilterStr.replace(" ", ""):
-            for filter in plusFilterStr.split():
-                for hit in  tableObj.findItems(filter, Qt.MatchFlag.MatchContains):
-                    rows.add(hit.row())
-        else:            
-            for row in range(self.docTableView.rowCount()):
-                rows.add(row)
+            rowNo=0
+            self.isDocColumnEmpty={}
+            for row in data:
+                itemNo=0
+                for item in row:
+                    #Material Icons-Schriftart für erste zwei Spalten
+                    if itemNo > 1:
+                        font=self.appFont 
+                        alignment = self.DocumentTableAlignment 
+                    else: 
+                        font=self.buttonFont
+                        alignment = Qt.AlignmentFlag.AlignCenter
+
+                    #Leading zeros fo '#'-Items that are not empty   
+                    if itemNo==2 and item:
+                        item=item.zfill(4) 
+                           
+                    tempItem=self.__tableItem(item, font)
+                    tempItem.setTextAlignment(alignment)
+
+                    if itemNo==0:
+                        tempItem.setToolTip('Doppelklick fügt Datei den Favoriten hinzu.')
+                    elif itemNo==1:
+                        tempItem.setToolTip('Doppelklick öffnet Datei mit Standardprogramm.') 
                     
-        for filter in minusFilterStr.split():
-            for hit in  tableObj.findItems(filter, Qt.MatchFlag.MatchContains):
-                if hit.row() in rows:
-                    rows.remove(hit.row()) 
-        return rows
-   
+                    self.docTableView.setItem(rowNo, itemNo, tempItem) 
+                    
+                    #Set column to not empty (False) if item has content
+                    #Set to empty (True) if value for column does not exist 
+                    #or has any other value than False  
+                    if item!='':
+                        self.isDocColumnEmpty[itemNo]=False
+                    elif self.isDocColumnEmpty.get(itemNo) != False:
+                        self.isDocColumnEmpty[itemNo]=True                
+                    itemNo+=1
+                rowNo+=1
+            self.__updateVisibleColumns()
+            self.statusBar.showMessage('Der ausgewählte Inhalt enthält %s Dateien' % rowNo)
+            
+        else:
+            self.statusBar.showMessage('Der ausgewählte Inhalt enthält keine Dateien')
+            if self.actionAnwendungshinweise.isChecked():
+                self.__informIfNoDocsVisible()  
+    
     def __setTerminTable (self, termine):
         
-        #clear tableWidget
+        #Leere tableWidget
         self.termineTableView.setRowCount(0)
         self.termineTableView.setColumnCount(0)  
         self.isTerminColumnEmpty={}
@@ -1787,351 +1800,92 @@ class UI(QMainWindow, Ui_MainWindow):
             self.termineTableView.sortItems(1)
             self.termineTableView.hideColumn(0)
             self.termineTableView.clearSelection()   
-            
-    def __setDocumentTable(self, akteID=None):      
-       
-        #clear tableWidget
-        self.docTableView.setRowCount(0)
-        self.docTableView.setColumnCount(0)  
+
+    def __setInstanzenView(self):
+        try:
+            if self.akte.erweiterungen.get('openXJV_instanzdaten_klartext'):         
+                self.beteiligteText.setPlainText(self.akte.erweiterungen['openXJV_instanzdaten_klartext']['text'])
+                return
+        except AttributeError:
+            pass
         
-        data=[]
-        if akteID == 'Alle_Dokumente':
-            rows = self.akte.getFileRows()
-            for singleID in self.akte.alleAktenIDs:
-                rows.extend(self.akte.getFileRows(singleID))
-        else:
-            rows = self.akte.getFileRows(akteID)
-        
-
-        seen_filenames = set()
-        
-        #sort data & add action Icons
-        for row in rows:
-            
-             # Duplikate überspringen
-            if row['dateiname'] in seen_filenames:
-                continue
-            seen_filenames.add(row['dateiname'])
-
-            rowData = []
-            
-            #Bookmark+ icon, Open external icon in "Material Font"
-            actionIcons= ['','']
-            
-            #Icons first
-            rowData+=actionIcons
-            #data second
-            rowData+=self.__arrangeData(row, self.docTableAttributes)
-            
-            #add row
-            data.append(rowData)
-                   
-        #set data
-        if data:
-
-            self.docTableView.setRowCount(len(data))
-            self.docTableView.setColumnCount(len(data[0]))
-            
-            #Add columns with icons for "add to favorites" and "open external"
-            self.docTableView.setHorizontalHeaderItem(0, self.__tableItem('', self.buttonFont))
-            if self.docHeaderColumnsSettings['']['width']:
-                self.docTableView.setColumnWidth(0, self.docHeaderColumnsSettings['']['width'])
-                self.docTableView.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-            self.docTableView.setHorizontalHeaderItem(1,  self.__tableItem('', self.buttonFont))
-            if self.docHeaderColumnsSettings['']['width']:
-                self.docTableView.setColumnWidth(1, self.docHeaderColumnsSettings['']['width'])
-                self.docTableView.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
-            
-            columnCount=2
-            for item in self.docTableAttributes:
-                headerText=self.docHeaderColumnsSettings[item]['headertext']
-                self.docTableView.setHorizontalHeaderItem(columnCount, self.__tableItem(headerText, self.appFont))
-
-                # set width to auto for items that have a width defined (due to option to adjust font size width is ignored)...
-                if self.docHeaderColumnsSettings[item]['width']:
-                    self.docTableView.horizontalHeader().setSectionResizeMode(columnCount, QHeaderView.ResizeMode.ResizeToContents)
-            
-                columnCount+=1
+        text=TextObject()
+        singleValues=[        
+            ['abteilung','<b>Abteilung:</b> %s<br>'],
+            ['kurzrubrum','<b>Kurzrubrum:</b> %s<br>'],
+            ['verfahrensinstanznummer','<b>Verfahrensinstanznummer:</b> %s<br>'],
+            ['sachgebiet','<b>Sachgebiet:</b> %s<br>'],
+            ['sachgebietszusatz','<b>Sachgebietszusatz:</b> %s<br>']     
+        ]
                 
-            rowNo=0
-            self.isDocColumnEmpty={}
-            for row in data:
-                itemNo=0
-                for item in row:
-                    #Material Icons font for first two columns
-                    if itemNo > 1:
-                        font=self.appFont 
-                        alignment = self.DocumentTableAlignment 
-                    else: 
-                        font=self.buttonFont
-                        alignment = Qt.AlignmentFlag.AlignCenter
-
-                    #Leading zeros fo '#'-Items that are not empty   
-                    if itemNo==2 and item:
-                        item=item.zfill(4) 
-                           
-                    tempItem=self.__tableItem(item, font)
-                    tempItem.setTextAlignment(alignment)
-
-                    if itemNo==0:
-                        tempItem.setToolTip('Doppelklick fügt Datei den Favoriten hinzu.')
-                    elif itemNo==1:
-                        tempItem.setToolTip('Doppelklick öffnet Datei mit Standardprogramm.') 
-                    
-                    self.docTableView.setItem(rowNo, itemNo, tempItem) 
-                    
-                    #Set column to not empty (False) if item has content
-                    #Set to empty (True) if value for column does not exist 
-                    #or has any other value than False  
-                    if item!='':
-                        self.isDocColumnEmpty[itemNo]=False
-                    elif self.isDocColumnEmpty.get(itemNo) != False:
-                        self.isDocColumnEmpty[itemNo]=True                
-                    itemNo+=1
-                rowNo+=1
-            self.__updateVisibleColumns()
-            self.statusBar.showMessage('Der ausgewählte Inhalt enthält %s Dateien' % rowNo)
+        if self.akte.grunddaten.get('verfahrensnummer'):
+            text.add_line('<b><i>Verfahrensnummer</i></b>', self.akte.grunddaten['verfahrensnummer'])
             
-        else:
-            self.statusBar.showMessage('Der ausgewählte Inhalt enthält keine Dateien')
-            if self.actionAnwendungshinweise.isChecked():
-                self.__informIfNoDocsVisible()  
+        keys=list(self.akte.grunddaten['instanzen'].keys())
+        for key in keys:
+            instanz=self.akte.grunddaten['instanzen'][key]
+            hr='_______________________________________<br><br>'
+            text.add_raw("%s<b>Instanz %s</b><br>%s<b><i>Instanzdaten</i></b><br>" % (hr, key, hr))       
+            if instanz.get('auswahl_instanzbehoerde'):
+                text.add_line('<b>Behörde</b>', instanz['auswahl_instanzbehoerde'].get('name'))
+            
+            if instanz.get('aktenzeichen'):
+                text.add_line('<b>Aktenzeichen</b>', instanz['aktenzeichen'].get('aktenzeichen.freitext'))      
+                text.add_line('<b>Sammelvorgangsnummer</b>', instanz['aktenzeichen'].get('sammelvorgangsnummer'))
+            
+            for value in singleValues:
+                if instanz.get(value[0]):
+                    text.add_raw(value[1] % instanz[value[0]])
+            
+            for gegenstand in instanz['verfahrensgegenstand']:
+                setBR=False
+                if gegenstand.get('gegenstand'):
+                   text.add_raw('<b>Gegenstand:</b> %s' % gegenstand['gegenstand'])
+                   setBR=True
+                if gegenstand.get('gegenstandswert').strip():
+                   text.add_raw(', Streitwert: %s' % gegenstand['gegenstandswert'])
+                   setBR=True
+                if gegenstand.get('auswahl_zeitraumDesVerwaltungsaktes').strip():
+                   text.add_raw(', Datum/Zeitraum: %s' % (gegenstand['auswahl_zeitraumDesVerwaltungsaktes']))   
+                   setBR=True 
+                if setBR:
+                    text.add_raw('<br>')
+            
+            text.add_raw(self.display_renderer.render_telecommunications(instanz['telekommunikation']))
+            
+        self.instanzenText.setHtml(text.get_text())
 
-    def __updateVisibleColumns(self):
-        for columnNo in range(self.docTableView.columnCount()):
-            self.docTableView.setColumnHidden(columnNo, False)
+    def __setBeteiligteView(self):
+        """Lädt Beteiligtendaten in die Beteiligtenansicht. Wenn Daten als Klartext verfügbar sind in anwendungsspezifischen Erweiterungen, werden diese angezeigt."""
+        try:
+            if self.akte.erweiterungen.get('openXJV_beteiligung_klartext'):         
+                self.beteiligteText.setPlainText(self.akte.erweiterungen['openXJV_beteiligung_klartext']['text'])
+                return
+        except AttributeError:
+            pass
         
-        columnNo=2
-        for attribute in self.docTableAttributes:
-            if self.docHeaderColumnsSettings[attribute]['setting']:
-               self.docTableView.setColumnHidden(columnNo, not self.docHeaderColumnsSettings[attribute]['setting'].isChecked())     
-            columnNo+=1  
-        
-        if self.actionLeereSpaltenAusblenden.isChecked():       
-            self.__hideEmptyColumns() 
-       
-    def __hideEmptyColumns(self):
-        '''Blendet leere Spalten aus.'''
-        for columnNo, isEmpty in self.isDocColumnEmpty.items():
-            if isEmpty:
-                self.docTableView.setColumnHidden(columnNo, True)       
-    
-    def __arrangeData(self, dictOfMetadata, attributes):
-        '''Gibt die Werte eines Dictionaries in der Reihenfolge einer übergebenen Schlüsselliste zurück. Ist für einen Schlüssel kein Eintrag vorhanden, wird ein leeres Listenelement eingefügt.'''
-        arrangedRow=[]      
-        for attribute in attributes:
-            value = dictOfMetadata.get(attribute)
-            if isinstance(value, str):
-                arrangedRow.append(self.__replaceTrueFalse(value))
-            elif isinstance(value, list):
-                text=''
-                newline='' # Optional setzen, um Werte in mehreren Zeilen anzeigen lassen zu können 
-                for item in value:
-                    if item:
-                        text+=newline + item
-                        newline=' '
-                arrangedRow.append(text)
-            elif value is None:
-                arrangedRow.append('')
-            else:
-                arrangedRow.append(str(value))  # Fallback für alle anderen Typen
+        text=TextObject()            
+        for beteiligung in self.akte.grunddaten['beteiligung']:
+            text.add_line('<b>Beteiligtennummer</b>', beteiligung.get('beteiligtennummer'))
             
-        return arrangedRow
-    
-    def __replaceTrueFalse(self, value):
-       '''Ersetzt Strings "True" mit "ja" und "False" mit "nein". Nicht case-sensitiv.'''
-       if value.lower()=='true':
-           return 'ja' 
-       elif value.lower()=='false':
-           return 'nein'
-       return value
-    
-    def __tableItem (self, text, font=QFont('Ubuntu', 11, 50)):
-        '''Erstellt TableItem und setzt für dieses einen Font'''
-        item = QTableWidgetItem(text)
-        item.setFont(font)
-        return item
-    
-    def __setMetadata(self, nachricht, aktenID=None):
-        
-        text=TextObject(newline='\n')
-        if aktenID is None or aktenID=='' or aktenID == 'Alle_Dokumente':
-            
-            if nachricht.nachricht.get('vertraulichkeit'):
-                text.addLine('Vertraulichkeit / Geheimhaltung', nachricht.nachricht['vertraulichkeit'].get('vertraulichkeitsstufe'))
-                text.addLine('Vertraulichkeitsgrund', nachricht.nachricht['vertraulichkeit'].get('vertraulichkeitsgrund'))
-            
-            labelList =[
-                ['nachrichtenNummer','Nachricht Nr.'],
-                ['nachrichtenAnzahl','Von Nachrichten gesamt'],
-                ['ereignisse','Ereignis'],
-                ['eigeneID','Abs. Nachr.-ID'],
-                ['fremdeID','Empf. Nachr.-ID'],
-                ['prozessID','Prozess-ID'],
-                ['routingInformationAusSafe', 'Routinginformation'],
-                ['produktName','Software'],
-                ['produktHersteller','Hersteller'],
-                ['produktVersion','Version'],
-            ]
-            for label in labelList:
-                if nachricht.nachricht.get(label[0]):
-                    text.addLine(label[1], nachricht.nachricht[label[0]])
-        else:
-            akte=nachricht.getAkte(nachricht.schriftgutobjekte['akten'], aktenID)    
-    
-            if akte:
-
-
-                if akte.get('ruecksendungEEB.erforderlich'):                
-                    eeb = 'Abgabe nicht erforderlich'
-                    if akte['ruecksendungEEB.erforderlich'].lower() == 'true':
-                        eeb = 'Abgabe angefordert'
-                    text.addLine('EEB', eeb)
+            if beteiligung['rolle']:
+                text.add_raw(self.display_renderer.render_roles(beteiligung['rolle']))
                 
-                if akte.get('hybridakte'):
-                    text.addLine('Hybridakte', 'Teile der elektronischen Akte liegen in Papierform vor')    
-
-                for aktenzeichen in akte['aktenzeichen']:
-                    text.addLine('Aktenzeichen', aktenzeichen['aktenzeichen.freitext'])
-            
-                for person in akte['personen']:
-                    name=self.akte.beteiligtenverzeichnis.get(person)
-                    if name:
-                        text.addLine('Personenbezug', name)
-                
-                for referenz in akte['aktenreferenzen']:
-                    text.addLine('ReferenzaktenID ('+referenz['aktenreferenzart']+')', referenz['id.referenzierteAkte'])
-                    
-                labelList =[
-                ['anzeigename','Anzeigename'],    
-                ['aktentyp','Aktentyp'],
-                ['teilaktentyp','Teilaktentyp'],
-                ['id','Akten-ID'],
-                ['weiteresOrdnungskriteriumBehoerde','Weiteres Ordnungskriterium'],              
-                ['abgebendeStelle','Abgebende Stelle'], 
-                ['letztePaginierungProTeilakte', 'Letzte Paginierung'],
-                ['erstellungszeitpunktAkteVersand','Erstellungszeitpunkt'], 
-                        
-                ]
-            for label in labelList:
-                text.addLine(label[1], akte[label[0]])
-            
-            if akte.get('vertraulichkeitsstufe'):
-                text.addLine('Vertraulichkeitsstufe', akte['vertraulichkeitsstufe'])    
-
-            if akte.get('vertraulichkeit'):
-                text.addRaw(akte['vertraulichkeit'])
-
-            if akte.get('laufzeit'):
-                text.addLine('Laufzeit ab', akte['laufzeit'].get('beginn'))        
-                text.addLine('Laufzeit bis', akte['laufzeit'].get('ende'))
-            
-            if akte.get('justizinterneDaten'):
-                if akte.get('roemischPaginiert'):
-                    text.addLine('Römisch Paginiert',  self.__replaceTrueFalse(akte['justizinterneDaten']['roemischPaginiert']))
-                    
-            if akte['zustellung41StPO'].lower() == 'true':
-                text.addLine('Zustellung gem. §41StPO', 'ja')        
-            elif akte['zustellung41StPO'].lower() == 'false':    
-                text.addLine('Zustellung gem. §41StPO', 'nein')
-                
-            if akte.get('uebergabeAktenfuehrungsbefugnis') == 'true':
-                text.addLine('Übergabe der Aktenführungsbefugnis', 'erteilt')     
+            beteiligter=beteiligung['beteiligter']
+      
+            beteiligtentyp=beteiligter.get('type')
+            if beteiligtentyp=='GDS.Organisation':
+                text.add_raw(self.display_renderer.render_organization(beteiligter))
+            elif beteiligtentyp=='GDS.RA.Kanzlei':
+                text.add_raw(self.display_renderer.render_law_office(beteiligter))
+            elif beteiligtentyp=='GDS.NatuerlichePerson':
+                text.add_raw(self.display_renderer.render_natural_person(beteiligter))
+            text.add_raw('_______________________________________<br><br>')
            
-        self.metadatenText.setPlainText(text.getText())
-                        
-    def __setNachrichtenkopf (self, absender, empfaenger, nachrichtenkopf):
-        '''Inhalte der Nachrichtenkopf-Box setzen'''
-        self.absenderText.setText(absender['name'])
-        self.absenderAktenzeichenText.setText(absender['aktenzeichen'])
-        self.empfaengerText.setText(empfaenger['name'])
-        self.empfaengerAktenzeichenText.setText(empfaenger['aktenzeichen'])
-        self.erstellungszeitpunktText.setText(nachrichtenkopf['erstellungszeitpunkt'])
-        self.sendungsprioritaetText.setText(self.__isSet(nachrichtenkopf['sendungsprioritaet']))
-               
-        ###Cursor auf erstes Zeichen setzen###
-        self.absenderText.setCursorPosition(0)
-        self.absenderAktenzeichenText.setCursorPosition(0)
-        self.empfaengerText.setCursorPosition(0)
-        self.empfaengerAktenzeichenText.setCursorPosition(0)
-    
-    def __exportZipAction(self):
-        '''Exportiert die Dateien der Favoritenliste nach Auswahl eines Dateinamens in eine Zip-Datei'''
-        message=''
-        
-        if not self.favorites:
-            message = 'Aktion nicht verfügbar. Die Favoritenliste ist leer!'
-            self.__displayMessage(message)
-        else:
-            zipPath , extension = QFileDialog.getSaveFileName(None, "In ZIP-Datei exportieren",
-                                                self.settings.value("defaultFolder", str(self.homedir)), "ZIP-Dateien (*.zip *.ZIP)")
-                
-            if zipPath and not zipPath.lower().endswith('.zip'):
-                zipPath = zipPath + '.zip'
-            
-            if zipPath and self.favorites:
-                filelist=[]
-                for filename in self.favorites:
-                    filelist.append(os.path.join(self.basedir , filename))
-                filelist.append(os.path.join(self.basedir , self.settings.value("lastFile", None)))    
-                try:
-                    self.__createZip(zipPath, filelist)
-                    message = 'Die Dateien wurden erfolgreich exportiert - %s' % zipPath
-                    self.__displayMessage(message)
-                except Exception as e:
-                    message = 'Bei der Erzeugung der Zip-Datei ist ein Fehler aufgetreten.'
-                    self.__displayMessage(message, title = 'Fehler', icon = QMessageBox.Icon.Warning)      
-                    self.lastExceptionString = str(e)        
-            else:
-                return
-    
-        self.statusBar.showMessage(message)
-            
-    def __createZip (self, zipname, filelist):
-        '''Erzeugt aus einer Liste von Dateien in eine Zip-Datei'''
-        with ZipFile(zipname, 'w') as outzip:
-            for file in filelist:
-                outzip.write(file, os.path.basename(file))
-          
-    def __exportToFolderAction(self):
-        '''Fragt Zielordner in Dialog ab und exportiert Dateien'''
-        message = ''
-        
-        if not self.favorites:
-            message='Aktion nicht verfügbar. Die Favoritenliste ist leer!'
-            self.__displayMessage(message) 
-        else:
-            folder = QFileDialog.getExistingDirectory(None, "Exportverzeichnis wählen",
-                                            self.settings.value("defaultFolder", str(self.homedir)),
-                                            QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)       
-            if folder and self.favorites:       
-                try:
-                    for filename in self.favorites:
-                        filepath = os.path.join(self.basedir , filename)
-                        targetpath = os.path.join(folder , filename)
-                        copyfile(filepath, targetpath)               
-                    copyfile(self.settings.value("lastFile", None), os.path.join(folder , self.xmlFile))
-                    message='Die Dateien wurden erfolgreich nach %s kopiert.' % folder    
-                    self.__displayMessage(message) 
-                except Exception as e:
-                    message='Es ist ein Fehler während des Kopiervorgangs aufgetreten.'
-                    self.__displayMessage(message, title='Fehler', icon = QMessageBox.Icon.Warning) 
-                    self.lastExceptionString = str(e)
-            else:
-                return
-
-        self.statusBar.showMessage(message)
-
-         
-    def __isSet(self, value):
-        '''Ersetzt einen leeren String '' mit 'nicht angegeben'.'''
-        if value == '':
-            return 'nicht angegeben'
-        else:
-            return value
-        
+        self.beteiligteText.setHtml(text.get_text())
+       
     def __setInhaltView(self, schriftgutobjekte):
-        '''Aktualisert die Ansicht "Inhalt"'''
+        """Aktualisiert die 'Inhalt' view."""
         treeModel = QStandardItemModel()
         rootNode = treeModel.invisibleRootItem()
         
@@ -2154,20 +1908,11 @@ class UI(QMainWindow, Ui_MainWindow):
         self.inhaltView.setColumnHidden(1, True)
         self.inhaltView.expandAll()
         self.inhaltView.setCurrentIndex(treeModel.index(0,0))
-        # Re-connect nach jedem Laden / Setzen eines Models
+        # Verbinde neu nach jedem Laden / Setzen eines Models
         self.inhaltView.selectionModel().selectionChanged.connect(self.__updateSelectedInhalt)
-        
-    def __addFavorite(self, filename):
-        '''Fügt eine Datei zu den  Favoriten hinzu und markiert die neue Zeile'''
-        if filename not in self.favorites:
-            self.favorites.append(filename) 
-            self.__setFavorites()
-            self.__saveFavorites() 
-                        
-        self.favTableView.selectRow(self.favTableView.findItems(filename, Qt.MatchFlag.MatchExactly)[0].row()) 
-             
+
     def __setFavorites(self):
-        '''Aktualisiert die Einträge in der Favoriten-View und initiiert die Speicherung der Werte'''
+        """Aktualisiert die Einträge in der Favoritenansicht und initiiert das Speichern der Werte."""
         # Ggf. angepasste Spaltenbreite auslesen, um sie nach Update der Ansicht wieder setzen zu können
         column_zero_width = self.favTableView.columnWidth(0)
         column_one_width = self.favTableView.columnWidth(1)
@@ -2185,7 +1930,7 @@ class UI(QMainWindow, Ui_MainWindow):
             for row in rows:
                 rowData= []
                 
-                #Ensure documents with the same filename are displayed only one time (can be part of multiple parts like Akten and Teilakten) 
+                #Ensure documents mit the same filename are displayed only one time (can be part of multiple parts like Akten and Teilakten) 
                 if row['dateiname'] in filename:
                     continue
                 elif row['dateiname'] == favorite:
@@ -2226,29 +1971,248 @@ class UI(QMainWindow, Ui_MainWindow):
                     self.favTableView.setItem(rowNo, itemNo, tempItem)           
                     itemNo+=1
                 rowNo=rowNo+1    
- 
+      
+    def __setMetadata(self, nachricht, aktenID=None):
+        
+        text=TextObject(newline='\n')
+        if aktenID is None or aktenID=='' or aktenID == 'Alle_Dokumente':
+            
+            if nachricht.nachricht.get('vertraulichkeit'):
+                text.add_line('Vertraulichkeit / Geheimhaltung', nachricht.nachricht['vertraulichkeit'].get('vertraulichkeitsstufe'))
+                text.add_line('Vertraulichkeitsgrund', nachricht.nachricht['vertraulichkeit'].get('vertraulichkeitsgrund'))
+            
+            labelList =[
+                ['nachrichtenNummer','Nachricht Nr.'],
+                ['nachrichtenAnzahl','Von Nachrichten gesamt'],
+                ['ereignisse','Ereignis'],
+                ['eigeneID','Abs. Nachr.-ID'],
+                ['fremdeID','Empf. Nachr.-ID'],
+                ['prozessID','Prozess-ID'],
+                ['routingInformationAusSafe', 'Routinginformation'],
+                ['produktName','Software'],
+                ['produktHersteller','Hersteller'],
+                ['produktVersion','Version'],
+            ]
+            for label in labelList:
+                if nachricht.nachricht.get(label[0]):
+                    text.add_line(label[1], nachricht.nachricht[label[0]])
+        else:
+            akte=nachricht.getAkte(nachricht.schriftgutobjekte['akten'], aktenID)    
+    
+            if akte:
+
+
+                if akte.get('ruecksendungEEB.erforderlich'):                
+                    eeb = 'Abgabe nicht erforderlich'
+                    if akte['ruecksendungEEB.erforderlich'].lower() == 'true':
+                        eeb = 'Abgabe angefordert'
+                    text.add_line('EEB', eeb)
+                
+                if akte.get('hybridakte'):
+                    text.add_line('Hybridakte', 'Teile der elektronischen Akte liegen in Papierform vor')    
+
+                for aktenzeichen in akte['aktenzeichen']:
+                    text.add_line('Aktenzeichen', aktenzeichen['aktenzeichen.freitext'])
+            
+                for person in akte['personen']:
+                    name=self.akte.beteiligtenverzeichnis.get(person)
+                    if name:
+                        text.add_line('Personenbezug', name)
+                
+                for referenz in akte['aktenreferenzen']:
+                    text.add_line('ReferenzaktenID ('+referenz['aktenreferenzart']+')', referenz['id.referenzierteAkte'])
+                    
+                labelList =[
+                ['anzeigename','Anzeigename'],    
+                ['aktentyp','Aktentyp'],
+                ['teilaktentyp','Teilaktentyp'],
+                ['id','Akten-ID'],
+                ['weiteresOrdnungskriteriumBehoerde','Weiteres Ordnungskriterium'],              
+                ['abgebendeStelle','Abgebende Stelle'], 
+                ['letztePaginierungProTeilakte', 'Letzte Paginierung'],
+                ['erstellungszeitpunktAkteVersand','Erstellungszeitpunkt'], 
+                        
+                ]
+            for label in labelList:
+                text.add_line(label[1], akte[label[0]])
+            
+            if akte.get('vertraulichkeitsstufe'):
+                text.add_line('Vertraulichkeitsstufe', akte['vertraulichkeitsstufe'])    
+
+            if akte.get('vertraulichkeit'):
+                text.add_raw(akte['vertraulichkeit'] + "\n")
+
+            if akte.get('laufzeit'):
+                text.add_line('Laufzeit ab', akte['laufzeit'].get('beginn'))        
+                text.add_line('Laufzeit bis', akte['laufzeit'].get('ende'))
+            
+            if akte.get('justizinterneDaten'):
+                if akte.get('roemischPaginiert'):
+                    text.add_line('Römisch Paginiert',  self.__replaceTrueFalse(akte['justizinterneDaten']['roemischPaginiert']))
+                    
+            if akte['zustellung41StPO'].lower() == 'true':
+                text.add_line('Zustellung gem. §41StPO', 'ja')        
+            elif akte['zustellung41StPO'].lower() == 'false':    
+                text.add_line('Zustellung gem. §41StPO', 'nein')
+                
+            if akte.get('uebergabeAktenfuehrungsbefugnis') == 'true':
+                text.add_line('Übergabe der Aktenführungsbefugnis', 'erteilt')     
+           
+        self.metadatenText.setPlainText(text.get_text())
+                        
+    def __setNachrichtenkopf (self, absender, empfaenger, nachrichtenkopf):
+        """Setzt Inhalte der Nachrichtenkopf-Box."""
+        self.absenderText.setText(absender['name'])
+        self.absenderAktenzeichenText.setText(absender['aktenzeichen'])
+        self.empfaengerText.setText(empfaenger['name'])
+        self.empfaengerAktenzeichenText.setText(empfaenger['aktenzeichen'])
+        self.erstellungszeitpunktText.setText(nachrichtenkopf['erstellungszeitpunkt'])
+        self.sendungsprioritaetText.setText(self.__isSet(nachrichtenkopf['sendungsprioritaet']))
+               
+        ###Cursor auf erstes Zeichen setzen###
+        self.absenderText.setCursorPosition(0)
+        self.absenderAktenzeichenText.setCursorPosition(0)
+        self.empfaengerText.setCursorPosition(0)
+        self.empfaengerAktenzeichenText.setCursorPosition(0)
+                
+    def __setTerminDetailView(self, val):
+        text=''
+        uuid=self.termineTableView.item( val.row(), 0).text()
+        for termin in self.akte.termine:
+            if termin['uuid']==uuid:
+                text+=self.display_renderer.render_appointment(termin)
+
+        self.terminDetailView.setHtml(text) 
+         
+    def __loadEmptyViewer(self, unknown = None):
+        """Lädt einen leeren Viewer in das Vorschaufenster."""
+
+        self.loadedPDFfilename=''
+
+        viewer_mode = self.settings_manager.get_pdf_viewer()
+
+        if viewer_mode == 'PDFjs':
+            # Verwende pdfjs_viewer's eingebaute Leerseite
+            self.pdf_viewer.show_blank_page()
+        ''' TODO: In späterer Version entfernen
+        else:
+            # Für Chromium/Native-Modi: Lade HTML-Leerseite
+            urlPath = self.scriptRoot.replace("\\","/")
+            winslash = '/' if sys.platform.lower().startswith('win') else ''
+            blankPage = "file://%s%s/html/blank/blank.html" % (winslash, urlPath)
+
+            self.url = blankPage
+
+            separators = ('?','&')
+            req_strings = []
+            if darkdetect.isDark():
+                req_strings.append('darkmode=True')
+
+            if unknown:
+                req_strings.append('unknown=True')
+
+            for req, no in zip(req_strings, range(len(req_strings))):
+                self.url += f'{separators[no]}{req}'
+
+            self.browser.setUrl(QUrl.fromUserInput(self.url))
+        '''
+              
+    def __updateSelectedInhalt(self):
+        val = self.inhaltView.currentIndex() 
+        akte = self.akte 
+    
+        aktenID=val.siblingAtColumn(val.column()+1).data()
+        self.__setMetadata(akte, aktenID)
+        self.__setDocumentTable(aktenID)
+        self.__filtersTriggered()   
+   
+    def __updateVisibleColumns(self):
+        for columnNo in range(self.docTableView.columnCount()):
+            self.docTableView.setColumnHidden(columnNo, False)
+        
+        columnNo=2
+        for attribute in self.docTableAttributes:
+            if self.docHeaderColumnsSettings[attribute]['setting']:
+               self.docTableView.setColumnHidden(columnNo, not self.docHeaderColumnsSettings[attribute]['setting'].isChecked())     
+            columnNo+=1  
+        
+        if self.actionLeereSpaltenAusblenden.isChecked():       
+            self.__hideEmptyColumns() 
+
+    def __hideEmptyColumns(self):
+        """Blendet leere Spalten aus."""
+        for columnNo, isEmpty in self.isDocColumnEmpty.items():
+            if isEmpty:
+                self.docTableView.setColumnHidden(columnNo, True)       
+              
+    def __updateVisibleViews(self):
+        self.nachrichtenkopf.setVisible(self.actionNachrichtenkopf.isChecked())
+        self.favoriten.setVisible(self.actionFavoriten.isChecked())
+        self.metadaten.setVisible(self.actionMetadaten.isChecked())
+        self.notizen.setVisible(self.actionNotizen.isChecked())
+        
+        # Suche
+        self.fakeSpacer.setVisible(self.actionSucheAnzeigen.isChecked())
+        self.suchbegriffeText.setVisible(self.actionSucheAnzeigen.isChecked())
+                         
+    def __updateDoctableViewOrientation(self):
+        """Setzt die horizontale Ausrichtung der Dateitabelle."""
+        if self.actionDateitabelleLinksbuendig.isChecked():
+            alignment = Qt.AlignLeft | Qt.AlignVCenter      
+        else:
+            alignment = Qt.AlignmentFlag.AlignCenter    
+        
+        self.DocumentTableAlignment = alignment
+        
+        try:            
+            self.__updateSelectedInhalt()
+        except:
+            pass
+
+    def __checkFiltersAndRows(self):
+        if self.actionAnwendungshinweise.isChecked():
+                self.__informIfFiltersSet()           
+                if self.docTableView.rowCount() == 0: 
+                    self.__informIfNoDocsVisible()        
+           
+    def __informIfNoDocsVisible(self):
+        """Überprüft, ob Dokumente angezeigt werden und gibt einen Hinweis aus."""
+        if not self.docTableView.rowCount():
+             self.__displayMessage("Es werden aktuell keine Dateien angezeigt, da der ausgewählte Inhalt keine Dateien enthält.\n\nBitte wählen Sie einen anzuzeigenden Inhalt in der Box 'Inhalt' durch Anklicken aus.\n\n(Anwendungshinweise können unter 'Optionen' ausgeschaltet werden.", "Anwendungshinweis", modal=False)
+   
+    def __informIfFiltersSet(self):
+        """Überprüft, ob Filterbegriffe gesetzt wurden und informiert per Pop-up."""
+        minusFilterText=self.minusFilter.text().replace(" ","")
+
+        #Ausnahme für Filter für technische Dateien
+        for extension in [".pks",".p7s",".xml",".pkcs7"]:
+            minusFilterText=minusFilterText.replace(extension, "")
+
+        if minusFilterText or self.plusFilter.text():
+            self.__displayMessage("Es sind eigene Filterbegriffe gesetzt.\n\nDaher werden ggf. nicht alle Dokumente angezeigt.\nBei Bedarf den Button 'Filter leeren' anklicken, um die Filter zu löschen.\n\n(Anwendungshinweise können unter 'Optionen' ausgeschaltet werden.)", "Anwendungshinweis", modal=False)
+
     def __setFontsizes(self, appFontsize=15, buttonFontSize=17, iconFontSize=24,
                        appFontWeight=QFont.Weight.Normal):
-        """Set fonts in point sizes based on current screen DPI."""
+        """Setzt Schriftarten in Punktgrößen basierend auf der aktuellen Bildschirm‑DPI."""
 
-        # Get the screen where this window is shown
+        # Hole den Bildschirm, auf dem dieses Fenster angezeigt wird
         screen = self.window().screen() if self.window() else QApplication.primaryScreen()
-        dpi = screen.logicalDotsPerInch() if screen else 96  # fallback
+        dpi = screen.logicalDotsPerInch() if screen else 96  # Fallback
 
         def px_to_pt(px):
             return px * 72.0 / dpi
 
-        # Convert to point sizes
+        # Konvertiere zu Punktgrößen
         self.iconFont.setPointSizeF(px_to_pt(iconFontSize))
         self.buttonFont.setPointSizeF(px_to_pt(buttonFontSize))
         self.appFont.setPointSizeF(px_to_pt(appFontsize))
         self.appFont.setWeight(appFontWeight)
 
-        # Apply to the window and app
+        # Wende auf Fenster und App an
         self.setFont(self.appFont)
         QApplication.instance().setFont(self.appFont)
 
-        # Update docTableView
+        # Aktualisiere docTableView
         docTableRows = self.docTableView.rowCount()
         docTableColumns = self.docTableView.columnCount()
         if docTableRows > 0 and docTableColumns > 0:
@@ -2264,7 +2228,7 @@ class UI(QMainWindow, Ui_MainWindow):
                     if item:
                         item.setFont(font)
 
-        # Update termineTableView
+        # Aktualisiere termineTableView
         termineTableRows = self.termineTableView.rowCount()
         termineTableColumns = self.termineTableView.columnCount()
         if termineTableRows > 0 and termineTableColumns > 0:
@@ -2278,195 +2242,332 @@ class UI(QMainWindow, Ui_MainWindow):
                     if item:
                         item.setFont(self.appFont)
 
-        # Update other widgets
+        # Aktualisiere andere Widgets
         self.deleteFavoriteButton.setFont(self.buttonFont)
         self.filterMagic.setFont(self.buttonFont)
         self.toolBar.setFont(self.iconFont)
 
     def __toggleFontsizes(self):
-        '''Toggle die Schriftgröße für die Anwendung und die Buttons'''
+        """Schaltet die Schriftgröße für Anwendung und Schaltflächen um."""
         if self.actionGrosse_Schrift.isChecked():
             self.__setFontsizes(appFontsize=20, buttonFontSize=20, iconFontSize=28)
         else:
-            self.__setFontsizes()
-    
-    def __getCurrentItemFilename(self, focusWidget):
-        if focusWidget == self.favTableView:
-            if self.favTableView.currentItem():
-                filename = self.favTableView.item(self.favTableView.currentRow(),1).text()
-                return filename
-                
-        elif focusWidget == self.docTableView:
-            if self.docTableView.currentRow()!=-1:
-                filenameColumn=self.docTableAttributes.index('dateiname')+2
-                filename=self.docTableView.item(self.docTableView.currentRow(), filenameColumn).text()
-                return filename    
-                        
-    def __removeFavorite(self):
-        '''Entfernt den in der aktuell aktiven View markierten Eintrag aus der Liste der Favoriten.'''   
-        focusWidget = self.focusWidget()
-        if focusWidget in (self.favTableView, self.docTableView): # Wenn Tastenkombination oder Rechtsklickmenü in Tabelle ausgeführt wird
-            filename = self.__getCurrentItemFilename(focusWidget) # Datei, die in der jeweiligen Tabelle markiert ist wählen
-        elif focusWidget == self.deleteFavoriteButton: # Wenn Favoriten-Löschen Button geklickt wird
-            filename = self.__getCurrentItemFilename(self.favTableView) # In Favoritenliste markierte Datei wählen
+            self.__setFontsizes()           
+ 
+ 
+    def __resetAll(self):
+        self.__saveNotes() 
+        self.settings.sync()
+        widgets = (self.termineTableView,
+                   self.terminDetailView,
+                   self.instanzenText,
+                   self.beteiligteText,    
+                   self.metadatenText,
+                   self.favTableView,
+                   self.docTableView,
+                   self.suchbegriffeText,
+                   self.absenderText,
+                   self.empfaengerText,
+                   self.erstellungszeitpunktText,
+                   self.absenderAktenzeichenText,
+                   self.empfaengerAktenzeichenText,
+                   self.sendungsprioritaetText,
+                   self.notizenText
+        )
+        for widget in widgets:
+            widget.clear()
+        self.inhaltView.setModel(QStandardItemModel())
+        
+        table_widgets = (self.termineTableView,
+                         self.favTableView,
+                         self.docTableView,                                 
+        )
+        
+        for table in table_widgets:
+            table.setRowCount(0)
+            table.setColumnCount(0)  
+            
+        self.loadedPDFfilename = ''
+        self.loadedPDFpath = ''
+        self.favorites = []
+        self.searchStore = {}
+        self.akte = {}    
+        self.__loadEmptyViewer()
+
+    # ========================================
+    # ABSCHNITT 11: EINSTELLUNGSVERWALTUNG
+    # ========================================    
+    def __readSettings(self):
+        for key, value in self.docHeaderColumnsSettings.items(): 
+            if value['setting']:
+                setTo = str(self.settings_manager.get_string(key, 'default'))
+                if setTo.lower() == "true":
+                    value['setting'].setChecked(True)
+                elif setTo.lower() == "false":
+                    value['setting'].setChecked(False)
+                else:
+                    value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
+                         
+        self.actionNachrichtenkopf.setChecked            (self.settings_manager.get_bool('nachrichtenkopf'))
+        self.actionFavoriten.setChecked                  (self.settings_manager.get_bool('favoriten'))
+        self.actionMetadaten.setChecked                  (self.settings_manager.get_bool('metadaten'))
+        self.actionNotizen.setChecked                    (self.settings_manager.get_bool('notizen'))
+        self.actionLeereSpaltenAusblenden.setChecked     (self.settings_manager.get_bool('leereSpalten'))
+        self.actionChromium.setChecked                   (self.settings_manager.get_pdf_viewer() == 'chromium') #TODO: In späterer Version entfernen
+        self.actionnativ.setChecked                      (self.settings_manager.get_pdf_viewer() == 'nativ')
+        self.actionGrosse_Schrift.setChecked             (self.settings_manager.get_bool('grosseSchrift'))
+        self.actionAnwendungshinweise.setChecked         (self.settings_manager.get_bool('anwendungshinweise'))
+        self.actionOnlineAufUpdatesPruefen.setChecked    (self.settings_manager.get_bool('checkUpdates'))
+        self.actionDeckblattBeiExport.setChecked         (self.settings_manager.get_bool('deckblatt'))
+        self.actionDateidatumExportieren.setChecked      (self.settings_manager.get_bool('dateidatumExportieren'))
+        self.actionFavoritenExportieren.setChecked       (self.settings_manager.get_bool('favoritenExportieren'))
+        self.actionNurFavoritenExportieren.setChecked    (self.settings_manager.get_bool('nurFavoritenExportieren'))
+        self.actionPDFnachExportOeffnen.setChecked       (self.settings_manager.get_bool('PDFnachExportOeffnen'))
+        self.actionNotizenaufDeckblattausgeben.setChecked(self.settings_manager.get_bool('NotizenaufDeckblatt'))
+        self.actionSucheAnzeigen.setChecked              (self.settings_manager.get_bool('sucheAnzeigen'))
+        self.actionDateitabelleLinksbuendig.setChecked   (self.settings_manager.get_bool('dateiansichtLinksbuendig'))
+
+        # Annotationseinstellungen wiederherstellen
+        saved_annotation = self.settings_manager.get_string('annotationAction', 'disabled')
+        self.actionAktion_erfragen.setChecked(saved_annotation == 'prompt')
+        self.actionAutomatisch_speichern.setChecked(saved_annotation == 'auto_save')
+        self.actionVerwerfen.setChecked(saved_annotation == 'disabled' or saved_annotation == 'default')
+
+        self.__updateDoctableViewOrientation()
+        self.__viewerSwitch()
+        self.__annotationSettingsSwitch()
+        self.__updateVisibleViews()
+        self.__toggleFontsizes()
+        
+    def __updateSettings(self):
+        for key, value in self.docHeaderColumnsSettings.items():
+            if value['setting']:
+                self.settings_manager.set_value(key, value['setting'].isChecked())
+        self.settings_manager.set_value('nachrichtenkopf', self.actionNachrichtenkopf.isChecked())
+        self.settings_manager.set_value('favoriten', self.actionFavoriten.isChecked())
+        self.settings_manager.set_value('metadaten', self.actionMetadaten.isChecked())
+        self.settings_manager.set_value('notizen', self.actionNotizen.isChecked())
+        self.settings_manager.set_value('leereSpalten', self.actionLeereSpaltenAusblenden.isChecked())
+        self.settings_manager.set_value('grosseSchrift', self.actionGrosse_Schrift.isChecked())
+        self.settings_manager.set_value('anwendungshinweise', self.actionAnwendungshinweise.isChecked())
+        self.settings_manager.set_value('deckblatt', self.actionDeckblattBeiExport.isChecked())
+        self.settings_manager.set_value('dateidatumExportieren', self.actionDateidatumExportieren.isChecked())
+        self.settings_manager.set_value('favoritenExportieren', self.actionFavoritenExportieren.isChecked())
+        self.settings_manager.set_value('nurFavoritenExportieren', self.actionNurFavoritenExportieren.isChecked())
+        self.settings_manager.set_value('PDFnachExportOeffnen', self.actionPDFnachExportOeffnen.isChecked())
+        self.settings_manager.set_value('NotizenaufDeckblatt', self.actionNotizenaufDeckblattausgeben.isChecked())
+        self.settings_manager.set_value('sucheAnzeigen', self.actionSucheAnzeigen.isChecked())
+        self.settings_manager.set_value('dateiansichtLinksbuendig', self.actionDateitabelleLinksbuendig.isChecked())
+
+        if self.actionChromium.isChecked(): #TODO: In späterer Version entfernen
+            self.settings_manager.set_pdf_viewer('chromium')
+        elif self.actionnativ.isChecked():
+            self.settings_manager.set_pdf_viewer('nativ')
         else:
-            return
-            
-        if filename and filename in self.favorites:     
-            self.favorites.remove(filename)
+            self.settings_manager.set_pdf_viewer('PDFjs')
 
-            if self.favTableView.currentRow() <= self.favTableView.rowCount()-2:
-                next_row = self.favTableView.currentRow()
-            else:    
-                next_row = self.favTableView.rowCount()-2
-            
-            self.__setFavorites()
-            
-            with sqlite3.connect(self.db_path) as db_connection:
-                db_cursor = db_connection.cursor()       
-                db_query = '''
-                    DELETE FROM favorites WHERE uuid = ? AND filename = ?;                  
-                        '''
-                eigeneID = self.akte.nachricht.get('eigeneID')        
-                db_cursor.execute(db_query, (eigeneID, filename))         
-            
-            self.favTableView.selectRow(next_row)   
-            
-            self.statusBar.showMessage(filename + ' aus Favoriten entfernt.')
-            
-    def __loadFavorites(self):
-        '''Lädt die Favoriten aus der Datenbank. Favoriten aus Altversionen aus einer Datei, deren Dateinamen dem Wert der 'eigeneID' entspricht. Die Dateien werden nach Import und Speicherung in der Datenbank gelöscht'''
-        self.favorites.clear()
-        eigeneID = self.akte.nachricht.get('eigeneID') 
-        if eigeneID:
-            filepath = os.path.join(self.dirs.user_data_dir , eigeneID)
-            # Vor Version 0.8.0 wurden Favoriten in Dateien gespeichert
-            if os.path.exists(filepath):
-                with open(filepath , 'r', encoding = 'utf-8') as favoriteFile:
-                    for filename in favoriteFile.readlines():
-                        self.favorites.append(filename.rstrip("\n"))
-                # Favoriten in DB speichern
-                self.__saveFavorites()
-                # Datei löschen, da in DB gespeichert wurde
-                os.remove(filepath)
-            else:
-                with sqlite3.connect(self.db_path) as db_connection:
-                    db_cursor = db_connection.cursor()
-                        
-                    db_query = '''
-                        SELECT filename, position FROM favorites WHERE uuid = ? ORDER BY position ASC;
-                    '''         
-                    db_cursor.execute(db_query, (eigeneID,))
-                    rows = db_cursor.fetchall()
-                    for row in rows:
-                        self.favorites.append(row[0])
-        self.__setFavorites()
+        self.settings_manager.set_value('checkUpdates', self.actionOnlineAufUpdatesPruefen.isChecked())
+        self.settings_manager.set_value('annotationAction', self.__getAnnotationAction())
+
+        self.__updateDoctableViewOrientation() 
+        self.__updateVisibleColumns()
+        self.__updateVisibleViews()
+        self.__prepareSearchStore(reset_searchStore=False)
+        self.__toggleFontsizes()
+   
+    def __resetSettings(self):
+        """Setzt Spalten und Anzeigeoptionen auf die Standardwerte zurück."""
+        for key, value in self.docHeaderColumnsSettings.items():
+            if value['setting']:
+                value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
+        self.actionNachrichtenkopf.setChecked       (True)
+        self.actionFavoriten.setChecked             (True)
+        self.actionMetadaten.setChecked             (False)
+        self.actionNotizen.setChecked               (False)
+        self.actionLeereSpaltenAusblenden.setChecked(True)  
+        self.actionPDF_js.setChecked                (True)
+        self.actionVerwerfen.setChecked(True)
+        self.actionAktion_erfragen.setChecked(False)
+        self.actionAutomatisch_speichern.setChecked(False)
+        self.__viewerSwitch()
+        self.__annotationSettingsSwitch()
+        self.__updateSettings()
          
-    def __saveFavorites(self):
-        '''Speichert die Favoriten in der Datenbank.'''
-        eigeneID = self.akte.nachricht.get('eigeneID')
-        if eigeneID:
-            try:
-                with sqlite3.connect(self.db_path) as db_connection:
-                    db_cursor = db_connection.cursor()   
-                    db_query = '''
-                        DELETE FROM favorites WHERE uuid = ?;                  
-                    '''
-                    db_cursor.execute(db_query, (eigeneID,))  
-                    if self.favorites:                 
-                        for filename, position in zip(self.favorites, range(len(self.favorites))) : 
-                            db_query = '''
-                                INSERT OR REPLACE INTO favorites (uuid, filename, position) VALUES (?, ?, ?);                  
-                            '''
-                            db_cursor.execute(db_query, (eigeneID, filename, position))                           
-            except Exception as e:
-                self.lastExceptionString = str(e)
+    def __viewerSwitch(self):
+        """Activiert/Deaktiviert viewer selection options je nach ausgelöstem Ereignis."""
+        #TODO: Chromium in späterer Version entfernen
+        if self.actionChromium.isChecked() and self.actionChromium.isEnabled():
+            self.actionChromium.setEnabled(False)
+            self.actionPDF_js.setChecked(False)
+            self.actionPDF_js.setEnabled(True)
+            self.actionnativ.setChecked(False)
+            self.actionnativ.setEnabled(True)
+            self.pdf_viewer.setVisible(True)
 
-    def __loadNotes(self):
-        '''Lädt die Notizen aus der Datenbank - Für Notizen aus Altversionen aus einer Datei, deren Dateinamen dem Wert der notizen + 'eigeneID' entspricht. Die Datei wird anschließend gelöscht, da die Notizen danach in der Datenbank abgelegt werden.'''
-        self.notizenText.clear()
-        eigeneID = self.akte.nachricht.get('eigeneID')
-        if eigeneID:
-            filepath = os.path.join(self.dirs.user_data_dir , 'notizen' + eigeneID)
-            if os.path.exists(filepath): 
-                # Lade Notizen der Altversionen und lösche die Notizdateien
-                try:
-                    with open(filepath , 'r', encoding = 'utf-8') as notesFile:
-                        notes_text=notesFile.read()
-                except Exception:
-                    # Unter Windows wurden "alte" Notizen ggf. nicht als UTF-8 gespeichert und werfen Fehler
-                    with open(filepath , 'r') as notesFile:
-                        notes_text=notesFile.read()
-                self.__saveNotes()
-                os.remove(filepath) # Datei löschen - wird in DB gespeichert
-            else:
-                with sqlite3.connect(self.db_path) as db_connection:
-                    db_cursor = db_connection.cursor()   
-                    db_query = '''
-                        SELECT notes FROM notes WHERE uuid = ?;
-                    '''
-                    db_cursor.execute(db_query, (eigeneID,))
-                    rows = db_cursor.fetchall()
-                    if rows:
-                        notes_text = rows[0][0]
+        elif self.actionnativ.isChecked() and self.actionnativ.isEnabled():
+            self.actionnativ.setEnabled(False)
+            self.actionPDF_js.setChecked(False)
+            self.actionPDF_js.setEnabled(True)
+            self.actionChromium.setChecked(False) #TODO: In späterer Version entfernen
+            self.actionChromium.setEnabled(True) #TODO: In späterer Version entfernen
+            # Load blank page to handle unsaved annotations before hiding
+            self.pdf_viewer.show_blank_page()
+            self.pdf_viewer.setVisible(False)
+
+        else:
+            self.actionPDF_js.setChecked(True)
+            self.actionPDF_js.setEnabled(False)
+            self.actionChromium.setChecked(False) #TODO: In späterer Version entfernen
+            self.actionChromium.setEnabled(True) #TODO: In späterer Version entfernen
+            self.actionnativ.setChecked(False)
+            self.actionnativ.setEnabled(True)
+            self.pdf_viewer.setVisible(True)
+
+        self.__updateSettings()
+
+    def __getAnnotationAction(self) -> str:
+        """Gibt die aktuelle Annotationseinstellung als String zurueck."""
+        if self.actionAktion_erfragen.isChecked():
+            return "prompt"
+        elif self.actionAutomatisch_speichern.isChecked():
+            return "auto_save"
+        return "disabled"
+
+    def __annotationSettingsSwitch(self):
+        """Setzt die Annotationseinstellungen (nur eine Option aktiv)."""
+        if self.actionAktion_erfragen.isChecked() and self.actionAktion_erfragen.isEnabled():
+            self.actionAktion_erfragen.setEnabled(False)
+            self.actionAutomatisch_speichern.setChecked(False)
+            self.actionAutomatisch_speichern.setEnabled(True)
+            self.actionVerwerfen.setChecked(False)
+            self.actionVerwerfen.setEnabled(True)
+
+        elif self.actionAutomatisch_speichern.isChecked() and self.actionAutomatisch_speichern.isEnabled():
+            self.actionAutomatisch_speichern.setEnabled(False)
+            self.actionAktion_erfragen.setChecked(False)
+            self.actionAktion_erfragen.setEnabled(True)
+            self.actionVerwerfen.setChecked(False)
+            self.actionVerwerfen.setEnabled(True)
+
+        else:
+            self.actionVerwerfen.setChecked(True)
+            self.actionVerwerfen.setEnabled(False)
+            self.actionAktion_erfragen.setChecked(False)
+            self.actionAktion_erfragen.setEnabled(True)
+            self.actionAutomatisch_speichern.setChecked(False)
+            self.actionAutomatisch_speichern.setEnabled(True)
+
+        # EXPERIMENTAL: Direkter Zugriff auf self.pdf_viewer.backend.config.features.unsaved_changes_action
+        # DIES VERWENDET NICHT DIE DOKUMENTIERTE API VON pdfjs-viewer-pyside6.
+        # DER BACKEND LIEST DIESEN WERT LAZY IN handle_unsaved_changes().
+        # KANN BEI AENDERUNGEN AM PACKAGE-BACKEND BRECHEN.
+        action = self.__getAnnotationAction()
+        self.pdf_viewer.backend.config.features.unsaved_changes_action = action
+
+        self.__updateSettings()
+
+    def __checkAllColumns(self):
+        """Setzt das Häkchen in den Anzeigeoptionen für alle Spalten."""
+        for key, value in self.docHeaderColumnsSettings.items():
+            if value['setting']:
+                value['setting'].setChecked(True)       
+        self.__updateSettings()
+        
+    def __uncheckAllColumns(self):
+        """Entfernt das Häkchen in den Anzeigeoptionen für alle Spalten."""
+        for key, value in self.docHeaderColumnsSettings.items():
+            if value['setting']:
+                value['setting'].setChecked(False)       
+        self.__updateSettings()
+
+    def __chooseStartFolder(self):
+        """Öffnet Dialog zum Festlegen eines Standardverzeichnisses. Delegiert an FileManager."""
+        # Delegiert Ordnerauswahl an FileManager
+        folder = self.file_manager.select_folder_dialog(title="Standardverzeichnis wählen")
+
+        if folder:
+            self.settings_manager.set_value("defaultFolder", folder)
+          
+    # ========================================
+    # ABSCHNITT 12: EVENT-HANDLER
+    # ========================================
+    def __openAllFavsExternalAction(self, extension = None):
+        """Öffnet alle Favoriten gleichzeitig in externen Standardprogrammen."""
+        if self.favTableView.rowCount():
+            for row_no in range(self.favTableView.rowCount()):
+                filename = self.favTableView.item(row_no,1).text() 
+                if extension and not filename.lower().endswith(extension):
+                    if os.path.exists(os.path.join(self.basedir, filename + extension)):
+                        filename = filename + extension                     
                     else:
-                        notes_text = ''          
-                
-            self.notizenText.setPlainText(notes_text)
-         
-    def __saveNotes(self):
-        '''Speichert die Notizen in der Datenbank.'''
-        try:
-            notizen = self.notizenText.toPlainText()
-            eigeneID = self.akte.nachricht.get('eigeneID')
-            if eigeneID:
-                with sqlite3.connect(self.db_path) as db_connection:
-                    db_cursor = db_connection.cursor()   
-                    db_query = '''
-                        INSERT OR REPLACE INTO notes (uuid, notes) VALUES (?, ?);                  
-                    '''
-                    db_cursor.execute(db_query, (eigeneID, notizen))  
-                    
-                    db_query = '''
-                        INSERT OR REPLACE INTO last_access (uuid, timestamp) VALUES (?, ?);                  
-                    '''
-                    db_cursor.execute(db_query, (eigeneID, str(int(time.time()))))  
-        except AttributeError:
-            pass        
-        except Exception as e:
-            self.lastExceptionString = str(e)
+                        continue    
+                self.__openFileExternal(filename)
+        
+    def __showDocsContextMenu(self, pos):
+        """Fügt Kontextmenü zur Dokmentsnansicht nd zeigt es an.."""
+        contextMenu = QMenu(self)
 
-    def __getAktenSubBaum(self, akten, node):    
-        for einzelakte in akten.values():
-           
-            if einzelakte['aktentyp']:
-                name = einzelakte['anzeigename'] if not einzelakte['anzeigename'] in ('', None) else einzelakte['aktentyp']
-            elif einzelakte['teilaktentyp'] != '': 
-                name = einzelakte['anzeigename'] if not einzelakte['anzeigename'] in ('', None) else einzelakte['teilaktentyp']             
-            else:
-                name = "Akte"
-            
-            for aktenzeichen in einzelakte['aktenzeichen']:
-                    if aktenzeichen['aktenzeichen.freitext']:
-                        name += ' ' + aktenzeichen['aktenzeichen.freitext']
-                     
-            value = StandardItem(name)
-            value.setIcon(QIcon(os.path.join(self.scriptRoot, 'icons', 'aktenbox_icon.png')))
-            key   = StandardItem(einzelakte['id'])
-            
-            if len(einzelakte['teilakten'])>0:
-                self.__getAktenSubBaum(einzelakte['teilakten'], value)
-            
-            node.appendRow([value, key])
-    
+        # Menüoptionen hinzufügen
+        addDocToFavoritesAction = contextMenu.addAction("Auswahl zu Favoriten hinzufügen (Einfg)")
+        addDocToFavoritesAction.triggered.connect(self.__addDocToFavorites)
+
+        addAllDocsToFavoritesAction = contextMenu.addAction("Alle Angezeigten zu Favoriten hinzufügen")
+        addAllDocsToFavoritesAction.triggered.connect(self.__addAllDocsToFavorites)
+
+        delDocsFromFavoritesAction = contextMenu.addAction("Auswahl aus Favoriten entfernen (Entf)")
+        delDocsFromFavoritesAction.triggered.connect(self.__removeFavorite)
+        
+        openDocExternalAction = contextMenu.addAction("Auswahl extern öffnen")
+        openDocExternalAction.triggered.connect(self.__openDocExternal)
+        
+        # Kontextmenü anzeigen
+        contextMenu.exec(self.docTableView.mapToGlobal(pos))
+          
+    def __showFavContextMenu(self, pos):
+        """Fügt Kontextmenü zur Favoritenansicht hinzu und zeigt es an."""
+        contextMenu = QMenu(self)
+
+        # Menüoptionen hinzufügen
+        moveFavUpAction = contextMenu.addAction("Nach oben verschieben (Strg + Pfeiltaste 'hoch')")
+        moveFavUpAction.triggered.connect(lambda:self.__moveFav('up'))
+
+        moveFavDownAction = contextMenu.addAction("Nach unten verschieben (Strg + Pfeiltaste 'runter')")
+        moveFavDownAction.triggered.connect(lambda:self.__moveFav('down'))
+        
+        # Horizontaler Strich (Spacer) hinzufügen
+        separator = QFrame()
+        separator.setFrameShape(QFrame.Shape.HLine)
+        separator.setLineWidth(1)  # Optional: Setzen Sie die Linienbreite
+
+        contextMenu.addSeparator()  # Fügt horizontalen Strich hinzu
+        
+        openFavExternalAction = contextMenu.addAction("Auswahl extern öffnen")
+        openFavExternalAction.triggered.connect(self.__getDClickFavoriteViewAction)
+        
+        openAllPdfFavsExternalAction = contextMenu.addAction("Alle PDF-Dateien extern öffnen")
+        openAllPdfFavsExternalAction.triggered.connect(lambda:self.__openAllFavsExternalAction('.pdf'))
+        
+        openAllFavsExternalAction = contextMenu.addAction("Alle Dateien extern öffnen")
+        openAllFavsExternalAction.triggered.connect(self.__openAllFavsExternalAction)
+        
+        contextMenu.addSeparator()  # Fügt horizontalen Strich hinzu
+        
+        removeFavoriteAction = contextMenu.addAction("Markierten Eintrag entfernen (Entf)")
+        removeFavoriteAction.triggered.connect(self.__removeFavorite)
+        
+        delAllFavoritesAction = contextMenu.addAction("Alle Favoriten entfernen")
+        delAllFavoritesAction.triggered.connect(self.__delAllFavorites)
+        
+        # Kontextmenü anzeigen
+        contextMenu.exec(self.favTableView.mapToGlobal(pos))
+        
     def __dClickDocTableAction(self, val):
-       
         filenameColumn=self.docTableAttributes.index('dateiname')+2
         filename=self.docTableView.item( val.row(), filenameColumn).text()
         
         if val.column()==0:
             self.__addFavorite(filename) 
-        elif self.settings.value('pdfViewer', 'PDFjs')=='nativ' or val.column()==1 or not filename.lower().endswith(".pdf"):
+        elif self.settings_manager.get_pdf_viewer()=='nativ' or val.column()==1 or not filename.lower().endswith(".pdf"):
             self.__openFileExternal(filename)
             
     def __browseDocTableAction (self, val):     
@@ -2477,11 +2578,11 @@ class UI(QMainWindow, Ui_MainWindow):
         filenameColumn=self.docTableAttributes.index('dateiname')+2
         filename=self.docTableView.item(currentIndex.row(), filenameColumn).text()
         
-        if self.settings.value('pdfViewer', 'PDFjs')!='nativ':
+        if self.settings_manager.get_pdf_viewer()!='nativ':
             supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt', '.xml', '.html')
-            # Check if a preview-file in PDF-format exists if 
-            # used as viewer for exported case files
-            # make sure the preview file is loaded in the browser  
+            # Prüfen, ob eine Vorschau-Datei im PDF-Format existiert,
+            # falls sie als Viewer für exportierte Falldateien verwendet wird
+            # sicherstellen, dass die Vorschau-Datei im Browser geladen wird
             if not filename.lower().endswith(supportedFiles):
                 previewFilepath = os.path.join(self.basedir , filename + '.pdf')
                 if os.path.exists(previewFilepath): 
@@ -2505,161 +2606,18 @@ class UI(QMainWindow, Ui_MainWindow):
             else:
                 self.__loadEmptyViewer(unknown = True) 
                 self.statusBar.showMessage(f'Der Dateityp {Path(filename).suffix} ist zur Anzeige in der Vorschau nicht geeignet.')  
-        
-    def __openFileInBrowser(self, filename):
-        filepath = os.path.join(self.basedir , filename)
-        if os.path.exists(filepath): 
-            self.loadedPDFpath=filepath
-            self.loadedPDFfilename=filename
-             
-            # IMPROVEMENT 
-            # TODO Ggf. Clean Up Temp Files wenn XJustiz-Datei geladen wird , um UX bei Nutzung von Netzlaufwerken zu verbessern            
-            # TODO Überprüfen, ob tmp-Verzeichnis auch für parallel laufende Prozesse (Druck, OCR) genutzt wird
-            
-            # Clean up any old tempfile
-            newTempfile = os.path.join(self.tempDir.name, filename)
-            
-            if self.tempfile and os.path.isfile(self.tempfile) and not self.tempfile == newTempfile:
-                try:
-                    # Workaround für Pyinstaller - Offenbar gibt WebengineView 
-                    # die Datei bei laufender OCR nicht schnell genug frei
-                    # Tempverzeichnis wird beim beenden der Anwendung aufgeräumt.
-                    os.remove(self.tempfile)
-                except:
-                    pass
 
-            #Copy PDF to local temporary folder to circumvent CORS issues with PDFjs
-            #if file is stored on e.g. a network share 
-            self.tempfile = newTempfile
-            
-            if not os.path.exists(self.tempfile):
-                copyfile(filepath, self.tempfile)
-            
-            filepath=self.tempfile
-            
-            if sys.platform.lower().startswith('win'):
-                filePath = filepath.replace("\\","/")
-            else:
-                filePath = filepath
-            
-            if filename.lower().endswith(".pdf"):
-                self.url=self.viewerPaths[self.settings.value('pdfViewer', 'PDFjs')] + "%s" % (filePath)
-                
-                if darkdetect.isDark() and self.settings.value('pdfViewer', 'PDFjs')=='PDFjs':
-                    self.url+='&darkmode=True'
-            
-            else:
-                winslash = '/' if sys.platform.lower().startswith('win') else ''    
-            
-                self.url =" file://%s%s" % (winslash, filePath)
-            
-            self.browser.setUrl(QUrl.fromUserInput(self.url))
-            self.statusBar.showMessage(f'Angezeigte Datei: {filename}') 
-        else:
-            self.__loadEmptyViewer(unknown = True) 
-            self.statusBar.showMessage(f'Datei existiert nicht: {filename}')  
-            
-    def __on_load_finished(self, ok):
-        '''Mouseevents im Bowserfenster um Anzeigeproblem mit asynchron gerenderten PDFs in PDF.js zu umgehen'''
-        if not ok or self.settings.value('pdfViewer', 'PDFjs')!='PDFjs':
-            return
-
-        def inject():
-                js = r"""
-                (function () {
-                function fire() {
-                    try {
-                    // Ziel-Elemente finden
-                    const container = document.getElementById('viewerContainer') || document.body;
-                    const canvas = document.querySelector('#viewerContainer canvas, canvas');
-
-                    // 1) Mausbewegung/Eingabe simulieren (User-Gesture)
-                    const target = canvas || container;
-                    if (target) {
-                        const rect = target.getBoundingClientRect();
-                        const cx = Math.max(1, Math.min(rect.width - 1, 10));
-                        const cy = Math.max(1, Math.min(rect.height - 1, 10));
-
-                        const evMove = new MouseEvent('mousemove', {
-                        bubbles: true, cancelable: true, view: window,
-                        clientX: rect.left + cx, clientY: rect.top + cy
-                        });
-                        target.dispatchEvent(evMove);
-
-                        const evDown = new MouseEvent('mousedown', {
-                        bubbles: true, cancelable: true, view: window,
-                        clientX: rect.left + cx, clientY: rect.top + cy, button: 0
-                        });
-                        target.dispatchEvent(evDown);
-                        const evUp = new MouseEvent('mouseup', {
-                        bubbles: true, cancelable: true, view: window,
-                        clientX: rect.left + cx, clientY: rect.top + cy, button: 0
-                        });
-                        target.dispatchEvent(evUp);
-                    }
-
-                    // 2) pdf.js intern zum Rendern zwingen
-                    if (window.PDFViewerApplication) {
-                        const app = window.PDFViewerApplication;
-                        if (typeof app.forceRendering === 'function') app.forceRendering();
-                        if (app.pdfViewer && typeof app.pdfViewer.update === 'function') app.pdfViewer.update();
-                    }
-
-                    // 3) Layout/Repaint im Browser anstoßen
-                    window.dispatchEvent(new Event('resize'));
-                    if (container) {
-                        // Sichtbarkeits-Toggle zur Reflow-Erzwingung
-                        const prev = container.style.display;
-                        container.style.display = 'none';
-                        void container.offsetHeight;
-                        container.style.display = prev || '';
-                    }
-
-                    // 4) Minimaler Scroll/Zoom-Nudge
-                    if (container) {
-                        container.scrollTop = container.scrollTop + 1;
-                        container.scrollTop = container.scrollTop - 1;
-                    }
-                    const z = document.body.style.zoom || '1';
-                    const f = parseFloat(z) || 1;
-                    document.body.style.zoom = String(f + 0.001);
-                    document.body.style.zoom = String(f);
-
-                    } catch (e) {}
-                }
-
-                // Direkt versuchen und mehrmals nachschießen, falls Ressourcen langsamer laden
-                fire();
-                setTimeout(fire, 200);
-                setTimeout(fire, 600);
-
-                // Auf pdf.js Events hören und erneut auslösen
-                const attach = () => {
-                    const app = window.PDFViewerApplication;
-                    if (!app || !app.eventBus) { setTimeout(attach, 100); return; }
-                    app.eventBus.on('documentloaded', fire);
-                    app.eventBus.on('pagesloaded', fire);
-                    app.eventBus.on('pagerendered', fire);
-                };
-                attach();
-                })();
-                """
-                self.browser.page().runJavaScript(js)
-
-        # kleiner Delay, damit DOM + pdf.js init starten konnten
-        QTimer.singleShot(150, inject)
-        
     def __getFavoriteViewAction (self, val):     
         filename = self.favTableView.item(self.favTableView.currentRow(),1).text()
         
         if self.loadedPDFfilename == filename:
             return
         
-        if self.settings.value('pdfViewer', 'PDFjs')!='nativ':
+        if self.settings_manager.get_pdf_viewer()!='nativ':
             supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt', '.xml', '.html')
-            # Check if a preview-file in PDF-format exists if 
-            # used as viewer for exported case files
-            # make sure the preview file is loaded in the browser  
+            # Prüfen, ob eine Vorschau-Datei im PDF-Format existiert,
+            # falls sie als Viewer für exportierte Falldateien verwendet wird
+            # sicherstellen, dass die Vorschau-Datei im Browser geladen wird         
             if not filename.lower().endswith(supportedFiles):
                 previewFilepath = os.path.join(self.basedir , filename + '.pdf')
                 if os.path.exists(previewFilepath): 
@@ -2688,279 +2646,228 @@ class UI(QMainWindow, Ui_MainWindow):
                 self.statusBar.showMessage(f'Der Dateityp {Path(filename).suffix} ist zur Anzeige in der Vorschau nicht geeignet.')  
     
     def __getDClickFavoriteViewAction(self):
-        '''Öffnet eine doppelt angeklickte Datei in externem Standardprogramm'''
+        """Öffnet eine doppelt angeklickte Datei im externen Standardprogramm."""
         filename = self.favTableView.item(self.favTableView.currentRow(),1).text()     
         self.__openFileExternal(filename)
+              
+    # __on_load_finished entfernt - pdfjs_viewer übernimmt PDF.js-Initialisierung und Rendering intern
+
+    def __supportAnfragen(self):
+        """Öffnet Mailprogramm und befüllt Inhalt mit den wichtigsten Informationen zu Einstellungen, letzten Fehlern und Installationsumgebung."""
+        mailbody="\n\n------ Ihre Anfrage bitte oberhalb dieser Linie einfügen ------\n\nEinstellungen\n"
+        
+        for key in self.settings.allKeys():
+            if key not in ['history', 'lastFile', 'defaultFolder']:  
+                mailbody+=f"{key} - {str(self.settings.value(key))}\n" 
+        
+        if len(self.lastExceptionString)>0:
+            mailbody+='\n\nLetzte Fehlermeldung\n' + self.lastExceptionString
+        
+        QDesktopServices.openUrl(QUrl("mailto:%s?subject=Supportanfrage zu openXJV %s unter %s&body=%s" % (self.supportMail, VERSION, platform.platform() ,str(mailbody)), QUrl.ParsingMode.TolerantMode ))
+ 
+    def changeEvent(self, event):
+        if event.type() == QEvent.Type.PaletteChange:  
+            # Workaround für Gnome Palette / Ubuntu
+            if sys.platform.lower() == 'linux':
+                self.__fixGnomeDarkPalette()    
+               
+        return super(UI, self).changeEvent(event)
+
+    def __onScreenChanged(self, screen: QScreen):
+        """Getrigget wenn Fenster auf anderenm Screen gezogen wird"""
+        self.__setFontsizes()
+                  
+    # ========================================
+    # ABSCHNITT 13: HILFS-/UNTERSTÜTZUNGSMETHODEN
+    # ========================================
+    def __getCurrentDocTableFilename(self):
+        """Gibt den Dateinamen der aktuell markierten Datei zurück in the document view."""
+        if self.docTableView.currentRow()!=-1:
+            filenameColumn=self.docTableAttributes.index('dateiname')+2
+            filename=self.docTableView.item(self.docTableView.currentRow(), filenameColumn).text()
+            return filename
+                
+    def __getCurrentItemFilename(self, focusWidget):
+        if focusWidget == self.favTableView:
+            if self.favTableView.currentItem():
+                filename = self.favTableView.item(self.favTableView.currentRow(),1).text()
+                return filename
+                
+        elif focusWidget == self.docTableView:
+            if self.docTableView.currentRow()!=-1:
+                filenameColumn=self.docTableAttributes.index('dateiname')+2
+                filename=self.docTableView.item(self.docTableView.currentRow(), filenameColumn).text()
+                return filename    
+
+    def __replaceTrueFalse(self, value):
+       """Ersetzt Strings 'True' mit 'yes' and 'False' mit 'no'. Nicht case-sensitiv."""
+       if value.lower()=='true':
+           return 'ja' 
+       elif value.lower()=='false':
+           return 'nein'
+       return value
+
+    def __isSet(self, value):
+        """Ersetzt einen leeren String '' mit 'not specified'."""
+        if value == '':
+            return 'nicht angegeben'
+        else:
+            return value
+
+    def __tableItem (self, text, font=QFont('Ubuntu', 11, 50)):
+        """Erstellt Tabellenelement und setzt Schrift dafür."""
+        item = QTableWidgetItem(text)
+        item.setFont(font)
+        return item
     
-    def __openAllFavsExternalAction(self, extension = None):
-        '''Öffnet alle Favoriten gleichzeitig in externen Standardprogrammen'''
-        if self.favTableView.rowCount():
-            for row_no in range(self.favTableView.rowCount()):
-                filename = self.favTableView.item(row_no,1).text() 
-                if extension and not filename.lower().endswith(extension):
-                    if os.path.exists(os.path.join(self.basedir, filename + extension)):
-                        filename = filename + extension                     
-                    else:
-                        continue    
-                self.__openFileExternal(filename)
-        
-    def __selectZipFiles(self):
-        files , check = QFileDialog.getOpenFileNames(None, "XJustiz-ZIP-Archive öffnen",
-                                               str(self.settings.value("defaultFolder", str(self.homedir))), "XJustiz-Archive (*.zip *.ZIP)")
-        if check:
-            self.getZipFiles(files)
-    
-    def getZipFiles(self, files=None):
-        if files:
-            self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
-            tempPath=os.path.join(self.tempDir.name, str(uuid4()))
-            Path(tempPath).mkdir(parents=True, exist_ok=True)
-            for file in files:
-                try:
-                    with ZipFile(file, 'r') as zipfile: 
-                        zipfile.extractall(tempPath)  
-                except Exception as e:
-                    self.app.restoreOverrideCursor()
-                    self.statusBar.showMessage(file + ' konnte nicht entpackt werden.')
-                    self.lastExceptionString = str(e)
-                    return
-            
-            self.app.restoreOverrideCursor()
-            self.getFile(folder=tempPath)
-            
-    def getFile(self, file=None, folder=None):
-        # Notes eines ggf. geöffneten Datensatzes speichern
-        self.__saveNotes()
-        
-        if file and os.path.exists(file):
-            self.__loadFile(file)
-        elif file and not os.path.exists(file):
-            pass
-        elif file is None:
-            
-            if folder is None:
-                folder=str(self.settings.value("defaultFolder", self.homedir))
-            
-            file , check = QFileDialog.getOpenFileName(None, "XJustiz-Datei öffnen",
-                                               folder, "XJustiz-Dateien (*.xml *.XML)")
-            if check:
-                self.__loadFile(file)
-                self.__checkFiltersAndRows()
-
-            # Windows loses focus loading ZIP-files
-            self.activateWindow()
-
-    def __checkFiltersAndRows(self):
-        if self.actionAnwendungshinweise.isChecked():
-                self.__informIfFiltersSet()           
-                if self.docTableView.rowCount() == 0: 
-                    self.__informIfNoDocsVisible()        
-
-    def __fileHistory(self, direction):
-        '''Blättert durch die Aktenhistorie und lädt die nächste / letzte Akte in der Liste'''
-
-        if len(self.browsingHistory)>0:
-            
-            if direction == 'forward':
-                self.browsingHistory.insert(0, self.browsingHistory.pop())
-            else:
-                self.browsingHistory.append(self.browsingHistory.pop(0))
-            
-
-            while len(self.browsingHistory)>0:
-                if os.path.exists(self.browsingHistory[0]):
-                    self.getFile(self.browsingHistory.pop(0))
-                    break
-                else:
-                    self.browsingHistory.pop(0)
-
-            self.__checkFiltersAndRows()
-
-    def __addToHistory(self, file):
-        '''Fügt die zuletzt geöffnete XJustiz-Datei in die Historienliste ein'''
-        if file in self.browsingHistory:
-            self.browsingHistory.remove(file)
-        self.browsingHistory.insert(0,file)
-
-        while len(self.browsingHistory)>10:
-            self.browsingHistory.pop()
-        
-        historyString=''
-        for filepath in self.browsingHistory:
-            historyString+=filepath + "\x07"
-        historyString=historyString.strip("\x07")
-        
-        self.settings.setValue("history", historyString)
-
-    def __deleteHistory(self):
-        self.browsingHistory = []
-        self.settings.setValue("history", '')
-        self.__updateSettings()
-        self.statusBar.showMessage('Der Verlauf wurde gelöscht.')
-
-    def __loadHistory(self):
-        '''Lädt die zuletzt geladenen XJustiz-Dateien in die Historienliste'''
-        browsingHistory=self.settings.value("history", '').split('\x07')
-        return browsingHistory
-
-    def __loadFile(self, file):
-        '''Lädt einen XJustiz-Datensatz und aktualisiert die Ansicht'''
-        self.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
-        try:
-            type=None
-            with open(file, 'r', encoding='utf-8') as fp:
-                while True:
-                    line = fp.readline()
-                    if not line:
-                        break
-                    
-                    line=line.replace(" ", "")
-                    
-                    searchForVersion = re.search(r'xjustizVersion\W*=\W*[^\d](\d+\.\d+\.\d+)[^\d]', line)
-                    
-                    if searchForVersion:
-                        type = searchForVersion.group(1)
-                        break
-            
-            if type == "2.4.0":
-                self.akte = parser240(file)
-            elif type == "3.2.1":
-                self.akte = parser321(file)
-            elif type == "3.3.1":
-                self.akte = parser331(file)
-            elif type == "3.4.1":
-                self.akte = parser341(file)
-            elif type == "3.5.1":
-                self.akte = parser351(file)    
-            else:
-                # Wähle neueste Version, falls kein unterstützter Standard gefunden wird
-                self.akte = parser362(file)    
-            
-        except Exception as e:
-            self.statusBar.showMessage('Fehler beim Öffnen der Datei: %s' % file)
-            self.app.restoreOverrideCursor()
-            self.lastExceptionString = str(e)
-            # Debug 
-            # raise 
-            return None 
-        
-        self.app.restoreOverrideCursor()
-        
-        self.__setDocumentTable('Alle_Dokumente')
-        self.__setInhaltView(self.akte.schriftgutobjekte)
-        self.__setNachrichtenkopf(self.akte.absender, self.akte.empfaenger, self.akte.nachricht)   
-        self.__setMetadata(self.akte)
-        self.__filtersTriggered()
-        self.__loadFavorites()
-        self.__loadNotes()
-        self.__setInstanzenView()
-        self.__setBeteiligteView()
-        self.__setTerminTable(self.akte.termine)
-        self.terminDetailView.setHtml('')
-        self.basedir=os.path.dirname(os.path.realpath(file))
-        self.xmlFile=os.path.basename(file)
-        #Load empty viewer                     
-        self.__loadEmptyViewer()   
-        self.settings.setValue("lastFile", file)
-        self.__addToHistory(file)     
-        self.statusBar.showMessage(f'Eingelesene Datei: {file} - XJustiz-Version: {type}')
-        if not self.__prepareSearchStore():
-            self.actionOCRall.setVisible(False)
-
-    def __informIfNoDocsVisible(self):
-        '''Überprüft, ob Dokumente angezeigt werden und gibt Hinweis aus.'''
-        if not self.docTableView.rowCount():
-             self.__displayMessage("Es werden aktuell keine Dateien angezeigt, da der ausgewählte Inhalt keine Dateien enthält.\n\nBitte wählen Sie einen anzuzeigenden Inhalt in der Box 'Inhalt' durch Anklicken aus.\n\n(Anwendungshinweise können unter 'Optionen' ausgeschaltet werden.", "Anwendungshinweis", modal=False)
-   
-    def __informIfFiltersSet(self):
-        '''Überprüft, ob Filterbegriffe gesetzt wurden und informiert per Pop-up'''
-        minusFilterText=self.minusFilter.text().replace(" ","")
-
-        #Ausnahme für Filter für technische Dateien
-        for extension in [".pks",".p7s",".xml",".pkcs7"]:
-            minusFilterText=minusFilterText.replace(extension, "")
-
-        if minusFilterText or self.plusFilter.text():
-            self.__displayMessage("Es sind eigene Filterbegriffe gesetzt.\n\nDaher werden ggf. nicht alle Dokumente angezeigt.\nBei Bedarf den Button 'Filter leeren' anklicken, um die Filter zu löschen.\n\n(Anwendungshinweise können unter 'Optionen' ausgeschaltet werden.)", "Anwendungshinweis", modal=False)
-
-    def __chooseStartFolder(self):
-        '''Öffnet Dialog, um ein Default-Verzeichnis festzulegen, das beim Aufruf von "Datei öffnen" geöffnet wird.'''       
-        folder = QFileDialog.getExistingDirectory(None, "Standardverzeichnis wählen",
-                                        str(self.settings.value("defaultFolder", str(self.homedir))),
-                                        QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)
-         
-        if folder:
-            self.settings.setValue("defaultFolder", folder)
-    
-    def __updateSettings(self):
-        for key, value in self.docHeaderColumnsSettings.items(): 
-            if value['setting']:
-                self.settings.setValue(key , value['setting'].isChecked())
-        self.settings.setValue('nachrichtenkopf' , self.actionNachrichtenkopf.isChecked())
-        self.settings.setValue('favoriten' , self.actionFavoriten.isChecked())
-        self.settings.setValue('metadaten' , self.actionMetadaten.isChecked())
-        self.settings.setValue('notizen' , self.actionNotizen.isChecked())
-        self.settings.setValue('leereSpalten' , self.actionLeereSpaltenAusblenden.isChecked())
-        self.settings.setValue('grosseSchrift' , self.actionGrosse_Schrift.isChecked())
-        self.settings.setValue('anwendungshinweise' , self.actionAnwendungshinweise.isChecked())
-        self.settings.setValue('deckblatt' , self.actionDeckblattBeiExport.isChecked())
-        self.settings.setValue('dateidatumExportieren' , self.actionDateidatumExportieren.isChecked())
-        self.settings.setValue('favoritenExportieren' , self.actionFavoritenExportieren.isChecked()) 
-        self.settings.setValue('nurFavoritenExportieren' , self.actionNurFavoritenExportieren.isChecked())
-        self.settings.setValue('PDFnachExportOeffnen' , self.actionPDFnachExportOeffnen.isChecked())
-        self.settings.setValue('NotizenaufDeckblatt' , self.actionNotizenaufDeckblattausgeben.isChecked())
-        self.settings.setValue('sucheAnzeigen' , self.actionSucheAnzeigen.isChecked())
-        self.settings.setValue('dateiansichtLinksbuendig' , self.actionDateitabelleLinksbuendig.isChecked())
-        
-        if self.actionChromium.isChecked():
-            self.settings.setValue('pdfViewer', 'chromium')
-        elif self.actionnativ.isChecked():
-            self.settings.setValue('pdfViewer', 'nativ')                       
-        else:    
-            self.settings.setValue('pdfViewer', 'PDFjs')     
-         
-        self.settings.setValue('checkUpdates', self.actionOnlineAufUpdatesPruefen.isChecked()) 
-         
-        self.__updateDoctableViewOrientation() 
-        self.__updateVisibleColumns()
-        self.__updateVisibleViews()
-        self.__prepareSearchStore(reset_searchStore=False)
-        self.__toggleFontsizes()
-        
-    def __viewerSwitch(self):
-        '''Aktivert / deaktiviert die Viewerauswahl(-möglichkeiten) in Abhängigkeit vom ausgelösten Ereignis'''
-        if self.actionChromium.isChecked() and self.actionChromium.isEnabled():
-            self.actionChromium.setEnabled(False)
-            self.actionPDF_js.setChecked(False)
-            self.actionPDF_js.setEnabled(True)
-            self.actionnativ.setChecked(False)
-            self.actionnativ.setEnabled(True)
-            self.browser.setVisible(True)
+    def __getAktenSubBaum(self, akten, node):    
+        for einzelakte in akten.values():
            
-        elif self.actionnativ.isChecked() and self.actionnativ.isEnabled():
-            self.actionnativ.setEnabled(False)
-            self.actionPDF_js.setChecked(False)
-            self.actionPDF_js.setEnabled(True)
-            self.actionChromium.setChecked(False)
-            self.actionChromium.setEnabled(True)
-            self.browser.setVisible(False)
-          
-        else:    
-            self.actionPDF_js.setChecked(True)
-            self.actionPDF_js.setEnabled(False)
-            self.actionChromium.setChecked(False)
-            self.actionChromium.setEnabled(True)
-            self.actionnativ.setChecked(False)
-            self.actionnativ.setEnabled(True)
-            self.browser.setVisible(True)   
+            if einzelakte['aktentyp']:
+                name = einzelakte['anzeigename'] if not einzelakte['anzeigename'] in ('', None) else einzelakte['aktentyp']
+            elif einzelakte['teilaktentyp'] != '': 
+                name = einzelakte['anzeigename'] if not einzelakte['anzeigename'] in ('', None) else einzelakte['teilaktentyp']             
+            else:
+                name = "Akte"
+            
+            for aktenzeichen in einzelakte['aktenzeichen']:
+                    if aktenzeichen['aktenzeichen.freitext']:
+                        name += ' ' + aktenzeichen['aktenzeichen.freitext']
+                     
+            value = StandardItem(name)
+            value.setIcon(QIcon(os.path.join(self.scriptRoot, 'icons', 'aktenbox_icon.png')))
+            key   = StandardItem(einzelakte['id'])
+            
+            if len(einzelakte['teilakten'])>0:
+                self.__getAktenSubBaum(einzelakte['teilakten'], value)
+            
+            node.appendRow([value, key])
+              
+    def __arrangeData(self, dictOfMetadata, attributes):
+        """Gibt die Werte eines Dictionaries zurück in der Reihenfolge einer übergebenen Schlüsselliste. Wenn für einen Schlüssel kein Eintrag vorhanden ist, wird ein leeres Listenelement eingefügt."""
+        arrangedRow=[]      
+        for attribute in attributes:
+            value = dictOfMetadata.get(attribute)
+            if isinstance(value, str):
+                arrangedRow.append(self.__replaceTrueFalse(value))
+            elif isinstance(value, list):
+                text=''
+                newline='' # Optional setzen, um Werte in mehreren Zeilen anzeigen lassen zu können 
+                for item in value:
+                    if item:
+                        text+=newline + item
+                        newline=' '
+                arrangedRow.append(text)
+            elif value is None:
+                arrangedRow.append('')
+            else:
+                arrangedRow.append(str(value))  # Fallback für alle anderen Typen
+            
+        return arrangedRow
     
-        self.__updateSettings()
-    
+    def __copyToClipboard(self, text):
+        clipboard = QApplication.clipboard()
+        clipboard.setText(text)
+        self.statusBar.showMessage("Inhalt wurde in die Zwischenablage kopiert.")        
+
+    def __displayInfo(self):
+        """Blendet Info-Fenster ein (About)."""
+        QMessageBox.information(self, "Information",
+        "openXJV " + VERSION + "\n"
+        "Lizenz: GPL v3\n"
+        "2022 - 2026 Björn Seipel\nKontakt: " + self.supportMail + "\nWebsite: https://openXJV.de\n\n" 
+        "Die Anwendung nutzt folgende Komponenten:\n"
+        "jbig2dec - AGPL License\n"
+        "Qt6 - LGPLv3\n"
+        "fpdf2 - LGPLv3\n"
+        "pyinstaller - GPLv2 or later\n"
+        "PySide6 - LGPLv3\n"
+        "PDF.js - Apache 2.0 License\n"
+        "pdfjs-viewer-pyside6 - LGPLv3+ License\n"
+        "Tesseract - Apache 2.0 License\n"
+        "Material Icons Font - Apache 2.0 License\n"
+        "NumPy -BSD License\n"
+        "orjson -  Apache 2.0 / MIT Licenses\n"
+        "pypdfium2 - Apache 2.0 / BSD 3 Clause\n"
+        "darkdetect - BSD license\n"
+        "lxml - BSD License\n"
+        "Pillow - The open source HPND License\n"
+        "pikepdf - MPL-2.0 License\n"
+        "appdirs - MIT License\n"
+        "docx2txt - MIT License\n"
+        "gocr - GNU GPL\n"
+        "Ubuntu Font - UBUNTU FONT LICENCE Version 1.0\n"
+        "python 3.x - PSF License\n\n"
+        "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden."
+        )
+  
+    def __displayMessage(self, message, title = 'Hinweis', icon = QMessageBox.Icon.Information, modal=True):
+        """Zeigt ein Info-Pop-up an."""
+        msgBox=QMessageBox(self)
+        msgBox.setIcon(icon)
+        msgBox.setWindowTitle(title)
+        msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)       
+        msgBox.setText(message)
+        if modal:
+            msgBox.exec()
+        else:
+            msgBox.setModal(False)
+            msgBox.show()
+
+    def __fixGnomeDarkPalette(self):
+        xjvPalette = self.palette()
+        for role in QPalette.ColorRole:
+            if not role.name in ('NColorRoles', 'ToolTipBase', 'ToolTipText'):
+                xjvPalette.setColor(QPalette.ColorGroup.Inactive, role, xjvPalette.color(QPalette.ColorGroup.Active, role))
+            xjvPalette.setColor(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ToolTipText,  QColor(0, 0, 0, 255))          
+        self.setPalette(xjvPalette)                
+        QToolTip.setPalette(xjvPalette)
+                
+    # ========================================
+    # ABSCHNITT 14: XSD-VALIDIERUNG
+    # ========================================
+    def __openXSDValidator(self):
+        """Oeffnet den XSD-Validierungsdialog fuer die geladene XML-Datei.
+
+        Prueft, ob eine Datei geladen ist, und stellt sicher, dass nur
+        eine Instanz des Dialogs gleichzeitig geoeffnet ist.
+        """
+        # Pruefen, ob eine Datei geladen ist
+        if self.akte == {}:
+            self.__displayMessage(
+                'Es ist keine Datei geladen.\n\n'
+                'Bitte öffnen Sie zuerst eine XJustiz-Datei.',
+                title='Hinweis'
+            )
+            return
+
+        # Einzelinstanz-Pruefung: Falls Dialog bereits offen, in den Vordergrund bringen
+        if (self._xsd_validator_dialog is not None
+                and self._xsd_validator_dialog.isVisible()):
+            self._xsd_validator_dialog.raise_()
+            self._xsd_validator_dialog.activateWindow()
+            return
+
+        # Vollstaendigen Pfad zur XML-Datei zusammensetzen
+        xml_path = os.path.join(self.basedir, self.xmlFile)
+
+        # Dialog erstellen und anzeigen
+        self._xsd_validator_dialog = XSDValidatorDialog(
+            xml_path=xml_path,
+            app_base_path=self.scriptRoot,
+            detect_version_callback=self.file_manager.detect_xjustiz_version,
+            parent=self
+        )
+        self._xsd_validator_dialog.show()
+
+    # ========================================
+    # ABSCHNITT 15: UPDATE-PRÜFUNGEN
+    # ========================================    
     def __checkForUpdates(self, updateIndicator=None):
-        '''Prüft online, ob eine neue Programmversion veröffentlicht wurde.'''
+        """Prüft online, ob eine neue Programmversion veröffentlicht wurde."""
         updateAvailable=False
-        
-        #Download version info for supported platforms / hide option for unsupported ones
+
+        # Download Versionsinfo für unterstützte Plattformen / Verstecke die Option auf nicht unterstützten Systemen
         if os.environ.get('APPIMAGE'):
             updateAvailable=self.__checkUrlforNewVersion('https://openXJV.de/latestAppImage.xml')
         elif sys.platform.lower().startswith('win'):
@@ -2993,975 +2900,45 @@ class UI(QMainWindow, Ui_MainWindow):
                 self.lastExceptionString = str(e)
         return False
     
-    def __readSettings(self):
-        for key, value in self.docHeaderColumnsSettings.items(): 
-            if value['setting']:
-                setTo = str(self.settings.value(key, 'default'))
-                if setTo.lower() == "true":
-                    value['setting'].setChecked(True)
-                elif setTo.lower() == "false":
-                    value['setting'].setChecked(False)
-                else:
-                    value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
-                         
-        self.actionNachrichtenkopf.setChecked            (True if str(self.settings.value('nachrichtenkopf', 'true')).lower()            =='true'     else False)
-        self.actionFavoriten.setChecked                  (True if str(self.settings.value('favoriten', 'true')).lower()                  =='true'     else False)
-        self.actionMetadaten.setChecked                  (True if str(self.settings.value('metadaten', 'false')).lower()                 =='true'     else False)
-        self.actionNotizen.setChecked                    (True if str(self.settings.value('notizen', 'false')).lower()                   =='true'     else False)
-        self.actionLeereSpaltenAusblenden.setChecked     (True if str(self.settings.value('leereSpalten', 'true')).lower()               =='true'     else False)
-        self.actionChromium.setChecked                   (True if     self.settings.value('pdfViewer', 'PDFjs')                          =='chromium' else False)
-        self.actionnativ.setChecked                      (True if     self.settings.value('pdfViewer', 'PDFjs')                          =='nativ'    else False)     
-        self.actionGrosse_Schrift.setChecked             (True if str(self.settings.value('grosseSchrift', 'false')).lower()             =='true'     else False)
-        self.actionAnwendungshinweise.setChecked         (True if str(self.settings.value('anwendungshinweise', 'true')).lower()         =='true'     else False)
-        self.actionOnlineAufUpdatesPruefen.setChecked    (True if str(self.settings.value('checkUpdates', 'true')).lower()               =='true'     else False)
-        self.actionDeckblattBeiExport.setChecked         (True if str(self.settings.value('deckblatt', 'true')).lower()                  =='true'     else False)
-        self.actionDateidatumExportieren.setChecked      (True if str(self.settings.value('dateidatumExportieren' , 'true')).lower()     =='true'     else False)
-        self.actionFavoritenExportieren.setChecked       (True if str(self.settings.value('favoritenExportieren' , 'true')).lower()      =='true'     else False)
-        self.actionNurFavoritenExportieren.setChecked    (True if str(self.settings.value('nurFavoritenExportieren' , 'false')).lower()  =='true'     else False)        
-        self.actionPDFnachExportOeffnen.setChecked       (True if str(self.settings.value('PDFnachExportOeffnen', 'true')).lower()       =='true'     else False) 
-        self.actionNotizenaufDeckblattausgeben.setChecked(True if str(self.settings.value('NotizenaufDeckblatt', 'true')).lower()        =='true'     else False)       
-        self.actionSucheAnzeigen.setChecked              (True if str(self.settings.value('sucheAnzeigen', 'true')).lower()              =='true'     else False)  
-        self.actionDateitabelleLinksbuendig.setChecked   (True if str(self.settings.value('dateiansichtLinksbuendig', 'false')).lower()  =='true'     else False)  
-
-        self.__updateDoctableViewOrientation()
-        self.__viewerSwitch()
-        self.__updateVisibleViews()
-        self.__toggleFontsizes()
-        
-    def __updateDoctableViewOrientation(self):
-        '''Setzt die horizontale Orientierung der Dateitabelle'''
-        if self.actionDateitabelleLinksbuendig.isChecked():
-            alignment = Qt.AlignLeft | Qt.AlignVCenter      
-        else:
-            alignment = Qt.AlignmentFlag.AlignCenter    
-        
-        self.DocumentTableAlignment = alignment
-        
-        try:            
-            self.__updateSelectedInhalt()
-        except:
-            pass
-
-    def __resetSettings(self):
-        '''Setzt Spalten und Ansichtsoptionen auf Defaultwerte zurück'''
-        for key, value in self.docHeaderColumnsSettings.items():
-            if value['setting']:
-                value['setting'].setChecked(self.docHeaderColumnsSettings[key]['default'])
-        self.actionNachrichtenkopf.setChecked       (True)
-        self.actionFavoriten.setChecked             (True)
-        self.actionMetadaten.setChecked             (False)
-        self.actionNotizen.setChecked               (False)
-        self.actionLeereSpaltenAusblenden.setChecked(True)  
-        self.actionPDF_js.setChecked                (True)  
-        self.__viewerSwitch()        
-        self.__updateSettings()
-        
-    def __checkAllColumns(self):
-        '''Setzt den Haken in den Ansichtsoptionen bei allen Spalten'''
-        for key, value in self.docHeaderColumnsSettings.items():
-            if value['setting']:
-                value['setting'].setChecked(True)       
-        self.__updateSettings()
-        
-    def __uncheckAllColumns(self):
-        '''Löscht den Haken in den Ansichtsoptionen bei allen Spalten'''
-        for key, value in self.docHeaderColumnsSettings.items():
-            if value['setting']:
-                value['setting'].setChecked(False)       
-        self.__updateSettings()
-        
-    def __updateVisibleViews(self):
-        self.nachrichtenkopf.setVisible(self.actionNachrichtenkopf.isChecked())
-        self.favoriten.setVisible(self.actionFavoriten.isChecked())
-        self.metadaten.setVisible(self.actionMetadaten.isChecked())
-        self.notizen.setVisible(self.actionNotizen.isChecked())
-        
-        # Suche
-        self.fakeSpacer.setVisible(self.actionSucheAnzeigen.isChecked())
-        self.suchbegriffeText.setVisible(self.actionSucheAnzeigen.isChecked())
-        
-    def __openManual(self):
-        manualPath = os.path.join(self.scriptRoot , 'docs', 'openXJV_Benutzerhandbuch.pdf')
-        self.__openFileExternal(manualPath, True, True)
-    
-    def __openFileExternal(self, filename, ignoreWarnings=False, absolutePath=False):
-        msgBox=QMessageBox()
-        msgBox.setIcon(QMessageBox.Icon.Warning)
-        msgBox.setWindowTitle("Sicherheitshinweis!")
-        msgBox.setStandardButtons(QMessageBox.StandardButton.Yes  | QMessageBox.StandardButton.No)
-        buttonY = msgBox.button(QMessageBox.StandardButton.Yes )
-        buttonY.setText('Ja')
-        buttonN = msgBox.button(QMessageBox.StandardButton.No)
-        buttonN.setText('Nein')
-        msgBox.setDefaultButton(QMessageBox.StandardButton.No)
-
-        illegalChars = re.findall(r"[^-A-ZÄÖÜa-zäöüß_0-9\.]", filename)
-        if illegalChars and not ignoreWarnings:
-            msgBox.setText("Der Dateiname enthält unzulässige Zeichen.\n\nDies kann ein Sicherheitsrisiko bedeuten, falls ausführbare Befehle im Dateinamen versteckt wurden! Es kann sich jedoch auch schlicht um Nachlässigkeit des Absenders handeln.\n\nTrotzdem öffnen?")
-            msgBox.exec()
-            if msgBox.clickedButton() == buttonY:
-                self.__openFileExternal(filename, ignoreWarnings=True)
-        
-        elif len(filename)>90 and not ignoreWarnings:
-            msgBox.setText("Der Dateiname ist länger als 90 Zeichen.\nDies entspricht nicht den Vorgaben des XJustiz-Stnadards.\n\nTrotzdem öffnen?")
-            msgBox.exec()
-            if msgBox.clickedButton() == buttonY:
-                self.__openFileExternal(filename, ignoreWarnings=True)
-          
-        else:
-            if absolutePath:
-                fullPath=filename
-            else:
-                fullPath = os.path.join(self.basedir, filename)  
-            if os.path.exists(fullPath):
-                if sys.platform.startswith('linux'):
-
-                    # aktuelle Umgebung kopieren
-                    env = os.environ.copy()
-
-                    # nur für diesen Aufruf LD_LIBRARY_PATH entfernen (pyinstaller workaround)
-                    env.pop("LD_LIBRARY_PATH", None)
-
-                    # xdg-open mit bereinigter Umgebung starten
-                    subprocess.Popen(
-                        ["xdg-open", fullPath],
-                        env=env,
-                        stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL
-                    )  
-                      
-                elif sys.platform.lower().startswith('win'):
-                    os.startfile(fullPath)
-                else:
-                    os.popen("open '%s'" % fullPath)
-            else: 
-                self.statusBar.showMessage('Datei existiert nicht: '+ filename) 
-
-    def __downloadRequested(self, download):
-        if self.downloadFolder != '':
-            startFolder = self.downloadFolder
-        else:
-            startFolder = download.downloadDirectory()
-
-        folder = QFileDialog.getExistingDirectory(self, 
-                                "Speicherort wählen",
-                                startFolder,
-                                QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks)
-    
-        if folder:
-            download.setDownloadDirectory(folder)
-            self.downloadFolder = folder
-            download.accept()
-
-    def __printToFileRequested(self, fileExtension):
-        file = QFileDialog.getSaveFileName(self, 
-                                "Zieldatei wählen",                        
-                                self.settings.value("defaultFolder", str(self.homedir)),
-                                fileExtension,
-                                fileExtension,
-                                QFileDialog.Option.DontResolveSymlinks)
-        if file[0]=='':
-            raise Exception("Keine Zieldatei für Druck in Datei ausgewählt")    
-        elif file[0].endswith(file[1]):
-            return file[0]
-        else:
-            return file[0] + file[1]
-
-    def __reportPrintProgress(self, n):
-        self.statusBar.showMessage(f"Druckaufbereitung: {n}%")        
-    
-    def __printFinished(self):
-        self.printLock=False
-        del self._printer                 
-    
-    def printPdfWorker(self, pdf=None, printer=None):
-        '''Worker function for long running PDF print task'''
-        if pdf == None:
-            raise AttributeError('pdf (Type:str, Path or pyFPDF-Object) needs to be passed to printWorker')
-        
-        if isinstance(pdf, str) or isinstance(pdf, Path) or not os.path.exists(pdf):
-            self.pdf_file = Path(pdf)            
-        else:
-            raise TypeError('pdf not of Type str, Path or file does not exist')    
-        
-        painter=QPainter(printer)
-                                           
-        """Long-running print task."""    
-        rect = painter.viewport()
-
-        pdf = pdfium.PdfDocument(self.pdf_file)
-        n_pages = len(pdf)  
-        printRange=[]
-        
-        fromPage = printer.fromPage()
-        toPage = printer.toPage()  
-        printRange = range(n_pages) if fromPage == 0 else range(fromPage-1, toPage)  
-        
-        page_indices = [i for i in printRange]  
-        
-        renderer = pdf.render(
-            pdfium.PdfBitmap.to_pil,
-            page_indices = page_indices,
-            scale = 200/72,  # 200dpi resolution
-        )
-        
-        for i, pil_image, pageNumber in zip(page_indices, renderer, count(1)):
-            
-            if pageNumber > 1:
-                self._printer.newPage()
-            pilWidth, pilHeight = pil_image.size
-            imageRatio = pilHeight/pilWidth
-            
-            viewportRatio= rect.height()/rect.width()   
-            
-            # Rotate image if orientation is not the same as print format orientation
-            if (viewportRatio < 1 and imageRatio > 1) or (viewportRatio > 1 and imageRatio < 1): 
-                pil_image = pil_image.transpose(Image.ROTATE_90)
-                pilWidth, pilHeight = pil_image.size                  
-                imageRatio = pilHeight/pilWidth
-                
-            # Adjust drawing area to available viewport 
-            if viewportRatio > imageRatio:
-                y=int(rect.width()/(pilWidth/pilHeight))                   
-                printArea=QRect(0,0,rect.width(),y)
-            else:
-                x = int(pilWidth/pilHeight*rect.height())
-                printArea=QRect(0,0,x,rect.height())
-            
-            image = ImageQt(pil_image)    
-
-            # Print image                   
-            painter.drawImage(printArea, image)
-            firstPage=False
-            self.__reportPrintProgress(int(pageNumber*100/len(page_indices)))          
-
-        # Cleanup        
-        pdf.close()
-        painter.end()
-        self.__printFinished()
-
-    def __printRequested(self):
-        '''Wird aufgerufen, wenn der Browser einen Druckauftrag  - window.print() - anfragt. Druckt das aktuell geladene PDF.'''
-        if self.printLock:
-            self.statusBar.showMessage('Der Drucker ist momentan belegt.')
-            return 
-        try:
-            try:
-                filepath = os.path.join(self.basedir , self.loadedPDFfilename)        
-            except AttributeError as e:
-                self.statusBar.showMessage('Keine druckbare Datei in Vorschau geladen.')
-                self.lastExceptionString = str(e)
-                return
-
-            if not os.path.exists(filepath):     
-                self.statusBar.showMessage('Die zu druckende Datei existiert nicht.')
-                return     
-
-            self._printer = QPrinter(QPrinter.PrinterMode.HighResolution)
-            if QPrintDialog(self._printer).exec():
-                #Bekannte "print to file" Drucker    
-                if self._printer.printerName() == 'Microsoft Print to PDF':
-                    self._printer.setOutputFileName(self.__printToFileRequested('.pdf'))
-                #Bekannte, nicht unterstützte Drucker
-                elif self._printer.printerName() in ('Microsoft XPS Document Writer') or self._printer.printerName().startswith('OneNote'):
-                    raise Exception("Der gewählte Drucker wird nicht unterstützt") 
-                
-                self.printLock=True  
-                self.thread=Thread(target=self.printPdfWorker, args=(filepath, self._printer))    
-                self.thread.start()             
-            else:
-
-                del self._printer       
-            #Browser reload - Workaround, da PDF.js das Dokument nach Druck nicht mehr angezeigt
-            self.browser.reload()            
-        except Exception as e:     
-            self.statusBar.showMessage('Der Druck ist fehlgeschlagen. ' + str(e))
-            self.lastExceptionString = str(e)
-            self.printLock=False 
-            return    
-            
-    def __setInstanzenView(self):
-        try:
-            if self.akte.erweiterungen.get('openXJV_instanzdaten_klartext'):         
-                self.beteiligteText.setPlainText(self.akte.erweiterungen['openXJV_instanzdaten_klartext']['text'])
-                return
-        except AttributeError:
-            pass
-        
-        text=TextObject()
-        singleValues=[        
-            ['abteilung','<b>Abteilung:</b> %s<br>'],
-            ['kurzrubrum','<b>Kurzrubrum:</b> %s<br>'],
-            ['verfahrensinstanznummer','<b>Verfahrensinstanznummer:</b> %s<br>'],
-            ['sachgebiet','<b>Sachgebiet:</b> %s<br>'],
-            ['sachgebietszusatz','<b>Sachgebietszusatz:</b> %s<br>']     
-        ]
-                
-        if self.akte.grunddaten.get('verfahrensnummer'):
-            text.addLine('<b><i>Verfahrensnummer</i></b>', self.akte.grunddaten['verfahrensnummer'])
-            
-        keys=list(self.akte.grunddaten['instanzen'].keys())
-        for key in keys:
-            instanz=self.akte.grunddaten['instanzen'][key]
-            hr='_______________________________________<br><br>'
-            text.addRaw("%s<b>Instanz %s</b><br>%s<b><i>Instanzdaten</i></b><br>" % (hr, key, hr))       
-            if instanz.get('auswahl_instanzbehoerde'):
-                text.addLine('<b>Behörde</b>', instanz['auswahl_instanzbehoerde'].get('name'))
-            
-            if instanz.get('aktenzeichen'):
-                text.addLine('<b>Aktenzeichen</b>', instanz['aktenzeichen'].get('aktenzeichen.freitext'))      
-                text.addLine('<b>Sammelvorgangsnummer</b>', instanz['aktenzeichen'].get('sammelvorgangsnummer'))
-            
-            for value in singleValues:
-                if instanz.get(value[0]):
-                    text.addRaw(value[1] % instanz[value[0]])
-            
-            for gegenstand in instanz['verfahrensgegenstand']:
-                setBR=False
-                if gegenstand.get('gegenstand'):
-                   text.addRaw('<b>Gegenstand:</b> %s' % gegenstand['gegenstand'])
-                   setBR=True
-                if gegenstand.get('gegenstandswert').strip():
-                   text.addRaw(', Streitwert: %s' % gegenstand['gegenstandswert'])
-                   setBR=True
-                if gegenstand.get('auswahl_zeitraumDesVerwaltungsaktes').strip():
-                   text.addRaw(', Datum/Zeitraum: %s' % (gegenstand['auswahl_zeitraumDesVerwaltungsaktes']))   
-                   setBR=True 
-                if setBR:
-                    text.addRaw('<br>')
-            
-            text.addRaw(self.__telkoTemplate(instanz['telekommunikation']))
-            
-        self.instanzenText.setHtml(text.getText())
-
-    def __telkoTemplate(self, telekommunikation):
-        text=TextObject()
-        text.addHeading('Telekommunikationsverbindungen')
-        for eintrag in telekommunikation:
-                text.addRaw('%s: %s' % (eintrag.get('telekommunikationsart'),eintrag.get('verbindung')))
-                if eintrag.get('telekommunikationszusatz'):
-                    text.addRaw(" (%s)" % eintrag['telekommunikationszusatz'])
-                text.addRaw('<br>')
-        return text.getText()
-    
-    def __rollenTemplate(self, rollen):
-        text=''
-        for rolle in rollen:
-            text+='<b>Rolle'
-            if rolle.get('rollenID'):
-                text+=' in Instanz '
-                delimiter=''
-                for rollenID in rolle['rollenID']:
-                    text+='%s%s' % (delimiter, rollenID.get('ref.instanznummer'))
-                    delimiter=', ' 
-                text+=':</b> <u>%s</u><br>' % self.akte.rollenverzeichnis.get(str(rolle.get('rollennummer')))
-            else:
-                if rolle.get('rollenbezeichnung'):
-                    text+=':</b> %s %s<br>' % (rolle.get('rollenbezeichnung'), rolle.get('nr'))
-                else:
-                    text+='</b><br>'    
-            if rolle.get('naehereBezeichnung'):
-                text+='Nähere Bezeichnung: %s<br>' % rolle['naehereBezeichnung']
-            if rolle.get('sonstigeBezeichnung'):
-                for bezeichnung in rolle.get('sonstigeBezeichnung'):
-                    text+='Sonstige Bezeichnung: %s<br>' % bezeichnung       
-            if rolle.get('dienstbezeichnung'):
-                for bezeichnung in rolle.get('dienstbezeichnung'):
-                    text+='Dienstbezeichnung: %s<br>' % bezeichnung   
-            if rolle.get('referenz'):
-                for referenz in rolle.get('referenz'):
-                    text+='Bezug zu: %s<br>' %  self.akte.rollenverzeichnis.get(str(referenz))  
-            if rolle.get('geschaeftszeichen'):
-                text+='Geschäftszeichen: %s<br>' % rolle['geschaeftszeichen']
-        return text
-             
-    def __anschriftTemplate (self, anschriften, heading='Postalische Anschrift'):   
-        if not isinstance(anschriften, list):
-            anschriften=[anschriften]
-        items={
-            'erfassungsdatum':'Erfasst am: %s<br>',
-            'wohnungsgeber':'Wohnungsgeber: %s<br>'                                  
-        }
-        text=''
-        
-        delimiter=''
-        for anschrift in anschriften:
-            text+=delimiter
-            if anschrift.get('anschriftstyp'):
-                text+='<u>%s</u><br>' % anschrift['anschriftstyp']
-            
-            if anschrift.get('derzeitigerAufenthalt') and anschrift.get('derzeitigerAufenthalt').lower()=='true':
-                text+='Hierbei handelt es sich um den derzeitigen Aufenthalt.<br>' 
-            
-            for key, value in items.items():
-                if anschrift[key]:
-                    text += value % anschrift[key]
-                
-            if anschrift.get('strasse') or anschrift.get('hausnummer'):
-                text+='%s %s<br>' % (anschrift.get('strasse'), anschrift.get('hausnummer'))
-            if anschrift.get('anschriftenzusatz'): 
-                delimiter=''
-                for zusatz in anschrift['anschriftenzusatz']:
-                    text+=delimiter + zusatz
-                    delimiter=', '
-                text+='<br>'
-            if anschrift.get('postfachnummer'):
-                text+='Postfach %s<br>' % anschrift['postfachnummer']
-            if anschrift.get('postleitzahl') or anschrift.get('ort'):
-                text+='%s %s %s<br>' % (anschrift.get('postleitzahl'), anschrift.get('ort'), anschrift.get('ortsteil'))
-            if anschrift.get('staat'):
-                text+='%s<br>' % anschrift['staat']
-            if anschrift.get('bundesland'):
-                text+='%s<br>' % anschrift['bundesland']
-            delimiter='<br>'
-            
-        if text:
-            text='<br><b><i>%s</i></b><br>%s' % (heading, text)
-        return text
-
-    def __vollerNameTemplate(self, vollerName):
-        text=''
-        namensbestandteile=[
-            'titel',
-            'vorname',
-            'namensvorsatz',
-            'nachname',
-            'namenszusatz'
-        ]
-        
-        geburtsnamensbestandteile=[
-            'geburtsnamensvorsatz',
-            'geburtsname',
-        ]
-        
-        if vollerName['vorname'] or vollerName['nachname']: 
-            text+='Voller Name:'
-            for bestandteil in namensbestandteile: 
-                if vollerName[bestandteil] is None or not vollerName[bestandteil]:
-                    continue
-                elif bestandteil == 'nachname' or bestandteil == 'namensvorsatz':
-                    text+=' <u>%s</u>' % vollerName[bestandteil] 
-                else:
-                    text+=' %s' % vollerName[bestandteil]
-            text+='<br>'
-        if vollerName['rufname']:    
-            text+='Rufname: %s<br>' % vollerName['rufname'] 
-            
-        if vollerName['geburtsname']:    
-            text+='Geburtsname:'
-            for bestandteil in geburtsnamensbestandteile:
-                if vollerName[bestandteil] is None or not vollerName[bestandteil]:
-                    continue
-                else:
-                    text+=' %s' % vollerName[bestandteil]
-            text+='<br>'
-        
-        for weitererName in vollerName['vorname.alt']:
-            text+='Weiterer Name: %s<br>' % weitererName
-        
-        for altvorname in vollerName['vorname.alt']:
-            text+='Ehemaliger Vorname: %s<br>' % altvorname    
-        
-        for altname in vollerName['nachname.alt']:
-            text+='Ehemaliger Nachname: %s<br>' % altname    
-        return text
-
-    def __kanzleiTemplate(self,beteiligter):
-        text='<br><b><u>Kanzlei / Rechtsanwalt</u></b><br>'
-        
-        if beteiligter.get('bezeichnung.aktuell'):
-            text+='Bezeichnung: %s<br>' % beteiligter['bezeichnung.aktuell']
-        
-        for alteBezeichnung in beteiligter['bezeichnung.alt']:
-            text+='Ehemals: %s<br>' % alteBezeichnung
-        
-        if beteiligter.get('kanzleiform'):
-            text+='Kanzleiform: %s<br>' % beteiligter['kanzleiform']
-            
-            if beteiligter.get('rechtsform'):
-                text+='Rechtsform: %s<br>' % beteiligter['rechtsform']
-            
-        if beteiligter.get('geschlecht'):
-            text+='Geschlecht: %s<br>' % beteiligter['geschlecht']
-            
-        text+=self.__anschriftTemplate(beteiligter['anschrift'])
-        
-        text+=self.__telkoTemplate(beteiligter['telekommunikation'])
-
-        if beteiligter.get('bankverbindung'):
-            text+=self.__bankverbindungTemplate(beteiligter['bankverbindung'])
-        
-        if beteiligter.get('umsatzsteuerID'):
-            text+='<br><b><i>Steuerdaten</i></b><br>'
-            text+='Umsatzsteuer-ID: %s<br>' % beteiligter['umsatzsteuerID']
-        
-        if beteiligter.get('raImVerfahren'):
-            raDaten=self.__natPersonTemplate(beteiligter['raImVerfahren'])
-            if raDaten:
-                text+='<blockquote><b><u>Rechtsanwalt im Verfahren</u></b>%s</blockquote>' % raDaten
-            
-        return text
-    
-    def __orgTemplate(self, beteiligter):
-        text='<br><b><u>Organisation / Juristische Person</u></b><br>'
-        if beteiligter.get('bezeichnung.aktuell'):
-            text+='Bezeichnung: %s</b><br>' % beteiligter['bezeichnung.aktuell']
-        
-        for alteBezeichnung in beteiligter['bezeichnung.alt']:
-            text+='Ehemals: %s<br>' % alteBezeichnung
-            
-        if beteiligter.get('kurzbezeichnung'): 
-            text+='Kurzbezeichnung: %s<br>' % beteiligter['kurzbezeichnung']
-            
-        if beteiligter.get('geschlecht'):
-            text+='Geschlecht: %s<br>' % beteiligter['geschlecht']
-        
-        if beteiligter.get('angabenZurRechtsform'):
-            text+=self.__rechtsformTemplate(beteiligter['angabenZurRechtsform'])
-        
-        for sitz in beteiligter['sitz']:
-            text+=self.__sitzTemplate(sitz)
-                        
-        text+=self.__anschriftTemplate(beteiligter['anschrift'])
-        text+=self.__telkoTemplate(beteiligter['telekommunikation'])
-        
-        if beteiligter.get('bundeseinheitlicheWirtschaftsnummer'):
-            text+='<br><b><i>Bundeseinheitliche Wirtschaftsnummer</i></b><br>'
-            text+='Bundeseinheitliche Wirtschaftsnr.: %s<br>' % beteiligter['bundeseinheitlicheWirtschaftsnummer']
-        
-        if beteiligter.get('registereintragung'):
-            text+=self.__registerTemplate(beteiligter['registereintragung'])
-        
-        if beteiligter.get('bankverbindung'):
-            text+=self.__bankverbindungTemplate(beteiligter['bankverbindung'])
-        
-        if beteiligter.get('umsatzsteuerID'):
-            text+='<br><b><i>Steuerdaten</i></b><br>'
-            text+='Umsatzsteuer-ID: %s<br>' % beteiligter['umsatzsteuerID']
-
-        if beteiligter.get('vorsteuerabzugsberechtigt'):
-            text+='<br><b><i>Vorsteuerinformation</i></b><br>'
-            if  beteiligter['vorsteuerabzugsberechtigt'] == 'true':
-                text+='Zum Vorsteuerabzug berechtigt.<br>'    
-            else:
-                text+='Nicht zum Abzug der Vorsteuer berechtigt.<br>'
-
-        return text
-    
-    def __sitzTemplate(self, sitz):
-        text=TextObject()
-        text.addHeading('Sitz')
-        text.addLine('Ort', sitz.get('ort'))
-        text.addLine('Postleitzahl', sitz.get('postleitzahl'))
-        text.addLine('Staat', sitz.get('staat'))
-                    
-        return text.getText()
-    
-    def __rechtsformTemplate (self, rechtsform):
-        text=TextObject()
-        text.addHeading('Rechtsform')
-        text.addLine('Rechtsform', rechtsform.get('rechtsform'))
-        text.addLine('Weitere Bezeichnung', rechtsform.get('weitereBezeichnung'))
-       
-        return text.getText()
-    
-    def __natPersonTemplate(self, beteiligter):              
-        text=TextObject()
-        text.addHeading('Personendaten')
-        text.addRaw(self.__vollerNameTemplate(beteiligter.get('vollerName')))
-        
-        for staatsangehoerigkeit in beteiligter['staatsangehoerigkeit']:
-            text.addLine('Staatsangehörigkeit', staatsangehoerigkeit)  
-        
-        for herkunftsland in beteiligter['herkunftsland']:
-            text.addLine('Herkunftsland', herkunftsland)
-        
-        for sprache in beteiligter['sprache']:
-            text.addLine('Sprache', sprache)
-        
-        if beteiligter.get('beruf'):
-            text.addRaw('<br><b><i>Berufliche Daten</i></b><br>')
-            for beruf in beteiligter['beruf']:
-                text.addLine('Beruf', beruf)
-                
-        text.addRaw(self.__anschriftTemplate(beteiligter.get('anschrift')))
-        text.addRaw(self.__telkoTemplate(beteiligter.get('telekommunikation')))
-        
-        if beteiligter.get('zustaendigeInstitution'):
-            text.addRaw('<br><b><i>Zuständige Institution(en)</i></b><br>')
-            for rollennummer in beteiligter['zustaendigeInstitution']:
-                text.addRaw('%s<br>' % self.akte.rollenverzeichnis.get(str(rollennummer)))
-        
-        if beteiligter.get('bankverbindung'):
-            text.addRaw(self.__bankverbindungTemplate(beteiligter['bankverbindung']))
-        
-        if beteiligter.get('bundeseinheitlicheWirtschaftsnummer'):
-            text.addRaw('<br><b><i>Bundeseinheitliche Wirtschaftsnummer</i></b><br>')
-            text.addLine('Wirtschaftsnummer', beteiligter['bundeseinheitlicheWirtschaftsnummer'])
-        
-        if beteiligter.get('umsatzsteuerID') or beteiligter.get('steueridentifikationsnummer') or beteiligter.get('vorsteuerabzugsberechtigt'):
-            text.addRaw('<br><b><i>Steuerdaten</i></b><br>')
-            if beteiligter.get('umsatzsteuerID'):
-                text.addLine('Umsatzsteuer-ID', beteiligter.get('umsatzsteuerID'))
-            if beteiligter.get('steueridentifikationsnummer'):
-                text.addLine('Steueridentifikationsnummer', beteiligter.get('steueridentifikationsnummer'))
-            if beteiligter.get('vorsteuerabzugsberechtigt'): 
-                text.addLine('Vorsteuerabzug',  'Zum Abzug der Vorsteuer berechtigt' if beteiligter['vorsteuerabzugsberechtigt'] == 'true' else 'Nicht zum Abzug der Vorsteuer berechtigt')
-        
-        for alias in beteiligter.get('aliasNatuerlichePerson'):
-            text.addRaw('<blockquote><b><u>Aliasdaten</u></b>%s</blockquote>' % self.__natPersonTemplate(alias))
-        
-        if beteiligter.get('geburt'):
-            text.addRaw(self.__geburtTemplate(beteiligter['geburt']))  
-        
-        if beteiligter.get('tod'):
-            text.addRaw(self.__todTemplate(beteiligter['tod']))
-            
-        if beteiligter.get('ausweisdokument'):
-             text.addRaw(self.__ausweisTemplate(beteiligter['ausweisdokument']))
-              
-        if beteiligter.get('registereintragungNatuerlichePerson'):
-            text.addRaw(self.__registerNatPersonTemplate(beteiligter['registereintragungNatuerlichePerson']))
-        
-        if beteiligter.get('auswahl_auskunftssperre'):
-            text.addRaw(self.__sperreTemplate(beteiligter['auswahl_auskunftssperre']))
-            
-        return text.getText() 
-   
-    def __ausweisTemplate (self, ausweise):
-        text=TextObject()
-        text.addHeading('Ausweisdokumente')
-        for ausweis in ausweise:
-            if text.getText():
-                text.addRaw('<br>')
-            text.addLine('Ausweisart', ausweis.get('ausweisart'))  
-            text.addLine('Ausweis-ID', ausweis.get('ausweis.ID'))
-            text.addLine('Ausstellender Staat', ausweis.get('ausstellenderStaat')) 
-            if ausweis.get('ausstellendeBehoerde'): 
-                text.addLine('Ausstellende Behörde', self.__behoerdeResolver(ausweis['ausstellendeBehoerde']))
-            if ausweis.get('gueltigkeit'):
-                text.addLine('Gültigkeit', self.__zeitraumResolver(ausweis['gueltigkeit']))
-            text.addLine('Zusatzinformationen', ausweis.get('zusatzinformation'))
-        return text.getText()
-
-    def __zeitraumResolver(self, zeitraum):
-        text=''
-        if zeitraum.get('beginn'):
-            text+=zeitraum['beginn']   
-        if zeitraum.get('ende'):
-            if text:
-                text+=' - '
-            text+=zeitraum['ende']
-        return text
-    
-    def __behoerdeResolver(self, behoerde):
-        if behoerde.get('type')=='GDS.Ref.Beteiligtennummer':
-            return self.akte.beteiligtenverzeichnis.get(behoerde.get('name'))   
-        else:
-            return behoerde.get('name')
-        
-    def __registerNatPersonTemplate(self, registereintragung):
-        text=TextObject()
-       
-        text.addHeading('Registrierung natürliche Person')
-
-        text.addLine('Firma', registereintragung.get('verwendeteFirma'))
-        text.addLine('Weitere Bezeichnung', registereintragung['angabenZurRechtsform'].get('weitereBezeichnung'))
-        text.addLine('Rechtsform', registereintragung['angabenZurRechtsform'].get('rechtsform')) 
-        
-        if registereintragung.get('registereintragung'):
-            text.addRaw(self.__registerTemplate(registereintragung['registereintragung']))
-            
-        return text.getText()
-    
-    def __registerTemplate(self, registrierung):
-        text=TextObject()
-        
-        text.addHeading('Registrierungsdaten')
-        
-        items=(
-            ['registernummer','Registernummer'],
-            ['reid','REID'],
-            ['lei','LEI'],
-            ['euid','EUID']             
-        )
-        
-        for item in items:            
-            text.addLine(item[1],registrierung[item[0]])
-
-        text.addLine('Registergericht', registrierung['auswahl_registerbehoerde']['inlaendischesRegistergericht']['gericht'])
-        text.addLine('Registerart', registrierung['auswahl_registerbehoerde']['inlaendischesRegistergericht']['registerart'])  
-        text.addLine('Ausländische Registerbehörde', registrierung['auswahl_registerbehoerde'].get('auslaendischeRegisterbehoerde'))
-        text.addLine('Ausländische Registerbehörde (lokaler Name)', registrierung['auswahl_registerbehoerde'].get('auslaendischeRegisterbehoerdeName'))
-        text.addLine('Registerbehörde', registrierung['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbehoerde'])
-        text.addLine('Registerbezeichnung', registrierung['auswahl_registerbehoerde']['sonstigeRegisterbehoerde']['registerbezeichnung'])
-                            
-        return text.getText()
-    
-    def __sperreTemplate(self, sperre):
-        text=TextObject()
-        
-        text.addHeading('Auskunftssperrdaten')
-        
-        if sperre['auskunftssperre.vorhanden'].lower()=='true':
-            text.addRaw('Auskunftssperre vorhanden: ja<br>')
-        elif sperre['auskunftssperre.vorhanden'].lower()=='false':
-            text.addRaw('Auskunftssperre vorhanden: nein<br>')
-        
-        items=[
-            'grundlage',
-            'umfang',
-            'sperrstufe'
-        ]
-        
-        for item in items:
-            text.addLine(item.capitalize(), sperre['auskunftssperre.details'][item])
-        
-        return text.getText()
-    
-    def __geburtTemplate(self, geburt):
-        text=TextObject()
-        text.addHeading('Geburtsdaten')
-        text.addLine('Geburtsdatum', geburt.get('geburtsdatum'))
-        if geburt['geburtsdatum.unbekannt'].lower() =='true': 
-            text.addRaw('Geburtsdatum: unbekannt<br>')
-        text.addLine('Geburtsort', geburt['geburtsort']['ort'])
-        text.addLine('Staat des Geburtsortes', geburt['geburtsort']['staat'])
-        text.addLine('Geburtsname der Mutter', geburt['geburtsname.mutter'])  
-        
-        if geburt.get('geburtsname.vater'):
-            # Wert wurde erst mit 3.6.2 eingeführt.
-            text.addLine('Geburtsname des Vaters', geburt['geburtsname.vater'])    
-        
-        items=[
-            ['nachname.vater','Nachname des Vaters'],
-            ['vorname.vater','Vorname des Vaters'],
-            ['nachname.mutter','Nachname der Mutter'],
-            ['vorname.mutter','Vorname der Mutter']
-        ]
-        
-        for item in items:
-            if geburt['name.eltern'][item[0]]:
-                for name in geburt['name.eltern'][item[0]]:    
-                    text.addLine(item[1], name)
-                                                 
-        return text.getText()   
-    
-    def __todTemplate(self, tod):
-        text=TextObject()
-        text.addHeading('Sterbedaten')
-        items=[
-            ['sterbedatum','Sterbedatum'],
-            ['sterbestandesamtBehoerdennummer','Behördennummer des Standesamts'],
-            ['sterbestandesamtName','Names des Standesamts'],
-            ['sterberegisternummer','Sterberegisternr.'],
-            ['eintragungsdatum','Eintragungsdatum'],
-            ['sterberegisterart', 'Sterberegisterart'],
-            ['todErklaert', 'Tod erklärt']
-        ]
-
-        sterbezeitraum=''
-        if tod['sterbedatumZeitraum']['beginn']:
-            sterbezeitraum = tod['sterbedatumZeitraum']['beginn']
-        if tod['sterbedatumZeitraum']['ende']:
-            sterbezeitraum += ' - %s' % tod['sterbedatumZeitraum']['ende']
-       
-        text.addLine('Sterbezeitraum' , sterbezeitraum)
-       
-        for item in items:
-            
-            itemValue = tod[item[0]]
-            
-            if item[0]=='todErklaert' and itemValue.lower()=='true':
-                itemValue='ja'
-            elif item[0]=='todErklaertt' and itemValue.lower()=='false':
-                itemValue='nein'    
-            
-            text.addLine(item[1], itemValue)
-        
-        if tod['sterbeort']: 
-            text.addRaw(self.__anschriftTemplate ([tod['sterbeort']],'Sterbeort'))
-               
-        return text.getText()            
-    
-    def __bankverbindungTemplate(self, bankverbindungen):
-        text=TextObject()
-        text.addHeading('Bankverbindungsdaten')
-        items=[
-            ['bankverbindungsnummer','Bankverbindungsnummer'],
-            ['iban','IBAN'],
-            ['bic','BIC'],
-            ['bank','Bank'],
-            ['kontoinhaber','Kontoinhaber'],
-            ['sepa-mandat', 'Sepa-Mandat'],
-            ['verwendungszweck', 'Verwendungszweck']
-        ]
-        verbindungNr=1
-        for bankverbindung in bankverbindungen:
-            for item in items:
-                
-                itemValue = bankverbindung.get(item[0])
-                
-                if item[0]=='sepa-mandat' and itemValue.lower()=='true':
-                    itemValue='Erteilt'
-                elif item[0]=='sepa-mandat' and itemValue.lower()=='false':
-                    itemValue='Nicht erteilt'    
-                
-                text.addLine(item[1], itemValue)
-            
-            if bankverbindung.get('sepa-basislastschrift'):
-                text.addLine('Lastschrifttyp' , bankverbindung['sepa-basislastschrift'].get('lastschrifttyp' ))
-                text.addLine('Mandatsreferenz', bankverbindung['sepa-basislastschrift'].get('mandatsreferenz'))
-                text.addLine('Mandatsdatum'   , bankverbindung['sepa-basislastschrift'].get('mandatsdatum'   ))
-            
-            if verbindungNr < len(bankverbindungen):
-                text.addRaw('<br>')
-            verbindungNr+=1            
-        
-        return text.getText()                      
-                  
-    def __setBeteiligteView(self):
-        '''Lädt die werte der Beteuiligtendaten in die Beteiligtenansicht. Sind Daten als anwendungsspezifische Erweiterung im Klartext vorhanden, werden diese angezeigt.'''
-        try:
-            if self.akte.erweiterungen.get('openXJV_beteiligung_klartext'):         
-                self.beteiligteText.setPlainText(self.akte.erweiterungen['openXJV_beteiligung_klartext']['text'])
-                return
-        except AttributeError:
-            pass
-        
-        text=TextObject()            
-        for beteiligung in self.akte.grunddaten['beteiligung']:
-            text.addLine('<b>Beteiligtennummer</b>', beteiligung.get('beteiligtennummer'))
-            
-            if beteiligung['rolle']:
-                text.addRaw(self.__rollenTemplate(beteiligung['rolle']))
-                
-            beteiligter=beteiligung['beteiligter']
-      
-            beteiligtentyp=beteiligter.get('type')
-            if beteiligtentyp=='GDS.Organisation':
-                text.addRaw(self.__orgTemplate(beteiligter))
-            elif beteiligtentyp=='GDS.RA.Kanzlei':
-                text.addRaw(self.__kanzleiTemplate(beteiligter))
-            elif beteiligtentyp=='GDS.NatuerlichePerson':  
-                text.addRaw(self.__natPersonTemplate(beteiligter))
-            text.addRaw('_______________________________________<br><br>')
-           
-        self.beteiligteText.setHtml(text.getText())
-        
-    def __terminTemplate(self, termin):
-        text=TextObject()
-        text.addHeading('Terminsdetails')
-        hr='________________________________________________________________________________________________<br><br>'
-        
-        #Alte Werte Fortsetzungstermin vor 3.4.1
-        if termin.get('hauptterminsdatum'):
-            if termin['auswahl_hauptterminszeit']['hauptterminsuhrzeit']:
-                zeit = "%s Uhr" % termin['auswahl_hauptterminszeit']['hauptterminsuhrzeit']
-            else:
-                    zeit = termin['auswahl_hauptterminszeit']['hauptterminszeit'] 
-            text.addRaw('Fortsetzungstermin des Haupttermins vom %s, %s<br>' % (termin['hauptterminsdatum'], zeit))   
-            if termin['hauptterminsID']:
-                text.addLine('Haupttermins-ID', termin['hauptterminsID'])
-                
-        #Neue Werte Fortsetzungstermin ab 3.4.1
-        if termin.get('terminskategorie'):
-            text.addLine('Terminskategorie', termin['terminskategorie'])
-        if termin.get('ref.bezugstermin'):
-            text.addLine('Bezieht sich auf ursprüngliche Termins-ID', termin['ref.bezugstermin'])
-                                      
-        text.addLine('Termins-ID', termin['terminsID'])
-            
-        if termin['terminsart']:
-            text.addRaw('<b>Art des Termins: %s</b><br>' % termin['terminsart'])
-                
-        text.addLine('Spruchkörper', termin.get('spruchkoerper'))
-                
-        if termin['oeffentlich'].lower()=='true':
-            text.addRaw("Es handelt sich um einen öffentlichen Termin.<br>") 
-        elif termin['oeffentlich'].lower()=='false':
-            text.addRaw("Dieser Termin ist nicht öffentlich.<br>")   
-        
-        datum=termin['terminszeit']['terminsdatum']
-        if termin['terminszeit']['auswahl_terminszeit']['terminsuhrzeit']:
-            zeit = "%s Uhr" % termin['terminszeit']['auswahl_terminszeit']['terminsuhrzeit']
-        else:
-            zeit = termin['terminszeit']['auswahl_terminszeit']['terminszeitangabe'] 
-        text.addRaw('<b>Termin: %s, %s</b><br>' % (datum,zeit))
-        
-        if termin['terminszeit']['terminsdauer']:
-            text.addLine('Angesetzte Dauer', '%s h' % termin['terminszeit']['terminsdauer'])
-        
-        gerichtsort=TextObject()
-        if termin['auswahl_terminsort']['gerichtsort']['anschrift']:
-            gerichtsort.addRaw(self.__anschriftTemplate(termin['auswahl_terminsort']['gerichtsort']['anschrift'], heading='Terminsort'))
-        gerichtsort.addLine('Gebäude', termin['auswahl_terminsort']['gerichtsort']['gebaeude'])
-        gerichtsort.addLine('Stockwerk', termin['auswahl_terminsort']['gerichtsort']['stockwerk'])
-        gerichtsort.addLine('Raum', termin['auswahl_terminsort']['gerichtsort']['raum'])
-        if gerichtsort.getText():
-            text.addRaw(gerichtsort.getText())
-        
-        lokaltermin=TextObject()
-        if termin['auswahl_terminsort']['lokaltermin']['anschrift']:
-            lokaltermin.addRaw(self.__anschriftTemplate(termin['auswahl_terminsort']['lokaltermin']['anschrift'], heading='Terminsort (Lokaltermin)'))
-        lokaltermin.addLine('Beschreibung', termin['auswahl_terminsort']['lokaltermin']['beschreibung'])
-        if lokaltermin.getText():
-            text.addRaw(lokaltermin.getText())
-        
-        geladene=TextObject()
-        for teilnehmer in termin['teilnehmer']:
-            geladene.addRaw(self.__geladenTemplate(teilnehmer))
-        geladene.addHeading('Geladene')
-        if geladene.getText():
-            text.addRaw(geladene.getText())
-            
-        return text.getText() 
-    
-    def __geladenTemplate(self, teilnehmer):
-        ladungszusatz=teilnehmer['ladungszusatz']    
-        geladener=self.akte.rollenverzeichnis.get(str(teilnehmer['ref.rollennummer']))      
-        datum=teilnehmer['ladungszeit']['ladungsdatum'] 
-        dauer=teilnehmer['ladungszeit']['ladungsdauer']        
-        ladungsuhrzeit=teilnehmer['ladungszeit']['auswahl_ladungszeit']['ladungsuhrzeit']   
-        zeitangabeFreitext=teilnehmer['ladungszeit']['auswahl_ladungszeit']['ladungszeitangabe'] 
-        
-        text=TextObject()
-        text.addRaw('<b>%s</b>' % geladener)
-        if datum:
-            text.addRaw(' am %s' % datum)
-        if ladungsuhrzeit:
-            text.addRaw(' um %s Uhr' % ladungsuhrzeit)
-        if zeitangabeFreitext:
-            text.addRaw(', %s' % zeitangabeFreitext)   
-        if dauer:
-            text.addRaw(' für %s h' % dauer)    
-        text.addRaw('<br>')
-        text.addLine('Ladungszusatz', ladungszusatz)
-        text.addRaw('<br>')
-        return text.getText()
-        
-    def __setTerminDetailView(self, val):
-        text=''
-        uuid=self.termineTableView.item( val.row(), 0).text()
-        for termin in self.akte.termine:
-            if termin['uuid']==uuid:
-                text+=self.__terminTemplate(termin)
-        
-        self.terminDetailView.setHtml(text) 
-                                        
+    # ========================================
+    # ABSCHNITT 16: DATENBANKVERWALTUNG
+    # ========================================     
+    def __notizUndSuchdatenbankLoeschen(self):
+        self.db_manager.clear_all_data()
+        self.statusBar.showMessage('Die Datenbank wurde gelöscht und eine neue, leere Datenbank wurde angelegt.')
+        
+    # ========================================
+    # ENDE DER ABSCHNITTE
+    # ========================================               
+                                              
 def launchApp():
+    """
+    Startet openXJV
+
+    Diese Funktion initialisiert die Qt-Anwendung mit den richtigen Einstellungen
+    und startet das Hauptfenster der Benutzeroberfläche.
+    """
+    # Prüfe, ob bereits eine Instanz läuft, wenn nicht im Print Process
+    if not os.environ.get("_PDFJS_PRINT_PROCESS") == "1":
+        single_instance = SingleInstance('openXJV')
+        if not single_instance.acquire():
+            print("openXJV läuft bereits! Es kann nur eine Instanz gleichzeitig gestartet werden.")
+            sys.exit(1)
+
     print("QT Version (PySide): %s" % qVersion())
+    print(f'openXJV Version: {VERSION}')
+    print(f'Modulpaket-Version: {MODULAR_VERSION}')
     print('Deaktiviere Chromium-Sandbox aus Kompatibilitätsgründen.')
-    # Sandbox deaktivieren 
+    # Deaktiviere Sandbox 
     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
 
-    # Chromium Flags
+    # Chromium-Flags
     os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = " ".join([
-        "--log-level=3",                 # weniger Logging
-        "--disable-web-security",        
-        "--num-raster-threads=4",        # mehrere Raster-Threads
+        "--log-level=3",                 # Weniger Logging
+        #"--disable-web-security",        
+        "--num-raster-threads=4",        # Mehrere Raster-Threads
         "--disk-cache-size=268435456",   # 256 MB Cache
-        "--media-cache-size=134217728",  # 128 MB Media-Cache
+        "--media-cache-size=134217728",  # 128 MB Medien-Cache
     ])
 
     # Automatische DPI-Skalierung
@@ -3970,18 +2947,33 @@ def launchApp():
     if sys.platform.lower().startswith('win'):
         os.environ["QT_QPA_PLATFORM"] = "windows:darkmode=2"
 
+    # Globale WebEngine-Stabilitaetseinstellungen (muss vor QApplication aufgerufen werden)
+    configure_global_stability(
+        disable_gpu=True,
+        disable_webgl=True,
+        disable_gpu_compositing=True,
+    )
+
+    pdfjs_freeze_support()
+    
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     app.setObjectName('openXJV')
     app.setApplicationName(f'openXJV {VERSION}')
     app.setApplicationVersion(VERSION)
 
-    # Deutsche Locale setzen
+    # Set German locale
     QLocale.setDefault(QLocale(QLocale.German, QLocale.Germany))
+
+    # Splash Screen mit Mindestanzeigedauer
+    import time
+    MIN_SPLASH_TIME = 2.0  # Sekunden
 
     splash_screen = QPixmap(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons', 'SplashScreen.png'))
     splash = QSplashScreen(splash_screen, Qt.WindowType.WindowStaysOnTopHint)
     splash.show()
+    app.processEvents()
+    splash_start = time.time()
 
     # Parse sys.argv
     file = None
@@ -3991,19 +2983,28 @@ def launchApp():
     elif len(sys.argv) >= 2:
         ziplist = [f for f in sys.argv[1:] if f.lower().endswith('zip')]
 
-    widget = UI(file=file, ziplist=ziplist, app=app)
+    widget = UI(app, file=file, ziplist=ziplist)
     widget.setWindowFlags(
         (widget.windowFlags() & ~Qt.WindowType.WindowFullscreenButtonHint)
         | Qt.WindowType.CustomizeWindowHint
     )
     app.aboutToQuit.connect(widget.cleanUp)
 
-    splash.finish(widget)
-    widget.showMaximized()
+    # Funktion zum Anzeigen des Hauptfensters nach Splash
+    def showMainWindow():
+        splash.close()
+        widget.showMaximized()
+        # Splitter-Größen setzen und Dateien laden nach dem Anzeigen des Fensters
+        QTimer.singleShot(50, lambda: (widget.setInitialSplitterSizes(), widget.loadInitialFiles()))
 
-    # Nach 10 ms erneut in den maximierten Modus wechseln,
-    # falls Fenster durch das Laden der UI resized wird
-    QTimer.singleShot(10, widget.showMaximized) 
+    # Berechne verbleibende Zeit für Mindestanzeigedauer
+    elapsed = time.time() - splash_start
+    remaining_ms = int(max(0, (MIN_SPLASH_TIME - elapsed) * 1000))
+
+    if remaining_ms > 0:
+        QTimer.singleShot(remaining_ms, showMainWindow)
+    else:
+        showMainWindow()
 
     sys.exit(app.exec())
 
@@ -4013,5 +3014,5 @@ if __name__ == "__main__":
         launchApp()
     except Exception as e:
         # Debug
-        # traceback.print_exc()
+        traceback.print_exc()
         print(e)

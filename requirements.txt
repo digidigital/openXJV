@@ -1,0 +1,12 @@
+orjson
+pillow
+fpdf2
+lxml
+numpy
+docx2txt
+darkdetect
+pypdfium2
+pikepdf
+PySide6
+PySide6-Addons
+appdirs

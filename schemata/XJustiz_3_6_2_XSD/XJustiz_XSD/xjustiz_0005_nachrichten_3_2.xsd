@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.xjustiz.de"
+           xmlns:din91379="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"
+           targetNamespace="http://www.xjustiz.de"
+           version="3.2.0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+   <xs:annotation>
+      <xs:appinfo>
+         <standard>
+            <nameLang>Strukturierte Fachdaten für die Kommunikation im elektronischen Rechtsverkehr</nameLang>
+            <nameKurz>XJustiz</nameKurz>
+            <nameTechnisch>xjustiz</nameTechnisch>
+            <kennung>urn:xoev-de:blk-ag-it-standards:standard:xjustiz</kennung>
+            <beschreibung>XJustiz ist der bundesweit einheitliche Standard für den Austausch strukturierter elektronischer Informationen mit der Justiz.</beschreibung>
+         </standard>
+         <versionStandard>
+            <version>3.6.2</version>
+            <beschreibung>XJustiz beschreibt ein standardisiertes Datenaustauschformat für die elektronische Kommunikation innerhalb und mit der Justizverwaltung.</beschreibung>
+            <versionXOEVProfil>3.0.2</versionXOEVProfil>
+            <versionXOEVHandbuch>2.3.1</versionXOEVHandbuch>
+            <versionXGenerator>3.2.3</versionXGenerator>
+            <versionModellierungswerkzeug>2021x</versionModellierungswerkzeug>
+            <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+         </versionStandard>
+      </xs:appinfo>
+   </xs:annotation>
+   <xs:include schemaLocation="xjustiz_0000_grunddatensatz_3_6.xsd"/>
+   <xs:import schemaLocation="din-norm-91379-datatypes.xsd"
+              namespace="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"/>
+   <xs:element name="nachricht.gds.uebermittlungSchriftgutobjekte.0005005">
+      <xs:annotation>
+         <xs:documentation>Diese Nachricht ist eine Erweiterung des Type.GDS.Basisnachricht</xs:documentation>
+      </xs:annotation>
+      <xs:complexType>
+         <xs:complexContent>
+            <xs:extension base="tns:Type.GDS.Basisnachricht">
+               <xs:sequence>
+                  <xs:element name="schriftgutobjekte" type="tns:Type.GDS.Schriftgutobjekte"/>
+               </xs:sequence>
+            </xs:extension>
+         </xs:complexContent>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="nachricht.gds.basisnachricht.0005006">
+      <xs:annotation>
+         <xs:documentation>Diese Nachricht kann für alle Kommunikationsszenarien, bei denen keine Schriftgutobjekte übermittelt werden und für die keine spezielle Fachnachricht bereitsteht, genutzt werden.</xs:documentation>
+      </xs:annotation>
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="grunddaten" minOccurs="0" type="tns:Type.GDS.Grunddaten"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="nachricht.gds.fehler.0005007">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="grunddaten" minOccurs="0" type="tns:Type.GDS.Grunddaten"/>
+            <xs:element name="fachdaten">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="fehler" maxOccurs="unbounded">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="auswahl_fehlercode">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="fehlercode" type="tns:Code.GDS.Fehlercodes.Typ3">
+                                          <xs:annotation>
+                                             <xs:documentation>Dieses Element ist zu verwenden, wenn keine fach- oder anwendungsspezifische Codeliste abgestimmt ist.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="anwendungsspezifischerFehler" type="tns:Code.Fehler.Typ4">
+                                          <xs:annotation>
+                                             <xs:documentation>Mit diesem Element kann auf Codelisten zurückgegriffen werden, die für bestimmte IT-Anwendungen abgestimmt wurden, jedoch (noch) nicht in den XJustiz-Standards aufgenommen werden konnten. In diesem Fall muss die Kennung und Version der verwendeten Codeliste bei der Nachrichtenübermittlung angegeben werden. Zudem muss sichergestellt sein, dass der Empfänger Kenntnis von der Codeliste hat und auf sie zugreifen kann.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="vag.fehler" type="tns:Code.GDS.VAG.Fehler.Typ3">
+                                          <xs:annotation>
+                                             <xs:documentation>Zu verwenden für Kommunikationsszenarien des Fachmoduls Versorgungsausgleich.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="inso.iri.fehler" type="tns:Code.GDS.INSO.IRI.Fehlercode.Typ3">
+                                          <xs:annotation>
+                                             <xs:documentation>Zu verwenden für Kommunikationsszenarien des Fachmoduls Insolvenz.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="auskunft.vollstreckungssachen.fehler"
+                                                   type="tns:Code.GDS.Auskunft.Vollstreckungssachen.Fehler.Typ3">
+                                          <xs:annotation>
+                                             <xs:documentation>Fehlermeldung für die Kommunikation bei Auskunftsersuchen im Rahmen von Vollstreckungssachen. z.B. für Fachmodule eZoll und ZPO Fremdauskunft</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="zusatzinformation" minOccurs="0" type="din91379:datatypeE">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element können weitere Informationen zum Fehler angegeben werden. Dies kann zum Beispiel bei einem Validierungsfehler die Meldung vom Parser oder die Fehlerbeschreibung bei Auswahl des Wertes "Sonstiger Fehler" sein. Es dürfen nur maximal 2000 Zeichen angegeben werden.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="auswahl_statusWeiterverarbeitung" minOccurs="0">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element kann angegeben werden, ob die Nachricht trotz des Fehlers bearbeitet wird oder ob die Übermittlung einer fehlerfreien XJustiz-Nachricht erforderlich ist.</xs:documentation>
+                                 </xs:annotation>
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="erfolgt" type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Die Bearbeitung der Nachricht erfolgt trotz des Fehlers. Eine bereinigte Version der fehlerhaften Nachricht darf nicht übermittelt werden, der Fehler soll vielmehr für künftige Übermittlung bereinigt werden.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="abhaengigVonFehlerbehebung" type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Die Nachricht wird nicht bearbeitet. Die Übermittlung einer fehlerbereinigten Nachricht ist zwingend erforderlich.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="nachricht.gds.verarbeitungsbestaetigung.0005008">
+      <xs:annotation>
+         <xs:documentation>Die XJustiz-Nachricht "nachricht.gds.verarbeitungsbestaetigung.0005008" wird verwendet, wenn die Verarbeitung einer eingegangenen XJustiz-Nachricht bestätigt werden soll. Sie nimmt auf eine eingegangene XJustiz-Nachricht Bezug. Dabei wird die ID, die in der eingegangen XJustiz-Nachricht als „eigeneNachrichtenID“ im Nachrichtenkopf angegeben wurde, im Element „fremdeNachrichtenID“ im Nachrichtenkopf der Nachricht „nachricht.gds.verarbeitungsbestaetigung.0005008“ zurück übermittelt. Die XJustiz-Nachricht wird nicht verwendet, um den bloßen Eingang einer XJustiz-Nachricht zu bestätigen. Die Eingangsbestätigung erfolgt vielmehr auf der Transportebene durch die EGVP-Eingangsbestätigung, die beim Versand von EGVP-Nachrichten über die ERV-Infrastruktur erstellt wird. Nachfolgend sind die Einsatzszenarien für die XJustiz-Nachricht „nachricht.gds.verarbeitungsbestaetigung.0005008“ beschrieben: Wettbewerbsregister Die Verarbeitungsbestätigung wird versandt, wenn die Eintragungsmitteilungen (Erstmitteilung/Berichtigung) oder Löschmitteilungen im Wettbewerbsregister zur weiteren fachlichen Verarbeitung in das System übernommen wurden. Die Übernahme erfolgt nur dann, wenn die referenzierte Mitteilung die technischen Strukturvorgaben erfüllt. BZR/GZR Die Verarbeitungsbestätigung wird versandt, wenn das Register auf der Grundlage einer übermittelten XJustiz-Nachricht fortgeschrieben wurde. Falls das Register durch die Nachricht nicht fortgeschrieben wird, wird dies durch das Kindelement BZRGZR kenntlich gemacht. Im Falle einer Doppelmitteilung wird der Codeschlüssel 001 übermittelt, im Falle einer Berichtigungsmitteilung der Codeschlüssel 002. Fahndung Die Verarbeitungsbestätigung wird versandt, wenn die Erstausschreibung in Fahndungssachen von der Polizei in die dortigen Systeme übernommen wurde. Dabei wird das Ausschreibungsende, das im System der Polizei erfasst wurde, mitgeteilt.</xs:documentation>
+      </xs:annotation>
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="fachdaten" minOccurs="0">
+               <xs:annotation>
+                  <xs:documentation>Die Verwendung der Fachdaten kommt für die Kommunikation zwischen Polizei und Justiz in Fahndungssachen oder für die Kommunikation zwischen Justiz und BfJ (BZR/GZR-Sachen) in Betracht.</xs:documentation>
+               </xs:annotation>
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="fahndung.ausschreibungsende" minOccurs="0" type="xs:date">
+                        <xs:annotation>
+                           <xs:documentation>Mit diesem Element wird das Datum, bis zu dem die Fahndung im System der Polizei erfasst bleibt, übermittelt.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="BZRGZR"
+                                 minOccurs="0"
+                                 type="tns:Code.GDS.STRAF.BZR.Verarbeitungsbestaetigung.Typ3">
+                        <xs:annotation>
+                           <xs:documentation>Mit diesem Element können bei der Kommunikation zwischen der Justiz und dem BZR/GZR zusätzliche Informationen (falls einschlägig) zur Verarbeitungsbestätigung übermittelt werden.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>
