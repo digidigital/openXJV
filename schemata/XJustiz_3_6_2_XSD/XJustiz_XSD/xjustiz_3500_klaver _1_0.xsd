@@ -1,0 +1,1182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.xjustiz.de"
+           xmlns:din91379="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"
+           targetNamespace="http://www.xjustiz.de"
+           version="1.0.0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+   <xs:annotation>
+      <xs:appinfo>
+         <standard>
+            <nameLang>Strukturierte Fachdaten für die Kommunikation im elektronischen Rechtsverkehr</nameLang>
+            <nameKurz>XJustiz</nameKurz>
+            <nameTechnisch>xjustiz</nameTechnisch>
+            <kennung>urn:xoev-de:blk-ag-it-standards:standard:xjustiz</kennung>
+            <beschreibung>XJustiz ist der bundesweit einheitliche Standard für den Austausch strukturierter elektronischer Informationen mit der Justiz.</beschreibung>
+         </standard>
+         <versionStandard>
+            <version>3.6.2</version>
+            <beschreibung>XJustiz beschreibt ein standardisiertes Datenaustauschformat für die elektronische Kommunikation innerhalb und mit der Justizverwaltung.</beschreibung>
+            <versionXOEVProfil>3.0.2</versionXOEVProfil>
+            <versionXOEVHandbuch>2.3.1</versionXOEVHandbuch>
+            <versionXGenerator>3.2.3</versionXGenerator>
+            <versionModellierungswerkzeug>2021x</versionModellierungswerkzeug>
+            <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+         </versionStandard>
+      </xs:appinfo>
+   </xs:annotation>
+   <xs:include schemaLocation="xjustiz_0000_grunddatensatz_3_6.xsd"/>
+   <xs:include schemaLocation="xjustiz_3510_cl_klaver_1_0.xsd"/>
+   <xs:import schemaLocation="din-norm-91379-datatypes.xsd"
+              namespace="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"/>
+   <xs:complexType name="Type.KLAVER.Anspruch">
+      <xs:sequence>
+         <xs:element name="fortlaufendeNummer" minOccurs="0" type="xs:positiveInteger">
+            <xs:annotation>
+               <xs:documentation>Die fortlaufende Nummer wird als eindeutige Kennziffer innerhalb dieser XJustiz-Nachricht verwendet, um andere Elemente dieser XJustiz-Nachricht mit diesem Anspruch zu verknüpfen. Die Nummern dürfen nicht doppelt vergeben werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="anspruchssteller"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.GDS.Ref.Rollennummer">
+            <xs:annotation>
+               <xs:documentation>Sofern der Anspruch bei mehreren Klägern nur für einen Teil der Kläger geltend gemacht wird, können diese Kläger in diesem Element referenziert werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="anspruchsgegner"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.GDS.Ref.Rollennummer">
+            <xs:annotation>
+               <xs:documentation>Sofern der Anspruch bei mehreren Beklagten nur gegen einen Teil der Beklagten geltend gemacht wird, können diese Beklagten in diesem Element referenziert werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="anspruchsart"
+                     minOccurs="0"
+                     type="tns:Code.KLAVER.Anspruchsart.Typ3">
+            <xs:annotation>
+               <xs:documentation>In diesem Element wird die Art des Anspruchs unter Verwendung einer Codeliste übermittelt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="wertAnspruch" minOccurs="0" type="tns:Type.GDS.Geldbetrag">
+            <xs:annotation>
+               <xs:documentation>In diesem Element wird der Betrag des Anspruchs, der mit der Klage geltend gemacht werden soll, übermittelt. Bei Klagen auf Handlung/Unterlassung/Duldung, Feststellung, Gestaltung und Auskunft ist hier der Wert gemäß der einschlägigen Wertvorschriften anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="anspruchsgegenstand" minOccurs="0" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>In diesem Element wird der Anspruch näher bezeichnet. (z.B. 'Kaufpreis gem. Vertrag vom' oder 'Schmerzensgeld aus Vorfall vom ...')</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.Antrag">
+      <xs:sequence>
+         <xs:element name="sachantraege" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="inhalt" type="din91379:datatypeE">
+                     <xs:annotation>
+                        <xs:documentation>In diesem Element wird der bzw. die mit der Klage geltend gemachten Sachanträge in Textform übermittelt.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="anspruch"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="tns:Type.KLAVER.Anspruch">
+                     <xs:annotation>
+                        <xs:documentation>In diesem Element werden Angaben zur Höhe, Art und Gegenstand des mit der Klage geltend gemachten Ansprüche übermittelt. Sofern mit dem Sachantrag mehrere Ansprüche geltend gemacht werden, muss das Element "anspruch" mehrfach übermittelt werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="nebenantraege.zinsen" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>Wenn mit der Klage ein oder mehrere Nebenanträge auf Zinsen geltend gemacht werden, werden die erforderlichen Daten in dieser Sequenz übermittelt.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="inhalt" type="din91379:datatypeE">
+                     <xs:annotation>
+                        <xs:documentation>In diesem Element wird der mit der Klage geltend gemachte Nebenantrag auf Zinsen in Textform übermittelt.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="zinsanspruch" minOccurs="0" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="fortlaufendeNummer" minOccurs="0" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Die fortlaufende Nummer wird als eindeutige Kennziffer innerhalb dieser XJustiz-Nachricht verwendet, um andere Elemente dieser XJustiz-Nachricht, insbesondere einen Vortrag in der Begründetheit, mit den jeweiligen Zinsansprüchen verknüpfen zu können. Die Nummern dürfen nicht doppelt vergeben werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="ref.fortlaufendeNummer"
+                                       minOccurs="0"
+                                       type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>In diesem Element wird die fortlaufende Nummer des Anspruchs, für den die Zinsen geltend gemacht werden, angegeben.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="zinsen" maxOccurs="unbounded" type="tns:Type.GDS.Zinsen">
+                              <xs:annotation>
+                                 <xs:documentation>Mit diesem Element können die Zinsinformationen für den angegeben Anspruch, ggf. auch für verschiedene Zeiträume, übermittelt werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="auswahl_sonstigeAntraege" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:documentation>In diesem Element können sonstige Anträge, wie z.B. Prozessanträge oder Kostenanträge, die mit der Klage geltend gemacht werden sollen, übermittelt werden.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="antrag.sonstige">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="auswahl_antrag.sonstige">
+                              <xs:complexType>
+                                 <xs:choice>
+                                    <xs:element name="antragWerteliste" type="tns:Code.KLAVER.Antrag.Typ3">
+                                       <xs:annotation>
+                                          <xs:documentation>Mit diesem Auswahl-Element kann ein Antrag aus dieser Codeliste gestellt werden. Die zusätzliche Übermittlung in Textform ist nicht vorgesehen.</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="sonstigerAntragTextform" type="din91379:datatypeE">
+                                       <xs:annotation>
+                                          <xs:documentation>Mit diesem Auswahl-Element werden sonstige mit der Klage geltend gemachte Anträge übermittelt. Dieses Element darf nur verwendet werden, wenn in der Codeliste Code.KLAVER.Antrag.Typ3 kein Wert für diesen Antrag vorhanden ist.</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                 </xs:choice>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="anspruch"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="tns:Type.KLAVER.Anspruch">
+                              <xs:annotation>
+                                 <xs:documentation>In diesem Element werden Angaben zur Höhe, Art und Gegenstand des mit der Klage geltend gemachten Ansprüche übermittelt. Sofern mit dem Sachantrag mehrere Ansprüche geltend gemacht werden, muss das Element "anspruch" mehrfach übermittelt werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="fristen">
+                     <xs:annotation>
+                        <xs:documentation>Mit diesem Element kann die Verkürzung oder Verlängerung von Fristen beantragt werden.</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="antragsteller"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="tns:Type.GDS.Ref.Rollennummer"/>
+                           <xs:element name="fortlaufendeNummer" minOccurs="0" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Die fortlaufende Nummer wird als eindeutige Kennziffer innerhalb dieser XJustiz-Nachricht verwendet, um andere Elemente dieser XJustiz-Nachricht mit diesem Antrag auf Verkürzung oder Verlängerung von Fristen zu verknüpfen.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="betroffeneFrist" type="din91379:datatypeC">
+                              <xs:annotation>
+                                 <xs:documentation>In diesem Element muss die Frist, auf die sich der Antrag bezieht, benannt werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="auswahl_fristaenderung">
+                              <xs:complexType>
+                                 <xs:choice>
+                                    <xs:element name="fristende" type="xs:date">
+                                       <xs:annotation>
+                                          <xs:documentation>Mit diesem Auswahl-Element kann das Datum, an dem die Frist enden soll, angegeben werden. Das Datum kann vor (Fristverkürzung) oder nach (Fristverlängerung) der betroffenen Frist liegen.</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="fristverkuerzung" type="tns:Type.GDS.Dauer">
+                                       <xs:annotation>
+                                          <xs:documentation>Mit diesem Auswahl-Element kann der Zeitraum, um den die Frist verkürzt werden soll, angegeben werden.</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="fristverlaengerung" type="tns:Type.GDS.Dauer">
+                                       <xs:annotation>
+                                          <xs:documentation>Mit diesem Auswahl-Element kann der Zeitraum, um den die Frist verlängert werden soll, angegeben werden.</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                 </xs:choice>
+                              </xs:complexType>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="prozesskostenhilfeBeantragt"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:documentation>Mit diesem Element kann Prozesskostenhilfe beantragt werden.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="antragsteller"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="tns:Type.GDS.Ref.Rollennummer"/>
+                  <xs:element name="fortlaufendeNummer" minOccurs="0" type="xs:positiveInteger">
+                     <xs:annotation>
+                        <xs:documentation>Die fortlaufende Nummer wird als eindeutige Kennziffer innerhalb dieser XJustiz-Nachricht verwendet, um andere Elemente dieser XJustiz-Nachricht mit diesem Antrag auf Prozesskostenhilfe zu verknüpfen.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="beantragt" fixed="true" type="xs:boolean">
+                     <xs:annotation>
+                        <xs:documentation>Falls Prozesskostenhilfe beantragt wird, wird der Antrag gestellt, indem in diesem Feld, der Wert 'true' angegeben wird.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="abhaengigkeitKlageerhebung" type="xs:boolean">
+                     <xs:annotation>
+                        <xs:documentation>In diesem Element wird mitgeteilt, ob die Klageerhebung von der Prozesskostenhilfebewilligung abhängig gemacht wird (= true) oder nicht (=false).</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.Ausfuehrungen">
+      <xs:annotation>
+         <xs:documentation>Mit diesem Datentyp können Tatsachen, Ausführungen und eine rechtliche Würdigung zum Gerichtsstand (§§ 12 ff. ZPO) in Textform übermittelt werden. Zudem können Beweise und Anlagen verknüpft werden. Dabei kann ein- und dasselbe Dokument sowohl als Beweismittel als auch als (vortragsergänzende) Anlage verknüpft werden.</xs:documentation>
+      </xs:annotation>
+      <xs:sequence>
+         <xs:element name="inhalt" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="tatsachenvortrag.sachverhaltsbeschreibung"
+                              minOccurs="0"
+                              type="din91379:datatypeC">
+                     <xs:annotation>
+                        <xs:documentation>Dieses Element dient dem Vortrag von Tatsachen und Sachverhalten in Textform.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="rechtlicheWuerdigung" minOccurs="0" type="din91379:datatypeC">
+                     <xs:annotation>
+                        <xs:documentation>Mit diesem Element kann eine rechtliche Würdigung in Textform übermittelt werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="ref.beweisNummer"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="xs:positiveInteger">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann ein Beweis angeboten werden. Hierzu wird die Nummer, die im Element 'beweis' für das hier einschlägige Beweismittel verwendet wurde, angegeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="ref.glaubhaftmachungNummer"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="xs:positiveInteger">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann auf ein Mittel zur Glaubhaftmachung referenziert werden. Hierzu wird die Nummer, die im Element "glaubhaftmachung" für das hier einschlägige Mittel zur Glaubhaftmachung verwendet wurde, angegeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="parteianhoerung"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.GDS.Ref.Rollennummer">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann auf eine Partei, die informell angehört werden soll, referenziert werden. Hierfür wird jeweils auf eine Person, die in den Grunddaten angegeben wurde, referenziert.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="anlage"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.GDS.Ref.SGO">
+            <xs:annotation>
+               <xs:documentation>In diesem Element können (vortragsergänzende) Anlagen, die in dem Knoten Schriftgutobjekte aufgeführt sind, mit den Ausführungen verknüpft werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.Beweis">
+      <xs:annotation>
+         <xs:documentation>Dieser Datentyp wird verwendet, um sämtliche Beweismittel, die im Klageverfahren relevant sind, aufzuführen. Dabei erhält jedes Beweismittel eine BeweisID. Diese BeweisID wird bei den Ausführungen, für die das Beweismittel einschlägig ist, angegeben.</xs:documentation>
+      </xs:annotation>
+      <xs:sequence>
+         <xs:element name="beweisNummer" type="xs:positiveInteger">
+            <xs:annotation>
+               <xs:documentation>Diese Nummer wird verwendet, um den Beweis innerhalb einer XJustiz-Nachricht.mit einer oder mehreren Ausführungen (Type.KLAVER.Ausfuehrungen) zu verknüpfen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="auswahl_beweismittel">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann die Art des Beweismittels ausgewählt werden.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="sachverstaendigengutachten" type="xs:boolean">
+                     <xs:annotation>
+                        <xs:documentation>Mit dieser Auswahl kann die Erstellung eines Sachverständigengutachten als Beweis aufgeführt werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="zeugen" type="tns:Type.GDS.Ref.Rollennummer">
+                     <xs:annotation>
+                        <xs:documentation>Mit dieser Auswahl kann ein Zeuge aufgeführt werden. Hierfür wird auf eine Person, die in den Grunddaten angegeben wurde, referenziert.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="auswahl_augenschein">
+                     <xs:annotation>
+                        <xs:documentation>Mit dieser Auswahl kann die Inaugenscheinnahme als Beweismittel aufgeführt werden.</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:choice>
+                           <xs:element name="dokument" type="tns:Type.GDS.Ref.SGO">
+                              <xs:annotation>
+                                 <xs:documentation>Sofern sich die Inaugenscheinnahme auf ein elektronisches Dokument, eine Akte oder eine Teilakte bezieht, die in den Schriftgutobjekten angegeben ist, kann auf sie referenziert werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="sonstige" type="xs:boolean">
+                              <xs:annotation>
+                                 <xs:documentation>Diese Auswahl ist zu treffen, sofern sich die Inaugenscheinnahme auf einen anderen Gegenstand bezieht.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:choice>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="urkunde" type="tns:Type.GDS.Ref.SGO">
+                     <xs:annotation>
+                        <xs:documentation>Mit diesem Element kann eine Urkunde als Beweis aufgeführt werden. Hierfür wird auf ein Dokument, das in den Schriftgutobjekten angegeben ist, referenziert.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="parteivernehmung" type="tns:Type.GDS.Ref.Rollennummer">
+                     <xs:annotation>
+                        <xs:documentation>Mit diesem Element kann die Partei für das Beweismittel Parteivernehmung aufgeführt werden. Hierfür wird auf eine Person, die in den Grunddaten angegeben wurde, referenziert.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.FGR.Ausgleichsansprueche">
+      <xs:sequence>
+         <xs:element name="geltungsbereich" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="voraussetzungenFlugtyp" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="festeTragflaechenUndMotorisiert"
+                                       fixed="true"
+                                       type="xs:boolean">
+                              <xs:annotation>
+                                 <xs:documentation>In diesem Element wird angegeben, dass der Flug mit einem Motorluftflugzeug mit festen Tragflächen im Sinne des Art. 3 Abs. 4 Verordnung (EG) Nr. 261/2004 durchgeführt (keine Ballonfahrten, keine Hubschrauberfluege) wurde.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="ref.beweisNummer"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="xs:positiveInteger"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="kostenFlugticket" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="nichtKostenlos" type="xs:boolean">
+                              <xs:annotation>
+                                 <xs:documentation>Versicherung, dass die Reise nicht kostenlos war und damit Art. 3 Abs. 2 Verordnung (EG) Nr. 261/2004 nicht zutrifft.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="keinReduzierterTarif" type="xs:boolean">
+                              <xs:annotation>
+                                 <xs:documentation>Versicherung, dass die Reise nicht zu einem reduzierten Tarif stattgefunden hat und damit Art. 3 Abs. 2 Verordnung (EG) Nr. 261/2004 nicht zutrifft.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="ref.beweisNummer"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="xs:positiveInteger"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="fluggast"
+                     maxOccurs="unbounded"
+                     type="tns:Type.KLAVER.FGR.Fluggast"/>
+         <xs:element name="geplanteReise" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>Beschreibung der laut Buchungsbestätigung ursprünglich geplanten Reise.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="start" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="flughafen" type="din91379:datatypeC">
+                              <xs:annotation>
+                                 <xs:documentation>Der Flughafen an dem das Flugzeug starten sollte. Anzugeben als IATA Flughafen Code.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="zeitpunkt" type="xs:dateTime">
+                              <xs:annotation>
+                                 <xs:documentation>Der Zeitpunkt zu dem das Flugzeug abfliegen sollte.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="zwischenstopp"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="din91379:datatypeC">
+                     <xs:annotation>
+                        <xs:documentation>Hier können die Flughäfen, an denen ein Zwischenstopp geplant war, angegeben werden. Anzugeben als IATA Flughafen Code.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="ankunft" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="flughafen" type="din91379:datatypeC">
+                              <xs:annotation>
+                                 <xs:documentation>Der Flughafen an dem das Flugzeug landen sollte. Anzugeben als IATA Flughafen Code.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="zeitpunkt" type="xs:dateTime">
+                              <xs:annotation>
+                                 <xs:documentation>Der Zeitpunkt zu dem das Flugzeug ankommen sollte.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="ref.beweisNummer"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="xs:positiveInteger"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="auswahl_leistungsstoerung"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="verspaetung">
+                     <xs:annotation>
+                        <xs:documentation>Eine Verspätung liegt vor, wenn die Ankunft am letzten Zielort mindestens drei Stunden nach der geplanten Ankunftszeit erfolgte.</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="betroffenerFlug" type="tns:Type.KLAVER.FGR.BetroffenerFlug">
+                              <xs:annotation>
+                                 <xs:documentation>Der Flug, der verspätet war</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="anschlussflugVerpasst"
+                                       minOccurs="0"
+                                       fixed="true"
+                                       type="xs:boolean">
+                              <xs:annotation>
+                                 <xs:documentation>Dieses Element ist anzugeben, wenn ein oder mehrere Anschlussflüge verpasst wurden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="ankunft"
+                                       minOccurs="0"
+                                       type="tns:Type.KLAVER.FGR.Befoerderung">
+                              <xs:annotation>
+                                 <xs:documentation>In diesem Element kann die Ankunftszeit, zu der tatsächlich die Ankunft am Zielort stattgefunden hat, angegeben werden. Diese kann von der geplanten Ankunftszeit abweichen. Daraus errechnet sich die Verspätung des Fluges. Zusätzlich kann die Art der Beförderung angegeben werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="aussergewoehnlicheUmstaende" minOccurs="0">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="angegebeneUmstaende" minOccurs="0" type="din91379:datatypeC">
+                                       <xs:annotation>
+                                          <xs:documentation>Vom Flugunternehmen angegebene außergewöhnliche Umstände gem. Art. 5 Abs. 3 der Verordnung (EG) Nr. 261/2004</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="ergriffeneMassnahmen" minOccurs="0" type="din91379:datatypeC">
+                                       <xs:annotation>
+                                          <xs:documentation>Vom Flugunternehmen ergriffene Maßnahmen</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="puenktlichkeit"
+                                       minOccurs="0"
+                                       type="tns:Type.KLAVER.FGR.Puenktlichkeit"/>
+                           <xs:element name="ref.beweisNummer"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="xs:positiveInteger"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="nichtbefoerderung">
+                     <xs:annotation>
+                        <xs:documentation>Die Weigerung gem. Art. 2 j) Verordnung (EG) Nr. 261/2004 rechtzeitig am Gate anwesende Fluggäste zu befoerdern, ohne dass ihnen gegenüber vertretbare Gründe vorliegen.</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="betroffenerFlug" type="tns:Type.KLAVER.FGR.BetroffenerFlug">
+                              <xs:annotation>
+                                 <xs:documentation>Der Flug, der nicht durchgeführt wurde</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="anschlussflugVerpasst"
+                                       minOccurs="0"
+                                       fixed="true"
+                                       type="xs:boolean">
+                              <xs:annotation>
+                                 <xs:documentation>Dieses Element ist anzugeben, wenn ein oder mehrere Anschlussflüge verpasst wurden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="ankunft"
+                                       minOccurs="0"
+                                       type="tns:Type.KLAVER.FGR.Befoerderung">
+                              <xs:annotation>
+                                 <xs:documentation>In diesem Element kann die Ankunftszeit, zu der tatsächlich die Ankunft am Zielort stattgefunden hat, angegeben werden. Diese kann von der geplanten Ankunftszeit abweichen. Daraus errechnet sich die Verspätung des Fluges. Zusätzlich kann die Art der Beförderung angegeben werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="vertretbareGruende" minOccurs="0" type="din91379:datatypeC">
+                              <xs:annotation>
+                                 <xs:documentation>Vom Flugunternehmen angegebene vertretbare Gründe gem. Art. 5 Abs. 3 der Verordnung (EG) Nr. 261/2004</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="puenktlichkeit"
+                                       minOccurs="0"
+                                       type="tns:Type.KLAVER.FGR.Puenktlichkeit"/>
+                           <xs:element name="ref.beweisNummer"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="xs:positiveInteger"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="annullierung">
+                     <xs:annotation>
+                        <xs:documentation>Die Nichtdurchführung eines geplanten Fluges, für den ein Platz reserviert war nach Art. 2 l) Verordnung (EG) Nr. 261/2004</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="mitteilungAnnullierung" minOccurs="0" type="xs:date">
+                              <xs:annotation>
+                                 <xs:documentation>Das Datum zu dem eine Annullierung durch das Flugunternehmen mitgeteilt wurde.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="betroffenerFlug" type="tns:Type.KLAVER.FGR.BetroffenerFlug">
+                              <xs:annotation>
+                                 <xs:documentation>Der Flug, der annulliert wurde</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="anschlussflugVerpasst"
+                                       minOccurs="0"
+                                       fixed="true"
+                                       type="xs:boolean">
+                              <xs:annotation>
+                                 <xs:documentation>Dieses Element ist anzugeben, wenn ein oder mehrere Anschlussflüge verpasst wurden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="ersatzangebot"
+                                       minOccurs="0"
+                                       type="tns:Type.KLAVER.FGR.Ersatzangebot">
+                              <xs:annotation>
+                                 <xs:documentation>Diese Sequenz ist nur zu befüllen, wenn ein Ersatzangebot unterbreitet wurde.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="ref.beweisNummer"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="xs:positiveInteger"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="anspruchshoehe" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="anspruchshoehe" type="tns:Code.KLAVER.FGR.Anspruchshoehe.Typ3"/>
+                  <xs:element name="anspruchskuerzungenUm50Prozent"
+                              minOccurs="0"
+                              type="xs:boolean"/>
+                  <xs:element name="ersatzangebot"
+                              minOccurs="0"
+                              type="tns:Type.KLAVER.FGR.Ersatzangebot">
+                     <xs:annotation>
+                        <xs:documentation>Diese Sequenz ist nur zu befüllen, wenn ein Ersatzangebot unterbreitet wurde.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="ref.beweisNummer"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="xs:positiveInteger"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="sonstigerVortrag"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.KLAVER.Vortrag">
+            <xs:annotation>
+               <xs:documentation>Dieses Element wird verwendet, um etwaige zusätzliche Erklärungen und Ausführungen, auch zu anderen Ansprüchen, in strukturierter Form zu übermitteln.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.FGR.Befoerderung">
+      <xs:sequence>
+         <xs:element name="zeitpunkt" type="xs:dateTime"/>
+         <xs:element name="auswahl_befoerderungsart">
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="flugnummer" type="din91379:datatypeC"/>
+                  <xs:element name="sonstige" type="din91379:datatypeC">
+                     <xs:annotation>
+                        <xs:documentation>Wenn die tatsächliche Verbindung nicht von einem Motorluftflugzeug mit festen Tragflächen im Sinne des Art. 3 Abs. 4 Verordnung (EG) Nr. 261/2004 durchgeführt wurde, ist hier anzugeben, wie der Transport erfolgte (Bus, Bahn, alternative Verkehrsmittel).</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.FGR.BetroffenerFlug">
+      <xs:sequence>
+         <xs:element name="flugnummer" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>Die Flugnummer des betroffenen Fluges</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="abflugFlughafen" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>Abflughafen des betroffenen Fluges. Anzugeben als IATA Flughafen Code.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="ankunftFlughafen" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>Ankunftsflughafen des betroffenen Fluges. Anzugeben als IATA Flughafen Code.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.FGR.Ersatzangebot">
+      <xs:sequence>
+         <xs:element name="abreise"
+                     minOccurs="0"
+                     type="tns:Type.KLAVER.FGR.Befoerderung">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann die Abreisezeit des Ersatzangebotes angegeben werden. Zusätzlich kann die Art der Beförderung angegeben werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="ankunft"
+                     minOccurs="0"
+                     type="tns:Type.KLAVER.FGR.Befoerderung">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann die Ankunftszeit des Ersatzangebotes angegeben werden. Zusätzlich kann die Art der Beförderung angegeben werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.FGR.Fluggast">
+      <xs:sequence>
+         <xs:element name="fluggast" type="tns:Type.GDS.Ref.Rollennummer">
+            <xs:annotation>
+               <xs:documentation>Person, die an einem der Flüge teilgenommen hat</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="buchungscode" minOccurs="0" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>Angabe des Buchungscodes der Buchung</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="ref.beweisNummer"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="xs:positiveInteger"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.FGR.Puenktlichkeit">
+      <xs:sequence>
+         <xs:element name="vorgeschriebeneCheckInZeit" minOccurs="0" type="xs:dateTime">
+            <xs:annotation>
+               <xs:documentation>Wenn auf der Buchungsbestätigung eine vereinbarte Check-In Zeit steht, ist diese hier anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="tatsaechlicheCheckInZeit" minOccurs="0" type="xs:dateTime">
+            <xs:annotation>
+               <xs:documentation>Der Zeitpunkt der Ankunft beim Check-In Schalter des verspäteten (Teil-)Fluges.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.Glaubhaftmachung">
+      <xs:annotation>
+         <xs:documentation>Dieser Datentyp wird verwendet, um sämtliche Mittel zur Glaubhaftmachung, die im Klageverfahren relevant sind, aufzuführen. Dabei erhält jedes Mittel zur Glaubhaftmachung eine GlaubhaftmachungNummer. Diese GlaubhaftmachungNummer wird bei den Ausführungen, für die das Mittel zur Glaubhaftmachung einschlägig ist, angegeben.</xs:documentation>
+      </xs:annotation>
+      <xs:sequence>
+         <xs:element name="glaubhaftmachungNummer" type="xs:positiveInteger">
+            <xs:annotation>
+               <xs:documentation>Diese Nummer wird verwendet, um das Mittel zur Glaubhaftmachung innerhalb einer XJustiz-Nachricht mit einer oder mehreren Ausführungen (Type.KLAVER.Ausfuehrungen) zu verknüpfen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="auswahl_mittelGlaubhaftmachung">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann die Art des Mittels zur Glaubhaftmachung ausgewählt werden.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="eidesstattlicheVersicherung" type="tns:Type.GDS.Ref.SGO">
+                     <xs:annotation>
+                        <xs:documentation>Sofern die Glaubhaftmachung durch eidesstattliche Versicherung erfolgt, wird in diesem Element auf das Dokument, das die eidesstattliche Versicherung enthält und im Knoten Schriftgutobjekte aufgeführt ist, referenziert.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="ref.beweisNummer" type="xs:positiveInteger">
+                     <xs:annotation>
+                        <xs:documentation>In diesem Element kann das Beweismittel, das für die Glaubhaftmachung verwendet werden soll, aufgeführt werden. Hierzu wird die Nummer, die im Element 'beweis' für das hier einschlägige Beweismittel verwendet wurde, angegeben.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.KFV.Kostenfestsetzungsverfahren">
+      <xs:sequence>
+         <xs:element name="anlass" type="tns:Code.KLAVER.KFV.Anlass.Typ3">
+            <xs:annotation>
+               <xs:documentation>Mit diesem Element muss angegeben werden, ob ein Erstantrag, ein Folgeantrag, eine Erwiderung oder eine Beanstandung übermittelt werden soll.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="zuVerwendendeBankverbindung"
+                     minOccurs="0"
+                     type="tns:Type.GDS.Ref.Bankverbindung">
+            <xs:annotation>
+               <xs:documentation>Sofern der Antrag auf Auszahlung an den Antragsteller (z.B. PKH-Vergütung) gerichtet ist, ist hier auf die in den Grunddaten angegebene Bankverbindung des Antragstellers, die für die Auszahlung verwendet werden soll, zu referenzieren.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="grundentscheidung" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:documentation>Hier ist die Kostengrundentscheidung anzugeben.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="auswahl_gericht.titelersteller" minOccurs="0">
+                     <xs:complexType>
+                        <xs:choice>
+                           <xs:element name="erkennendesGericht" type="tns:Code.GDS.Gerichte.Typ3"/>
+                           <xs:element name="sonstigerTitelersteller" type="din91379:datatypeC"/>
+                        </xs:choice>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="entscheidungsart"
+                              minOccurs="0"
+                              type="tns:Code.GDS.Entscheidungsart.Typ3"/>
+                  <xs:element name="entscheidungsdatum" type="xs:date"/>
+                  <xs:element name="aktenzeichen" minOccurs="0" type="din91379:datatypeC">
+                     <xs:annotation>
+                        <xs:documentation>Nur erforderlich wenn Entscheidungen aus verschiedenen Verfahren zu berücksichtigen sind (z.B. mehrere Beschwerden). Andernfalls genügt das Aktenzeichen im Nachrichtenkopf.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="instanzrechnungsdaten" maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:documentation>Sofern das Kostenfestsetzungsverfahren mehrere Gerichtsinstanzen betrifft, können mit diesem Element die Gebühren und Auslagen für jede Instanz gesondert angegeben werden.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="ref.instanznummer" minOccurs="0" type="din91379:datatypeC">
+                     <xs:annotation>
+                        <xs:documentation>In diesem Element kann, mittels Referenz auf die Instanznummer, auf die entsprechende Instanz referenziert werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="kostentatbestand"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="tns:Type.KLAVER.KFV.Kostentatbestand">
+                     <xs:annotation>
+                        <xs:documentation>In diesem Element können die Kostentatbestände für Gebühren und Auslagen, einschließlich der Parteikosten, angegeben werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="erhalteneZahlungen" minOccurs="0" maxOccurs="unbounded">
+                     <xs:annotation>
+                        <xs:documentation>Hier sind Zahlungen anzugeben, die, z.B. aus der Staatskasse, an den Anspruchsteller geleistet wurden.</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="zahler" type="tns:Type.GDS.Ref.Rollennummer">
+                              <xs:annotation>
+                                 <xs:documentation>Zahler kann z.B. die Staatskasse oder eine Partei sein.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="betrag" maxOccurs="unbounded" type="tns:Type.GDS.Geldbetrag">
+                              <xs:annotation>
+                                 <xs:documentation>Hier sind die Beträge, die gezahlt wurden, anzugeben. Sofern mehrere Auszahlungen durch ein und den selben Zahler erfolgten, sollen die Beträge jeweils angegeben werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="begruendung"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="tns:Type.KLAVER.Ausfuehrungen">
+                              <xs:annotation>
+                                 <xs:documentation>In diesem Element können Ausführungen zu den erhaltenen Zahlungen übermittelt werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="sonstigerVortrag"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.KLAVER.Vortrag">
+            <xs:annotation>
+               <xs:documentation>Dieses Element wird verwendet, um etwaige zusätzliche Erklärungen und Ausführungen im Kostenfestsetzungsverfahren strukturierter Form zu übermitteln.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.KFV.Kostentatbestand">
+      <xs:sequence>
+         <xs:element name="kostentatbestandsID" type="tns:Type.GDS.Xdomea.stringUUIDType">
+            <xs:annotation>
+               <xs:documentation>Die eindeutige ID wird systemseitig vergeben und ermöglicht beim Datenaustausch die Bezugnahme auf einen bestimmten eigenen oder fremden Kostentatbestand.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="fremdeKostentatbestandsID"
+                     minOccurs="0"
+                     type="tns:Type.GDS.Xdomea.stringUUIDType">
+            <xs:annotation>
+               <xs:documentation>Sofern sich der Kostentatbestand auf einen Kostentatbestand eines anderen Verfahrensbeteiligten oder einen eigenen Kostentatbestand bezieht, kann dieser Kostentatbestand mit diesem Element verknüpft werden. Hierfür wird die ID, die für den zu verknüpfenden Kostentatbestand im Element 'kostentatbestandsID' angegeben wurde, verwendet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="reihenfolge" minOccurs="0" type="xs:positiveInteger">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann eine Nummer angegeben werden, wenn die Kostentatbestände in einer bestimmten Reihenfolge verarbeitet werden sollen. Auf diese Weise können die verschiedenen Kostentatbestände eines Schriftsatzes im XJustiz-Format dem Leser in der vom Verfasser gewünschten Reihenfolge angezeigt werden. Die Nummern dürfen nicht doppelt vergeben werden. Die Nummerierung muss in dem Element mit 1 beginnen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="gegenstandswert" minOccurs="0" type="xs:decimal">
+            <xs:annotation>
+               <xs:documentation>Hier ist der Gegenstandswert, nach dem sich die Gebühr richtet, anzugeben. Er ist nur anzugeben, wenn eine Wertgebühr geltend gemacht wird.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="auswahl_kostentatbestand" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>In diesem Element ist der Gebühren- bzw. Auslagentatbestand anzugeben. Dabei ist grundsätzlich ein Tatbestand aus der Codeliste Code.KLAVER.KFV.Kostentatbestand.Typ3 auszuwählen. Sollte in der Codeliste kein einschlägiger Code enthalten sein, ist das Auswahl-Element 'auffangtatbestand' zu verwenden.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="kostentatbestand">
+                     <xs:annotation>
+                        <xs:documentation>In diesem Element ist die einschlägige Nummer des Kostentatbestandes und ggf. eines modifizierenden Kostentatbestandes aus den Kosten- und Vergütungsverzeichnissen der Kostengesetzen anzugeben.</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="tatbestand" type="tns:Code.KLAVER.KFV.Kostentatbestand.Typ3"/>
+                           <xs:element name="modifizierenderTatbestand"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="tns:Code.KLAVER.KFV.Kostentatbestand.Typ3"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="auffangtatbestand" type="din91379:datatypeC">
+                     <xs:annotation>
+                        <xs:documentation>Sofern ein Kostentatbestand zugrundegelegt wird, der nicht in der Codeliste Code.KLAVER.KFV.Kostentatbestand.Typ3 enthalten ist (z.B. Kosten eines vorgerichtlichen Gutachtens oder Detektivkosten), kann dieser hier in Textform benannt werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="berechnungsfaktor" minOccurs="0" type="xs:double">
+            <xs:annotation>
+               <xs:documentation>Anzugeben, sofern sich der Berechnungsfaktor nicht bereits aus dem Tatbestand ergibt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="betrag" minOccurs="0" type="tns:Type.GDS.Geldbetrag">
+            <xs:annotation>
+               <xs:documentation>Anzugeben, sofern sich der Betrag der Gebühr oder der Auslage nicht bereits aus dem Tatbestand ergibt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="begruendung"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.KLAVER.Ausfuehrungen">
+            <xs:annotation>
+               <xs:documentation>In diesem Element können Begründungen zum Antrag, zum Folgeantrag, wie z.B. Korrekturen und zur Erwiderung, wie z.B. Beanstandung, übermittelt werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="versicherung_Post_TK"
+                     minOccurs="0"
+                     fixed="true"
+                     type="xs:boolean">
+            <xs:annotation>
+               <xs:documentation>Anwaltliche Versicherung, dass die geltend gemachten Post- und Telekommunikationsdienstleistungen entstanden sind. Das Element ist nur für den Kostentatbestand Nr. 7002 VV RVG zu verwenden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.KLAVER.Vortrag">
+      <xs:sequence>
+         <xs:element name="schlagwort" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>In diesem Element soll dem Vortrag ein einschlägiges Schlagwort zugeordnet werden. z.B. in Verkehrsunfallsachen 'Unfallhergang' oder 'Schadenshöhe' oder weitere.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="reihenfolge" minOccurs="0" type="xs:positiveInteger">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann eine Nummer angegeben werden, wenn die Vorträge in einer bestimmten Reihenfolge verarbeitet werden sollen. Auf diese Weise können die verschiedenen Vorträge eines Schriftsatzes im XJustiz-Format dem Leser in der vom Verfasser gewünschten Reihenfolge angezeigt werden. In Verkehrsunfallsachen z.B. zuerst der Vortrag zum Unfallhergang und dann der Vortrag zur Schadenshöhe. Die Nummern dürfen nicht doppelt vergeben werden. Die Nummerierung muss in dem Element mit 1 beginnen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="ref.fortlaufendeNummer"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="xs:positiveInteger">
+            <xs:annotation>
+               <xs:documentation>In diesem Element kann angegeben werden, auf welchen Antrag oder Anspruch sich der Vortrag bezieht. Hierfür wird die fortlaufende Nummer, die für den Antrag oder Anspruch im Element 'fortlaufendeNummer' angegeben wurde, verwendet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="datum" minOccurs="0" type="tns:Type.GDS.Xdomea.ZeitraumType">
+            <xs:annotation>
+               <xs:documentation>Mit diesem Element kann, falls fachlich einschlägig, das Datum des Ereignisses auf das sich der Vortrag bezieht, angegeben werden. Auf diese Weise kann automatisiert ein Zeitstrahl der Geschehnisse erzeugt werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="vortragsID" type="tns:Type.GDS.Xdomea.stringUUIDType">
+            <xs:annotation>
+               <xs:documentation>Die eindeutige ID wird systemseitig vergeben und ermöglicht beim Datenaustausch die Bezugnahme auf einen bestimmten eigenen oder fremden Vortrag.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="fremdeVortragsID"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.GDS.Xdomea.stringUUIDType">
+            <xs:annotation>
+               <xs:documentation>Sofern sich der Vortrag auf einen Vortrag eines anderen Verfahrensbeteiligten oder einen eigenen Vortrag bezieht, kann dieser Vortrag mit diesem Element verknüpft werden. Hierfür wird die ID, die für den zu verknüpfenden Vortrag im Element "vortragsID" angegeben wurde, verwendet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="ausfuehrungen" type="tns:Type.KLAVER.Ausfuehrungen">
+            <xs:annotation>
+               <xs:documentation>Mit diesem Element können Tatsachen, Ausführungen und eine rechtliche Würdigung in Textform übermittelt werden. Zudem können Beweise und Anlagen verknüpft werden. Dabei kann ein- und dasselbe Dokument sowohl als Beweismittel als auch als (vortragsergänzende) Anlage verknüpft werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="nachricht.klaver.klageverfahren.3500001">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="grunddaten" type="tns:Type.GDS.Grunddaten"/>
+            <xs:element name="schriftgutobjekte"
+                        minOccurs="0"
+                        type="tns:Type.GDS.Schriftgutobjekte"/>
+            <xs:element name="inhaltsdaten">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="antraege" minOccurs="0" type="tns:Type.KLAVER.Antrag">
+                        <xs:annotation>
+                           <xs:documentation>Wenn mit dieser XJustiz-Nachricht Anträge gestellt werden sollen, ist dieses Element zu verwenden. Dabei sind für die Sachanträge, die Nebenanträge und die sonstigen Anträge gesonderte Elemente vorgesehen.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="beweis"
+                                 minOccurs="0"
+                                 maxOccurs="unbounded"
+                                 type="tns:Type.KLAVER.Beweis">
+                        <xs:annotation>
+                           <xs:documentation>Dieses Element wird verwendet, um sämtliche Beweismittel, die im Klageverfahren relevant sind, aufzuführen. Dabei erhält jedes Beweismittel eine BeweisID. Diese BeweisID wird bei den Ausführungen, für die das Beweismittel einschlägig ist, angegeben.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="glaubhaftmachung"
+                                 minOccurs="0"
+                                 maxOccurs="unbounded"
+                                 type="tns:Type.KLAVER.Glaubhaftmachung">
+                        <xs:annotation>
+                           <xs:documentation>Dieses Element wird verwendet, um sämtliche Mittel zur Glaubhaftmachung, die im Klageverfahren relevant sind, aufzuführen. Dabei erhält jedes Mittel zur Glaubhaftmachung eine GlaubhaftmachungNummer. Diese GlaubhaftmachungNummer wird bei den Ausführungen, für die das Mittel zur Glaubhaftmachung einschlägig ist, angegeben.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="gerichtsstand"
+                                 minOccurs="0"
+                                 type="tns:Type.KLAVER.Ausfuehrungen">
+                        <xs:annotation>
+                           <xs:documentation>Mit diesem Element können Tatsachen, Ausführungen und eine rechtliche Würdigung zum Gerichtsstand (§§ 12 ff. ZPO) in Textform übermittelt werden. Zudem können Beweise und Anlagen verknüpft werden. Dabei kann ein- und dasselbe Dokument sowohl als Beweismittel als auch als (vortragsergänzende) Anlage verknüpft werden.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="parteifaehigkeit" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                           <xs:documentation>In diesem Element können Tatsachen, Ausführungen und eine rechtliche Würdigung zur Parteifähigkeit (§ 50 ZPO) in Textform übermittelt werden.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="prozessbeteiligter"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.GDS.Ref.Rollennummer">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element wird auf den Prozessbeteiligten/die Prozessbeteiligte, zu dem/denen Tatsachen und Ausführugen übermittelt werden sollen, referenziert. Hierfür wird die Rollennummer, die für den Beteiligten in den Grunddaten angegeben wurde, verwendet.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="ausfuehrungen" type="tns:Type.KLAVER.Ausfuehrungen"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="prozessfaehigkeit" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                           <xs:documentation>In diesem Element können Tatsachen, Ausführungen und eine rechtliche Würdigung zur Prozessfähigkeit (§§ 51 ff. ZPO) in Textform übermittelt werden.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="prozessbeteiligter"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.GDS.Ref.Rollennummer">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element wird auf den Prozessbeteiligten/die Prozessbeteiligte, zu dem/denen Tatsachen und Ausführugen übermittelt werden sollen, referenziert. Hierfür wird die Rollennummer, die für den Beteiligten in den Grunddaten angegeben wurde, verwendet.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="ausfuehrungen" type="tns:Type.KLAVER.Ausfuehrungen"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="streitgenossenschaft" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                           <xs:documentation>Wenn bei mehreren Klägern oder Beklagten Tatsachen und Ausführungen zur Streitgenossenschaft (§ 59 ff. ZPO) übermittelt werden sollen, wird diese Sequenz verwendet.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="streitgenosse"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.GDS.Ref.Rollennummer">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element wird auf den Streitgenossen/die Streitgenossen, zu dem/denen Tatsachen und Ausführungen übermittelt werden sollen, referenziert. Hierfür wird die Rollennummer, die für den Beteiligten in den Grunddaten angegeben wurde, verwendet.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="ausfuehrungen"
+                                          minOccurs="0"
+                                          type="tns:Type.KLAVER.Ausfuehrungen"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="beteiligungDritter" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                           <xs:documentation>Wenn an dem Rechtsstreit Dritte beteiligt werden sollen (§ 64 ff. ZPO), können die erforderlichen Daten in dieser Sequenz übermittelt werden.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="beteiligter"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.GDS.Ref.Rollennummer">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element wird auf den Dritten der am Rechtsstreit teilnimmt, zu dem/denen Tatsachen und Ausführungen übermittelt werden sollen, referenziert. Hierfür wird die Rollennummer, die für den Beteiligten in den Grunddaten angegeben wurde, verwendet.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="ausfuehrungen"
+                                          minOccurs="0"
+                                          type="tns:Type.KLAVER.Ausfuehrungen"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="prozessvertretung" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                           <xs:documentation>Tatsachen und Ausführungen, welche die Prozessvollmacht und die weiteren Voraussetzungen der Prozessvertretung gem. §§ 78 ff. ZPO betreffen.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="vollmachtgeber" type="tns:Type.GDS.Ref.Rollennummer">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element wird auf den Prozessbeteiligten (Kläger oder Beklagter), der die Prozessvollmacht erteilt hat, referenziert. Hierfür wird die Rollennummer, die für den Beteiligten in den Grunddaten angegeben wurde, verwendet.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="vollmacht" type="din91379:datatypeD">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element sind die Ausführungen zur Bevollmächtigung in Textform zu übermitteln.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="vollmachtNachweis"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.GDS.Ref.SGO">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element kann auf ein beigefügtes Dokument (i. d. R. die Vollmacht) verwiesen werden.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="sonstigeProzessualeAusfuehrungen"
+                                 minOccurs="0"
+                                 type="tns:Type.KLAVER.Ausfuehrungen">
+                        <xs:annotation>
+                           <xs:documentation>Erklärungen, welche die Vorschriften zur mündlichen Verhandlung (§§ 128 ff - 165 ZPO) betreffen. Denkbar ist insbesondere eine Mitteilung, ob einer Entscheidung ohne mündliche Verhandlung nach § 128 Abs. 2 ZPO zugestimmt wird; zudem eine Erklärung, ob Einwände/Bedenken (§ 253 Abs. 3 Nr. 4 ZPO) gegen die Durchführung eines Termins zur Güteverhandlung und zur mündlichen Verhandlung als Videoverhandlung nach § 128a ZPO bestehen. Mit diesem Datentyp können Tatsachen, Ausführungen und eine rechtliche Würdigung in Textform übermittelt werden. Zudem können Beweise und Anlagen verknüpft werden. Dabei kann ein- und dasselbe Dokument sowohl als Beweismittel als auch als (vortragsergänzende) Anlage verknüpft werden.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="zustellungenUndLadungen"
+                                 minOccurs="0"
+                                 type="tns:Type.KLAVER.Ausfuehrungen">
+                        <xs:annotation>
+                           <xs:documentation>In diesem Element können Tatsachen, Ausführungen und Anordungen, welche die Vorschriften zur Zustellung, Ladung und zu Fristen (§§ 166 ff - 229 ZPO) betreffen, übermittelt werden. Mit diesem Datentyp können Tatsachen, Ausführungen und eine rechtliche Würdigung in Textform übermittelt werden. Zudem können Beweise und Anlagen verknüpft werden. Dabei kann ein- und dasselbe Dokument sowohl als Beweismittel als auch als (vortragsergänzende) Anlage verknüpft werden.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="sonstigeSachentscheidungsvoraussetzungen"
+                                 minOccurs="0"
+                                 maxOccurs="unbounded"
+                                 type="tns:Type.KLAVER.Vortrag">
+                        <xs:annotation>
+                           <xs:documentation>Hier können Ausführungen zu sonstigen Sachentscheidungsvoraussetzungen und Sollangaben (z.B. § 253 Abs. 2 ZPO) sowie rechtliche Würdigungen übermittelt werden. Zudem können Beweise verknüpft werden.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="gerichtskostenvorschussGezahlt"
+                                 minOccurs="0"
+                                 type="tns:Type.GDS.Ref.SGO">
+                        <xs:annotation>
+                           <xs:documentation>Sofern der Gerichtskostenvorschuss bereits eingezahlt wurde, kann in diesem Element auf den entsprechenden Nachweis, der als Dokument im Knoten Schriftgutobjekte angegeben ist, referenziert werden.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="auswahl_begruendetheit">
+                        <xs:complexType>
+                           <xs:choice>
+                              <xs:element name="fluggastrechte.ausgleichsansprueche"
+                                          type="tns:Type.KLAVER.FGR.Ausgleichsansprueche">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element sind Ausgleichsansprüche nach Art. 7 der europäischen Fluggastrechte-Verordnung (261/2004) abgebildet.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="anderesKlageverfahren">
+                                 <xs:annotation>
+                                    <xs:documentation>Ist für das Klageverfahren kein gesondertes Auswahl-Element vorhanden, wird dieses Auswahl-Element für die Übermittlung der Begründetheit in strukturierter Form verwendet.</xs:documentation>
+                                 </xs:annotation>
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="vortrag" maxOccurs="unbounded" type="tns:Type.KLAVER.Vortrag">
+                                          <xs:annotation>
+                                             <xs:documentation>Dieses Element wird verwendet, um die Inhalte der Begründetheit in strukturierter Form zu übermitteln. Um den Vortrag inhaltlich gliedern zu können, soll der Datentyp mehrfach verwendet werden. So sollen einzelne Sachverhalte jeweils gesondert angegeben werden. In Verkehrsunfallsachen soll z.B. der Vortrag zum Unfallhergang und der Vortrag zur Schadenshöhe jeweils gesondert erfolgen.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="kostenfestsetzungsverfahren"
+                                          type="tns:Type.KLAVER.KFV.Kostenfestsetzungsverfahren">
+                                 <xs:annotation>
+                                    <xs:documentation>Mit diesem Element können Daten im Kostenfestsetzungsverfahren ausgetauscht werden. Hierzu gehören insbesondere Anträge auf Kostenfestsetzung, sowie Festlegung von Gebühren und Festsetzungen gegen die Staatskasse, sowie Folgeanträge, Erwiderungen und Beanstandungen.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                           </xs:choice>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>

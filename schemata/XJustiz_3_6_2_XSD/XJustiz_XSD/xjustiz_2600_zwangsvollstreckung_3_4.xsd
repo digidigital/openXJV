@@ -1,0 +1,2483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.xjustiz.de"
+           xmlns:din91379="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"
+           targetNamespace="http://www.xjustiz.de"
+           version="3.4.0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+   <xs:annotation>
+      <xs:appinfo>
+         <standard>
+            <nameLang>Strukturierte Fachdaten für die Kommunikation im elektronischen Rechtsverkehr</nameLang>
+            <nameKurz>XJustiz</nameKurz>
+            <nameTechnisch>xjustiz</nameTechnisch>
+            <kennung>urn:xoev-de:blk-ag-it-standards:standard:xjustiz</kennung>
+            <beschreibung>XJustiz ist der bundesweit einheitliche Standard für den Austausch strukturierter elektronischer Informationen mit der Justiz.</beschreibung>
+         </standard>
+         <versionStandard>
+            <version>3.6.2</version>
+            <beschreibung>XJustiz beschreibt ein standardisiertes Datenaustauschformat für die elektronische Kommunikation innerhalb und mit der Justizverwaltung.</beschreibung>
+            <versionXOEVProfil>3.0.2</versionXOEVProfil>
+            <versionXOEVHandbuch>2.3.1</versionXOEVHandbuch>
+            <versionXGenerator>3.2.3</versionXGenerator>
+            <versionModellierungswerkzeug>2021x</versionModellierungswerkzeug>
+            <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+         </versionStandard>
+      </xs:appinfo>
+   </xs:annotation>
+   <xs:include schemaLocation="xjustiz_0000_grunddatensatz_3_6.xsd"/>
+   <xs:include schemaLocation="xjustiz_2610_cl_zwangsvollstreckung_3_2.xsd"/>
+   <xs:import schemaLocation="din-norm-91379-datatypes.xsd"
+              namespace="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"/>
+   <xs:complexType name="Type.ZVSTR.Anlagen">
+      <xs:sequence>
+         <xs:element name="artDerAnlage" type="tns:Code.ZVSTR.Anlage"/>
+         <xs:element name="bezeichnung" minOccurs="0" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>Auszufüllen, falls in Codeliste der Wert "sonstige" gewählt wurde</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Anordnungen.GegenueberSchuldner">
+      <xs:sequence>
+         <xs:element name="auswahl_anordnungen.gegenueberSchuldner">
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="lohnOderGehaltsabrechnungen.herausgabe"
+                              fixed="true"
+                              type="xs:boolean"/>
+                  <xs:element name="sparurkunden.herausgabe" fixed="true" type="xs:boolean"/>
+                  <xs:element name="kontoauszuege.herausgabe" fixed="true" type="xs:boolean"/>
+                  <xs:element name="zugang.schliessfach" fixed="true" type="xs:boolean"/>
+                  <xs:element name="wertpapier.herausgabe" fixed="true" type="xs:boolean"/>
+                  <xs:element name="versicherungspolice.herausgabe"
+                              fixed="true"
+                              type="xs:boolean"/>
+                  <xs:element name="abschriftBescheinigungNach903Abs1Satz2ZPO.herausgabe"
+                              fixed="true"
+                              type="xs:boolean"/>
+                  <xs:element name="anordnungen.weitere" type="din91379:datatypeC"/>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="ref.schuldner"
+                     minOccurs="0"
+                     type="tns:Type.GDS.Ref.Rollennummer"/>
+         <xs:element name="ref.drittschuldner"
+                     minOccurs="0"
+                     type="tns:Type.GDS.Ref.Rollennummer"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Anspruch.PfUEB">
+      <xs:sequence>
+         <xs:element name="auswahl_forderungAusAnspruch">
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="anspruch.modulE">
+                     <xs:annotation>
+                        <xs:documentation>Forderungen gegenüber Arbeitgebern</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="modulNr" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Eindeutige Nummer des Moduls zur Referenzierung</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="arbeitseinkommenUndSachbezuege"
+                                       minOccurs="0"
+                                       fixed="1. Forderung auf Zahlung des gesamten gegenwärtigen und künftigen Arbeitseinkommens (einschließlich des Geldwertes von Sachbezügen)"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="erstattungsanspruch.jahresausgleich" minOccurs="0">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="erstattungsanspruch.bezeichnung"
+                                                fixed="2. Forderung auf Auszahlung des als Überzahlung jeweils auszugleichenden Erstattungsbetrages aus dem durchgeführten Lohnsteuer-Jahresausgleich sowie aus dem Kirchenlohnsteuer-Jahresausgleich für das Kalenderjahr (siehe Folgeelement 'erstattungsanspruch.abKalenderjahr') und für alle folgenden Kalenderjahre"
+                                                type="din91379:datatypeC"/>
+                                    <xs:element name="erstattungsanspruch.abKalenderjahr" type="xs:gYear"/>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="kurzarbeitergeld"
+                                       minOccurs="0"
+                                       fixed="3. Forderung auf Zahlung des Kurzarbeitergeldes"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="beschreibung.sonstigeAnsprueche"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="din91379:datatypeC"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="anspruch.modulF">
+                     <xs:annotation>
+                        <xs:documentation>Forderungen gegenüber Agentur für Arbeit, Versicherungsträger oder Versorgungseinrichtung</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="modulNr" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Eindeutige Nummer des Moduls zur Referenzierung</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="auswahl_sozialtraeger">
+                              <xs:complexType>
+                                 <xs:choice>
+                                    <xs:element name="agenturFuerArbeit" fixed="true" type="xs:boolean"/>
+                                    <xs:element name="versicherungstraeger" fixed="true" type="xs:boolean"/>
+                                    <xs:element name="versorgungseinrichtung" fixed="true" type="xs:boolean"/>
+                                 </xs:choice>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="bezeichnungDerGeldleistung"
+                                       minOccurs="0"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="kontoOderVersicherungsOderMitgliedsNummer"
+                                       minOccurs="0"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="beschreibung.sonstigeAnsprueche"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="din91379:datatypeC"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="anspruch.modulG">
+                     <xs:annotation>
+                        <xs:documentation>Forderungen gegenüber dem Finanzamt</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="modulNr" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Eindeutige Nummer des Moduls zur Referenzierung</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="kalenderjahr.erstattungEinkommenSt"
+                                       minOccurs="0"
+                                       type="xs:gYear"/>
+                           <xs:element name="alleFrueherenKalenderjahre"
+                                       minOccurs="0"
+                                       fixed="true"
+                                       type="xs:boolean"/>
+                           <xs:element name="beschreibung.sonstigeAnsprueche"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="din91379:datatypeC"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="anspruch.modulH">
+                     <xs:annotation>
+                        <xs:documentation>Forderungen und sonstige Rechte gegenüber Kreditinstituten</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="modulNr" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Eindeutige Nummer des Moduls zur Referenzierung</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="pfaendungGirokonto"
+                                       minOccurs="0"
+                                       fixed="1. Forderung auf Zahlung der zu Gunsten des Schuldners bestehenden Guthaben seiner sämtlichen Zahlungskonten bei diesen Kreditinstituten einschließlich der Ansprüche auf Gutschrift der eingehenden Beträge; mitgepfändet wird die angebliche (gegenwärtige und künftige) Forderung des Schuldners an den Drittschuldner auf Auszahlung eines vereinbarten Dispositionskredits ('offene Kreditlinie'), soweit der Schuldner den Kredit in Anspruch nimmt"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="pfaendungSparguthabenFestgeldkonto"
+                                       minOccurs="0"
+                                       fixed="2. Forderung auf Auszahlung des Guthabens und der bis zum Tag der Auszahlung aufgelaufenen Zinsen sowie das Recht auf fristgerechte bzw. vorzeitige Kündigung der für ihn geführten Sparguthaben und/oder Festgeldkonten"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="darlehensvaluta"
+                                       minOccurs="0"
+                                       fixed="3. Forderung auf Auszahlung der bereitgestellten, noch nicht abgerufenen Darlehensvaluta aus einem Kreditgeschäft, wenn es sich nicht um zweckgebundene Ansprüche handelt"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="pfaendungWertpapierkonto.gegenkonto"
+                                       minOccurs="0"
+                                       fixed="4. Forderung auf Zahlung aus dem zum Wertpapierkonto gehörenden Gegenkonto, auf dem die Zinsgutschriften für die festverzinslichen Wertpapiere gutgeschrieben sind"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="bankschliessfach"
+                                       minOccurs="0"
+                                       fixed="true"
+                                       type="xs:boolean"/>
+                           <xs:element name="herausgabeWertpapiere"
+                                       minOccurs="0"
+                                       fixed="true"
+                                       type="xs:boolean"/>
+                           <xs:element name="beschreibung.sonstigeAnsprueche"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="din91379:datatypeC"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="anspruch.modulI">
+                     <xs:annotation>
+                        <xs:documentation>Forderungen und sonstige Rechte gegenüber Bausparkassen</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="modulNr" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Eindeutige Nummer des Moduls zur Referenzierung</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="bausparsumme.inEuro" minOccurs="0" type="xs:decimal"/>
+                           <xs:element name="bausparvertrag.nr" minOccurs="0" type="din91379:datatypeC"/>
+                           <xs:element name="auszahlungBausparguthaben"
+                                       minOccurs="0"
+                                       fixed="1. Forderung auf Auszahlung des Bausparguthabens nach Zuteilung"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="auszahlungSparbeitraege"
+                                       minOccurs="0"
+                                       fixed="2. Forderung auf Auszahlung der Sparbeiträge nach Einzahlung der vollen Bausparsumme"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="rueckzahlungSparguthaben"
+                                       minOccurs="0"
+                                       fixed="3. Forderung auf Rückzahlung des Sparguthabens nach Kündigung"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="rechtZurKuendigungUndAenderungDesVertrages"
+                                       minOccurs="0"
+                                       fixed="4. Recht zur Kündigung und Änderung des Vertrags"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="beschreibung.sonstigeAnsprueche"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="din91379:datatypeC"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="anspruch.modulJ">
+                     <xs:annotation>
+                        <xs:documentation>Forderungen und sonstige Rechte gegenüber Versicherungsgesellschaften</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="modulNr" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Eindeutige Nummer des Moduls zur Referenzierung</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="zahlungVersicherungssumme"
+                                       minOccurs="0"
+                                       fixed="1. Forderung auf Zahlung der Versicherungssumme, der Gewinnanteile und des Rückkaufwertes aus den Lebensversicherungen, die mit dem Drittschuldner abgeschlossen sind"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="bestimmungAuszahlung"
+                                       minOccurs="0"
+                                       fixed="2. Recht zur Bestimmung desjenigen, zu dessen Gunsten im Todesfall die Versicherungssumme ausgezahlt wird, bzw. Recht zur Bestimmung einer anderen Person an Stelle der von dem Schuldner vorgesehenen"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="kuendigung.lebensOderRentenversicherungsvertrag"
+                                       minOccurs="0"
+                                       fixed="3. Recht zur Kündigung des Lebens-/Rentenversicherungsvertrages, Recht auf Umwandlung der Lebens-/Rentenversicherung in eine prämienfreie Versicherung sowie Recht zur Aushändigung der Versicherungspolice"
+                                       type="din91379:datatypeC"/>
+                           <xs:element name="beschreibung.sonstigeAnsprueche"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="din91379:datatypeC"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="anspruch.modulK">
+                     <xs:annotation>
+                        <xs:documentation>Weitere Forderungen, Ansprüche und Vermögensrechte</xs:documentation>
+                     </xs:annotation>
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="modulNr" type="xs:positiveInteger">
+                              <xs:annotation>
+                                 <xs:documentation>Eindeutige Nummer des Moduls zur Referenzierung</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="beschreibung.weitereForderungen" type="din91379:datatypeC"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Beteiligter.Zusatz">
+      <xs:annotation>
+         <xs:documentation>Für den im Grunddatensatz angegebenen Beteiligten werden weitergehende Informationen übergeben.</xs:documentation>
+      </xs:annotation>
+      <xs:sequence>
+         <xs:element name="ref.beteiligter" type="tns:Type.GDS.Ref.Rollennummer">
+            <xs:annotation>
+               <xs:documentation>Referenz auf die Rollennummer des im Grunddatensatz angegebenen Beteiligten</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="anrede.freitext" minOccurs="0" type="din91379:datatypeC"/>
+         <xs:element name="glaeubigerNichtVorsteuerabzugsberechtigt"
+                     minOccurs="0"
+                     fixed="true"
+                     type="xs:boolean"/>
+         <xs:element name="betreuerMitAusschliesslichkeitserklaerung"
+                     minOccurs="0"
+                     fixed="true"
+                     type="xs:boolean">
+            <xs:annotation>
+               <xs:documentation>Mit diesem Element kann angegeben werden, ob der gerichtlich bestellte Betreuer eine Ausschließlichkeitserklärung abgegeben hat (§ 53 Absatz 2 ZPO).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.ElektronischUebermittelteAntraege">
+      <xs:choice>
+         <xs:element name="uebersendungAusfertigung.nachMitteilungAktenzeichen"
+                     fixed="true"
+                     type="xs:boolean"/>
+         <xs:element name="uebersendungAusfertigung.gleichzeitig"
+                     fixed="true"
+                     type="xs:boolean">
+            <xs:annotation>
+               <xs:documentation>Hierüber kann mitgeteilt werden, ob die Ausfertigungen der Vollstreckungstitel gleichzeitig auf dem Postweg übersandt werden sollen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="beigefuegtAbschriftVollstreckungsbescheid"
+                     fixed="true"
+                     type="xs:boolean">
+            <xs:annotation>
+               <xs:documentation>Hierüber kann mitgeteilt werden, ob eine Abschrift des Vollstreckungsbescheides nebst Zustellungsbescheinigung als elektronisches Dokument beigefügt wurde.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:choice>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.ErmittlungSchuldneranschrift">
+      <xs:sequence>
+         <xs:element name="traegerGesetzlicheRentenversicherung"
+                     minOccurs="0"
+                     fixed="true"
+                     type="xs:boolean">
+            <xs:annotation>
+               <xs:documentation>Erhebung des Namens und der Vornamen oder der Firma sowie der Anschrift der derzeitigen Arbeitgeber des Schuldners bei den Trägern der gesetzlichen Rentenversicherung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="berufsstaendischeVersorgungseinrichtung" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>Erhebung des Namens und der Vornamen oder der Firma sowie der Anschrift der derzeitigen Arbeitgeber des Schuldners bei der folgenden berufsständischen Versorgungseinrichtung im Sinne des § 6 Absatz 1 Satz 1 Nummer 1 SGB VI.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="ref.berufsstaendischeVersorgungseinrichtung"
+                              type="tns:Type.GDS.Ref.Rollennummer"/>
+                  <xs:element name="anhaltspunkte" type="din91379:datatypeC">
+                     <xs:annotation>
+                        <xs:documentation>Tatsächliche Anhaltspunkte dafür, dass der Schuldner Mitglied dieser berufsständischen Versorgungseinrichtung ist.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Forderungsaufstellung.GewoehnlicheForderung">
+      <xs:sequence>
+         <xs:element name="lfdNr.forderungsaufstellung" type="xs:positiveInteger"/>
+         <xs:element name="ref.vollstreckungstitel" type="tns:Type.ZVSTR.Ref.Titelnummer"/>
+         <xs:element name="i.hauptforderung.zinsenSaeumniszuschlaege"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.ZVSTR.Forderungshoehe"/>
+         <xs:element name="ii.renten"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.ZVSTR.Renten"/>
+         <xs:element name="iii.titulierteKostenNebenforderungen" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="auswahl_artDerKostenforderung"
+                              minOccurs="0"
+                              maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:choice>
+                           <xs:element name="kostenDesMahnverfahrens.vollstreckungsbescheid"
+                                       type="tns:Type.ZVSTR.Kostenforderung"/>
+                           <xs:element name="titulierteVorgerichtlicheKosten"
+                                       type="tns:Type.ZVSTR.Kostenforderung"/>
+                           <xs:element name="festgesetzteKosten" type="tns:Type.ZVSTR.Kostenforderung"/>
+                        </xs:choice>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="freieEingabe"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="tns:Type.ZVSTR.FreieEingabe"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="iv.kostenZwangsvollstreckung" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="bisherigeVollstreckungskosten.anlage"
+                              minOccurs="0"
+                              type="xs:decimal">
+                     <xs:annotation>
+                        <xs:documentation>Hier können die bisherigen Vollstreckungskosten gemäß Aufstellung in weiterer Anlage eingetragen werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="kostenDesVerfahrens" minOccurs="0" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="gerichtskosten" minOccurs="0" type="xs:decimal">
+                              <xs:annotation>
+                                 <xs:documentation>Gerichtskosten nach GKG (Gebühr nach KV Nr. 2111)</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="anwaltskosten.gemaessRVG" minOccurs="0">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="anwaltskosten.gegenstandswert" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Gegenstandswert gemäß § 25 RVG</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="verfahrensgebuehr" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Verfahrensgebühr (VV Nr. 3309, ggf. i. V. m. VV Nr. 1008)</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="auslagenpauschale" minOccurs="0" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Entgelte für Post- und Telekommunikationsdienstleistungen, ggf. Pauschale (VV Nr. 7001 oder 7002)</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="weitereAuslagen" minOccurs="0" maxOccurs="unbounded">
+                                       <xs:complexType>
+                                          <xs:sequence>
+                                             <xs:element name="bezeichnung" type="din91379:datatypeC"/>
+                                             <xs:element name="betrag" type="xs:decimal"/>
+                                          </xs:sequence>
+                                       </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="umsatzsteuer" minOccurs="0" type="xs:decimal"/>
+                                    <xs:element name="zwischensummeRechtsanwaltskostenInEuro" type="xs:decimal"/>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="inkassokosten.anlage" minOccurs="0" type="xs:decimal">
+                              <xs:annotation>
+                                 <xs:documentation>Kosten von Inkassodienstleistern nach § 13e RDG gemäß Aufstellung in weiterer Anlage</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="sonstigeKosten" minOccurs="0" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="bezeichnung" type="din91379:datatypeC"/>
+                           <xs:element name="betragInEuro" type="xs:decimal"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="summe.i-iv" type="xs:decimal">
+            <xs:annotation>
+               <xs:documentation>Hier ist die Summe der Punkte I. bis IV. anzugeben. Zinsen und Säumniszuschläge nur, soweit nicht laufend.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Forderungsaufstellung.Unterhaltsforderung">
+      <xs:sequence>
+         <xs:element name="lfdNr.forderungsaufstellung" type="xs:positiveInteger"/>
+         <xs:element name="unterhaltsberechtigter" type="tns:Type.GDS.Ref.Rollennummer"/>
+         <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+         <xs:element name="ref.vollstreckungstitel" type="tns:Type.ZVSTR.Ref.Titelnummer"/>
+         <xs:element name="i.rueckstand.unterhalt" minOccurs="0" maxOccurs="unbounded">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="unterhaltsrueckstand" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="hoehe.konkreterUnterhaltsrueckstand" minOccurs="0">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="beginn.zeitraum" type="xs:date"/>
+                                    <xs:element name="ende.zeitraum" type="xs:date"/>
+                                    <xs:element name="betrag.inEuro" type="xs:decimal"/>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="zinsen.vollstreckungstitel" minOccurs="0" type="xs:decimal">
+                              <xs:annotation>
+                                 <xs:documentation>Hier können die (Teil-/Rest-) Zinsen wie im Vollstreckungstitel ausgerechnet eingetragen werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="zinsen.unterhaltsrueckstand"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="tns:Type.ZVSTR.Zinsen"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="forderung" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="auswahl_forderung"
+                                       minOccurs="0"
+                                       type="tns:Type.ZVSTR.Hauptforderung"/>
+                           <xs:element name="saeumniszuschlag" type="tns:Type.ZVSTR.Saeumniszuschlag"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="freieEingabe"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="tns:Type.ZVSTR.FreieEingabe"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="ii.titulierteKostenNebenforderungen" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="auswahl_artDerKostenforderung"
+                              minOccurs="0"
+                              maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:choice>
+                           <xs:element name="kostenDesMahnverfahrens.vollstreckungsbescheid">
+                              <xs:complexType>
+                                 <xs:complexContent>
+                                    <xs:extension base="tns:Type.ZVSTR.Kostenforderung"/>
+                                 </xs:complexContent>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="titulierteVorgerichtlicheKosten">
+                              <xs:complexType>
+                                 <xs:complexContent>
+                                    <xs:extension base="tns:Type.ZVSTR.Kostenforderung"/>
+                                 </xs:complexContent>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="festgesetzteKosten">
+                              <xs:complexType>
+                                 <xs:complexContent>
+                                    <xs:extension base="tns:Type.ZVSTR.Kostenforderung"/>
+                                 </xs:complexContent>
+                              </xs:complexType>
+                           </xs:element>
+                        </xs:choice>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="freieEingabe"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="tns:Type.ZVSTR.FreieEingabe"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="iii.kostenZwangsvollstreckung" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="bisherigeVollstreckungskosten.anlage"
+                              minOccurs="0"
+                              type="xs:decimal">
+                     <xs:annotation>
+                        <xs:documentation>Hier können die bisherigen Vollstreckungskosten gemäß Aufstellung in weiterer Anlage eingetragen werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="kostenDesVerfahrens" minOccurs="0" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="gerichtskosten" minOccurs="0" type="xs:decimal">
+                              <xs:annotation>
+                                 <xs:documentation>Gerichtskosten nach GKG (Gebühr nach KV Nr. 2111)</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="anwaltskosten.gemaessRVG" minOccurs="0">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="anwaltskosten.gegenstandswert" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Gegenstandswert gemäß § 25 RVG</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="verfahrensgebuehr" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Verfahrensgebühr (VV Nr. 3309, ggf. i. V. m. VV Nr. 1008)</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="auslagenpauschale" minOccurs="0" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Entgelte für Post- und Telekommunikationsdienstleistungen, ggf. Pauschale (VV Nr. 7001 oder 7002)</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="weitereAuslagen" minOccurs="0" maxOccurs="unbounded">
+                                       <xs:complexType>
+                                          <xs:sequence>
+                                             <xs:element name="bezeichnung" type="din91379:datatypeC"/>
+                                             <xs:element name="betrag" type="xs:decimal"/>
+                                          </xs:sequence>
+                                       </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="umsatzsteuer" minOccurs="0" type="xs:decimal"/>
+                                    <xs:element name="zwischensummeRechtsanwaltskostenInEuro" type="xs:decimal"/>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="inkassokosten.anlage" minOccurs="0" type="xs:decimal">
+                              <xs:annotation>
+                                 <xs:documentation>Kosten von Inkassodienstleistern nach § 13e RDG gemäß Aufstellung in weiterer Anlage</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="sonstigeKosten" minOccurs="0" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="bezeichnung" type="din91379:datatypeC"/>
+                           <xs:element name="betragInEuro" type="xs:decimal"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="iv.statischeUnterhaltsrente" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="unterhaltsberechtigter"
+                              type="tns:Code.ZVSTR.Unterhaltsberechtigter"/>
+                  <xs:element name="zahlungsintervall" type="tns:Code.GDS.Intervall"/>
+                  <xs:element name="beginn.zahlungszeitraum" type="xs:date"/>
+                  <xs:element name="zahlbarAm" type="din91379:datatypeC"/>
+                  <xs:element name="ende.zahlungszeitraum" minOccurs="0" type="xs:date"/>
+                  <xs:element name="bezifferung.statischerUnterhalt" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="betrag.inEuro" minOccurs="0" type="xs:decimal"/>
+                           <xs:element name="zeitraum.unterhaltsforderung">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="zeitraum.definiert"
+                                                type="tns:Code.ZVSTR.Zeitraum.Unterhaltsforderung"/>
+                                    <xs:element name="sonstigerZeitraum" minOccurs="0">
+                                       <xs:complexType>
+                                          <xs:sequence>
+                                             <xs:element name="beginn.zeitraum" type="xs:date"/>
+                                             <xs:element name="ende.zeitraum" minOccurs="0" type="xs:date"/>
+                                          </xs:sequence>
+                                       </xs:complexType>
+                                    </xs:element>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="v.dynamisierteUnterhaltsrente" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="zeitraum" type="tns:Type.GDS.Xdomea.ZeitraumType"/>
+                  <xs:element name="abschnitt.unterhaltNachAltersstufe" maxOccurs="3">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="altersstufe" type="tns:Code.ZVSTR.Altersstufen.Unterhalt"/>
+                           <xs:element name="prozentsatz.mindestunterhalt" type="xs:decimal"/>
+                           <xs:element name="abzug.kindergeld.anteilig" minOccurs="0">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="auswahl_anteil.kindergeld">
+                                       <xs:complexType>
+                                          <xs:choice>
+                                             <xs:element name="haelftig" fixed="hälftig" type="din91379:datatypeC"/>
+                                             <xs:element name="voll" fixed="voll" type="din91379:datatypeC"/>
+                                          </xs:choice>
+                                       </xs:complexType>
+                                    </xs:element>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="abzug.betrag.kindergeld.inEuro"
+                                       minOccurs="0"
+                                       type="xs:decimal"/>
+                           <xs:element name="abzug.sonstigeKindbezogeneLeistung" minOccurs="0">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="betrag.sonstigeLeistung.inEuro" type="xs:decimal"/>
+                                    <xs:element name="derzeitigerZahlbetrag.inEuro" minOccurs="0" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Hier kann der derzeitige monatliche Zahlbetrag des Unterhalts eingetragen werden.</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="zeitraum"
+                                                minOccurs="0"
+                                                type="tns:Type.GDS.Xdomea.ZeitraumType"/>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="summe.i-v" type="xs:decimal">
+            <xs:annotation>
+               <xs:documentation>Hier ist die Summe der Punkte I. bis V. anzugeben. Zinsen, Säumniszuschläge und Unterhaltsrenten nur, soweit nicht laufend.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Forderungsaufstellung.Vollstreckungsauftrag">
+      <xs:sequence>
+         <xs:element name="lfdNr.forderungsaufstellung" type="xs:positiveInteger"/>
+         <xs:element name="ref.vollstreckungstitel" type="tns:Type.ZVSTR.Ref.Titelnummer"/>
+         <xs:element name="i.hauptforderung.zinsenSaeumniszuschlaege"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.ZVSTR.Forderungshoehe"/>
+         <xs:element name="ii.rueckstand.unterhaltOderRente"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="berechtigter" type="tns:Type.GDS.Ref.Rollennummer"/>
+                  <xs:element name="rueckstand">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="rueckstand.hoeheUndZeitraum">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="beginn.zeitraum" type="xs:date"/>
+                                    <xs:element name="ende.zeitraum" type="xs:date"/>
+                                    <xs:element name="betrag.inEuro" type="xs:decimal"/>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="zinsen.vollstreckungstitel" minOccurs="0" type="xs:decimal">
+                              <xs:annotation>
+                                 <xs:documentation>Hier können die (Teil-/Rest-) Zinsen wie im Vollstreckungstitel ausgerechnet eingetragen werden.</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                           <xs:element name="zinsen"
+                                       minOccurs="0"
+                                       maxOccurs="unbounded"
+                                       type="tns:Type.ZVSTR.Zinsen"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="iii.titulierteKostenNebenforderungen" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="auswahl_artDerKostenforderung"
+                              minOccurs="0"
+                              maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:choice>
+                           <xs:element name="kostenDesMahnverfahrens.vollstreckungsbescheid"
+                                       type="tns:Type.ZVSTR.Kostenforderung"/>
+                           <xs:element name="titulierteVorgerichtlicheKosten"
+                                       type="tns:Type.ZVSTR.Kostenforderung"/>
+                           <xs:element name="festgesetzteKosten" type="tns:Type.ZVSTR.Kostenforderung"/>
+                        </xs:choice>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="freieEingabe"
+                              minOccurs="0"
+                              maxOccurs="unbounded"
+                              type="tns:Type.ZVSTR.FreieEingabe"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="iv.kostenZwangsvollstreckung" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="bisherigeVollstreckungskosten.anlage"
+                              minOccurs="0"
+                              type="xs:decimal">
+                     <xs:annotation>
+                        <xs:documentation>Hier können die bisherigen Vollstreckungskosten gemäß Aufstellung in weiterer Anlage eingetragen werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="kostenDesVerfahrens" minOccurs="0" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="anwaltskosten.gemaessRVG" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element name="vollstreckungsmassnahme" type="din91379:datatypeC">
+                                       <xs:annotation>
+                                          <xs:documentation>Bezeichnung der Vollstreckungsmaßnahme</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="anwaltskosten.gegenstandswert" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Gegenstandswert gemäß § 25 RVG</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="verfahrensgebuehr" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Verfahrensgebühr (VV Nr. 3309, ggf. i. V. m. VV Nr. 1008)</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="auslagenpauschale" minOccurs="0" type="xs:decimal">
+                                       <xs:annotation>
+                                          <xs:documentation>Entgelte für Post- und Telekommunikationsdienstleistungen, ggf. Pauschale (VV Nr. 7001 oder 7002)</xs:documentation>
+                                       </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="weitereAuslagen" minOccurs="0" maxOccurs="unbounded">
+                                       <xs:complexType>
+                                          <xs:sequence>
+                                             <xs:element name="bezeichnung" type="din91379:datatypeC"/>
+                                             <xs:element name="betrag" type="xs:decimal"/>
+                                          </xs:sequence>
+                                       </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="umsatzsteuer" minOccurs="0" type="xs:decimal"/>
+                                    <xs:element name="zwischensummeRechtsanwaltskostenInEuro" type="xs:decimal"/>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                           <xs:element name="inkassokosten.anlage" minOccurs="0" type="xs:decimal">
+                              <xs:annotation>
+                                 <xs:documentation>Kosten von Inkassodienstleistern nach § 13e RDG gemäß Aufstellung in weiterer Anlage</xs:documentation>
+                              </xs:annotation>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+                  <xs:element name="sonstigeKosten" minOccurs="0" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="bezeichnung" type="din91379:datatypeC"/>
+                           <xs:element name="betragInEuro" type="xs:decimal"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="summe.i-iv" type="xs:decimal">
+            <xs:annotation>
+               <xs:documentation>Hier ist die Summe der Punkte I. bis IV. anzugeben. Zinsen und Säumniszuschläge nur, soweit nicht laufend.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Forderungshoehe">
+      <xs:sequence>
+         <xs:element name="auswahl_forderung"
+                     minOccurs="0"
+                     type="tns:Type.ZVSTR.Hauptforderung"/>
+         <xs:element name="zinsen.vollstreckungstitel" minOccurs="0" type="xs:decimal">
+            <xs:annotation>
+               <xs:documentation>Hier können die (Teil-/Rest-) Zinsen wie im Vollstreckungstitel ausgerechnet eingetragen werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="zinsen"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.ZVSTR.Zinsen"/>
+         <xs:element name="saeumniszuschlaege"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.ZVSTR.Saeumniszuschlag"/>
+         <xs:element name="freieEingabe"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.ZVSTR.FreieEingabe"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.FreieEingabe">
+      <xs:sequence>
+         <xs:element name="freieEingabe.bezeichnung" type="din91379:datatypeC"/>
+         <xs:element name="freieEingabe.wert" type="xs:decimal"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Gesamtkosten">
+      <xs:choice>
+         <xs:element name="gesamtkosten">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="gesamtkosten.inEuro" type="xs:decimal"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="restkostenAusGesamtkosten">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="gesamtkosten.inEuro" type="xs:decimal"/>
+                  <xs:element name="restkosten.inEuro" type="xs:decimal"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="teilkostenAusGesamtkosten">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="gesamtkosten.inEuro" type="xs:decimal"/>
+                  <xs:element name="teilkosten.inEuro" type="xs:decimal"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+      </xs:choice>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Hauptforderung">
+      <xs:choice>
+         <xs:element name="hauptforderung">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="hauptforderung.inEuro" type="xs:decimal"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="restforderungAusHauptforderung">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="hauptforderung.inEuro" type="xs:decimal"/>
+                  <xs:element name="restforderung.inEuro" type="xs:decimal"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="teilforderungAusHauptforderung">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="hauptforderung.inEuro" type="xs:decimal"/>
+                  <xs:element name="teilforderung.inEuro" type="xs:decimal"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+      </xs:choice>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Kostenforderung">
+      <xs:sequence>
+         <xs:element name="auswahl_kosten" type="tns:Type.ZVSTR.Gesamtkosten"/>
+         <xs:element name="zinsenWieTitel" minOccurs="0" type="xs:decimal">
+            <xs:annotation>
+               <xs:documentation>Hier können die (Teil-/Rest-) Zinsen wie im Vollstreckungsbescheid, Vollstreckungstitel oder Kostenfestsetzungsbeschluss ausgerechnet eingetragen werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="zinsen"
+                     minOccurs="0"
+                     maxOccurs="unbounded"
+                     type="tns:Type.ZVSTR.Zinsen"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Ref.Titelnummer">
+      <xs:sequence>
+         <xs:element name="ref.titelnummer" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>Hier wird auf die Titelnummer eines Vollstreckungstitels referenziert.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Renten">
+      <xs:sequence>
+         <xs:element name="rente.inHoeheVon" type="xs:decimal"/>
+         <xs:element name="zahlungsintervall" type="tns:Code.GDS.Intervall"/>
+         <xs:element name="laufendAb" type="din91379:datatypeC"/>
+         <xs:element name="zahlbarAm" type="din91379:datatypeC"/>
+         <xs:element name="auswahl_zahlungszeitraum">
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="zahlungszeitraum" type="tns:Code.GDS.Intervall"/>
+                  <xs:element name="zahlungBis" type="din91379:datatypeC"/>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Saeumniszuschlag">
+      <xs:sequence>
+         <xs:element name="gesetzlicheGrundlage" type="din91379:datatypeC"/>
+         <xs:element name="zugrundeliegenderBetrag" type="xs:decimal"/>
+         <xs:element name="beginn" type="xs:date"/>
+         <xs:element name="ende" minOccurs="0" type="xs:date"/>
+         <xs:element name="saeumniszuschlag.betrag" minOccurs="0" type="xs:decimal"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Vollstreckungstitel">
+      <xs:sequence>
+         <xs:element name="titelnummer" minOccurs="0" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>Wird aus mehr als einem Vollstreckungstitel vollstreckt, ist jeweils die laufende Nummer anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="titelart" type="tns:Code.ZVSTR.Titelart"/>
+         <xs:element name="sonstigerTitel" minOccurs="0" type="din91379:datatypeC">
+            <xs:annotation>
+               <xs:documentation>Dieses Feld ist z.B. zu füllen, wenn im Feld Titelart 'Sonstiger' ausgewählt worden ist.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="aktenzeichen" type="din91379:datatypeC"/>
+         <xs:element name="auswahl_ausstellendeBehoerde">
+            <xs:annotation>
+               <xs:documentation>Wer hat den Vollstreckungstitel ausgestellt / erlassen?</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+               <xs:choice>
+                  <xs:element name="gericht" type="tns:Code.GDS.Gerichte.Typ3"/>
+                  <xs:element name="sonstige" type="din91379:datatypeD"/>
+               </xs:choice>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="titeldatum" type="xs:date"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Type.ZVSTR.Zinsen">
+      <xs:sequence>
+         <xs:element name="zuVerzinsenderBetrag" type="xs:decimal"/>
+         <xs:element name="zinsangaben">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="zinssatz" minOccurs="0" type="xs:decimal">
+                     <xs:annotation>
+                        <xs:documentation>Erforderlich bei Zinsenberechung</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="zinsmethode"
+                              minOccurs="0"
+                              type="tns:Code.ZVSTR.Zinsmethode.Typ3">
+                     <xs:annotation>
+                        <xs:documentation>Wenn ein Zinssatz angegeben wird, so muss auch die Zinssatzmethode angegegen werden.</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="zinsbeginndatum" minOccurs="0" type="xs:date">
+                     <xs:annotation>
+                        <xs:documentation>Erforderlich bei Zinsenberechung</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="zinsendedatum" minOccurs="0" type="xs:date"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="zinsbetrag.inEuro" minOccurs="0" type="xs:decimal"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="nachricht.zvstr.durchsuchungsanordnung.2600001">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="grunddaten" type="tns:Type.GDS.Grunddaten"/>
+            <xs:element name="schriftgutobjekte" type="tns:Type.GDS.Schriftgutobjekte"/>
+            <xs:element name="fachdaten">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="beteiligter.zusatz"
+                                 minOccurs="0"
+                                 maxOccurs="unbounded"
+                                 type="tns:Type.ZVSTR.Beteiligter.Zusatz">
+                        <xs:annotation>
+                           <xs:documentation>Für den im Grunddatensatz angegebenen Beteiligten werden weitergehende Informationen übergeben.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="antragsdaten" minOccurs="0">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="antragsort" type="din91379:datatypeB"/>
+                              <xs:element name="antragsdatum" type="xs:date"/>
+                              <xs:element name="angabenZumSchuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                              <xs:element name="kontaktdaten.antragsteller"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.GDS.Ref.Rollennummer"/>
+                              <xs:element name="auswahl_erlassBeschluss.antragsBegruendung">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="antragsBegruendung.758aAbs.1ZPO" type="din91379:datatypeC"/>
+                                       <xs:element name="antragsBegruendung.758aAbs.4ZPO" type="din91379:datatypeC"/>
+                                       <xs:element name="antragsBegruendung.758aAbs.1UndAbs.4ZPO">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="antragsBegruendung.758aAbs.1ZPO" type="din91379:datatypeC"/>
+                                                <xs:element name="antragsBegruendung.758aAbs.4ZPO" type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="zusaetzlicheAntraege" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="antrag.erteilungEinerAusfertigung"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="antrag.direktweiterleitungAnGV"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="antrag.absehen.anhoerungSchuldner" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="antrag.begruendung" type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="weitererAntrag"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="vollstreckungshandlungen.anzahl" type="xs:integer"/>
+                              <xs:element name="sendungsdaten.weitereAnlagen"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.ZVSTR.Anlagen"/>
+                              <xs:element name="versicherung" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="versicherung.753aSatz1ZPO"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="versicherung.weitere"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="beschlussdaten">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="weitereGlaeubigerGemaessAnlage"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean"/>
+                              <xs:element name="weitereSchuldnerGemaessAnlage"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean"/>
+                              <xs:element name="auswahl_beschluss">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="durchsuchungsbeschluss" fixed="true" type="xs:boolean"/>
+                                       <xs:element name="beschluss.anordnungDerVollstreckungZurNachtzeitSonnUndFeiertage"
+                                                   fixed="true"
+                                                   type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Beschluss über die Anordnung der Vollstreckung zur Nachtzeit und an Sonn- und Feiertagen</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="durchsuchungsbeschluss.beschlussAnordnungDerVollstreckungZurNachtzeitSonnUndFeiertage"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="vollstreckungstitel"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.ZVSTR.Vollstreckungstitel"/>
+                              <xs:element name="weitereVollstreckungstitelGemaessAnlage"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean"/>
+                              <xs:element name="forderung">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="anteilsart.hauptforderungen" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="hoehe.inEuro" type="xs:decimal"/>
+                                                <xs:element name="hauptforderungen"
+                                                            fixed="Hauptforderungen"
+                                                            type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="anteilsart.teilforderungen" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="hoehe.inEuro" type="xs:decimal"/>
+                                                <xs:element name="teilforderungen"
+                                                            fixed="Teilforderungen"
+                                                            type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="anteilsart.restforderungen" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="hoehe.inEuro" type="xs:decimal"/>
+                                                <xs:element name="restforderungen"
+                                                            fixed="Restforderungen"
+                                                            type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="auswahl_ermaechtigungen.gerichtsvollzieher" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="zuDurchsuchendesObjekt">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="ermaechtigung.gerichtsvollzieher"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Der zuständige Gerichtsvollzieher wird ermächtigt, zum Zweck der Zwangsvollstreckung das Objekt zu durchsuchen.</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="zuDurchsuchendesObjekt.oertlichkeit"
+                                                            type="tns:Code.GDS.Anschriftstyp"/>
+                                                <xs:element name="betroffenePerson" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                <xs:element name="anordnung.durchfuehrungGemaess758aAbs4ZPO"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Es wird gleichzeitig angeordnet, dass die Durchsuchung des oben bezeichneten Objektes zur Nachtzeit und an Sonn- und Feiertagen (§ 758a Absatz 4 ZPO) durchgeführt werden kann.</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="durchfuehrungDerZwangsvollstreckungsmassnahme">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="ermaechtigung.gerichtsvollzieher"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Der zuständige Gerichtsvollzieher wird ermächtigt, die bezeichnete Zwangsvollstreckungsmaßnahme zur Nachtzeit und an Sonn- und Feiertagen durchzuführen (§ 758a Absatz 4 ZPO).</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="zwangsvollstreckungsmassnahme" type="din91379:datatypeC"/>
+                                                <xs:element name="durchfuehrungDerZwangsvollstreckungsmassnahme.oertlichkeit"
+                                                            type="tns:Code.GDS.Anschriftstyp"/>
+                                                <xs:element name="betroffenePerson" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="vomGerichtAuszufuellen" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="anordnung.ermaechtigung.dauer" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="bezeichnungDerErmaechtigung" type="din91379:datatypeC"/>
+                                                <xs:element name="dauer.ermaechtigungInMonaten" type="xs:positiveInteger"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="befugnis.oeffnungenUndBeschlagnahmePfandstuecke"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Im Rahmen der angeordneten Durchsuchung umfasst sie die Befugnis, verschlossene Haustüren, Zimmertüren und Behältnisse öffnen zu lassen und Pfandstücke zum Zweck ihrer Verwertung an sich zu nehmen (Artikel 13 Absatz 2 GG, § 758a Absatz 1 ZPO). Die Ermächtigung gilt zugleich für das Abholen der Pfandstücke.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="auswahl_weitereAnordnungen" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:choice>
+                                                <xs:element name="zeitlicheBeschraenkung">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="uhrzeit.von" type="xs:time"/>
+                                                         <xs:element name="uhrzeit.bis" type="xs:time"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="keineZeitlicheBeschraenkung" fixed="true" type="xs:boolean"/>
+                                             </xs:choice>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="gruende">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="schuldnerWiederholtNichtAngetroffen"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="verweigerungDurchsuchung"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="verzicht.anhoerungSchuldner"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Auf eine Anhörung der Schuldner vor Erlass des Beschlusses wurde im Hinblick auf den bisherigen Verfahrensgang verzichtet, um den Vollstreckungserfolg nicht zu gefährden.</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="sonstigeGruendeOderWeitereAnordnungen"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC">
+                                          <xs:annotation>
+                                             <xs:documentation>Hier können sonstige Gründe oder auch weitere Anordnungen angegeben werden.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="nachricht.zvstr.forderungspfaendung.2600002">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="grunddaten" type="tns:Type.GDS.Grunddaten"/>
+            <xs:element name="schriftgutobjekte" type="tns:Type.GDS.Schriftgutobjekte"/>
+            <xs:element name="fachdaten">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="beteiligter.zusatz"
+                                 minOccurs="0"
+                                 maxOccurs="unbounded"
+                                 type="tns:Type.ZVSTR.Beteiligter.Zusatz">
+                        <xs:annotation>
+                           <xs:documentation>Für den im Grunddatensatz angegebenen Beteiligten werden weitergehende Informationen übergeben.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="antragsdaten" minOccurs="0">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="antragsort" type="din91379:datatypeB"/>
+                              <xs:element name="antragsdatum" type="xs:date"/>
+                              <xs:element name="auswahl_gerichtskostenVollstreckung" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="elektronischeKostenmarke">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="nummer" type="din91379:datatypeC"/>
+                                                <xs:element name="wert.inEuro" type="xs:decimal"/>
+                                                <xs:element name="datum" type="xs:date"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="sepa-mandat" fixed="true" type="xs:boolean"/>
+                                       <xs:element name="gerichtskostenbefreiungGemaess" type="din91379:datatypeC"/>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="angabenZumSchuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                              <xs:element name="vorpfaendung"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>Es besteht bereits ein vorläufiges Zahlungsverbot nach § 845 ZPO (Vorpfändung).</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="kontaktdaten.antragsteller"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.GDS.Ref.Rollennummer"/>
+                              <xs:element name="zusaetzlicheAntraege" minOccurs="0" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="antrag.erteilungEinerAusfertigung"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="antrag.zustellung"
+                                                   minOccurs="0"
+                                                   type="tns:Code.ZVSTR.Antrag.Zustellung"/>
+                                       <xs:element name="pkh" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="glaeubiger" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                <xs:element name="pkh.bewilligen" default="false" type="xs:boolean"/>
+                                                <xs:element name="ra.beiordnung" minOccurs="0">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="ra.beiordnen" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="begruendung">
+                                                            <xs:complexType>
+                                                               <xs:sequence>
+                                                                  <xs:element name="schuldnerseiteRechtsanwaltlichVertreten"
+                                                                              minOccurs="0"
+                                                                              fixed="true"
+                                                                              type="xs:boolean"/>
+                                                                  <xs:element name="vertretungErforderlich.gruende"
+                                                                              minOccurs="0"
+                                                                              type="din91379:datatypeC"/>
+                                                               </xs:sequence>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                         <xs:element name="beizuordnenderRechtsanwalt"
+                                                                     minOccurs="0"
+                                                                     type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="antrag.weiterer" minOccurs="0" type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="forderungsaufstellungen">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="forderungsaufstellung.gewoehnlicheForderung"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="tns:Type.ZVSTR.Forderungsaufstellung.GewoehnlicheForderung"/>
+                                       <xs:element name="forderungsaufstellung.unterhaltsforderung"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="tns:Type.ZVSTR.Forderungsaufstellung.Unterhaltsforderung"/>
+                                       <xs:element name="forderungsaufstellungen.anzahl" type="xs:integer"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="auswahl_elektronischUebermittelteAntraege"
+                                          minOccurs="0"
+                                          type="tns:Type.ZVSTR.ElektronischUebermittelteAntraege"/>
+                              <xs:element name="sendungsdaten.weitereAnlagen"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.ZVSTR.Anlagen"/>
+                              <xs:element name="versicherung" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="versicherung.753aSatz1ZPO"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="versicherung.829aAbs1Nr4ZPO"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="versicherung.weitere"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="beschlussdaten">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="weitereGlaeubigerGemaessAnlage"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean"/>
+                              <xs:element name="bankverbindungZumGlaeubiger" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.kontoinhaber" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="ref.bankverbindung" type="tns:Type.GDS.Ref.Bankverbindung"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="weitereSchuldnerGemaessAnlage"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean"/>
+                              <xs:element name="entscheidungsumfang"
+                                          type="tns:Code.ZVSTR.Entscheidungsumfang.PfUEB"/>
+                              <xs:element name="vollstreckungstitel"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.ZVSTR.Vollstreckungstitel"/>
+                              <xs:element name="weitereVollstreckungstitelGemaessAnlage"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean"/>
+                              <xs:element name="vomGerichtAuszufuellen" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="zustellungskosten.pfueb" fixed="true" type="xs:boolean"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="weitereAngaben.drittschuldner"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.drittschuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="ref.modulNr" maxOccurs="unbounded" type="xs:positiveInteger"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="weitereDrittschuldnerGemaessAnlage"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean"/>
+                              <xs:element name="anspruch"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.ZVSTR.Anspruch.PfUEB"/>
+                              <xs:element name="anordnungNach829Abs1Und835Abs1ZPO"
+                                          fixed="Die Drittschuldner dürfen, soweit die Forderungen gepfändet sind, an die Schuldner nicht mehr zahlen; die Schuldner dürfen insoweit nicht über die Forderungen verfügen, sie insbesondere nicht einziehen. Im Anwendungsbereich des § 850c ZPO wird auf die Pfändungsfreigrenzenbekanntmachung in der jeweils geltenden Fassung Bezug genommen (§ 850c Absatz 5 Satz 3 ZPO)"
+                                          type="din91379:datatypeC"/>
+                              <xs:element name="auswahl_anordnung.drittschuldner" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="zurEinziehungUeberwiesen"
+                                                   fixed="zur Einziehung überwiesen"
+                                                   type="din91379:datatypeC"/>
+                                       <xs:element name="anZahlungsStattUeberwiesen"
+                                                   fixed="an Zahlungs statt überwiesen"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="anordnungen.gegenueberSchuldner"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.ZVSTR.Anordnungen.GegenueberSchuldner"/>
+                              <xs:element name="ergaenzendeAntraege" minOccurs="0" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="arbeitseinkommenUndArbeitseinkommen" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="arbeitseinkommen" minOccurs="2" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="ref.drittschuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                         <xs:element name="betrag.inEuro" type="xs:decimal"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="unpfaendbarerGrundbetrag.drittschuldner"
+                                                            type="tns:Type.GDS.Ref.Rollennummer"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="geldleistungUndArbeitseinkommen" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="geldleistung" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="geldleistung.bezeichnung" type="din91379:datatypeC"/>
+                                                         <xs:element name="ref.drittschuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="arbeitseinkommen" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="ref.drittschuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="auswahl_unpfaendbarerGrundbetrag.drittschuldner">
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="entnahme.arbeitseinkommen" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="entnahme.geldleistung" fixed="true" type="xs:boolean"/>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="geldleistungUndGeldleistung" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="geldleistung" minOccurs="2" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="geldleistung.bezeichnung" type="din91379:datatypeC"/>
+                                                         <xs:element name="ref.drittschuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                         <xs:element name="betrag.inEuro" type="xs:decimal"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="unpfaendbarerGrundbetrag.drittschuldner"
+                                                            type="tns:Type.GDS.Ref.Rollennummer"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="angabenSchuldner.persoenlicheWirtschaftlicheVerhaeltnisse"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="unterhaltspflichten" maxOccurs="unbounded">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="unterhaltsberechtigtePerson">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="ref.unterhaltsberechtigtePerson"
+                                                                     type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                         <xs:element name="verwandtschaftsverhaeltnisZumSchuldner"
+                                                                     type="tns:Code.ZVSTR.Unterhaltsberechtigter"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="auswahl_umfangUnterhaltspflicht">
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="vollstaendig" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="teilweise" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="nicht" fixed="true" type="xs:boolean"/>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="teilweiseErfuellungUnterhaltspflicht"
+                                                   minOccurs="0"
+                                                   type="din91379:datatypeC"/>
+                                       <xs:element name="sonstigeAngaben" minOccurs="0" type="din91379:datatypeC"/>
+                                       <xs:element name="auswahl_erwerbstaetigkeitSchuldner" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:choice>
+                                                <xs:element name="erwerbstaetig" fixed="true" type="xs:boolean"/>
+                                                <xs:element name="nichtErwerbstaetig" fixed="true" type="xs:boolean"/>
+                                             </xs:choice>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="auswahl_familienstand" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:choice>
+                                                <xs:element name="familienstand" type="tns:Code.GDS.Familienstand"/>
+                                                <xs:element name="verheiratetOderLebenspartnerschaftMitGlaeubiger"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                             </xs:choice>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="zusaetzlicheAngabenFuerPfaendung850dZPO" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="zahlungspflichtNichtAbsichtlichEntzogen" type="xs:boolean"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="unterhaltsberechtigePersonen.eigenesEinkommen"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="unterhaltsberechtigePersonen">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="ehegatteOderEingetragenerLebenspartner" minOccurs="0">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="ref.ehegatteOderEingetragenerLebenspartner"
+                                                                     type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                         <xs:element name="einkommen.artUndHoehe" type="din91379:datatypeC"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="kinder" minOccurs="0" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="ref.kinder" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                         <xs:element name="einkommen.artUndHoehe" type="din91379:datatypeC"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="weitereAngaben" minOccurs="0" type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="anordnungNach850dZPO" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="anordnung.pfaendbarkeitBeiUnterhaltsanspruechen.850dZPO"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="ref.schuldner"
+                                                   minOccurs="0"
+                                                   type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="vomGerichtAuszufuellen" minOccurs="0">
+                                          <xs:annotation>
+                                             <xs:documentation>Wenn die Pfändbarkeit bei Unterhaltsansprüchen nach § 850d ZPO angeordnet wird, so sind die hier aufgeführten Elemente vom Gericht auszufüllen.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="unterhaltsRueckstaende" minOccurs="0">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="nichtgeltung.850dAbs1Satz1bis3ZPO"
+                                                                     fixed="true"
+                                                                     type="xs:boolean">
+                                                            <xs:annotation>
+                                                               <xs:documentation>Für die Pfändung wegen der Rückstände, die länger als ein Jahr vor dem Antrag auf Erlass des Pfändungsbeschlusses, bei Gericht eingegangen, siehe Element "pfuebEingangBeiGericht", fällig geworden sind, gilt § 850d Absatz 1 Satz 1 bis 3 ZPO nicht.</xs:documentation>
+                                                            </xs:annotation>
+                                                         </xs:element>
+                                                         <xs:element name="pfuebEingangBeiGericht" type="xs:date"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="schuldner.unpfaendbarerBetrag.inEuro"
+                                                            minOccurs="0"
+                                                            type="xs:decimal">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Hierüber kann mitgeteilt werden, wieviel dem Schuldner bis zur Deckung des Gläubigeranspruchs für seinen eigenen notwendigen Unterhalt in Euro als unpfändbarer Betrag monatlich zu belassen ist.</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="monatlichUnpfaendbarerBetrag" minOccurs="0">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="erfuellungLaufendeUnterhaltspflichten.inEuro"
+                                                                     minOccurs="0"
+                                                                     type="xs:decimal"/>
+                                                         <xs:element name="verbleibenderBetrag.unterhaltsberechtigePersonWieGlaeubiger"
+                                                                     minOccurs="0">
+                                                            <xs:complexType>
+                                                               <xs:sequence>
+                                                                  <xs:element name="zaehler" type="xs:positiveInteger"/>
+                                                                  <xs:element name="nenner" type="xs:positiveInteger"/>
+                                                               </xs:sequence>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="monatlichUnpfaendbarerBetrag.weiterer" minOccurs="0">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="arbeitseinkommen.ohneBeschraenkungen"
+                                                                     minOccurs="0"
+                                                                     fixed="true"
+                                                                     type="xs:boolean"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="sonstigeAnordnungen"
+                                                            minOccurs="0"
+                                                            maxOccurs="unbounded"
+                                                            type="din91379:datatypeC"/>
+                                                <xs:element name="gruende" minOccurs="0" type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="anordnungNach850cAbsatz6ZPO" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="nichtBeruecksichtigungVonUnterhaltsberechtigten"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Es wird die (teilweise) Nichtberücksichtigung von Unterhaltsberechtigten des Schuldners nach § 850c Absatz 6 ZPO angeordnet.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="ref.schuldner"
+                                                   minOccurs="0"
+                                                   type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="vomGerichtAuszufuellen" minOccurs="0">
+                                          <xs:annotation>
+                                             <xs:documentation>Vom Gericht zu befüllen für die Berechnung des unpfändbaren Teils</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="arbeitseinkommen.schuldner"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="guthaben.pfaendungsschutzkontoSchuldner"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="unberuecksichtigtePersonen" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="ref.unberuecksichtigtePerson"
+                                                                     type="tns:Type.GDS.Ref.Rollennummer"/>
+                                                         <xs:element name="auswahl_hoeheNichtberuecksichtigung">
+                                                            <xs:complexType>
+                                                               <xs:choice>
+                                                                  <xs:element name="ganz" fixed="true" type="xs:boolean"/>
+                                                                  <xs:element name="inHoeheVonBetrag.inEuro" type="xs:decimal"/>
+                                                                  <xs:element name="inHoeheVonProzent" type="xs:decimal"/>
+                                                               </xs:choice>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="gruende" minOccurs="0" type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="anordnungNach850fAbsatz2ZPO" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="anordnungPfaendbarkeit.forderungAusUnerlaubterHandlung"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="ref.schuldner"
+                                                   minOccurs="0"
+                                                   type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="vomGerichtAuszufuellen" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="pfaendungsgrenzenArbeitseinkommen.keineRuecksichtAuf850cZPO"
+                                                            minOccurs="0"
+                                                            fixed="Der pfändbare Teil des Arbeitseinkommens wird ohne Rücksicht auf die in § 850c ZPO vorgesehenen Beschränkungen bestimmt."
+                                                            type="din91379:datatypeC"/>
+                                                <xs:element name="arbeitseinkommenSchuldner"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="guthabenPfaendungsschutzkontoSchuldner"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="notwendigerUnterhalt" type="xs:decimal"/>
+                                                <xs:element name="erfuellungGesetzlicherUnterhaltspflichten"
+                                                            minOccurs="0"
+                                                            type="xs:decimal"/>
+                                                <xs:element name="gruende" minOccurs="0" type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="vomGerichtAuszufuellen.modulT" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="freitextfeld.beschluss" type="din91379:datatypeC">
+                                          <xs:annotation>
+                                             <xs:documentation>Dieser Bereich ist vom Gericht auszufüllen.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="nachricht.zvstr.vollstreckungsauftrag.2600003">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="grunddaten" type="tns:Type.GDS.Grunddaten"/>
+            <xs:element name="schriftgutobjekte" type="tns:Type.GDS.Schriftgutobjekte"/>
+            <xs:element name="fachdaten">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="beteiligter.zusatz"
+                                 minOccurs="0"
+                                 maxOccurs="unbounded"
+                                 type="tns:Type.ZVSTR.Beteiligter.Zusatz">
+                        <xs:annotation>
+                           <xs:documentation>Für den im Grunddatensatz angegebenen Beteiligten werden weitergehende Informationen übergeben.</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="antragsort" type="din91379:datatypeB"/>
+                     <xs:element name="antragsdatum" type="xs:date"/>
+                     <xs:element name="angabenZumSchuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                     <xs:element name="kontaktdaten.auftraggeber"
+                                 minOccurs="0"
+                                 maxOccurs="unbounded"
+                                 type="tns:Type.GDS.Ref.Rollennummer"/>
+                     <xs:element name="angabenBankverbindung" minOccurs="0">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="auswahl_sepaLastschriftmandat.befreiungGerichtsvollzieherkosten"
+                                          minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="sepaLastschriftmandat"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="befreiungGerichtsvollzieherkostenGemaess"
+                                                   minOccurs="0"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="bankverbindung" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.kontoinhaber" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="ref.bankverbindung" type="tns:Type.GDS.Ref.Bankverbindung"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="weitereGlaeubigerGemaessAnlage"
+                                 minOccurs="0"
+                                 fixed="true"
+                                 type="xs:boolean"/>
+                     <xs:element name="weitereSchuldnerGemaessAnlage"
+                                 minOccurs="0"
+                                 fixed="true"
+                                 type="xs:boolean"/>
+                     <xs:element name="vollstreckungstitel" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                           <xs:complexContent>
+                              <xs:extension base="tns:Type.ZVSTR.Vollstreckungstitel">
+                                 <xs:sequence>
+                                    <xs:element name="zuzueglichZustellungsnachweis"
+                                                minOccurs="0"
+                                                fixed="true"
+                                                type="xs:boolean"/>
+                                 </xs:sequence>
+                              </xs:extension>
+                           </xs:complexContent>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="weitereVollstreckungstitelGemaessAnlage"
+                                 minOccurs="0"
+                                 fixed="true"
+                                 type="xs:boolean"/>
+                     <xs:element name="forderungsaufstellung" minOccurs="0">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="forderungsaufstellung.angaben"
+                                          maxOccurs="unbounded"
+                                          type="tns:Type.ZVSTR.Forderungsaufstellung.Vollstreckungsauftrag"/>
+                              <xs:element name="forderungsaufstellung.anzahl" type="xs:integer"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="auswahl_elektronischUebermittelteAntraege"
+                                 minOccurs="0"
+                                 type="tns:Type.ZVSTR.ElektronischUebermittelteAntraege"/>
+                     <xs:element name="sendungsdaten.weitereAnlagen"
+                                 minOccurs="0"
+                                 maxOccurs="unbounded"
+                                 type="tns:Type.ZVSTR.Anlagen"/>
+                     <xs:element name="versicherung" minOccurs="0">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="versicherung.753aSatz1ZPO"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean"/>
+                              <xs:element name="versicherung.754aAbs1S1Nr4ZPO"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>Es wird gemäß § 754a Absatz 1 Satz 1 Nummer 4 ZPO versichert, dass Ausfertigungen der als elektronische Dokumente übermittelten Vollstreckungsbescheide mit den jeweiligen Zustellungsnachweisen vorliegen und die Forderungen in Höhe des Vollstreckungsauftrags noch bestehen.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="versicherung.weitere"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="din91379:datatypeC"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="auftraege">
+                        <xs:annotation>
+                           <xs:documentation>Wegen der aus den Forderungsaufstellungen ersichtlichen Forderungen und der für dieses Verfahren entstehenden Kosten werden folgende Aufträge erteilt.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="antrag.zustellung" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="zustellung.allerTitel"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>sämtlicher beigefügter Vollstreckungstitel</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="zustellung.einzeltitel"
+                                                   minOccurs="0"
+                                                   type="tns:Type.ZVSTR.Ref.Titelnummer"/>
+                                       <xs:element name="zustellung.vorpfaendungsbenachrichtigung"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="zustellung.sonstiges"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="guetlicheErledigung.802bZPO" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="beschraenkungAufGuetlicheErledigung"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="zahlungsvereinbarung" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="auswahl_einverstaendnis">
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="keinEinverstaendnis" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="einverstaendnisWieFolgt">
+                                                            <xs:complexType>
+                                                               <xs:sequence>
+                                                                  <xs:element name="zahlungsfrist" minOccurs="0" type="din91379:datatypeC"/>
+                                                                  <xs:element name="teilbetraege" minOccurs="0">
+                                                                     <xs:complexType>
+                                                                        <xs:sequence>
+                                                                           <xs:element name="mindestRatenhoehe" minOccurs="0" type="xs:decimal"/>
+                                                                           <xs:element name="auswahl_turnus">
+                                                                              <xs:complexType>
+                                                                                 <xs:choice>
+                                                                                    <xs:element name="monatlich" fixed="true" type="xs:boolean"/>
+                                                                                    <xs:element name="sonstiger" type="din91379:datatypeC"/>
+                                                                                 </xs:choice>
+                                                                              </xs:complexType>
+                                                                           </xs:element>
+                                                                        </xs:sequence>
+                                                                     </xs:complexType>
+                                                                  </xs:element>
+                                                                  <xs:element name="abweichenNachErmessen"
+                                                                              minOccurs="0"
+                                                                              fixed="true"
+                                                                              type="xs:boolean"/>
+                                                               </xs:sequence>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="sonstigeWeisungen"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="abnahmeVermoegensauskunft"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="auswahl_vermoegensauskunft">
+                                          <xs:complexType>
+                                             <xs:choice>
+                                                <xs:element name="auskunft.802cZPO" fixed="true" type="xs:boolean"/>
+                                                <xs:element name="weitereAuskunft.802dZPO">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="gruende" type="din91379:datatypeC"/>
+                                                         <xs:element name="glaubhaftmachung" type="din91379:datatypeC"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:choice>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="auswahl_ohneOderNachPfaendungsversuch" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:choice>
+                                                <xs:element name="ohneVorherigenPfaendungsversuch"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="nachVorherigemPfaendungsversuch">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="nachVorherigemPfaendungsversuch"
+                                                                     fixed="true"
+                                                                     type="xs:boolean"/>
+                                                         <xs:element name="schuldnerWiederholtNichtAngetroffen" minOccurs="0">
+                                                            <xs:complexType>
+                                                               <xs:sequence>
+                                                                  <xs:element name="auswahl_abnahmeVermoegensauskunftOderRuecksendungVollstreckungsunterlagen"
+                                                                              minOccurs="0">
+                                                                     <xs:complexType>
+                                                                        <xs:choice>
+                                                                           <xs:element name="abnahmeVermoegensauskunft" fixed="true" type="xs:boolean"/>
+                                                                           <xs:element name="ruecksendungVollstreckungsunterlagen"
+                                                                                       fixed="true"
+                                                                                       type="xs:boolean"/>
+                                                                        </xs:choice>
+                                                                     </xs:complexType>
+                                                                  </xs:element>
+                                                                  <xs:element name="sonstiges"
+                                                                              minOccurs="0"
+                                                                              maxOccurs="unbounded"
+                                                                              type="din91379:datatypeC"/>
+                                                               </xs:sequence>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:choice>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="verzicht.mitteilungTerminsbestimmung"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="teilnahme.abnahmeVermoegensauskunft"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="sonstiges"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="erlassHaftbefehl" minOccurs="0" maxOccurs="unbounded">
+                                 <xs:annotation>
+                                    <xs:documentation>Für den Fall, dass ein Schuldner dem Termin zur Abgabe der Vermögensauskunft unentschuldigt fernbleibt oder sich ohne Grund weigert, die Vermögensauskunft zu erteilen, wird der Gerichtsvollzieher beauftragt, beim zuständigen Amtsgericht den Erlass eines Haftbefehls nach § 802g Absatz 1 ZPO zu beantragen.</xs:documentation>
+                                 </xs:annotation>
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer">
+                                          <xs:annotation>
+                                             <xs:documentation>In diesem Element kann angegeben werden, für welchen Schuldner der Erlass eines Haftbefehls beantragt wird.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="auswahl_weiterleitung">
+                                          <xs:annotation>
+                                             <xs:documentation>In diesem Element wird mitgeteilt, an wen das zuständige Amtsgericht den Haftbefehl nach Erlass übersenden soll.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:complexType>
+                                             <xs:choice>
+                                                <xs:element name="weiterleitungAnGlauebiger" fixed="true" type="xs:boolean"/>
+                                                <xs:element name="weiterleitungAnBevollmaechtigten"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="weiterleitungAnZustaendigenGV" fixed="true" type="xs:boolean"/>
+                                             </xs:choice>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="verhaftung.schuldner" minOccurs="0" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="haftbefehl.amtsgericht" type="tns:Code.GDS.Gerichte.Typ3"/>
+                                       <xs:element name="haftbefehl.datumDesHaftbefehls" type="xs:date"/>
+                                       <xs:element name="geschaeftszeichenDesHaftbefehls" type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="vorpfaendung" minOccurs="0">
+                                 <xs:annotation>
+                                    <xs:documentation>Mit diesem Element kann die Zustellung der Benachrichtigung über eine bevorstehende Pfändung aller oder bestimmter Forderungen gemäß § 845 ZPO beauftragt werden.</xs:documentation>
+                                 </xs:annotation>
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="bekanntePfaendbareForderung" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="bekanntePfaendbareForderungen" fixed="true" type="xs:boolean"/>
+                                                <xs:element name="ausnahmeFolgenderForderungen"
+                                                            minOccurs="0"
+                                                            type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="folgendeForderungen" minOccurs="0" type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="pfaendungUndVerwertung" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="durchfuehrungSachpfaendung" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="durchfuehrungSachpfaendung" fixed="true" type="xs:boolean"/>
+                                                <xs:element name="auswahl_einschliesslichOderBeschraenktAuf" minOccurs="0">
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="einschliesslich" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="beschraenktAuf" fixed="true" type="xs:boolean"/>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="taschenpfaendungen"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="kassenpfaendungen"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean"/>
+                                                <xs:element name="sonstigePfaendungen"
+                                                            minOccurs="0"
+                                                            maxOccurs="unbounded"
+                                                            type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="pfaendungVonWertpapieren"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Es soll eine Pfändung von Forderungen aus Wechseln und anderen Papieren, die durch Indossament übertragen werden können, durchgeführt werden.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="keineFruchtlosigkeitsbescheinigung"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Mit der Erteilung einer Fruchtlosigkeitsbescheinigung nach § 32 GVGA besteht kein Einverständnis.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="pfaendbareGegenstaendeImVermoegensverzeichnis"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Der Pfändungsauftrag steht unter der Bedingung, dass sich aus dem Vermögensverzeichnis pfändbare Gegenstände ergeben.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="sonstiges"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="aufenthaltsermittlung" minOccurs="0" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="ermittlung.aufenthaltsortSchuldner" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="keineZustellungsfaehigeAnschrift"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Ermittlung des Aufenthaltsorts des Schuldners für den Fall, dass sich im Verfahren herausstellt, dass keine zustellungsfähige Anschrift des Schuldners vorliegt.</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="ermittlung.nach755Absatz1ZPO" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="nachfrageMeldebehoerde"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Ermittlung nach § 755 Absatz 1 ZPO der gegenwärtigen Anschriften sowie der Angaben zur Haupt- und Nebenwohnung des Schuldners durch Nachfrage bei der Meldebehörde</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="einsichtInRegister"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Ermittlung nach § 755 Absatz 1 ZPO der gegenwärtigen Anschriften, des Ortes der Hauptniederlassung oder des Sitzes des Schuldners durch Einsicht in das Handels-, Genossenschafts-, Partnerschafts-, Unternehmens- oder Vereinsregister</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="auskunftDurchZustaendigeBehoerden"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Ermittlung nach § 755 Absatz 1 ZPO der gegenwärtigen Anschriften, des Ortes der Hauptniederlassung oder des Sitzes des Schuldners durch Einholung einer Auskunft bei den nach Landesrecht für die Durchführung der Aufgaben nach § 14 Absatz 1 GewO zuständigen Behörden</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="ermittlung.nach755Absatz2ZPO" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="auslaenderzentralregister"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Ermittlung nach § 755 Absatz 2 ZPO des Aufenthaltsorts durch Nachfragen beim Ausländerzentralregister und bei der aktenführenden Ausländerbehörde</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="anschrift.rentenversicherungOderVersorgungseinrichtung"
+                                                            minOccurs="0"
+                                                            type="tns:Type.ZVSTR.ErmittlungSchuldneranschrift">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Ermittlung nach § 755 Absatz 2 ZPO der bekannten derzeitigen Anschrift sowie des derzeitigen oder zukünftigen Aufenthaltsorts des Schuldners bei</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="halterdaten.kraftfahrtbundesamt"
+                                                            minOccurs="0"
+                                                            fixed="true"
+                                                            type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Ermittlung nach § 755 Absatz 2 ZPO der Halterdaten nach § 33 Absatz 1 Satz 1 Nummer 2 StVG des Schuldners beim Kraftfahrt-Bundesamt</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="sonstiges"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="einholungDrittauskuenfte" minOccurs="0" maxOccurs="unbounded">
+                                 <xs:annotation>
+                                    <xs:documentation>Einholung von Auskünften Dritter (§ 802l ZPO) über den Schuldner</xs:documentation>
+                                 </xs:annotation>
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="ref.schuldner" type="tns:Type.GDS.Ref.Rollennummer"/>
+                                       <xs:element name="erhebung.rentenversicherungVersorgungseinrichtung"
+                                                   minOccurs="0"
+                                                   type="tns:Type.ZVSTR.ErmittlungSchuldneranschrift"/>
+                                       <xs:element name="ersuchen.bundeszentralamtSteuern"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="erhebung.kraftfahrtbundesamt"
+                                                   minOccurs="0"
+                                                   fixed="true"
+                                                   type="xs:boolean"/>
+                                       <xs:element name="antrag.einholungAktuelleAuskuenfte" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="aenderungVermoegensverhaeltnisse.schuldner"
+                                                            type="din91379:datatypeC"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="sonstiges"
+                                                   minOccurs="0"
+                                                   maxOccurs="unbounded"
+                                                   type="din91379:datatypeC"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="weitereAuftraege"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="din91379:datatypeC"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="reihenfolgeDerAuftraege" minOccurs="0">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="reihenfolge.1" type="din91379:datatypeC">
+                                 <xs:annotation>
+                                    <xs:documentation>Hier kann der entsprechende Modulbuchstabe eingetragen werden.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="reihenfolge.2" minOccurs="0" type="din91379:datatypeC">
+                                 <xs:annotation>
+                                    <xs:documentation>Hier kann der entsprechende Modulbuchstabe eingetragen werden.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="reihenfolge.3" minOccurs="0" type="din91379:datatypeC">
+                                 <xs:annotation>
+                                    <xs:documentation>Hier kann der entsprechende Modulbuchstabe eingetragen werden.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="weitereReihenfolge"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="din91379:datatypeC"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="hinweiseVorgabenAnGerichtsvollzieher" minOccurs="0">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="auswahl_uebersendung" minOccurs="0">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="protokoll" fixed="true" type="xs:boolean"/>
+                                       <xs:element name="gesamtprotokoll" fixed="true" type="xs:boolean"/>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="nichtzustaendigkeit.weiterleitung"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>Im Fall der Nichtzuständigkeit wird um Weiterleitung des Vollstreckungsauftrags an den zuständigen Gerichtsvollzieher gebeten, wenn nicht bereits eine Weiterleitung von Amts wegen erfolgt.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="ruecksendungVollstreckungsunterlagen.beschreibung"
+                                          minOccurs="0"
+                                          type="din91379:datatypeC"/>
+                              <xs:element name="weitereHinweiseUndVorgaben"
+                                          minOccurs="0"
+                                          maxOccurs="unbounded"
+                                          type="din91379:datatypeC"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>

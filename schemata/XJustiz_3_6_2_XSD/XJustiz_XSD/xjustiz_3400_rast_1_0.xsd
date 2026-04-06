@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.xjustiz.de"
+           xmlns:din91379="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"
+           targetNamespace="http://www.xjustiz.de"
+           version="1.0.0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+   <xs:annotation>
+      <xs:appinfo>
+         <standard>
+            <nameLang>Strukturierte Fachdaten für die Kommunikation im elektronischen Rechtsverkehr</nameLang>
+            <nameKurz>XJustiz</nameKurz>
+            <nameTechnisch>xjustiz</nameTechnisch>
+            <kennung>urn:xoev-de:blk-ag-it-standards:standard:xjustiz</kennung>
+            <beschreibung>XJustiz ist der bundesweit einheitliche Standard für den Austausch strukturierter elektronischer Informationen mit der Justiz.</beschreibung>
+         </standard>
+         <versionStandard>
+            <version>3.6.2</version>
+            <beschreibung>XJustiz beschreibt ein standardisiertes Datenaustauschformat für die elektronische Kommunikation innerhalb und mit der Justizverwaltung.</beschreibung>
+            <versionXOEVProfil>3.0.2</versionXOEVProfil>
+            <versionXOEVHandbuch>2.3.1</versionXOEVHandbuch>
+            <versionXGenerator>3.2.3</versionXGenerator>
+            <versionModellierungswerkzeug>2021x</versionModellierungswerkzeug>
+            <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+         </versionStandard>
+      </xs:appinfo>
+   </xs:annotation>
+   <xs:include schemaLocation="xjustiz_0000_grunddatensatz_3_6.xsd"/>
+   <xs:include schemaLocation="xjustiz_3410_cl_rast_1_0.xsd"/>
+   <xs:import schemaLocation="din-norm-91379-datatypes.xsd"
+              namespace="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"/>
+   <xs:element name="nachricht.rast.antragBeratungshilfe.3400001">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="grunddaten" type="tns:Type.GDS.Grunddaten"/>
+            <xs:element name="schriftgutobjekte"
+                        minOccurs="0"
+                        type="tns:Type.GDS.Schriftgutobjekte"/>
+            <xs:element name="fachdaten">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="sachverhalt" type="din91379:datatypeC"/>
+                     <xs:element name="voraussetzungenErfuellt">
+                        <xs:annotation>
+                           <xs:documentation>Die nachfolgend aufgeführten Voraussetzungen müssen erfüllt sein. Sofern eine der genannten Voraussetzungen nicht erfüllt ist, kann Beratungshilfe nicht bewilligt werden. Auf die Übermittlung des Antrags soll in diesem Fall verzichtet werden.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="keineRechtsschutzversicherung" type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Wert ist der Wert "true" anzugeben, wenn der Antragsteller folgende Erklärung abgibt: "In der vorliegenden Angelegenheit tritt keine Rechtsschutzversicherung ein."</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="keineAndereKostenloseBeratung" type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Wert ist der Wert "true" anzugeben, wenn der Antragsteller folgende Erklärung abgibt: "In dieser Angelegenheit besteht für mich nach meiner Kenntnis keine andere Möglichkeit, kostenlose Beratung und Vertretung in Anspruch zu nehmen."</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="keineBeratungshilfeDieseAngelegenheit" type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Wert ist der Wert "true" anzugeben, wenn der Antragsteller folgende Erklärung abgibt: "In dieser Angelegenheit ist mir bisher Beratungshilfe weder bewilligt noch versagt worden."</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="keinGerichtlichesVerfahren" type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Wert ist der Wert "true" anzugeben, wenn der Antragsteller folgende Erklärung abgibt: "In dieser Angelegenheit wird oder wurde von mir bisher kein gerichtliches Verfahren geführt."</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="auswahl_sozialhilfeBewilligt">
+                        <xs:complexType>
+                           <xs:choice>
+                              <xs:element name="ja" type="xs:boolean"/>
+                              <xs:element name="nein">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="erwerbstaetig" default="false" type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>In diesem Wert ist "true" anzugeben, wenn der Antragsteller erwerbstätig ist, also einen Beruf ausübt und dafür Lohn erhält.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="monatlicheEinkuenfteInEuro">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="einkuenfteAntragsteller">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="brutto" minOccurs="0" type="xs:double"/>
+                                                         <xs:element name="netto" type="xs:double"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="einkuenfteEhegatteNetto" minOccurs="0" type="xs:double">
+                                                   <xs:annotation>
+                                                      <xs:documentation>In diesem Element sind die monatlichen netto Einkünfte des Ehegatten/der Ehegattin bzw. des eingetragenen Lebenspartners/der eingetragenen Lebenspartnerin des Antragstellers/der Antragstellerin anzugeben.</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="wohnung">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="groesse" type="xs:positiveInteger"/>
+                                                <xs:element name="wohnkostenMonatlichInEuro" type="xs:double"/>
+                                                <xs:element name="kostenAnteilAntragstellerInEuro" type="xs:double">
+                                                   <xs:annotation>
+                                                      <xs:documentation>In diesem Element ist immer der Anteil der Wohnkosten des Antragstellers anzugeben.</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="auswahl_personenanzahlHaushalt" minOccurs="0">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Hier ist anzugeben, ob der Antragssteller die Wohnung alleine oder mit weiteren Personen bewohnt.</xs:documentation>
+                                                   </xs:annotation>
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="alleine" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="weiterePersonenHaushalt" type="xs:positiveInteger">
+                                                            <xs:annotation>
+                                                               <xs:documentation>Wenn der Antragsteller die Wohnung gemeinsam mit weiteren Personen bewohnt, ist die in diesem Element die Anzahl der Personen anzugeben.</xs:documentation>
+                                                            </xs:annotation>
+                                                         </xs:element>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="unterhaltsGewaehrung" minOccurs="0" maxOccurs="unbounded">
+                                          <xs:annotation>
+                                             <xs:documentation>Diese Sequenz ist auszufüllen, wenn der Antragsteller einer anderen Person Unterhalt gewährt. Unterhalt kann in Form von Geldzahlungen, aber auch durch Gewährung von Unterkunft, Verpflegung etc. erfolgen.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="unterhaltsempfaenger" type="tns:Type.GDS.Ref.Rollennummer">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Der Unterhaltsempfänger wird in den Grunddaten aufgeführt und über die Rollennummer verknüpft. Sofern der Unterhaltsempfänger einen anderen Wohnsitz als der Antragsteller inne hat, so ist dieser Wohnsitz in den Grunddaten anzugeben.</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="monatlicherBetragInEuro" minOccurs="0" type="xs:double">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Ist nur zu befüllen, wenn Unterhalt ausschließlich in Form von Geldzahlungen geleistet wird. (Nicht zu befüllen z.B. bei im Haushalt lebenden Kindern)</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="auswahl_eigeneEinnahmenNettoInEuro" minOccurs="0">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Hier kann angegeben werden, ob und in welcher Höhe der Angehörige eigene Einnahmen hat.</xs:documentation>
+                                                   </xs:annotation>
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="keineEinnahmen" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="hoeheDerEinahmenNettoInEuro" type="xs:double">
+                                                            <xs:annotation>
+                                                               <xs:documentation>Wenn der Angehörige eigene Einnahmen hat, ist der Betrag in diesem Element anzugeben.</xs:documentation>
+                                                            </xs:annotation>
+                                                         </xs:element>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="vermoegen">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="auswahl_bankkontenWertpapiere" maxOccurs="unbounded">
+                                                   <xs:annotation>
+                                                      <xs:documentation>In den Elementen dieser Auswahl werden Angaben zu Giro-, Sparkonten und andere Bankkonten, Bausparkonten, Wertpapiere übermittelt.</xs:documentation>
+                                                   </xs:annotation>
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="keinebankkontenWertpapiere" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="bankkontenWertpapiereVorhanden">
+                                                            <xs:complexType>
+                                                               <xs:sequence>
+                                                                  <xs:element name="bezeichnung" type="din91379:datatypeD">
+                                                                     <xs:annotation>
+                                                                        <xs:documentation>Hier muss die Bezeichnung der Bank/der Sparkasse/des sonstigen Kreditinstuts angegeben werden.</xs:documentation>
+                                                                     </xs:annotation>
+                                                                  </xs:element>
+                                                                  <xs:element name="inhaber" type="tns:Code.RAST.Inhaber.Eigentums.Verhaeltnis.Typ3">
+                                                                     <xs:annotation>
+                                                                        <xs:documentation>Mit diesem Element wird angegeben ob der Antragsteller alleine, oder der Ehegatte/Lebenspartner alleine oder der Antragsteller gemeinsam mit Ehegatten/Lebenspartner Inhaber des Kontos/Wertpapiers ist.</xs:documentation>
+                                                                     </xs:annotation>
+                                                                  </xs:element>
+                                                                  <xs:element name="auszahlungstermin" minOccurs="0" type="xs:date">
+                                                                     <xs:annotation>
+                                                                        <xs:documentation>Nur anzugeben bei Bausparkonten</xs:documentation>
+                                                                     </xs:annotation>
+                                                                  </xs:element>
+                                                                  <xs:element name="verwendungszweck" minOccurs="0" type="din91379:datatypeC">
+                                                                     <xs:annotation>
+                                                                        <xs:documentation>Nur anzugeben bei Bausparkonten</xs:documentation>
+                                                                     </xs:annotation>
+                                                                  </xs:element>
+                                                                  <xs:element name="kontostandInEuro" type="xs:double"/>
+                                                               </xs:sequence>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="auswahl_grundeigentum" maxOccurs="unbounded">
+                                                   <xs:annotation>
+                                                      <xs:documentation>In den Elementen dieser Auswahl werden Angaben zu Grundeigentum (zum Beispiel Grundstück, Familienheim, Wohnungseigentum, Erbbaurecht) übermittelt.</xs:documentation>
+                                                   </xs:annotation>
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="keinGrundeigentum" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="grundeigentumVorhanden">
+                                                            <xs:complexType>
+                                                               <xs:sequence>
+                                                                  <xs:element name="eigentuemer"
+                                                                              type="tns:Code.RAST.Inhaber.Eigentums.Verhaeltnis.Typ3"/>
+                                                                  <xs:element name="bezeichnung">
+                                                                     <xs:complexType>
+                                                                        <xs:sequence>
+                                                                           <xs:element name="lage" minOccurs="0" type="din91379:datatypeB"/>
+                                                                           <xs:element name="groesse" type="din91379:datatypeC"/>
+                                                                           <xs:element name="nutzungsart" type="din91379:datatypeC"/>
+                                                                        </xs:sequence>
+                                                                     </xs:complexType>
+                                                                  </xs:element>
+                                                                  <xs:element name="verkehrswertInEuro" type="xs:double"/>
+                                                               </xs:sequence>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="auswahl_kraftfahrzeuge" maxOccurs="unbounded">
+                                                   <xs:annotation>
+                                                      <xs:documentation>In den Elementen dieser Auswahl werden Angaben zu Kraftfahrzeugen übermittelt.</xs:documentation>
+                                                   </xs:annotation>
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="keineKraftfahrzeuge" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="kraftfahrzeugeVorhanden">
+                                                            <xs:complexType>
+                                                               <xs:sequence>
+                                                                  <xs:element name="eigentuemer"
+                                                                              type="tns:Code.RAST.Inhaber.Eigentums.Verhaeltnis.Typ3"/>
+                                                                  <xs:element name="fahrzeug" type="tns:Type.GDS.Fahrzeug"/>
+                                                               </xs:sequence>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="auswahl_sonstigeVermoegenswerte" maxOccurs="unbounded">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Sonstige Vermögenswerte können zum Beispiel Kapitallebensversicherung, Bargeld, Wertgegenstände, Forderungen, Anspruch aus Zugewinnausgleich sein.</xs:documentation>
+                                                   </xs:annotation>
+                                                   <xs:complexType>
+                                                      <xs:choice>
+                                                         <xs:element name="keineSonstigeVermoegenswerte" fixed="true" type="xs:boolean"/>
+                                                         <xs:element name="sonstigeVermoegenswerte">
+                                                            <xs:complexType>
+                                                               <xs:sequence>
+                                                                  <xs:element name="eigentuemer"
+                                                                              type="tns:Code.RAST.Inhaber.Eigentums.Verhaeltnis.Typ3"/>
+                                                                  <xs:element name="bezeichnungGegenstand" type="din91379:datatypeC"/>
+                                                                  <xs:element name="rueckkaufswert.verkehrswertInEuro" type="xs:double"/>
+                                                               </xs:sequence>
+                                                            </xs:complexType>
+                                                         </xs:element>
+                                                      </xs:choice>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="zahlungsverpflichtungenSonstigeBelastungen" minOccurs="0">
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="zahlungsverpflichtungen" minOccurs="0" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="verbindlichkeit" type="din91379:datatypeC"/>
+                                                         <xs:element name="glaeubiger" type="din91379:datatypeD"/>
+                                                         <xs:element name="verwendungszweck" type="din91379:datatypeC"/>
+                                                         <xs:element name="ratenBis" minOccurs="0" type="xs:date"/>
+                                                         <xs:element name="restschuldInEuro" minOccurs="0" type="xs:double"/>
+                                                         <xs:element name="monatlicherBetragAntragstellerInEuro"
+                                                                     minOccurs="0"
+                                                                     type="xs:double"/>
+                                                         <xs:element name="monatlicherBetragEhegatte.LebenspartnerInEuro"
+                                                                     minOccurs="0"
+                                                                     type="xs:double"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="sonstigeBelastungen" minOccurs="0" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element name="art" type="tns:Code.RAST.Belastungsart.Typ3">
+                                                            <xs:annotation>
+                                                               <xs:documentation>Hier kann aus der Codeliste der Umstand ausgewählt werden, der auf den Antragsteller oder den Ehegatte/eingetragener Lebenspartner bzw. seiner Ehegattin/eingetragenen Lebenspartnerin zutrifft. Sofern der Wert "Sonstiges" ausgewählt wird, muss immer das Element "begruendung" befüllt werden.</xs:documentation>
+                                                            </xs:annotation>
+                                                         </xs:element>
+                                                         <xs:element name="begruendung" minOccurs="0" type="din91379:datatypeC">
+                                                            <xs:annotation>
+                                                               <xs:documentation>Hier kann eine Begründung für die sonstigen Belastungen eingetragen werden. Das Element ist zwingend zu füllen, wenn der Wert "Sonstiges" aus der Codeliste RAST.Belastungsart ausgewählt wurde.</xs:documentation>
+                                                            </xs:annotation>
+                                                         </xs:element>
+                                                         <xs:element name="monatlicherBetragAntragstellerInEuro"
+                                                                     minOccurs="0"
+                                                                     type="xs:double"/>
+                                                         <xs:element name="monatlicherBetragEhegatte.LebenspartnerInEuro"
+                                                                     minOccurs="0"
+                                                                     type="xs:double"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:choice>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="beratung.vertretungStattgefunden" minOccurs="0">
+                        <xs:annotation>
+                           <xs:documentation>In diesem Element kann der Antragsteller angeben, dass er sich an eine Beratungsperson gewandt hat.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="datumDerErstenBeratung.vertretung" type="xs:date">
+                                 <xs:annotation>
+                                    <xs:documentation>Hier muss das Datum der ersten Beratung bzw. Vertretung angegeben werden.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="beratungs.vertretungs.person"
+                                          type="tns:Type.GDS.Ref.Rollennummer">
+                                 <xs:annotation>
+                                    <xs:documentation>Name und Anschrift der Person, die die Beratung bzw. die Vertretung durchgeführt hat, werden in den Grunddaten aufgeführt. In diesem Element ist der Verweis auf die Angaben dieser Person in den Grunddaten anzugeben.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="versicherungen" type="din91379:datatypeC">
+                        <xs:annotation>
+                           <xs:documentation>In diesem Element ist folgender fixed-Wert zu übertragen, wenn der Antragsteller folgende Versicherungen abgibt: "Ich versichere, dass mir in derselben Angelegenheit Beratungshilfe weder gewährt noch durch das Gericht versagt worden ist und dass in derselben Angelegenheit kein gerichtliches Verfahren anhängig ist oder war. Ich versichere, dass meine Angaben vollständig und wahr sind. Die Allgemeinen Hinweise und die Ausfüllhinweise zu diesem Formular habe ich erhalten. Mir ist bekannt, dass das Gericht verlangen kann, dass ich meine Angaben glaubhaft mache und insbesondere auch die Abgabe einer Versicherung an Eides statt fordern kann. Mir ist bekannt, dass unvollständige oder unrichtige Angaben die Aufhebung der Bewilligung von Beratungshilfe und ggf. auch eine Strafverfolgung nach sich ziehen können." (fixed-Wert)</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>
