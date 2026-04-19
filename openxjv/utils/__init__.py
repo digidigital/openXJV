@@ -9,7 +9,8 @@ Migration Status:
 """
 
 from .file_management import FileManager
-from .search_filter import SearchFilterManager
+from .url_utils import open_url, is_in_bundle
+from .search_filter import SearchFilterManager, SearchWorker
 from .settings import SettingsManager
 from .text_extraction import (
     phrase_search,
@@ -31,7 +32,10 @@ from .search_indexing import (
 
 __all__ = [
     'FileManager',
+    'open_url',
+    'is_in_bundle',
     'SearchFilterManager',
+    'SearchWorker',
     'SettingsManager',
     'phrase_search',
     'get_document_text',

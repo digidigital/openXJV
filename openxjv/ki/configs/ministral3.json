@@ -1,0 +1,36 @@
+{
+  "order": 5,
+  "id": "ministral3",
+  "license_file": "ministral3.txt",
+  "display_name": "Ministral-3",
+  "filename": "Ministral-3-3B-Instruct-2512-Q4_K_M.gguf",
+  "download_url": "https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512-GGUF/resolve/main/Ministral-3-3B-Instruct-2512-Q4_K_M.gguf?download=true",
+  "n_ctx_max": 32768,
+  "n_ctx_min": 2048,
+  "kv_params": {
+    "n_kv_heads": 8,
+    "head_dim": 128,
+    "n_layers": 36
+  },
+  "chat_template_type": "jinja2_from_gguf",
+  "_comment_chat_template": "Mistral-Modelle nutzen [INST]/[/INST]-Tags. llama-cpp-python wählt das Template automatisch aus der GGUF-Datei.",
+  "context_reserve": 1500,
+  "_comment_generation": "Ministral ist das stabilste der vier Modelle. repeat_penalty 1.25 reicht aus — aggressivere Werte würden juristische Fachbegriffe (§-Verweise, Paragraphen) fälschlicherweise bestrafen. top_k 50 und top_p 0.92 für präzises Faktual-Recall.",
+  "generation": {
+    "temperature": 0.05,
+    "repeat_penalty": 1.25,
+    "top_p": 0.92,
+    "top_k": 50,
+    "min_p": 0.05
+  },
+  "repeat_last_n": 384,
+  "inject_date_in_system_prompt": true,
+  "system_prompts": {
+    "_default": "Du bist ein juristischer Assistent.\nAntworte ausschließlich auf Deutsch.\nHeute ist {date}.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Deklination, Grammatik und Zeitformen.\nVermeide Rechtscheibfehler!\nErfinde keine Inhalte.",
+    "Gutachten": "Du bist ein juristischer Gutachter.\nErstelle strukturierte juristische Gutachten auf Deutsch.\nHeute ist {date}.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Grammatik und Zeitformen.\nErfinde keine Inhalte.",
+    "Versicherung": "Du bist ein Versicherungsfachmann mit juristischer Ausbildung.\nAntworte auf Deutsch.\nHeute ist {date}.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Grammatik und Zeitformen.\nErfinde keine Inhalte."
+  },
+  "user_prompts": {
+    "_default": "Fasse das folgende Dokument zusammen.\n\nRegeln:\n- Nur Informationen aus dem Dokument verwenden.\n- Keine verschachtelten Aufzählungen (a, b, c unter einem Punkt).\n- Fachbegriffe und Gesetzesnamen wörtlich aus dem Text übernehmen.\n- Vier Absätze mit Überschrift: Texttyp und Beteiligte — Sachverhalt — Ergebnis — Konsequenz.\n- Pro Absatz zwei bis drei Sätze."
+  }
+}

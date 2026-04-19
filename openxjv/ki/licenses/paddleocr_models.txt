@@ -1,0 +1,36 @@
+PaddleOCR – OCR-Modelle (PP-OCRv5 Latin)
+=========================================
+
+Verwendete Modelle:
+- ch_PP-OCRv5_mobile_det.onnx  (Textdetektor, multilingual)
+- latin_PP-OCRv5_rec_mobile_infer.onnx  (Texterkennung, Latin-Script)
+- cls_infer.onnx  (Winkelklassifikation, PP-OCRv2)
+
+Herausgeber:   PaddlePaddle Authors / Baidu Inc.
+Quelle:        https://github.com/PaddlePaddle/PaddleOCR
+Modell-Hub:    https://www.modelscope.cn/models/RapidAI/RapidOCR
+
+Lizenz: Apache License 2.0
+SPDX-Identifier: Apache-2.0
+Lizenztext: https://www.apache.org/licenses/LICENSE-2.0
+
+Wesentliche Bedingungen (Apache 2.0):
+- Kommerzielle Nutzung erlaubt.
+- Weitergabe (Quell- und Binärform) erlaubt unter Beibehaltung
+  des Copyright-Hinweises und einer Kopie dieser Lizenz.
+- Änderungen müssen als solche kenntlich gemacht werden.
+- Ausdrückliche Patentlizenz durch alle Beitragenden gewährt.
+- Keine Nutzung von Marken oder Logos ohne gesonderte Genehmigung.
+- Keine Garantie; keine Haftung.
+
+Verwendetes Inferenz-Framework: RapidOCR
+Herausgeber: RapidAI Community
+Quelle: https://github.com/RapidAI/RapidOCR
+Lizenz: Apache License 2.0
+
+SHA256-Prüfsummen (verifiziert beim Download):
+- ch_PP-OCRv5_mobile_det.onnx          : 4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae
+- latin_PP-OCRv5_rec_mobile_infer.onnx : b20bd37c168a570f583afbc8cd7925603890efbcdc000a59e22c269d160b5f5a
+- cls_infer.onnx                        : e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c
+
+Copyright (c) PaddlePaddle Authors / Baidu Inc.

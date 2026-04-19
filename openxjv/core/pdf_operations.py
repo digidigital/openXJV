@@ -24,6 +24,8 @@ import pypdfium2 as pdfium
 from PIL import Image
 from PIL.ImageQt import ImageQt
 
+from openxjv.core.database import FavoriteEntry
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QCursor
 from PySide6.QtWidgets import QTableWidget, QApplication
@@ -168,7 +170,7 @@ def extract_table_columns(table_widget: QTableWidget) -> Dict[str, Optional[int]
 def extract_files_from_table(
     table_widget: QTableWidget,
     base_dir: str,
-    favorites: Optional[List[str]] = None,
+    favorites: Optional[List[FavoriteEntry]] = None,
     only_favorites: bool = False,
 ) -> List[TableFileInfo]:
     """
@@ -188,6 +190,13 @@ def extract_files_from_table(
     """
     columns = extract_table_columns(table_widget)
     favorites = favorites or []
+
+    # TODO (Version 1.5+): Nach Entfernung der Legacy-Unterstützung (anzeigename='')
+    # kann hier direkt ein Set von (anzeigename, filename)-Tupeln für den only_favorites-
+    # Filter verwendet werden. Aktuell reicht Dateiname-Abgleich, da jede favorisierte
+    # Datei unabhängig vom Anzeigenamen exportiert werden soll.
+    favorites_filenames = {e.filename for e in favorites}
+
     files_info = []
 
     for row in range(table_widget.rowCount()):
@@ -196,8 +205,7 @@ def extract_files_from_table(
 
         filename = table_widget.item(row, columns['filename']).text()
 
-        # Überspringt, falls nicht in Favoriten, wenn only_favorites True ist
-        if only_favorites and filename not in favorites:
+        if only_favorites and filename not in favorites_filenames:
             continue
 
         # Überspringt, falls Datei nicht existiert (außer für Signaturdateien)
@@ -389,7 +397,7 @@ def export_pdf(
     base_dir: str,
     export_filename: str,
     config: PDFExportConfig,
-    favorites: Optional[List[str]] = None,
+    favorites: Optional[List[FavoriteEntry]] = None,
     cover_page_creator: Optional[Callable[[str], str]] = None,
     status_callback: Optional[Callable[[str], None]] = None,
     progress_callback: Optional[Callable[[int, int], None]] = None,
@@ -430,6 +438,16 @@ def export_pdf(
     """
     favorites = favorites or []
     not_supported = []
+
+    # TODO (Version 1.5+): favorites_legacy und den Legacy-Zweig in der Schleife
+    # entfernen, sobald alle FavoriteEntry-Objekte anzeigename != '' haben.
+    # Dann nur noch favorites_by_pair für den Abgleich verwenden.
+    favorites_by_pair: set = {(e.anzeigename, e.filename) for e in favorites if e.anzeigename}
+    favorites_legacy: set = {e.filename for e in favorites if not e.anzeigename}
+
+    # Verhindert doppelte Bookmark-Einträge, wenn dieselbe Datei mehrfach im
+    # Datensatz referenziert wird (z. B. von Signaturdateien).
+    favorites_in_outline: set = set()
 
     # Extract file information from table
     try:
@@ -551,9 +569,20 @@ def export_pdf(
 
                         outline_item = OutlineItem(outline_name, page_count)
 
-                        # Fügt zu Favoriten-Bereich hinzu, falls zutreffend
-                        if file_info.filename in favorites:
+                        # Prüft, ob diese Datei einem Favoriten-Eintrag entspricht.
+                        # TODO (Version 1.5+): Den `or file_info.filename in favorites_legacy`-
+                        # Zweig entfernen, sobald keine Legacy-Einträge (anzeigename='') mehr
+                        # vorkommen. Dann nur noch favorites_by_pair prüfen.
+                        display = file_info.display_name or ''
+                        is_favorite = (
+                            (display, file_info.filename) in favorites_by_pair
+                            or file_info.filename in favorites_legacy
+                        )
+                        fav_key = (display, file_info.filename)
+
+                        if is_favorite and fav_key not in favorites_in_outline:
                             favorites_outline.children.append(outline_item)
+                            favorites_in_outline.add(fav_key)
 
                         outline.root.append(outline_item)
 

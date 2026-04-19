@@ -1,0 +1,6 @@
+# Generated at build time — contains the real key, must never be committed.
+constants.go
+
+# Compiled binaries — produced by build.sh.
+openxjv_validator
+openxjv_validator.exe

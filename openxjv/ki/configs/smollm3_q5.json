@@ -1,0 +1,36 @@
+{
+  "order": 3,
+  "id": "smollm3_q5",
+  "license_file": "smollm3_q5.txt",
+  "display_name": "SmolLM-3 Q5",
+  "filename": "SmolLM3-3B-Q5_K_M.gguf",
+  "download_url": "https://huggingface.co/unsloth/SmolLM3-3B-GGUF/resolve/main/SmolLM3-3B-Q5_K_M.gguf?download=true",
+  "n_ctx_max": 65536,
+  "n_ctx_min": 2048,
+  "kv_params": {
+    "n_kv_heads": 8,
+    "head_dim": 128,
+    "n_layers": 28
+  },
+  "chat_template_type": "jinja2_from_gguf_patched",
+  "_comment_chat_template": "SmolLM3 verwendet {% generation %}/{% endgeneration %} und strftime_now() — nicht-standardisierte HuggingFace-Erweiterungen. model_loader.py patcht das automatisch.",
+  "context_reserve": 1500,
+  "_comment_generation": "Q5 hat etwas mehr Gewichtsgenauigkeit als Q4, reagiert aber auf Overpenalty genauso. Identische konservative Einstellungen wie Q4. repeat_penalty 1.18 verhindert Stammeln, repeat_last_n 128 reicht für Satzebene.",
+  "generation": {
+    "temperature": 0.05,
+    "repeat_penalty": 1.18,
+    "top_p": 0.92,
+    "top_k": 60,
+    "min_p": 0.05
+  },
+  "repeat_last_n": 128,
+  "inject_date_in_system_prompt": true,
+  "system_prompts": {
+    "_default": "/no_think\nDu bist ein juristischer Assistent.\nAntworte auf Deutsch.\nWenn du eine Datumsangabe im Text mit dem aktuellen Datum abgleichen musst, nutze das Datum von heute: {date}\nDieses Datum steht in keinem inhaltlichen Zusammenhang mit dem Text.\nAchte auf korrekte Deklination, Grammatik und Zeitformen.\nVermeide Rechtscheibfehler!\nErfinde keine Inhalte.",
+    "Gutachten": "/no_think\nDu bist ein juristischer Gutachter.\nAntworte auf Deutsch.\nErfinde keine Inhalte.",
+    "Versicherung": "/no_think\nDu bist ein Versicherungsfachmann mit juristischer Ausbildung.\nAntworte auf Deutsch.\nErfinde keine Inhalte."
+  },
+  "user_prompts": {
+    "_default": "Fasse das folgende Dokument zusammen.\n\nRegeln:\n- Nur Informationen aus dem Dokument verwenden.\n- Ausschließlich einfache Hauptsätze. Keine Nebensätze mit Infinitiv.\n- Maximal 20 Wörter pro Satz.\n- Vier Absätze: Texttyp und Beteiligte — Sachverhalt — Ergebnis — Konsequenz.\n- Jeden Absatz mit einer Überschrift beginnen."
+  }
+}

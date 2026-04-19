@@ -1,0 +1,35 @@
+{
+  "order": 7,
+  "id": "phi4_mini",
+  "license_file": "phi4_mini.txt",
+  "display_name": "Phi-4-mini",
+  "filename": "Phi-4-mini-instruct-Q4_K_M.gguf",
+  "download_url": "https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF/resolve/main/Phi-4-mini-instruct-Q4_K_M.gguf?download=true",
+  "n_ctx_max": 131072,
+  "n_ctx_min": 2048,
+  "kv_params": {
+    "n_kv_heads": 8,
+    "head_dim": 96,
+    "n_layers": 32
+  },
+  "chat_template_type": "jinja2_from_gguf",
+  "context_reserve": 1500,
+  "_comment_generation": "temperature 0.01 war zu greedy — Phi entgleist grammatikalisch wenn es einen komplexen Satzpfad einschlägt und keine Alternativen mehr findet. 0.04 gibt genug Spielraum für Satzkonstruktionen. top_k 50 wieder etwas offener.",
+  "generation": {
+    "temperature": 0.04,
+    "repeat_penalty": 1.20,
+    "top_p": 0.90,
+    "top_k": 50,
+    "min_p": 0.05
+  },
+  "repeat_last_n": 256,
+  "inject_date_in_system_prompt": true,
+  "system_prompts": {
+    "_default": "Du bist ein juristischer Assistent.\nAntworte ausschließlich auf Deutsch.\nWenn du eine Datumsangabe im Text mit dem aktuellen Datum abgleichen musst, nutze das Datum von heute: {date}\nDieses Datum steht in keinem inhaltlichen Zusammenhang mit dem Text.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Deklination, Grammatik und Zeitformen.\nVermeide Rechtscheibfehler!\nErfinde keine Inhalte.",
+    "Gutachten": "Du bist ein juristischer Gutachter.\nErstelle strukturierte juristische Gutachten auf Deutsch.\nWenn du eine Datumsangabe im Text mit dem aktuellen Datum abgleichen musst, nutze das Datum von heute: {date}\nDieses Datum steht in keinem inhaltlichen Zusammenhang mit dem Text.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Grammatik und Zeitformen.\nErfinde keine Inhalte.",
+    "Versicherung": "Du bist ein Versicherungsfachmann mit juristischer Ausbildung.\nAntworte auf Deutsch.\nWenn du eine Datumsangabe im Text mit dem aktuellen Datum abgleichen musst, nutze das Datum von heute: {date}\nDieses Datum steht in keinem inhaltlichen Zusammenhang mit dem Text.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Grammatik und Zeitformen.\nErfinde keine Inhalte."
+  },
+  "user_prompts": {
+    "_default": "Fasse das folgende Dokument zusammen.\n\nRegeln:\n- Nur Informationen aus dem Dokument verwenden.\n- Keine verschachtelten Aufzählungen (a, b, c unter einem Punkt).\n- Fachbegriffe und Gesetzesnamen wörtlich aus dem Text übernehmen.\n- Maximal 25 Wörter pro Satz. Einen Gedanken pro Satz.\n- Vier Absätze mit Überschrift: Texttyp und Beteiligte — Sachverhalt — Ergebnis — Konsequenz.\n- Pro Absatz zwei bis drei Sätze."
+  }
+}

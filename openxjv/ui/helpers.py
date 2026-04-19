@@ -7,23 +7,16 @@ Dieses Modul enthält Hilfsklassen, die in der gesamten UI verwendet werden:
 - CustomWebEnginePage: Behandelt externe Links in der Web-Engine
 - StandardItem: Benutzerdefinierte Baumansicht-Elemente mit ID-Verfolgung
 - TextObject: Helfer zum Erstellen von formatiertem HTML-Text
-- SearchWorker: Hintergrund-Worker für Textextraktion
 """
 
-import os
-import sqlite3
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Any
 
 from PySide6.QtCore import QObject, Signal, QUrl
 from PySide6.QtGui import QStandardItem, QColor
 from PySide6.QtWidgets import QApplication
-from PySide6.QtWebEngineCore import QWebEnginePage
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtWebEngineCore import QWebEnginePage, QWebEngineProfile
 
-if os.name == 'nt':
-    from subprocess import CREATE_NO_WINDOW
-
-from openxjv.utils import extract_texts_from_directory
+from openxjv.utils.url_utils import open_url
 
 
 class CustomWebEnginePage(QWebEnginePage):
@@ -39,14 +32,23 @@ class CustomWebEnginePage(QWebEnginePage):
 
     customPrintRequested = Signal()
 
-    def __init__(self, parent: Optional[Any] = None) -> None:
+    def __init__(
+        self,
+        parent: Optional[Any] = None,
+        profile: Optional["QWebEngineProfile"] = None,
+    ) -> None:
         """
         Initialisiert die benutzerdefinierte Web-Engine-Seite.
 
         Args:
-            parent: Eltern-Widget (optional)
+            parent:  Eltern-Widget (optional)
+            profile: QWebEngineProfile für Cache-Steuerung (optional).
+                     Wird kein Profil übergeben, gilt das Default-Profil.
         """
-        super().__init__(parent)
+        if profile is not None:
+            super().__init__(profile, parent)
+        else:
+            super().__init__(parent)
         super().printRequested.connect(self.forward_print_requested)
 
     def acceptNavigationRequest(self, url: QUrl, nav_type: Any, is_main_frame: bool) -> bool:
@@ -66,7 +68,7 @@ class CustomWebEnginePage(QWebEnginePage):
             return super().acceptNavigationRequest(url, nav_type, is_main_frame)
 
         # Öffnet externe URLs im Standard-Browser
-        QDesktopServices.openUrl(QUrl(url))
+        open_url(url)
         return False
 
     def forward_print_requested(self) -> None:
@@ -198,75 +200,3 @@ class TextObject:
             return f"{self.headline}{self.text}"
         else:
             return ""
-
-
-class SearchWorker(QObject):
-    """
-    Hintergrund-Worker zum Extrahieren von Text aus Dateien für Volltextsuche.
-
-    Dieser Worker läuft in einem separaten Thread, um Text aus allen Dateien
-    in einem Verzeichnis zu extrahieren und in der SQLite-Datenbank für die Suche zu speichern.
-
-    Signale:
-        finished: Wird ausgesendet, wenn Extraktion abgeschlossen ist
-        result: Sendet Tupel aus (empty_files_count, empty_pdfs_count, search_store, exception_text)
-    """
-
-    finished = Signal()
-    result = Signal(list)
-
-    def run(
-        self,
-        directory_to_scan: str,
-        script_root: str,
-        database: str,
-        message_id: Optional[str] = None
-    ) -> None:
-        """
-        Extrahiert Text aus allen Dateien und speichert in Datenbank.
-
-        Args:
-            directory_to_scan: Verzeichnis mit zu verarbeitenden Dateien
-            script_root: Anwendungs-Wurzelverzeichnis (derzeit ungenutzt)
-            database: Pfad zur SQLite-Datenbank
-            message_id: UUID der aktuellen Nachricht
-        """
-        empty_files = 0
-        empty_pdfs = 0
-        search_store: Dict[str, str] = {}
-        exception_text: Optional[str] = None
-
-        try:
-            # Standard-Argumente für Subprozess
-            kwargs = {'capture_output': True}
-            if os.name == 'nt':
-                kwargs['creationflags'] = CREATE_NO_WINDOW
-
-            # Extrahiert Text aus allen Dateien im Verzeichnis
-            search_store = extract_texts_from_directory(directory_to_scan)
-
-            # Speichert in Datenbank
-            with sqlite3.connect(database) as db_connection:
-                db_cursor = db_connection.cursor()
-
-                # Löscht alte Einträge für diese Nachricht
-                db_query = 'DELETE FROM plaintext WHERE uuid = ? AND basedir = ?;'
-                db_cursor.execute(db_query, (message_id, directory_to_scan))
-
-                # Fügt neue Einträge ein
-                for filename, text in search_store.items():
-                    if text == '':
-                        empty_files += 1
-                        if filename.lower().endswith('.pdf'):
-                            empty_pdfs += 1
-
-                    db_query = 'INSERT OR REPLACE INTO plaintext (uuid, filename, text, basedir) VALUES (?, ?, ?, ?);'
-                    db_cursor.execute(db_query, (message_id, filename, text, directory_to_scan))
-
-        except Exception as e:
-            exception_text = str(e)
-
-        # Sendet Ergebnisse
-        result = (empty_files, empty_pdfs, search_store, exception_text)
-        self.result.emit(result)
-        self.finished.emit()

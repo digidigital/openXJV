@@ -15,6 +15,7 @@ from .text_extraction import get_document_text
 
 VERSION = '0.3'
 
+
 def clean_text(text: str) -> str:
     """
     Bereinigt extrahierten Text für Volltextsuche.
@@ -76,13 +77,19 @@ def extract_texts_from_directory(search_path: str) -> dict[str, str]:
 
     # ProcessPoolExecutor, da nicht alle von get_document_text
     # genutzten Module threadsafe sind!
-    with ProcessPoolExecutor(max_workers=cpu_count()) as executor:
-        futures = {executor.submit(parse_text, fn, fp): fn for fn, fp in jobs}
-        return {
-            filename: text
-            for future in as_completed(futures)
-            for filename, text in [future.result()]
-        }
+    try:
+        with ProcessPoolExecutor(max_workers=cpu_count()) as executor:
+            futures = {executor.submit(parse_text, fn, fp): fn for fn, fp in jobs}
+            result = {}
+            for future in as_completed(futures):
+                try:
+                    filename, text = future.result()
+                    result[filename] = text
+                except Exception:
+                    pass
+        return result
+    except Exception:
+        return {}
 
 if __name__ == "__main__":
     freeze_support()

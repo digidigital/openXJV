@@ -1,0 +1,24 @@
+Ministral-3-3B-Instruct-2512-Q4_K_M.gguf
+==========================================
+
+Modell:      Ministral-3-3B-Instruct-2512 (GGUF-Quantisierung Q4_K_M)
+Herausgeber: Mistral AI
+Quelle:      https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512
+GGUF:        https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512-GGUF
+
+Lizenz: Apache License 2.0
+SPDX-Identifier: Apache-2.0
+Lizenztext: https://www.apache.org/licenses/LICENSE-2.0.txt
+
+Wesentliche Bedingungen:
+- Kommerzielle Nutzung erlaubt.
+- Weitergabe (Quell- und Binärform) erlaubt unter Beibehaltung
+  des Copyright-Hinweises, einer Kopie dieser Lizenz sowie
+  Kennzeichnung von Änderungen.
+- Ausdrückliche Patentlizenz durch alle Beitragenden gewährt.
+- Keine Verletzung von Rechten Dritter (ausdrücklich im
+  Modell-Card vermerkt).
+- Keine Nutzung von Marken oder Logos ohne gesonderte Genehmigung.
+- Keine Garantie; keine Haftung.
+
+Copyright (c) Mistral AI

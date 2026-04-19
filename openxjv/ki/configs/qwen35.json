@@ -1,0 +1,36 @@
+{
+  "order": 6,
+  "id": "qwen35",
+  "license_file": "qwen35.txt",
+  "display_name": "Qwen3.5-4B",
+  "filename": "Qwen3.5-4B-Q4_K_M.gguf",
+  "download_url": "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/Qwen3.5-4B-Q4_K_M.gguf?download=true",
+  "n_ctx_max": 32768,
+  "n_ctx_min": 2048,
+  "kv_params": {
+    "n_kv_heads": 8,
+    "head_dim": 128,
+    "n_layers": 36
+  },
+  "chat_template_type": "jinja2_from_gguf",
+  "_comment_chat_template": "Qwen3.5-Destillat auf ChatML-Basis. Template aus GGUF.",
+  "context_reserve": 1500,
+  "_comment_generation": "Qwen3.5-4B reagiert empfindlich auf Overpenalty — repeat_penalty > 1.2 und top_k < 55 erzeugen Token-Substitutionen (phonetisch ähnliche Phantomwörter). /no_think im System-Prompt unterdrückt den internen Thinking-Mode. repeat_last_n 256 reicht für Absatzebene ohne Overpenalty-Risiko.",
+  "generation": {
+    "temperature": 0.07,
+    "repeat_penalty": 1.18,
+    "top_p": 0.93,
+    "top_k": 60,
+    "min_p": 0.04
+  },
+  "repeat_last_n": 256,
+  "inject_date_in_system_prompt": true,
+  "system_prompts": {
+    "_default": "/no_think\nDu bist ein juristischer Assistent.\nAntworte ausschließlich auf Deutsch.\nWenn du eine Datumsangabe im Text mit dem aktuellen Datum abgleichen musst, nutze das Datum von heute: {date}\nDieses Datum steht in keinem inhaltlichen Zusammenhang mit dem Text.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Deklination, Grammatik und Zeitformen.\nVermeide Rechtscheibfehler!\nErfinde keine Inhalte.",
+    "Gutachten": "/no_think\nDu bist ein juristischer Gutachter.\nErstelle strukturierte juristische Gutachten auf Deutsch.\nWenn du eine Datumsangabe im Text mit dem aktuellen Datum abgleichen musst, nutze das Datum von heute: {date}\nDieses Datum steht in keinem inhaltlichen Zusammenhang mit dem Text.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Grammatik und Zeitformen.\nErfinde keine Inhalte.",
+    "Versicherung": "/no_think\nDu bist ein Versicherungsfachmann mit juristischer Ausbildung.\nAntworte auf Deutsch.\nWenn du eine Datumsangabe im Text mit dem aktuellen Datum abgleichen musst, nutze das Datum von heute: {date}\nDieses Datum steht in keinem inhaltlichen Zusammenhang mit dem Text.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Grammatik und Zeitformen.\nErfinde keine Inhalte."
+  },
+  "user_prompts": {
+    "_default": "Fasse das folgende Dokument zusammen.\n\nRegeln:\n- Nur Informationen aus dem Dokument verwenden.\n- Keine verschachtelten Aufzählungen (a, b, c unter einem Punkt).\n- Fachbegriffe und Gesetzesnamen wörtlich aus dem Text übernehmen.\n- Vier Absätze mit Überschrift: Texttyp und Beteiligte — Sachverhalt — Ergebnis — Konsequenz.\n- Pro Absatz zwei bis drei Sätze."
+  }
+}
