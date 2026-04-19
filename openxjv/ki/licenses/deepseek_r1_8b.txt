@@ -1,0 +1,26 @@
+DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf
+=======================================
+
+Modell:      DeepSeek-R1-0528-Qwen3-8B (GGUF-Quantisierung Q4_K_M)
+Herausgeber: DeepSeek AI
+Basis:       Qwen3-8B (Alibaba / Qwen Team)
+Quelle:      https://huggingface.co/deepseek-ai/DeepSeek-R1-0528-Qwen3-8B
+GGUF:        https://huggingface.co/unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF
+
+Lizenz: MIT License
+SPDX-Identifier: MIT
+Lizenztext: https://huggingface.co/deepseek-ai/DeepSeek-R1-0528-Qwen3-8B/blob/main/LICENSE
+
+Wesentliche Bedingungen (MIT):
+- Kommerzielle Nutzung erlaubt.
+- Weitergabe (Quell- und Binärform) erlaubt unter Beibehaltung
+  des Copyright-Hinweises und dieser Lizenzbedingungen.
+- Destillation von abgeleiteten Modellen ausdrücklich erlaubt.
+- Keine Garantie; keine Haftung.
+
+Copyright (c) DeepSeek AI
+
+Hinweis zur GGUF-Konvertierung:
+  Die GGUF-Datei wird von unsloth bereitgestellt. Die Konvertierung
+  ändert die Modellgewichte nicht inhaltlich; die MIT-Lizenz des
+  Ursprungsmodells gilt unverändert.

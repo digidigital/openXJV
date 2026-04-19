@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>KI-Labor – Bedienungsanleitung</title>
+<style>
+/* ── Reset & Base ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f0f0f0;
+  --surface:   #ffffff;
+  --border:    #d0d0d0;
+  --accent:    #3776b0;
+  --accent-dk: #255a8a;
+  --text:      #1a1a1a;
+  --muted:     #666;
+  --ok:        #2a7a2a;
+  --err:       #b00020;
+  --warn-bg:   #fff3cd;
+  --warn-bd:   #ffc107;
+  --code-bg:   #e8e8e8;
+  --radius:    6px;
+  --shadow:    0 2px 6px rgba(0,0,0,.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Ubuntu', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar Nav ────────────────────────────────────────────────────── */
+#sidebar {
+  width: 230px;
+  min-width: 230px;
+  background: #2b2b2b;
+  color: #ccc;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  padding: 16px 0;
+  z-index: 100;
+}
+
+#sidebar h2 {
+  font-size: 9pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #888;
+  padding: 8px 16px 4px;
+  margin-top: 10px;
+}
+
+#sidebar a {
+  display: block;
+  padding: 5px 16px 5px 20px;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 9.5pt;
+  line-height: 1.4;
+  border-left: 3px solid transparent;
+  transition: background .15s, border-color .15s, color .15s;
+}
+#sidebar a:hover   { background: #3a3a3a; color: #fff; }
+#sidebar a.active  { border-left-color: var(--accent); color: #fff; background: #383838; }
+#sidebar a.sub     { padding-left: 32px; font-size: 9pt; color: #aaa; }
+#sidebar a.sub:hover { color: #fff; }
+
+#sidebar .logo {
+  padding: 14px 16px 16px;
+  font-size: 11pt;
+  font-weight: 700;
+  color: #fff;
+  border-bottom: 1px solid #3a3a3a;
+  margin-bottom: 4px;
+}
+#sidebar .logo span { color: var(--accent); }
+
+/* ── Main Content ───────────────────────────────────────────────────── */
+#main {
+  margin-left: 230px;
+  flex: 1;
+  padding: 32px 40px;
+  max-width: 960px;
+}
+
+/* ── Sections ───────────────────────────────────────────────────────── */
+section {
+  margin-bottom: 48px;
+  scroll-margin-top: 20px;
+}
+
+h1 {
+  font-size: 18pt;
+  font-weight: 700;
+  color: var(--accent-dk);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--accent-dk);
+  margin: 28px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+h3 {
+  font-size: 11pt;
+  font-weight: 700;
+  color: var(--text);
+  margin: 18px 0 6px;
+}
+
+h4 {
+  font-size: 10.5pt;
+  font-weight: 700;
+  margin: 12px 0 4px;
+}
+
+p { margin-bottom: 10px; }
+
+ul, ol { margin: 8px 0 12px 24px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent); }
+a:hover { color: var(--accent-dk); }
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+code, .mono {
+  font-family: 'Ubuntu Mono', 'Consolas', 'Menlo', monospace;
+  font-size: 9.5pt;
+  background: var(--code-bg);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ── Cards ──────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 20px;
+  margin-bottom: 14px;
+}
+
+.card h3 { margin-top: 0; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* ── Tables ─────────────────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 18px;
+  font-size: 10pt;
+}
+th {
+  background: var(--accent);
+  color: #fff;
+  padding: 7px 10px;
+  text-align: left;
+  font-weight: 700;
+}
+td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:nth-child(even) td { background: #f7f7f7; }
+
+/* ── Callouts ────────────────────────────────────────────────────────── */
+.callout {
+  border-left: 4px solid var(--accent);
+  background: #eaf2fb;
+  padding: 10px 14px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 12px 0;
+}
+
+.callout.warn {
+  border-left-color: var(--warn-bd);
+  background: var(--warn-bg);
+}
+
+.callout.danger {
+  border-left-color: var(--err);
+  background: #fbeaea;
+}
+
+.callout.ok {
+  border-left-color: var(--ok);
+  background: #eafbea;
+}
+
+/* ── Example blocks ──────────────────────────────────────────────────── */
+.example {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-family: 'Ubuntu Mono', 'Consolas', 'Menlo', monospace;
+  font-size: 9.5pt;
+  margin: 8px 0 12px;
+  white-space: pre-wrap;
+}
+
+.example.bad {
+  background: #fbeaea;
+  border-color: #e0a0a0;
+  text-decoration: line-through;
+  color: #900;
+}
+
+.example.good {
+  background: #eafbea;
+  border-color: #90c090;
+  color: #1a4a1a;
+}
+
+/* ── GUI Mock ────────────────────────────────────────────────────────── */
+.gui-mock {
+  background: #e0e0e0;
+  border: 2px solid #999;
+  border-radius: var(--radius);
+  padding: 12px;
+  font-family: 'Ubuntu', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 9.5pt;
+  margin: 16px 0;
+  box-shadow: var(--shadow);
+  min-width: 680px;
+  width: 100%;
+}
+
+.gui-mock .titlebar {
+  background: #3a3a3a;
+  color: #eee;
+  font-size: 9pt;
+  padding: 4px 10px;
+  border-radius: 4px 4px 0 0;
+  margin: -12px -12px 10px -12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gui-mock .titlebar .dot {
+  width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+}
+.gui-mock .titlebar .dot.red   { background: #e05050; }
+.gui-mock .titlebar .dot.yel   { background: #e0c040; }
+.gui-mock .titlebar .dot.grn   { background: #50b050; }
+.gui-mock .titlebar .title { flex:1; text-align:center; font-size:9pt; }
+
+.gui-group {
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  padding: 6px 8px 8px;
+  margin-bottom: 8px;
+  background: #e8e8e8;
+}
+.gui-group legend, .gui-group-title {
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #444;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.gui-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.gui-input {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 3px 7px;
+  font-family: 'Ubuntu', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 9pt;
+  color: #555;
+  min-width: 60px;
+}
+
+.gui-btn {
+  background: #d8d8d8;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-family: 'Ubuntu', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 9pt;
+  cursor: default;
+  white-space: nowrap;
+}
+.gui-btn.primary {
+  background: #3776b0;
+  color: #fff;
+  border-color: #255a8a;
+}
+.gui-btn.disabled { color: #aaa; border-color: #ccc; background: #e8e8e8; }
+
+.gui-combo {
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 3px 20px 3px 7px;
+  font-family: 'Ubuntu', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 9pt;
+  position: relative;
+  display: inline-block;
+}
+.gui-combo::after {
+  content: '▾';
+  position: absolute;
+  right: 5px;
+  top: 50%; transform: translateY(-50%);
+  font-size: 8pt;
+  color: #666;
+}
+
+.gui-status-ok  { color: #2a7a2a; font-weight: 700; font-size: 9pt; }
+.gui-status-err { color: #b00020; font-weight: 700; font-size: 9pt; }
+
+.gui-textarea {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 4px 7px;
+  font-family: 'Ubuntu', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 9pt;
+  color: #333;
+  min-height: 48px;
+  display: block;
+}
+
+.gui-log {
+  width: 100%;
+  background: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 3px;
+  padding: 4px 7px;
+  font-family: 'Ubuntu Mono', 'Consolas', 'Menlo', monospace;
+  font-size: 8.5pt;
+  color: #aaa;
+  min-height: 44px;
+  display: block;
+}
+
+.gui-label {
+  font-size: 9pt;
+  color: #333;
+  white-space: nowrap;
+}
+
+.gui-splitter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.gui-splitter > .gui-group { flex: 1; }
+
+.gui-btnbar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #ccc;
+}
+.gui-btnbar .spacer { flex: 1; }
+
+/* ── Steps ──────────────────────────────────────────────────────────── */
+.steps { counter-reset: step; margin: 12px 0; }
+.step {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+}
+.step-num {
+  counter-increment: step;
+  min-width: 28px; height: 28px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 10pt;
+  flex-shrink: 0;
+}
+.step-body { padding-top: 4px; }
+
+/* ── Pill badges ────────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 8.5pt;
+  font-weight: 700;
+}
+.badge.green { background: #d4edda; color: #155724; }
+.badge.red   { background: #f8d7da; color: #721c24; }
+.badge.blue  { background: #cce5ff; color: #004085; }
+.badge.gray  { background: #e2e3e5; color: #383d41; }
+
+/* ── Licence table ──────────────────────────────────────────────────── */
+.lic-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.lic-card h3 { margin: 0 0 8px; font-size: 11pt; color: var(--accent-dk); }
+.lic-card table { margin: 0 0 10px; }
+.lic-card table td:first-child { font-weight: 700; width: 150px; color: #444; }
+.lic-meta { font-size: 9pt; color: var(--muted); margin-top: 6px; }
+
+/* ── Scrollbar ──────────────────────────────────────────────────────── */
+#sidebar::-webkit-scrollbar { width: 5px; }
+#sidebar::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SIDEBAR                                                           -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="logo">KI<span>-Labor</span></div>
+
+  <h2>Einführung</h2>
+  <a href="#was-ist">1&nbsp;&nbsp;Was ist das KI-Labor?</a>
+  <a href="#datenschutz">2&nbsp;&nbsp;Datenschutz &amp; lokale Ausführung</a>
+  <a href="#voraussetzungen">3&nbsp;&nbsp;Voraussetzungen &amp; Modelle</a>
+
+  <h2>Bedienung</h2>
+  <a href="#oberflaeche">4&nbsp;&nbsp;Oberfläche im Überblick</a>
+  <a href="#quickstart">5&nbsp;&nbsp;Schnellstart</a>
+  <a href="#bedienelemente">6&nbsp;&nbsp;Bedienelemente im Detail</a>
+  <a href="#bedienelemente" class="sub">6.1 Dokument</a>
+  <a href="#einstellungen" class="sub">6.2 Einstellungen</a>
+   <a href="#prompt-bereich" class="sub">6.3 Prompt</a>
+  <a href="#fortschritt" class="sub">6.4 Fortschritt</a>
+  <a href="#ergebnis" class="sub">6.5 Ergebnis</a>
+
+  <h2>Prompts &amp; Stile</h2>
+  <a href="#analysestile">7&nbsp;&nbsp;Analysestile</a>
+  <a href="#eigene-prompts">8&nbsp;&nbsp;Eigene Prompts verfassen</a>
+
+  <h2>Modelle</h2>
+  <a href="#modelle">9&nbsp;&nbsp;Modelle im Vergleich</a>
+  <a href="#download">10&nbsp;Modell herunterladen</a>
+
+  <h2>Tipps &amp; Hilfe</h2>
+  <a href="#chunking">11&nbsp;Lange Dokumente</a>
+  <a href="#fehler">12&nbsp;Häufige Fehler</a>
+  <a href="#grenzen">13&nbsp;Grenzen der KI</a>
+
+  <h2>Anhang</h2>
+  <a href="#lizenzen">Lizenzen der Modelle</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  MAIN                                                              -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<main id="main">
+
+<!-- ── 1 ─────────────────────────────────────────────────────────── -->
+<section id="was-ist">
+<h1>KI-Labor – Bedienungsanleitung</h1>
+<p><strong>KI-gestützte Dokumentenanalyse für juristische Texte</strong></p>
+
+<p>Das KI-Labor ist ein Werkzeug zur automatisierten Analyse juristischer Dokumente. Es liest PDF-, DOCX- oder TXT-Dateien ein, bereitet deren Inhalt auf und schickt ihn an ein <strong>lokal installiertes Sprachmodell</strong>. Das Modell gibt eine strukturierte Zusammenfassung oder Analyse zurück.</p>
+
+<div class="callout warn">
+<strong>Das KI-Labor befindet sich in einem experimentellen Stadium und ist kein Rechtsgutachten-Ersatz</strong>. Die Ausgaben sind als erster Orientierungsrahmen zu verstehen und müssen durch eine juristische Fachkraft geprüft werden. Am Ende jeder Analyse erscheint ein entsprechender Hinweis. Die Modelle sind nicht speziell auf den deutschen Rechtsrahmen trainiert. <strong>Die Qualität der Ausgabe kann sich daher von KI-Modell zu KI-Modell deutlich unterscheiden!</strong> 
+</div>
+
+<h3>Typische Anwendungsfälle</h3>
+<ul>
+  <li>Schnelle Orientierung in einem unbekannten Dokument</li>
+  <li>Strukturierte Extraktion von Parteien, Fristen und Forderungen</li>
+  <li>Vorbereitung auf ein Aktenstudium</li>
+  <li>Kurzfassung eines langen Urteils</li>
+</ul>
+</section>
+
+<!-- ── 2 ─────────────────────────────────────────────────────────── -->
+<section id="datenschutz">
+<h1>2&ensp;Datenschutz und lokale Ausführung</h1>
+
+<div class="callout ok">
+<strong>Das KI-Labor sendet keine Daten an externe Server.</strong><br>
+Alle Berechnungen finden ausschließlich auf Ihrem Rechner statt.
+</div>
+
+<p>Das Sprachmodell läuft vollständig lokal. Es besteht keine Verbindung zu Cloud-Diensten wie ChatGPT, Gemini oder anderen Online-KI-Angeboten.</p>
+
+<div class="card-grid">
+  <div class="card">
+    <h3>✓ Keine Weitergabe</h3>
+    <p>Vertrauliche Dokumente bleiben auf Ihrem Gerät. Keine Protokollierung durch externe Dienstleister.</p>
+  </div>
+  <div class="card">
+    <h3>✓ Offline-Betrieb</h3>
+    <p>Nach einmaligem Modell-Download ist keine Internetverbindung mehr erforderlich.</p>
+  </div>
+  <div class="card">
+    <h3>✓ Mandantenvertraulich</h3>
+    <p>Geeignet auch für personenbezogene oder mandantenvertrauliche Unterlagen.</p>
+  </div>
+  <div class="card">
+    <h3>✓ Quelloffen</h3>
+    <p>Ausschließlich quelloffene Komponenten und Modelle unter freien Lizenzen (Apache 2.0, MIT).</p>
+  </div>
+</div>
+
+<div class="callout warn">
+<strong>Einzige Ausnahme:</strong> Die KI-Modelle sind mehrere Gigabyte groß, daher nicht im Installationsprogramm bzw. AppImage enthalten und müssen daher vor der ersten Verwendung einmalig heruntergeladen werden.<br>Beim <strong>Download der Sprachmodelle</strong> wird Ihre IP-Adresse und eine generische Browserkennung für den Downloadserver sichtbar. Das Programm weist ausdrücklich darauf hin, bevor der Download startet. Wurden die Modelle auf ihrem Rechner installiert, laufen alle Berechnugnen - wie oben beschrieben - lokal auf ihrem PC bzw. Laptop. 
+</div>
+</section>
+
+<!-- ── 3 ─────────────────────────────────────────────────────────── -->
+<section id="voraussetzungen">
+<h1>3&ensp;Voraussetzungen und Modelle</h1>
+
+<p>Das KI-Labor benötigt mindestens <strong>eines der verfügbaren Sprachmodelle</strong> auf der Festplatte. Modelle werden einmalig aus dem Internet heruntergeladen (2–5 GB je Modell) und danach lokal gespeichert.</p>
+
+<p><strong>Eine dedizierte Grafikkarte (GPU) beschleunigt die Analyse erheblich</strong>, ist aber nicht zwingend erforderlich. Ohne GPU läuft die Analyse über den Prozessor – deutlich langsamer, aber funktional.</p>
+<p>Sofern einem Laptop oder PC der RAM-Speicher ausgeht, kann das KI-Labor abstürzen. In diesen Fällen kann der Umstieg auf ein "leichteres" KI-Modell Abhilfe schaffen. Gute Kandidaten bei Speicherplatzproblemen sind: SmolLM-3 Q4 und Phi-4-mini</p>
+</section>
+
+<!-- ── 4 ─────────────────────────────────────────────────────────── -->
+<section id="oberflaeche">
+<h1>4&ensp;Oberfläche im Überblick</h1>
+
+<div class="gui-mock">
+  <div class="titlebar">
+    <span class="dot red"></span><span class="dot yel"></span><span class="dot grn"></span>
+    <span class="title">KI-Labor (Dokumentanalyse)</span>
+  </div>
+
+  <!-- DOKUMENT -->
+  <div class="gui-group">
+    <span class="gui-group-title">Dokument</span>
+    <div class="gui-row">
+      <span class="gui-input" style="color:#999;">Keine Datei ausgewählt …</span>
+      <span class="gui-btn">Öffnen …</span>
+    </div>
+  </div>
+
+  <!-- EINSTELLUNGEN -->
+  <div class="gui-group">
+    <span class="gui-group-title">Einstellungen</span>
+    <div style="display:block; white-space:nowrap; overflow:hidden; text-align:center;">
+      <span class="gui-label">Modell:</span>&nbsp;<span class="gui-combo">Gemma-4 E2B Q5</span>&nbsp;<span class="gui-btn" style="padding:3px 7px;">ⓘ</span>&nbsp;<span class="gui-status-ok">✓ verfügbar</span>&emsp;&emsp;<span class="gui-label">OCR:</span>&nbsp;<span class="gui-combo">keine</span>&nbsp;<span class="gui-btn" style="padding:3px 7px;">ⓘ</span>&emsp;&emsp;<span class="gui-label">Prompt-Vorlage:</span>&nbsp;<span class="gui-combo">individuell</span>&emsp;&emsp;<span class="gui-label">Max. Ausgabe:</span>&nbsp;<span class="gui-combo">1536 Token</span>
+    </div>
+  </div>
+
+  <!-- PROMPT -->
+  <div class="gui-group">
+    <span class="gui-group-title">Prompt</span>
+    <span class="gui-textarea" style="min-height:36px; display:block; width:100%;">Fasse das folgende Dokument zusammen …</span>
+  </div>
+
+  <!-- FORTSCHRITT -->
+  <div class="gui-group">
+    <span class="gui-group-title">Fortschritt</span>
+    <span class="gui-textarea" style="min-height:36px; display:block; width:100%; color:#555;">Modell geladen (Grafikkarte). Verfügbarer Textraum: 8192 Wortteile. Analyse läuft …</span>
+  </div>
+
+  <!-- ZUSAMMENFASSUNG -->
+  <div class="gui-group">
+    <span class="gui-group-title">Zusammenfassung / Analyse</span>
+    <span class="gui-textarea" style="min-height:52px; display:block; width:100%;">Die Analyse erscheint hier Wort für Wort …</span>
+  </div>
+
+  <!-- BUTTON-LEISTE -->
+  <div class="gui-btnbar">
+    <span class="gui-btn primary">Analyse starten</span>
+    <span class="gui-btn disabled">Abbrechen</span>
+    <span class="spacer"></span>
+    <span class="gui-btn">Anleitung</span>
+    <span class="spacer"></span>
+    <span class="gui-btn">Löschen</span>
+  </div>
+</div>
+
+<p>Das Fenster gliedert sich von oben nach unten in sechs Bereiche: <strong>Dokument</strong> → <strong>Einstellungen</strong> → <strong>Prompt</strong> → <strong>Fortschritt</strong> → <strong>Zusammenfassung / Analyse</strong> → <strong>Schaltflächen</strong>.</p>
+</section>
+
+<!-- ── 5 ─────────────────────────────────────────────────────────── -->
+<section id="quickstart">
+<h1>5&ensp;Schnellstart – Erste Analyse</h1>
+
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Dokument auswählen.</strong> Klicken Sie auf <strong>„Öffnen …"</strong> und wählen Sie die Datei (PDF, DOCX oder TXT).</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Modell prüfen.</strong> <span class="badge green">✓ verfügbar</span> = einsatzbereit. <span class="badge red">✗ nicht gefunden</span> = Download erforderlich (→ Abschnitt 10).</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Vorlage wählen.</strong> Wählen Sie z. B. „Urteil" für ein Urteil oder „Vertrag" für einen Vertrag. Der Prompt wird automatisch geladen.</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Analyse starten.</strong> Klicken Sie auf <strong>„Analyse starten"</strong>. Im Fortschrittsbereich erscheinen Statusmeldungen; im Ergebnisfeld wird die Antwort Wort für Wort eingeblendet.</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Ergebnis prüfen.</strong> Nach Abschluss erscheint die Analyse im Ergebnisfeld, gefolgt von einem KI-Hinweis. Alle Angaben mit dem Originaldokument abgleichen.</div></div>
+</div>
+</section>
+
+<!-- ── 6 ─────────────────────────────────────────────────────────── -->
+<section id="bedienelemente">
+<h1>6&ensp;Alle Bedienelemente im Detail</h1>
+
+<h2 id="dok-bereich">6.1&ensp;Bereich „Dokument"</h2>
+
+<div class="card">
+  <h3>Dateipfad-Feld</h3>
+  <p>Zeigt den Pfad der ausgewählten Datei an. Das Feld ist nicht direkt editierbar. Unterstützte Formate: <strong>PDF, DOCX, TXT</strong>.</p>
+</div>
+<div class="card">
+  <h3>Schaltfläche „Öffnen …"</h3>
+  <p>Öffnet einen Dateiauswahldialog. Das Programm liest den Text automatisch aus, bereinigt Formatierungen und entfernt erkannte Duplikate (z. B. Kopfzeilen, die auf jeder Seite wiederholt werden).</p>
+</div>
+
+<h2 id="einstellungen">6.2&ensp;Bereich „Einstellungen"</h2>
+
+<div class="card">
+  <h3>Dropdown „Modell"</h3>
+  <p>Wählt das zu verwendende Sprachmodell. Neben dem Dropdown erscheint der Verfügbarkeitsstatus:</p>
+  <ul>
+    <li><span class="badge green">✓ verfügbar</span> – Modell ist auf der Festplatte vorhanden, sofort nutzbar.</li>
+    <li><span class="badge red">✗ nicht gefunden</span> – Modell muss heruntergeladen werden. Ein Klick auf „Analyse starten" öffnet automatisch den Download-Dialog.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>Schaltfläche „ⓘ" – Lizenzinformation</h3>
+  <p>Öffnet ein Fenster mit Lizenzinformationen zum aktuell gewählten Modell (Herausgeber, Quelle, Lizenzbedingungen). Dort befindet sich auch <strong>„Modell löschen"</strong> – nach Bestätigung wird das Modell von der Festplatte entfernt.</p>
+</div>
+
+<div class="card">
+  <h3>Dropdown „OCR"</h3>
+  <p>Steuert, ob eine KI-gestützte Texterkennung (OCR) für PDF-Dokumente eingesetzt wird. Die Option ist nur für PDFs wirksam – bei DOCX- oder TXT-Dateien hat sie keine Auswirkung.</p>
+  <table>
+    <tr><th>Wert</th><th>Bedeutung</th></tr>
+    <tr><td><strong>keine</strong></td><td>Standardverhalten: Der eingebettete Textlayer des PDFs wird direkt ausgelesen. Schnell und zuverlässig für normale PDFs.</td></tr>
+    <tr><td><strong>erzwungen</strong></td><td>Jede Seite wird als Bild gerendert und per OCR erkannt. Sinnvoll bei gescannten Dokumenten oder PDFs mit fehlendem bzw. beschädigtem Textlayer.</td></tr>
+  </table>
+  <h3>Wann ist OCR sinnvoll?</h3>
+  <ul>
+    <li><strong>Eingescannte Dokumente:</strong> PDFs, die aus einem Scan entstanden sind und keinen Textlayer enthalten.</li>
+    <li><strong>Kaputte Textlayer:</strong> PDFs, bei denen der extrahierte Text unleserlich, unvollständig oder nicht vorhanden ist.</li>
+  </ul>
+  <p>Bei normalen, textbasierten PDFs ist OCR nicht erforderlich und verlangsamt die Verarbeitung ohne Mehrwert.</p>
+  <div class="callout warn"><strong>Hinweis zur Verarbeitungszeit:</strong> OCR rendert jede Seite als Bild und analysiert sie mit einem neuronalen Netz. Je nach Dokumentlänge und Hardwareausstattung kann dies <strong>mehrere Minuten</strong> dauern. Der Fortschrittsbereich zeigt den aktuellen Seitenstatus und den verwendeten Inferenzprovider (CPU oder GPU).</div>
+</div>
+
+<div class="card">
+  <h3>Schaltfläche „ⓘ" (neben OCR-Dropdown)</h3>
+  <p>Öffnet ein Informationsfenster mit den Lizenzbedingungen der eingesetzten PaddleOCR-ONNX-Modelle (PP-OCRv5 Latin, Apache 2.0) sowie des Inferenz-Frameworks RapidOCR. Enthält klickbare Links zur Quelle und zum Lizenztext.</p>
+</div>
+
+<div class="card">
+  <h3>Dropdown „Prompt-Vorlage"</h3>
+  <p>Wählt eine vorgefertigte Analysevorlage (→ Abschnitt 7). Bei Auswahl wird der Prompt-Text automatisch ins Prompt-Feld geladen.</p>
+  <p>Der Eintrag <strong>„individuell"</strong>: Der Prompt im Textfeld gilt unverändert so, wie Sie ihn eingegeben haben.</p>
+</div>
+
+<div class="card">
+  <h3>Dropdown „Max. Ausgabe"</h3>
+  <p>Begrenzt die maximale Länge der Modellantwort. Ein Token ≈ ein halbes bis ganzes Wort.</p>
+  <table>
+    <tr><th>Wert</th><th>Entspricht etwa</th><th>Empfohlen für</th></tr>
+    <tr><td>1024 Token</td><td>~750 Wörter</td><td>Kurzfassung, einfache Abmahnung</td></tr>
+    <tr><td><strong>1536 Token</strong></td><td>~1.150 Wörter</td><td><strong>Standard – die meisten Dokumente</strong></td></tr>
+    <tr><td>2048 Token</td><td>~1.500 Wörter</td><td>Verträge, Bescheide</td></tr>
+    <tr><td>3072 Token</td><td>~2.300 Wörter</td><td>Umfangreiche Urteile</td></tr>
+    <tr><td>4092 Token</td><td>~3.000 Wörter</td><td>Sehr ausführliche Gutachten</td></tr>
+  </table>
+  <div class="callout warn">Ein höherer Wert verbraucht mehr des Kontextfensters und kann dazu führen, dass lange Dokumente früher in Abschnitte aufgeteilt werden (→ Abschnitt 11).</div>
+</div>
+
+<h2 id="prompt-bereich">6.3&ensp;Bereich „Prompt"</h2>
+
+<div class="card">
+  <h3>Prompt-Textfeld</h3>
+  <p>Enthält die Anweisung, die zusammen mit dem Dokumentinhalt an das Modell geschickt wird. Wird bei Auswahl einer Vorlage automatisch befüllt. Manuelles Bearbeiten wechselt das Dropdown automatisch auf „individuell".</p>
+  <p>Leer lassen → allgemeiner Zusammenfassungsauftrag.</p>
+</div>
+
+<div class="card">
+  <h3>Schaltfläche „Analyse starten"</h3>
+  <p>Startet den Analysevorgang. Falls das Modell noch nicht geladen ist, wird es jetzt in den Arbeitsspeicher geladen (beim ersten Start einige Sekunden). Falls nicht heruntergeladen: Download-Dialog erscheint.</p>
+</div>
+
+<div class="card">
+  <h3>Schaltfläche „Abbrechen"</h3>
+  <p>Bricht eine laufende Analyse ab. Die bis dahin generierte Ausgabe bleibt erhalten. Das Modell bleibt im Arbeitsspeicher, damit die nächste Analyse schneller startet.</p>
+</div>
+
+<h2 id="fortschritt">6.4&ensp;Bereich „Fortschritt"</h2>
+
+<p>Das Protokollfeld zeigt automatisch Statusmeldungen:</p>
+<ul>
+  <li><strong>Textaufbereitung:</strong> Zeichen- und Tokenanzahl des Dokuments</li>
+  <li><strong>Modell laden:</strong> Grafikkarten- oder Prozessorbetrieb</li>
+  <li><strong>Kontextfenster:</strong> Verfügbare Token für die Antwort</li>
+  <li><strong>Chunking:</strong> Ob das Dokument aufgeteilt wird (→ Abschnitt 11)</li>
+  <li><strong>Timing:</strong> Dauer und Wörter pro Sekunde</li>
+</ul>
+
+<h2 id="ergebnis">6.5&ensp;Bereich „Zusammenfassung / Analyse"</h2>
+
+<div class="card">
+  <h3>Ergebnisfeld</h3>
+  <p>Zeigt die Antwort des Modells, die während der Generierung Wort für Wort eingeblendet wird.</p>
+</div>
+<div class="card">
+  <h3>Schaltfläche „Löschen"</h3>
+  <p>Löscht Fortschrittsprotokoll und Ergebnisfeld. Geladenes Modell und Einstellungen bleiben unverändert.</p>
+</div>
+</section>
+
+<!-- ── 7 ─────────────────────────────────────────────────────────── -->
+<section id="analysestile">
+<h1>7&ensp;Analysestile – Vorlagen für jeden Dokumenttyp</h1>
+
+<p>Das KI-Labor enthält vorgefertigte Analysevorlagen für die gängigsten juristischen Dokumenttypen. Wählen Sie einfach die Vorlage, die am besten zum vorliegenden Dokument passt – das Programm stellt dann automatisch die passenden Fragen an das Modell und gibt die Ergebnisse in einer übersichtlichen Struktur aus.</p>
+<p>Die angebotenen Vorlagen können sich zwischen den Modellen unterscheiden, da die Modelle sehr unterschiedlich auf identische Anweisungen reagieren können.</p>
+
+<p>Jede Vorlage ist darauf ausgerichtet, die für den jeweiligen Dokumenttyp <strong>typischen Informationen vollständig zu erfassen</strong>: Beteiligte Personen und Stellen, Fristen, Forderungen, Rechtsgrundlagen und das wesentliche Ergebnis. Sie müssen nichts weiter tun, als die richtige Vorlage auszuwählen und diese ggf. an Ihre Bedürfnisse anzupassen.</p>
+
+
+<div class="callout">
+Wenn Sie sich nicht sicher sind, welche Vorlage passt, wählen Sie <strong>„Allgemein"</strong>. Diese Vorlage funktioniert für nahezu jeden Dokumenttyp und liefert eine solide Übersicht.
+</div>
+</section>
+
+<!-- ── 8 ─────────────────────────────────────────────────────────── -->
+<section id="eigene-prompts">
+<h1>8&ensp;Eigene Prompts verfassen</h1>
+
+<p>Wenn keine Vorlage passt, wählen Sie <strong>„individuell"</strong> und schreiben Sie Ihre Anweisung ins Prompt-Feld.</p>
+
+<h2>Was funktioniert gut</h2>
+
+<h4>Konkrete Fragen</h4>
+<div class="example good">Welche Zahlungsfristen werden in diesem Dokument genannt? Nenne nur Fristen mit konkretem Datum.</div>
+
+<h4>Aufzählungsaufträge</h4>
+<div class="example good">Liste alle im Dokument genannten Vertragsparteien mit ihrer Funktion auf.</div>
+
+<h4>Strukturvorgaben</h4>
+<div class="example good">Analysiere das Dokument in drei Abschnitten: 1. Parteien, 2. Kerninhalt, 3. Fristen.</div>
+
+<h4>Einschränkungen</h4>
+<div class="example good">Nenne nur Informationen, die ausdrücklich im Text stehen. Ergänze nichts.</div>
+
+<h2>Was Probleme verursacht</h2>
+
+<h4>Widersprüchliche Anweisungen</h4>
+<div class="example bad">Fasse kurz zusammen und erkläre ausführlich alle Details.</div>
+<p>„Kurz" und „ausführlich alle Details" widersprechen sich. Das Modell wählt einen Kompromiss, der keiner der Anforderungen gerecht wird. Besser: <em>„Fasse in maximal fünf Sätzen zusammen"</em> oder <em>„Erkläre alle Details vollständig."</em></p>
+
+<h4>Zu viele Aufgaben auf einmal</h4>
+<div class="example bad">Fasse zusammen, übersetze ins Englische, prüfe auf Fehler und erkläre die Rechtsgrundlagen.</div>
+<p>Mehrere komplexe Aufgaben überfordern kleine Modelle. Teilen Sie solche Anfragen in separate Analysen auf.</p>
+
+<h4>Hypothetische Fragen (Halluzinations-Falle)</h4>
+<div class="example bad">Was könnte der Kläger noch argumentiert haben?</div>
+<p>Solche Fragen veranlassen das Modell, plausibel klingende, aber möglicherweise falsche Inhalte zu erfinden. Besser: <em>„Welche Argumente hat der Kläger laut Dokument tatsächlich vorgebracht?"</em></p>
+
+<h4>Prompts ohne klaren Auftrag</h4>
+<div class="example bad">Was denkst du über dieses Dokument?</div>
+<p>Das Modell hat keine eigene Meinung. Formulieren Sie eine konkrete Extraktions- oder Analyseanweisung.</p>
+
+<h4>Fremdsprachige Anweisungen bei deutschen Dokumenten</h4>
+<div class="example bad">Please summarize this document in English.</div>
+<p>Die Qualität bei Mischanfragen (deutsches Dokument, englische Anweisung) ist unzuverlässig. Die Modelle sind im Systemprompt fest für deutschsprachige Ausgabe konfiguriert.</p>
+
+<h2>Empfehlungen auf einen Blick</h2>
+<ul>
+  <li>Beginnen Sie mit einem <strong>Verb</strong>: „Analysiere …", „Liste auf …", „Fasse zusammen …", „Nenne …"</li>
+  <li>Geben Sie die <strong>gewünschte Ausgabestruktur</strong> vor (Absätze, Stichpunkte)</li>
+  <li>Schreiben Sie explizit, <strong>was nicht gewünscht wird</strong>: „Keine Einleitung. Kein Fazit."</li>
+  <li>Begrenzen Sie die Ausgabe durch Satzanzahl oder Stichpunktzahl: „Maximal fünf Stichpunkte."</li>
+  <li>Nennen Sie wichtige <strong>Fachbegriffe wörtlich</strong>, wenn das Modell sie übernehmen soll</li>
+</ul>
+</section>
+
+<!-- ── 9 ─────────────────────────────────────────────────────────── -->
+<section id="modelle">
+<h1>9&ensp;Modelle – Unterschiede und Empfehlungen</h1>
+
+<p>Alle Modelle sind für deutschsprachige Texte geeignet, unterscheiden sich aber in Stärken und Ressourcenbedarf. Die Modelle sind nicht speziell auf juristisches Fachwissen oder den deutschen Rechtsrahmen trainiert. Daher sind Fehler bei komplexeren juristischen Themenstellungen möglich (und wahrscheinlich).</p>
+
+<div class="card">
+  <h3>Gemma-4 E2B Q5 <span class="badge green">Empfohlen als Einstieg</span></h3>
+  <p><strong>Herausgeber:</strong> Google &ensp;|&ensp; <strong>Aktive Parameter:</strong> 2 Mrd. (sparsame Mehrfachexperten-Architektur)<br>
+  <strong>Stärken:</strong> Schnell, geringer Grafikspeicherbedarf, gute strukturierte Extraktion<br>
+  <strong>Empfohlen für:</strong> Routineanalysen, Kurzfassungen, schnelle Orientierung</p>
+</div>
+
+<div class="card">
+  <h3>Gemma-4 E4B Q4 <span class="badge green">🧑‍🎓 Hohe Genauigkeit</span></h3>
+  <p><strong>Herausgeber:</strong> Google &ensp;|&ensp; <strong>Aktive Parameter:</strong> 4 Mrd.<br>
+  <strong>Stärken:</strong> Höhere Ausgabequalität, bessere Nuancierung<br>
+  <strong>Empfohlen für:</strong> Komplexere Dokumente, Gutachten, lange Urteilsbegründungen</p>
+</div>
+
+<div class="card">
+  <h3>SmolLM-3 Q4 / Q5</h3>
+  <p><strong>Herausgeber:</strong> Hugging Face &ensp;|&ensp; <strong>Parameter:</strong> 3 Mrd.<br>
+  <strong>Stärken:</strong> Kompakt, energieeffizient; Q5 = etwas bessere Qualität<br>
+  <strong>Empfohlen für:</strong> Einfachere Dokumente auf schwächerer Hardware</p>
+</div>
+
+<div class="card">
+  <h3>Ministral-3</h3>
+  <p><strong>Herausgeber:</strong> Mistral AI &ensp;|&ensp; <strong>Parameter:</strong> 3 Mrd.<br>
+  <strong>Stärken:</strong> Präzise Extraktion, gute Strukturtreue<br>
+  <strong>Empfohlen für:</strong> Dokumente mit klaren Strukturen (Bescheide, Verträge)</p>
+</div>
+
+<div class="card">
+  <h3>Qwen3.5-4B</h3>
+  <p><strong>Herausgeber:</strong> Alibaba / Qwen Team &ensp;|&ensp; <strong>Parameter:</strong> 4 Mrd.<br>
+  <strong>Stärken:</strong> Gutes Sprachverständnis, solide Zusammenfassungen<br>
+  <strong>Empfohlen für:</strong> Allgemeine Dokumente, wenn mehr Ausdrucksstärke gefragt ist</p>
+</div>
+
+<div class="card">
+  <h3>Phi-4-mini</h3>
+  <p><strong>Herausgeber:</strong> Microsoft &ensp;|&ensp; <strong>Parameter:</strong> ~3,8 Mrd.<br>
+  <strong>Stärken:</strong> Stark in logisch-strukturierten Aufgaben<br>
+  <strong>Empfohlen für:</strong> Analytische Prompts mit klarer Argumentationsstruktur</p>
+</div>
+
+<div class="card">
+  <h3>DeepSeek-R1-8B <span class="badge blue">Reasoning-Modell</span> <span class="badge red">Hohe Hardwareanforderung</span></h3>
+  <p><strong>Herausgeber:</strong> DeepSeek AI &ensp;|&ensp; <strong>Parameter:</strong> 8 Mrd. (Basis: Qwen3-8B)<br>
+  <strong>Stärken:</strong> Reasoning-Modell mit integriertem Chain-of-Thought; denkt das Problem vor der Antwort durch, was die Extraktion komplexer Zusammenhänge verbessert<br>
+  <strong>Empfohlen für:</strong> Vielschichtige Urteile, Gutachten mit komplexen Kausalzusammenhängen, Dokumente mit mehreren Beteiligten und Rechtsfragen<br>
+  <strong>Hinweis:</strong> Das Modell erzeugt vor der eigentlichen Antwort einen (ausgefilterten) Denkblock (<em>&lt;think&gt;…&lt;/think&gt;</em>), der Output-Token verbraucht. Für optimale Ergebnisse empfiehlt sich eine höhere Einstellung unter <strong>„Max. Ausgabe"</strong> (2048 Token oder mehr).</p>
+</div>
+
+<div class="card">
+  <h3>Mistral-Nemo-12B <span class="badge green">🧑‍🎓 Höchste Genauigkeit</span> <span class="badge red">Hohe Hardwareanforderung</span></h3>
+  <p><strong>Herausgeber:</strong> Mistral AI &ensp;|&ensp; <strong>Parameter:</strong> 12 Mrd.<br>
+  <strong>Stärken:</strong> Höchste Ausgabequalität in der Auswahl, sehr gutes Sprachverständnis, starke Strukturtreue und präzise Extraktion auch bei komplexen Dokumenten<br>
+  <strong>Empfohlen für:</strong> Anspruchsvolle Gutachten, lange Urteilsbegründungen und Dokumente mit hoher juristischer Komplexität<br>
+  <strong>Hinweis:</strong> Größtes Modell (~7,6 GB); benötigt ausreichend Arbeitsspeicher. Auf schwächerer Hardware deutlich langsamer als die kleineren Modelle.</p>
+</div>
+
+<div class="callout">Beginnen Sie mit <strong>Gemma-4 E2B Q5</strong>. Wechseln Sie zu einem anderen Modell, wenn die Ausgabequalität für Ihre Anforderungen nicht ausreicht. Die Qualität der Gemma‑Modelle ist im Allgemeinen hervorragend, jedoch haben alle Modelle ihre Stärken und Schwächen.</div>
+</section>
+
+<!-- ── 10 ────────────────────────────────────────────────────────── -->
+<section id="download">
+<h1>10&ensp;Modell herunterladen</h1>
+
+<p>Wenn ein Modell noch nicht auf der Festplatte liegt, öffnet sich beim Klick auf „Analyse starten" automatisch der Download-Dialog.</p>
+
+<div class="callout warn">
+<strong>Datenschutzhinweis:</strong> Durch den Download wird Ihre IP-Adresse und ggf. weitere Metadaten (Zeitstempel) für den Downloadserver (Hugging Face) sichtbar. Das Programm weist ausdrücklich darauf hin.
+</div>
+
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-body">Lesen Sie den Datenschutzhinweis im Dialog.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Klicken Sie auf <strong>„Download starten"</strong>, wenn Sie einverstanden sind.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">Der Download läuft im Hintergrund. Fortschritt wird in MB angezeigt.</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body">Nach Abschluss schließt sich der Dialog automatisch und die Analyse startet.</div></div>
+</div>
+
+<ul>
+  <li><strong>Abbrechen:</strong> Download stoppen – die unvollständige Datei wird automatisch gelöscht.</li>
+  <li><strong>Zielordner:</strong> Wird im Dialog angezeigt. Anpassung über die Umgebungsvariable <code>OPENXJVMODELPATH</code>.</li>
+  <li><strong>Modell löschen:</strong> Über <strong>„ⓘ"</strong> → <strong>„Modell löschen"</strong> (nach Bestätigung).</li>
+</ul>
+</section>
+
+<!-- ── 11 ────────────────────────────────────────────────────────── -->
+<section id="chunking">
+<h1>11&ensp;Lange Dokumente und Chunking</h1>
+
+<p>Sprachmodelle können nur eine begrenzte Textmenge gleichzeitig verarbeiten (<strong>Kontextfenster</strong>). Das KI-Labor berechnet vor jeder Analyse, ob das Dokument hineinpasst.</p>
+
+<p><strong>Wenn das Dokument zu lang ist:</strong> Der Text wird automatisch in <strong>Abschnitte (Chunks)</strong> aufgeteilt, jeder Abschnitt separat analysiert und die Einzelergebnisse anschließend zusammengefasst (Konsolidierungspass).</p>
+
+<p>Im Fortschrittsprotokoll erscheint dann:</p>
+<div class="example">Text überschreitet Kontextfenster — Chunking wird angewendet.
+Dokument in 3 Abschnitte aufgeteilt.
+Abschnitt 1/3 …
+Konsolidierungspass: 1.240 Token aus 3 Abschnittsanalysen.</div>
+
+<div class="callout warn">
+Bei Chunking kann das Modell inhaltliche Zusammenhänge zwischen Abschnitten schlechter erkennen. Querverweise über Abschnittsgrenzen hinweg werden möglicherweise nicht korrekt verknüpft. Für sehr lange Urteile empfiehlt es sich, gezielt einzelne Abschnitte zu analysieren.
+</div>
+</section>
+
+<!-- ── 12 ────────────────────────────────────────────────────────── -->
+<section id="fehler">
+<h1>12&ensp;Häufige Fehler und was sie bedeuten</h1>
+
+<div class="card">
+  <h3><span class="badge red">✗ nicht gefunden</span> neben dem Modellnamen</h3>
+  <p>Das Modell ist noch nicht heruntergeladen. Starten Sie die Analyse, um den Download-Dialog zu öffnen.</p>
+</div>
+
+<div class="card">
+  <h3>Analyse startet, Ergebnisfeld bleibt leer</h3>
+  <p>Prüfen Sie das Fortschrittsprotokoll. Mögliche Ursachen: gescanntes PDF ohne Texterkennung (kein lesbarer Text hinterlegt), beschädigte Datei, oder unzureichender Arbeitsspeicher.</p>
+</div>
+
+<div class="card">
+  <h3>Analyse dauert sehr lange</h3>
+  <p>Ohne GPU läuft das Modell über den Prozessor – je nach Dokumentlänge mehrere Minuten. Mit Grafikkarte ist die Analyse deutlich schneller.</p>
+</div>
+
+<div class="card">
+  <h3>Ausgabe bricht mitten im Satz ab</h3>
+  <p>Die Ausgabe hat die eingestellte maximale Ausgabelänge erreicht. Erhöhen Sie den Wert unter <strong>„Max. Ausgabe"</strong>.</p>
+</div>
+
+<div class="card">
+  <h3>Ausgabe enthält Informationen, die nicht im Dokument stehen</h3>
+  <p>Das nennt sich <strong>Halluzination</strong>. Prüfen Sie alle Angaben (Namen, Daten, Paragraphen, Beträge) anhand des Originaldokuments. Die Prompt-Vorlagen sind so formuliert, dass sie Halluzinationen reduzieren, aber nicht vollständig ausschließen können.</p>
+</div>
+
+<div class="card">
+  <h3>Programm stürzt ab oder friert ein</h3>
+  <p>Möglicherweise reicht der Arbeitsspeicher oder Grafikspeicher nicht aus. Versuchen Sie ein kleineres Modell (Phi 4 mini) oder reduzieren Sie die maximale Ausgabelänge.</p>
+</div>
+
+<div class="card">
+  <h3>Die Ausgabe wiederholt sich ständig</h3>
+  <p>
+    <ul>
+      <li>Passen Sie den Prompt an und geben Sie klare Stop-Anweisungen (Beispiel: Stop nach Absatz "Zusammenfassung")</li>
+      <li>Reduzieren Sie die maximale Ausgabelänge (Max. Ausgabe)</li>
+      <li>Wenn Sie dem Modell widersprüchliche Anweisungen geben, ist es ggf. "verwirrt" (Beispiel: Berichte vollständig und lasse unwichtige Informationen weg)</li>
+    </ul>
+  </p>
+</div>
+
+<div class="card">
+  <h3>Eine Aufforderung zur Übersetzung liefert weiterhin deutschsprachigen Text</h3>
+  <p>Die Ausgabesprache der Modelle ist im Systemprompt auf Deutsch festgelegt. Außerdem wurde die „Kreativität“ der Modelle stark eingeschränkt, damit sie sich inhaltlich nicht von der Quelle entfernen. Übersetzungen benötigen jedoch ein gewisses Maß an Flexibilität, das diese kleinen Modelle ohne einen gewissen Informationsverlust nicht bieten können.</p>
+</div>
+</section>
+
+<!-- ── 13 ────────────────────────────────────────────────────────── -->
+<section id="grenzen">
+<h1>13&ensp;Grenzen der KI – was sie nicht kann</h1>
+
+<div class="callout danger">
+Das KI-Labor ist ein <strong>Hilfswerkzeug in einem experimentellen Stadium</strong>, kein Ersatz für juristische Fachkompetenz. Die inhaltliche Verantwortung liegt stets beim bearbeitenden Juristen.
+</div>
+
+<ul>
+  <li><strong>Rechtliche Beurteilung:</strong> Das Modell extrahiert und strukturiert Informationen, bewertet aber keine Rechtslage, keine Erfolgsaussichten und keine Haftungsrisiken.</li>
+  <li><strong>Lückenfüllung:</strong> Was im Dokument nicht steht, erfindet das Modell im besten Fall gar nicht – im schlechtesten Fall erfindet es plausible, aber falsche Details.</li>
+  <li><strong>Aktualität:</strong> Die Modelle haben einen Wissensstand bis zu ihrem Trainingsabschluss. Spätere Gesetzesänderungen sind ihnen unbekannt.</li>
+  <li><strong>Verlässlichkeit bei Zahlen und Daten:</strong> Beträge, Fristen und Paragraphen müssen immer mit dem Originaldokument abgeglichen werden.</li>
+  <li><strong>Schlechte Textqualität führt zu schlechten Ergebnissen:</strong> Die Modelle sind ausdrücklich angewiesen, sich an den vorliegenden Text zu halten und keine Inhalte hinzuzuerfinden. Enthält das Dokument aber unlesbaren oder fehlerhaften Text – etwa weil die automatische Texterkennung bei einem eingescannten Dokument Fehler gemacht hat – dann arbeitet die KI zwangsläufig mit diesem fehlerhaften Ausgangsmaterial. Das Ergebnis ist dann entsprechend unzuverlässig. Prüfen Sie bei auffälligen Ausgaben zunächst, ob der Dokumenttext selbst korrekt eingelesen wurde.</li>
+  <li><strong>Eingescannte Dokumente ohne Texterkennung:</strong> Reine Bilddateien, bei denen kein Text hinterlegt ist (erkennbar daran, dass sich im Dokument kein Text markieren lässt), können nicht analysiert werden. Das Dokument muss zunächst mit einer Texterkennungssoftware aufbereitet werden.</li>
+</ul>
+</section>
+
+<!-- ── LIZENZEN ──────────────────────────────────────────────────── -->
+<section id="lizenzen">
+<h1>Anhang: Lizenzen der eingesetzten Modelle</h1>
+
+<p>Alle Sprachmodelle stehen unter <strong>freien quelloffenen Lizenzen</strong> (Apache 2.0, MIT). Sie können die Modelle kostenlos nutzen, weitergeben und kommerziell einsetzen (unter Beachtung der jeweiligen Bedingungen).</p>
+
+<div class="lic-card">
+  <h3>Gemma-4 E2B – Gemma-4-E2B-it-Q5_K_M.gguf</h3>
+  <table>
+    <tr><td>Herausgeber</td><td>Google LLC</td></tr>
+    <tr><td>Lizenz</td><td>Apache License 2.0 + Gemma Terms of Use</td></tr>
+    <tr><td>SPDX</td><td>Apache-2.0</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://ai.google.dev/gemma/apache_2">https://ai.google.dev/gemma/apache_2</a></td></tr>
+    <tr><td>Terms of Use</td><td><a href="https://ai.google.dev/gemma/terms">https://ai.google.dev/gemma/terms</a></td></tr>
+  </table>
+  <p class="lic-meta">Kommerzielle Nutzung erlaubt · Weitergabe mit Copyright-Hinweis · Abgeleitete Modelle als „Gemma"-basiert kennzeichnen · Keine Nutzung zur Gesetzesverletzung oder Schädigung von Personen · Copyright © Google LLC</p>
+</div>
+
+<div class="lic-card">
+  <h3>Gemma-4 E4B – Gemma-4-E4B-it-Q4_K_M.gguf</h3>
+  <table>
+    <tr><td>Herausgeber</td><td>Google LLC</td></tr>
+    <tr><td>Lizenz</td><td>Apache License 2.0 + Gemma Terms of Use</td></tr>
+    <tr><td>SPDX</td><td>Apache-2.0</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://ai.google.dev/gemma/apache_2">https://ai.google.dev/gemma/apache_2</a></td></tr>
+    <tr><td>Terms of Use</td><td><a href="https://ai.google.dev/gemma/terms">https://ai.google.dev/gemma/terms</a></td></tr>
+  </table>
+  <p class="lic-meta">Lizenzbedingungen identisch mit Gemma-4 E2B · Copyright © Google LLC</p>
+</div>
+
+<div class="lic-card">
+  <h3>SmolLM-3 – SmolLM3-3B-Q4_K_M.gguf / Q5_K_M.gguf</h3>
+  <table>
+    <tr><td>Herausgeber</td><td>Hugging Face TB (HuggingFaceTB)</td></tr>
+    <tr><td>Lizenz</td><td>Apache License 2.0</td></tr>
+    <tr><td>SPDX</td><td>Apache-2.0</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://www.apache.org/licenses/LICENSE-2.0">https://www.apache.org/licenses/LICENSE-2.0</a></td></tr>
+  </table>
+  <p class="lic-meta">Kommerzielle Nutzung erlaubt · Weitergabe mit Copyright-Hinweis · Änderungen kennzeichnen · Copyright © Hugging Face TB</p>
+</div>
+
+<div class="lic-card">
+  <h3>Ministral-3 – Ministral-3-3B-Instruct-2512-Q4_K_M.gguf</h3>
+  <table>
+    <tr><td>Herausgeber</td><td>Mistral AI</td></tr>
+    <tr><td>Lizenz</td><td>Apache License 2.0</td></tr>
+    <tr><td>SPDX</td><td>Apache-2.0</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://www.apache.org/licenses/LICENSE-2.0.txt">https://www.apache.org/licenses/LICENSE-2.0.txt</a></td></tr>
+  </table>
+  <p class="lic-meta">Kommerzielle Nutzung erlaubt · Weitergabe mit Copyright-Hinweis und Änderungskennzeichnung · Copyright © Mistral AI</p>
+</div>
+
+<div class="lic-card">
+  <h3>Qwen3.5-4B – Qwen3.5-4B-Q4_K_M.gguf</h3>
+  <table>
+    <tr><td>Herausgeber</td><td>Alibaba Group / Qwen Team</td></tr>
+    <tr><td>Lizenz</td><td>Apache License 2.0</td></tr>
+    <tr><td>SPDX</td><td>Apache-2.0</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://huggingface.co/Qwen/Qwen3.5-4B/blob/main/LICENSE">https://huggingface.co/Qwen/Qwen3.5-4B/blob/main/LICENSE</a></td></tr>
+  </table>
+  <p class="lic-meta">Kommerzielle Nutzung erlaubt · Weitergabe mit Copyright-Hinweis und Änderungskennzeichnung · Copyright © Alibaba Group / Qwen Team</p>
+</div>
+
+<div class="lic-card">
+  <h3>Phi-4-mini – Phi-4-mini-instruct-Q4_K_M.gguf</h3>
+  <table>
+    <tr><td>Herausgeber</td><td>Microsoft Corporation</td></tr>
+    <tr><td>Lizenz</td><td>MIT License</td></tr>
+    <tr><td>SPDX</td><td>MIT</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://huggingface.co/microsoft/Phi-4-mini-instruct/blob/main/LICENSE">https://huggingface.co/microsoft/Phi-4-mini-instruct/blob/main/LICENSE</a></td></tr>
+  </table>
+  <p class="lic-meta">Kommerzielle Nutzung erlaubt · Weitergabe mit Copyright-Hinweis · Keine Patentklausel (MIT) · Copyright © Microsoft Corporation</p>
+</div>
+
+<div class="lic-card">
+  <h3>DeepSeek-R1-8B – DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf</h3>
+  <table>
+    <tr><td>Herausgeber</td><td>DeepSeek AI</td></tr>
+    <tr><td>Basis</td><td>Qwen3-8B (Alibaba / Qwen Team)</td></tr>
+    <tr><td>Lizenz</td><td>MIT License</td></tr>
+    <tr><td>SPDX</td><td>MIT</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-0528-Qwen3-8B/blob/main/LICENSE">https://huggingface.co/deepseek-ai/DeepSeek-R1-0528-Qwen3-8B/blob/main/LICENSE</a></td></tr>
+    <tr><td>Quelle</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-0528-Qwen3-8B">https://huggingface.co/deepseek-ai/DeepSeek-R1-0528-Qwen3-8B</a></td></tr>
+    <tr><td>GGUF</td><td><a href="https://huggingface.co/unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF">https://huggingface.co/unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF</a></td></tr>
+  </table>
+  <p class="lic-meta">Kommerzielle Nutzung erlaubt · Weitergabe mit Copyright-Hinweis · Destillation abgeleiteter Modelle erlaubt · Keine Garantie; keine Haftung · Copyright © DeepSeek AI</p>
+</div>
+
+<div class="lic-card">
+  <h3>Mistral-Nemo-12B – Mistral-Nemo-Instruct-2407.Q4_K_M.gguf</h3>
+  <table>
+    <tr><td>Herausgeber</td><td>Mistral AI</td></tr>
+    <tr><td>Lizenz</td><td>Apache License 2.0</td></tr>
+    <tr><td>SPDX</td><td>Apache-2.0</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://www.apache.org/licenses/LICENSE-2.0.txt">https://www.apache.org/licenses/LICENSE-2.0.txt</a></td></tr>
+    <tr><td>Quelle</td><td><a href="https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407">https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407</a></td></tr>
+    <tr><td>GGUF</td><td><a href="https://huggingface.co/mradermacher/Mistral-Nemo-Instruct-2407-GGUF">https://huggingface.co/mradermacher/Mistral-Nemo-Instruct-2407-GGUF</a></td></tr>
+  </table>
+  <p class="lic-meta">Kommerzielle Nutzung erlaubt · Weitergabe mit Copyright-Hinweis und Änderungskennzeichnung · Ausdrückliche Patentlizenz · Copyright © Mistral AI</p>
+</div>
+
+<div class="lic-card">
+  <h3>PaddleOCR PP-OCRv5 – OCR-Modelle (Latin)</h3>
+  <table>
+    <tr><td>Modelle</td><td>ch_PP-OCRv5_mobile_det.onnx · latin_PP-OCRv5_rec_mobile_infer.onnx · cls_infer.onnx</td></tr>
+    <tr><td>Herausgeber</td><td>PaddlePaddle Authors / Baidu Inc.</td></tr>
+    <tr><td>ONNX-Konvertierung</td><td>RapidAI Community</td></tr>
+    <tr><td>Lizenz</td><td>Apache License 2.0</td></tr>
+    <tr><td>SPDX</td><td>Apache-2.0</td></tr>
+    <tr><td>Lizenztext</td><td><a href="https://www.apache.org/licenses/LICENSE-2.0">https://www.apache.org/licenses/LICENSE-2.0</a></td></tr>
+    <tr><td>Quelle</td><td><a href="https://github.com/PaddlePaddle/PaddleOCR">https://github.com/PaddlePaddle/PaddleOCR</a></td></tr>
+    <tr><td>Modell-Hub</td><td><a href="https://www.modelscope.cn/models/RapidAI/RapidOCR">https://www.modelscope.cn/models/RapidAI/RapidOCR</a></td></tr>
+    <tr><td>Inferenz-Framework</td><td>RapidOCR (<a href="https://github.com/RapidAI/RapidOCR">https://github.com/RapidAI/RapidOCR</a>) · Apache 2.0</td></tr>
+  </table>
+  <p class="lic-meta">Kommerzielle Nutzung erlaubt · Weitergabe mit Copyright-Hinweis · Änderungen als solche kennzeichnen · Ausdrückliche Patentlizenz · Keine Markennutzung ohne Genehmigung · Copyright © PaddlePaddle Authors / Baidu Inc.</p>
+</div>
+
+<p style="margin-top:24px; color: var(--muted); font-size:9pt;">
+Diese Anleitung bezieht sich auf das KI-Labor als Bestandteil von openXJV. Alle genannten Modelle werden von ihren jeweiligen Herausgebern unabhängig gepflegt. Aktuelle Lizenzinformationen finden Sie stets auf den verlinkten Quellseiten.
+</p>
+</section>
+
+</main>
+
+<script>
+// Aktiven Navlink beim Scrollen hervorheben
+(function() {
+  const links = document.querySelectorAll('#sidebar a[href^="#"]');
+  const sections = [];
+  links.forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ el, a });
+  });
+
+  function onScroll() {
+    let current = sections[0];
+    for (const s of sections) {
+      if (s.el.getBoundingClientRect().top <= 40) current = s;
+    }
+    links.forEach(a => a.classList.remove('active'));
+    if (current) current.a.classList.add('active');
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>

@@ -12,9 +12,29 @@ License: GPL-3.0-or-later
 
 import os
 import sqlite3
+import sys
 import time
+import traceback
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Tuple
+
+
+@dataclass(frozen=True)
+class FavoriteEntry:
+    """Repräsentiert einen Favoriten-Eintrag mit Dateiname und Anzeigename.
+
+    frozen=True macht die Klasse hashbar, sodass sie in Sets und als Dict-Key
+    verwendet werden kann.
+
+    Attribute:
+        filename:    Dateiname auf der Festplatte (Schlüssel für Dateizugriff).
+        anzeigename: Anzeigename zum Zeitpunkt der Favoriten-Auswahl.
+                     Leerer String '' kennzeichnet einen Legacy-Eintrag
+                     (vor Version 1.0), der nur per Dateiname abgeglichen wird.
+    """
+    filename: str
+    anzeigename: str = ''
 
 
 class DatabaseManager:
@@ -95,13 +115,23 @@ class DatabaseManager:
                 )
             ''')
 
+            # TODO (Version 1.5+): Migration entfernen, sobald keine Datenbanken
+            # ohne anzeigename-Spalte mehr im Umlauf sind. Die gesamte
+            # try/except-Block kann dann entfernt werden.
+            try:
+                db_cursor.execute(
+                    "ALTER TABLE favorites ADD COLUMN anzeigename TEXT NOT NULL DEFAULT ''"
+                )
+            except sqlite3.OperationalError:
+                pass  # Spalte existiert bereits – kein Handlungsbedarf
+
             db_connection.commit()
 
     def load_favorites(
         self,
         uuid: str,
         legacy_data_dir: Optional[str | Path] = None
-    ) -> List[str]:
+    ) -> List[FavoriteEntry]:
         """Lädt Favoriten aus der Datenbank für eine gegebene UUID.
 
         Diese Methode unterstützt Migration von veralteter dateibasierter Speicherung (pre-v0.8.0).
@@ -114,38 +144,38 @@ class DatabaseManager:
                 Falls angegeben, wird nach veralteten Favoriten gesucht und diese migriert.
 
         Returns:
-            Eine Liste von Dateinamen, die als Favoriten markiert sind, in ihrer gespeicherten Reihenfolge.
+            Eine Liste von FavoriteEntry-Objekten in ihrer gespeicherten Reihenfolge.
+            Einträge mit anzeigename='' stammen aus einem älteren Format und werden
+            per Dateiname-only-Abgleich behandelt.
             Gibt eine leere Liste zurück, falls keine Favoriten gefunden werden oder uuid None/leer ist.
 
         Beispiel:
             >>> db = DatabaseManager("/path/to/db.db")
             >>> favorites = db.load_favorites("abc-123-def", "/path/to/legacy/data")
             >>> print(favorites)
-            ['document1.pdf', 'document2.pdf']
+            [FavoriteEntry(filename='document1.pdf', anzeigename='Klageschrift'), ...]
 
         Raises:
             sqlite3.Error: Falls Datenbankabfrage fehlschlägt.
         """
-        favorites: List[str] = []
+        favorites: List[FavoriteEntry] = []
 
         if not uuid:
             return favorites
 
-        # Prüft auf veraltete Favoriten-Datei (pre-version 0.8.0)
+        # TODO (Version 1.5+): Gesamten Legacy-Datei-Migrations-Block entfernen,
+        # sobald keine pre-v0.8.0-Installationen mehr unterstützt werden müssen.
+        # Alle daraus resultierenden FavoriteEntry-Objekte haben anzeigename=''.
         if legacy_data_dir:
             legacy_data_dir = Path(legacy_data_dir) if isinstance(legacy_data_dir, str) else legacy_data_dir
             legacy_filepath = legacy_data_dir / uuid
 
             if legacy_filepath.exists():
-                # Lädt Favoriten aus veralteter Datei
                 with open(legacy_filepath, 'r', encoding='utf-8') as favorite_file:
                     for filename in favorite_file.readlines():
-                        favorites.append(filename.rstrip("\n"))
+                        favorites.append(FavoriteEntry(filename=filename.rstrip("\n"), anzeigename=''))
 
-                # Speichert in Datenbank
                 self.save_favorites(uuid, favorites)
-
-                # Löscht veraltete Datei nach erfolgreicher Migration
                 os.remove(legacy_filepath)
                 return favorites
 
@@ -153,18 +183,36 @@ class DatabaseManager:
         with sqlite3.connect(self.db_path) as db_connection:
             db_cursor = db_connection.cursor()
 
-            db_query = '''
-                SELECT filename, position FROM favorites WHERE uuid = ? ORDER BY position ASC;
-            '''
-            db_cursor.execute(db_query, (uuid,))
-            rows = db_cursor.fetchall()
+            try:
+                db_query = '''
+                    SELECT filename, anzeigename, position FROM favorites WHERE uuid = ? ORDER BY position ASC;
+                '''
+                db_cursor.execute(db_query, (uuid,))
+                rows = db_cursor.fetchall()
 
-            for row in rows:
-                favorites.append(row[0])
+                for row in rows:
+                    # TODO (Version 1.5+): Den `or ''`-Fallback entfernen, sobald keine
+                    # Datenbanken mit NULL-Werten in anzeigename mehr existieren können.
+                    # FavoriteEntry mit anzeigename='' wird als Legacy-Eintrag behandelt.
+                    favorites.append(FavoriteEntry(filename=row[0], anzeigename=row[1] or ''))
+
+            except sqlite3.OperationalError as e:
+                # TODO (Version 1.5+): Diesen except-Zweig entfernen, sobald keine
+                # Datenbanken ohne anzeigename-Spalte mehr im Umlauf sind.
+                # Tritt auf, wenn ALTER TABLE in create_database() fehlschlug.
+                self.lastExceptionString = str(e)
+                if '--debug' in sys.argv:
+                    print(f'DEBUG database.load_favorites: Fallback auf Legacy-SELECT (fehlende Spalte anzeigename): {traceback.format_exc()}', file=sys.stderr)
+                db_query = '''
+                    SELECT filename, position FROM favorites WHERE uuid = ? ORDER BY position ASC;
+                '''
+                db_cursor.execute(db_query, (uuid,))
+                for row in db_cursor.fetchall():
+                    favorites.append(FavoriteEntry(filename=row[0], anzeigename=''))
 
         return favorites
 
-    def save_favorites(self, uuid: str, favorites: List[str]) -> None:
+    def save_favorites(self, uuid: str, favorites: List[FavoriteEntry]) -> None:
         """Speichert Favoriten in der Datenbank für eine gegebene UUID.
 
         Diese Methode ersetzt alle existierenden Favoriten für die UUID mit der neuen Liste.
@@ -172,7 +220,8 @@ class DatabaseManager:
 
         Args:
             uuid: Der eindeutige Bezeichner für das Dokument/den Fall.
-            favorites: Liste von Dateinamen, die als Favoriten gespeichert werden sollen. Reihenfolge wird beibehalten.
+            favorites: Liste von FavoriteEntry-Objekten. Reihenfolge wird beibehalten.
+                       Einträge mit anzeigename='' werden als Legacy-Einträge gespeichert.
 
         Raises:
             sqlite3.Error: Falls Datenbankoperation fehlschlägt.
@@ -180,7 +229,7 @@ class DatabaseManager:
 
         Beispiel:
             >>> db = DatabaseManager("/path/to/db.db")
-            >>> db.save_favorites("abc-123-def", ["doc1.pdf", "doc2.pdf"])
+            >>> db.save_favorites("abc-123-def", [FavoriteEntry("doc1.pdf", "Klageschrift")])
         """
         if not uuid:
             return
@@ -189,24 +238,35 @@ class DatabaseManager:
             with sqlite3.connect(self.db_path) as db_connection:
                 db_cursor = db_connection.cursor()
 
-                # Löscht alle existierenden Favoriten für diese UUID
                 db_query = '''
                     DELETE FROM favorites WHERE uuid = ?;
                 '''
                 db_cursor.execute(db_query, (uuid,))
 
-                # Fügt neue Favoriten mit Positionswerten ein
                 if favorites:
-                    for filename, position in zip(favorites, range(len(favorites))):
-                        db_query = '''
-                            INSERT OR REPLACE INTO favorites (uuid, filename, position) VALUES (?, ?, ?);
-                        '''
-                        db_cursor.execute(db_query, (uuid, filename, position))
+                    for position, entry in enumerate(favorites):
+                        try:
+                            db_query = '''
+                                INSERT INTO favorites (uuid, filename, anzeigename, position) VALUES (?, ?, ?, ?);
+                            '''
+                            db_cursor.execute(db_query, (uuid, entry.filename, entry.anzeigename, position))
+                        except sqlite3.OperationalError as e:
+                            # TODO (Version 1.5+): Diesen except-Zweig entfernen, sobald keine
+                            # Datenbanken ohne anzeigename-Spalte mehr im Umlauf sind.
+                            # Tritt auf, wenn ALTER TABLE in create_database() fehlschlug.
+                            self.lastExceptionString = str(e)
+                            if '--debug' in sys.argv:
+                                print(f'DEBUG database.save_favorites: Fallback auf Legacy-INSERT (fehlende Spalte anzeigename): {traceback.format_exc()}', file=sys.stderr)
+                            db_query = '''
+                                INSERT INTO favorites (uuid, filename, position) VALUES (?, ?, ?);
+                            '''
+                            db_cursor.execute(db_query, (uuid, entry.filename, position))
 
                 db_connection.commit()
         except Exception as e:
-            # Speichert Exception für potenzielle Fehlersuche
             self.lastExceptionString = str(e)
+            if '--debug' in sys.argv:
+                print(f'DEBUG database.save_favorites: {traceback.format_exc()}', file=sys.stderr)
             raise
 
     def load_notes(
@@ -331,6 +391,8 @@ class DatabaseManager:
         except Exception as e:
             # Speichert Exception für potenzielle Fehlersuche, wirft aber nicht
             self.lastExceptionString = str(e)
+            if '--debug' in sys.argv:
+                print(f'DEBUG database.save_favorites: {traceback.format_exc()}', file=sys.stderr)
 
     def clear_all_data(self) -> None:
         """Löscht alle Daten aus der Datenbank durch Entfernen aller Tabellen.

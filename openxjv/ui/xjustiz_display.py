@@ -12,7 +12,7 @@ data into formatted HTML for display in the UI.
 """
 
 from typing import Dict, List, Any, Optional, Union
-from openxjv.ui.helpers import TextObject
+from .helpers import TextObject
 
 
 class XJustizDisplayRenderer:

@@ -1,0 +1,38 @@
+{
+  "order": 8,
+  "id": "deepseek_r1_8b",
+  "license_file": "deepseek_r1_8b.txt",
+  "display_name": "DeepSeek-R1-8B",
+  "filename": "DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf",
+  "download_url": "https://huggingface.co/unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF/resolve/main/DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf?download=true",
+  "n_ctx_max": 32768,
+  "n_ctx_min": 2048,
+  "kv_params": {
+    "n_kv_heads": 8,
+    "head_dim": 128,
+    "n_layers": 36
+  },
+  "chat_template_type": "jinja2_from_gguf",
+  "_comment_chat_template": "DeepSeek-R1-0528-Qwen3-8B verwendet das DeepSeek-R1-Chat-Template mit <｜User｜>/<｜Assistant｜>-Tags. Das Template ist in der GGUF-Datei enthalten — llama-cpp-python wählt es automatisch.",
+  "vram_model_gb": 5.0,
+  "context_reserve": 1500,
+  "filter_thinking_block": true,
+  "_comment_generation": "DeepSeek-R1-Reasoning-Modell: Das Modell erzeugt vor der Antwort einen <think>…</think>-Block (Chain-of-Thought). Dieser Denkblock erscheint im Ausgabestream und verbraucht Output-Token — bei komplexen Dokumenten kann er mehrere hundert bis über tausend Token umfassen. temperature 0.05 (abweichend von der offiziell empfohlenen 0.6) für deterministisches Extraktionsverhalten. repeat_penalty 1.1 — aggressivere Werte würden juristische Fachbegriffe im Thinking-Block fälschlicherweise bestrafen. min_p 0.01 gemäß DeepSeek-Empfehlung (nicht 0.05, da bei temperature=0.05 höhere min_p-Werte zu viele Token eliminieren würden).",
+  "generation": {
+    "temperature": 0.05,
+    "repeat_penalty": 1.1,
+    "top_p": 0.93,
+    "top_k": 50,
+    "min_p": 0.01
+  },
+  "repeat_last_n": 256,
+  "inject_date_in_system_prompt": true,
+  "system_prompts": {
+    "_default": "Du bist ein juristischer Assistent.\nAntworte ausschließlich auf Deutsch.\nHeute ist {date}.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Deklination, Grammatik und Zeitformen.\nVermeide Rechtscheibfehler!\nErfinde keine Inhalte.",
+    "Gutachten": "Du bist ein juristischer Gutachter.\nErstelle strukturierte juristische Gutachten auf Deutsch.\nHeute ist {date}.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Grammatik und Zeitformen.\nErfinde keine Inhalte.",
+    "Versicherung": "Du bist ein Versicherungsfachmann mit juristischer Ausbildung.\nAntworte auf Deutsch.\nHeute ist {date}.\nGib nur Informationen wieder, die explizit im Dokument stehen.\nErgänze keine Details, die nicht im Text vorhanden sind.\nÜbernimm Gesetzesbzeichnungen, Paragraphen und Fachbegriffe wörtlich aus dem Text.\nParaphrasiere keine juristischen Fachbegriffe oder Gesetzesnamen.\nAchte auf korrekte Grammatik und Zeitformen.\nErfinde keine Inhalte."
+  },
+  "user_prompts": {
+    "_default": "Fasse das folgende Dokument zusammen.\n\nRegeln:\n- Nur Informationen aus dem Dokument verwenden.\n- Keine verschachtelten Aufzählungen (a, b, c unter einem Punkt).\n- Fachbegriffe und Gesetzesnamen wörtlich aus dem Text übernehmen.\n- Vier Absätze mit Überschrift: Texttyp und Beteiligte — Sachverhalt — Ergebnis — Konsequenz.\n- Pro Absatz zwei bis drei Sätze."
+  }
+}

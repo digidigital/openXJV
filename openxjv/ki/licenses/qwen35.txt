@@ -1,0 +1,22 @@
+Qwen3.5-4B-Q4_K_M.gguf
+=======================
+
+Modell:      Qwen3.5-4B (GGUF-Quantisierung Q4_K_M)
+Herausgeber: Alibaba Group / Qwen Team
+Quelle:      https://huggingface.co/Qwen/Qwen3.5-4B
+GGUF:        https://huggingface.co/unsloth/Qwen3.5-4B-GGUF
+
+Lizenz: Apache License 2.0
+SPDX-Identifier: Apache-2.0
+Lizenztext: https://huggingface.co/Qwen/Qwen3.5-4B/blob/main/LICENSE
+
+Wesentliche Bedingungen:
+- Kommerzielle Nutzung erlaubt.
+- Weitergabe (Quell- und Binärform) erlaubt unter Beibehaltung
+  des Copyright-Hinweises, einer Kopie dieser Lizenz sowie
+  Kennzeichnung wesentlicher Änderungen.
+- Ausdrückliche Patentlizenz durch alle Beitragenden gewährt.
+- Keine Nutzung von Marken oder Logos ohne gesonderte Genehmigung.
+- Keine Garantie; keine Haftung.
+
+Copyright (c) Alibaba Group / Qwen Team

@@ -1,0 +1,23 @@
+Phi-4-mini-instruct-Q4_K_M.gguf
+================================
+
+Modell:      Phi-4-mini-instruct (GGUF-Quantisierung Q4_K_M)
+Herausgeber: Microsoft Corporation
+Quelle:      https://huggingface.co/microsoft/Phi-4-mini-instruct
+GGUF:        https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF
+
+Lizenz: MIT License
+SPDX-Identifier: MIT
+Lizenztext: https://huggingface.co/microsoft/Phi-4-mini-instruct/blob/main/LICENSE
+
+Wesentliche Bedingungen:
+- Kommerzielle Nutzung erlaubt.
+- Weitergabe erlaubt unter Beibehaltung des Copyright-Hinweises
+  und des vollständigen Lizenztexts in allen Kopien oder
+  wesentlichen Teilen der Software.
+- Keine explizite Patentlizenz (MIT enthält keine Patentklausel).
+- Nutzung von Microsoft-Marken und -Logos erfordert gesonderte
+  Genehmigung von Microsoft.
+- Keine Garantie; keine Haftung.
+
+Copyright (c) Microsoft Corporation

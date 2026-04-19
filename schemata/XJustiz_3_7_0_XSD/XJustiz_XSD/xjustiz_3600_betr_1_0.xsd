@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.xjustiz.de"
+           xmlns:din91379="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"
+           targetNamespace="http://www.xjustiz.de"
+           version="1.0.0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+   <xs:annotation>
+      <xs:appinfo>
+         <standard>
+            <nameLang>Strukturierte Fachdaten für die Kommunikation im elektronischen Rechtsverkehr</nameLang>
+            <nameKurz>XJustiz</nameKurz>
+            <nameTechnisch>xjustiz</nameTechnisch>
+            <kennung>urn:xoev-de:blk-ag-it-standards:standard:xjustiz</kennung>
+            <beschreibung>XJustiz ist der bundesweit einheitliche Standard für den Austausch strukturierter elektronischer Informationen mit der Justiz.</beschreibung>
+         </standard>
+         <versionStandard>
+            <version>3.7.0</version>
+            <beschreibung>XJustiz beschreibt ein standardisiertes Datenaustauschformat für die elektronische Kommunikation innerhalb und mit der Justizverwaltung.</beschreibung>
+            <versionXOEVProfil>3.0.2</versionXOEVProfil>
+            <versionXOEVHandbuch>3.0.2</versionXOEVHandbuch>
+            <versionXGenerator>3.2.3</versionXGenerator>
+            <versionModellierungswerkzeug>2021x</versionModellierungswerkzeug>
+            <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+         </versionStandard>
+      </xs:appinfo>
+   </xs:annotation>
+   <xs:include schemaLocation="xjustiz_0000_grunddatensatz_3_7.xsd"/>
+   <xs:include schemaLocation="xjustiz_3610_cl_betr_1_0.xsd"/>
+   <xs:import schemaLocation="din-norm-91379-datatypes.xsd"
+              namespace="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08"/>
+   <xs:element name="nachricht.betr.verguetung.3600001">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="nachrichtenkopf" type="tns:Type.GDS.Nachrichtenkopf"/>
+            <xs:element name="grunddaten" type="tns:Type.GDS.Grunddaten"/>
+            <xs:element name="schriftgutobjekte"
+                        minOccurs="0"
+                        type="tns:Type.GDS.Schriftgutobjekte"/>
+            <xs:element name="fachdaten">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="auswahl_erstantragAenderungFolgeantrag">
+                        <xs:complexType>
+                           <xs:choice>
+                              <xs:element name="erstantrag" fixed="true" type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>Bei Beginn der Übernahme der Betreuung auszuwählen. In diesem Fall sind alle fachlich einschlägigen Elemente der XJustiz-Nachricht zu übermitteln.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="aenderung" fixed="true" type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>Auszuwählen, wenn sich relevante Daten (z. B. Bank- oder Adressdaten) seit dem letzten Antrag geändert haben und dies mitgeteilt werden soll. In diesem Fall sind wiederum alle fachlich einschlägigen Elemente der XJustiz-Nachricht, d.h. sowohl die geänderten als auch die unveränderten Angaben, zu übermitteln.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="folgeantrag" fixed="true" type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>Auszuwählen, wenn kein Erst- oder Änderungsantrag. Sofern diese Auswahl getroffen wurde, sind nur die Elemente der XJustiz-Nachricht anzugeben, die in der Profilierung (s. https://xjustiz.de) für den Folgeantrag gekennzeichnet sind.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                           </xs:choice>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="rechnungsnummer" type="din91379:datatypeC"/>
+                     <xs:element name="verguetungsabrechnung">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="zeitraum" type="tns:Type.GDS.Zeitraum">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element ist der Zeitraum anzugeben, für den der Antrag auf Betreuervergütung gestellt wird.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="auswahl_eingruppierung">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element sind Angaben zur Eingruppierung zu machen. Wenn kein Antrag auf Eingruppierung gestellt wurde, ist die Auswahl "eingruppierungNichtGestellt" auszuwählen und der Wert "true" anzugeben (fixed-Wert). Liegt ein Eingruppierungsbescheid vor, sind im Element "eingruppierungBescheid" die erforderlichen Angaben zu übermitteln.</xs:documentation>
+                                 </xs:annotation>
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="eingruppierungNichtGestellt" fixed="true" type="xs:boolean"/>
+                                       <xs:element name="eingruppierungBescheid">
+                                          <xs:annotation>
+                                             <xs:documentation>Sofern ein Eingruppierungsbescheid vorliegt, sind hier das Datum des Bescheids und das Amtsgericht, das die Eingruppierung vorgenommen hat, zu übermitteln.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:complexType>
+                                             <xs:sequence>
+                                                <xs:element name="gericht" type="tns:Code.GDS.Gerichte.Typ3"/>
+                                                <xs:element name="vom" type="xs:date"/>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                       </xs:element>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="vermoegensstandAktuell"
+                                          minOccurs="0"
+                                          type="tns:Type.GDS.Geldbetrag">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element ist der Vermögensstand der betreuten Person zum Zeitpunkt der Antragstellung zu übermitteln.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="pauschale8iVm9VBVG" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element name="zeitraum" type="tns:Type.GDS.Zeitraum">
+                                          <xs:annotation>
+                                             <xs:documentation>In diesem Element ist der Monat oder das Quartal, für den eine Fallpauschale geltend gemacht wird, anzugeben. Bei Änderung von vergütungsrelevanten Umständen ist das jeweilige Quartal zusätzlich in Abrechnungsmonate aufzuteilen.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="auswahl_status.einrichtung.andereWohnform">
+                                          <xs:annotation>
+                                             <xs:documentation>Mit diesem Element muss ausgewählt werden, ob der Betreute in einer stationären Einrichtung nach § 9 Abs. 3 VBVG untergebracht ist oder eine andere Wohnform vorliegt. Hierfür ist in dem entsprechenden Auswahlelement der Wert "true" anzugeben.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:complexType>
+                                             <xs:choice>
+                                                <xs:element name="einrichtung" fixed="true" type="xs:boolean">
+                                                   <xs:annotation>
+                                                      <xs:documentation>Stationäre Einrichtung</xs:documentation>
+                                                   </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="andereWohnform" fixed="true" type="xs:boolean"/>
+                                             </xs:choice>
+                                          </xs:complexType>
+                                       </xs:element>
+                                       <xs:element name="mittellosAbrechnungszeitraum" type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>In diesem Element ist anzugeben, ob der Betreute am Ende des Abrechnungszeitraumes mittellos i.S.d. § 1880 BGB (Wert "true") oder nicht mittellos (Wert "false") ist.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="verguetungsstufe" type="tns:Code.BETR.Verguetungsstufe.Typ3">
+                                          <xs:annotation>
+                                             <xs:documentation>Je nach seiner Qualifikation erhält ein Berufsbetreuer quartalsweise monatliche Fallpauschalen gemäß § 9 VBVG. In diesem Element ist die jeweilige Vergütungsstufe für den Zeitraum, für den die Pauschale geltend gemacht wird, anzugeben.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="stufe" type="tns:Code.BETR.Stufe.Typ3">
+                                          <xs:annotation>
+                                             <xs:documentation>In diesem Element ist die Dauer der Betreuung anzugeben, die als Ermittlungskriterium zu Ermittlung der Pauschale zugrunde gelegt wird.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="betrag" type="tns:Type.GDS.Geldbetrag">
+                                          <xs:annotation>
+                                             <xs:documentation>In diesem Element ist der Geldbetrag der Pauschale für den geltend gemachten Zeitraum anzugeben.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="gesamtbetrag" type="tns:Type.GDS.Geldbetrag">
+                                 <xs:annotation>
+                                    <xs:documentation>In diesem Element ist die Summe der Geldbeträge der einzelnen Pauschalen anzugeben.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="auswahl_auszahlung.festsetzung">
+                                 <xs:annotation>
+                                    <xs:documentation>Mit diesem Element muss ausgewählt werden, ob die Auszahlung im Verwaltungswege erfolgen soll oder die förmliche Festsetzung beantragt wird.</xs:documentation>
+                                 </xs:annotation>
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="auszahlungImVerwaltungsweg" fixed="true" type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Dieses Element ist auszuwählen, wenn der Betreute zum Zeitpunkt der Antragstellung mittellos ist.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                       <xs:element name="foermlicheFestsetzung" fixed="true" type="xs:boolean">
+                                          <xs:annotation>
+                                             <xs:documentation>Dieses Element ist auszuwählen, wenn der Betreute zum Zeitpunkt der Antragstellung nicht mittellos ist.</xs:documentation>
+                                          </xs:annotation>
+                                       </xs:element>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <xs:element name="dauerverguetung"
+                                          minOccurs="0"
+                                          fixed="true"
+                                          type="xs:boolean">
+                                 <xs:annotation>
+                                    <xs:documentation>Mit der Angabe "true" kann bei Erst-, Änderungs- oder Folgeanträgen der Antrag auf Dauervergütung gestellt werden. Auf Antrag des Betreuers kann das Gericht die Vergütung auch für zukünftige Zeiträume festsetzen. In diesem Fall würde die Vergütung in regelmäßigen Abständen nach der jeweiligen Fälligkeit an die Betreuer ausgezahlt, ohne dass eine entsprechende Vergütungsabrechnung notwendig ist, §§ 292 Abs. 2 FamFG, 14 VBVG. Etwaige Änderungen der Kriterien des § 9 Abs. 1 VBVG sind bei Gericht mittels eines Änderungsantrages anzuzeigen. Ein Rechtsanspruch auf Dauerfestsetzung besteht nicht. Das Gericht wird im Einzelfall prüfen, ob das Verfahren für eine Dauerfestsetzung geeignet ist. Bei der Dauerfestsetzung erfolgt die Quartalszahlung immer zur selben Rechnungsnummer.</xs:documentation>
+                                 </xs:annotation>
+                              </xs:element>
+                              <xs:element name="auswahl_gegen">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="staatskasse" fixed="true" type="xs:boolean"/>
+                                       <xs:element name="betreutePerson" fixed="true" type="xs:boolean"/>
+                                       <xs:element name="sonstigeBeteiligte" fixed="true" type="xs:boolean"/>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="bankverbindung"
+                                 minOccurs="0"
+                                 type="tns:Type.GDS.Ref.Bankverbindung">
+                        <xs:annotation>
+                           <xs:documentation>Angaben zur Bankverbindung des Betreuers sind bei Folgeanträgen nicht erforderlich, es sei denn, mit dem Folgeantrag werden auch Änderungen mitgeteilt (dann handelt es sich um einen Änderungsantrag, bei dem alle falchlich einschlägigen Elemente auszufüllen sind).</xs:documentation>
+                        </xs:annotation>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>

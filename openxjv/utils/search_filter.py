@@ -8,6 +8,7 @@ einschließlich Volltextsuchfähigkeiten und Tabellenzeilen-Filterung basierend 
 Einschluss-/Ausschluss-Mustern.
 
 Klassen:
+    SearchWorker: Hintergrund-Thread zum Extrahieren von Text aus Dateien für Volltextsuche.
     SearchFilterManager: Verwaltet Such- und Filteroperationen für Dokumententabellen.
 """
 
@@ -15,16 +16,99 @@ import os
 import json
 import time
 import sqlite3
+import traceback
 from typing import Dict, Set, Optional, Tuple, Any
 
 from PySide6.QtCore import (
     QEventLoop,
     Qt,
     QThread,
-    QCoreApplication
+    QCoreApplication,
+    Signal,
 )
 from PySide6.QtGui import QCursor
 from PySide6.QtWidgets import QTableWidget
+
+from .search_indexing import extract_texts_from_directory
+
+if os.name == 'nt':
+    from subprocess import CREATE_NO_WINDOW
+
+
+class SearchWorker(QThread):
+    """
+    Hintergrund-Thread zum Extrahieren von Text aus Dateien für Volltextsuche.
+
+    Dies ist ein QThread-Subclass statt QObject + moveToThread().
+    Das moveToThread()-Pattern hatte auf Windows folgende Probleme:
+    1. Lambda-Slots liefen im Hauptthread statt im Worker-Thread
+    2. Signal-Zustellung über Thread-Grenzen war unzuverlässig für
+       Python-Lambdas (Qt kann keinen Empfänger-Thread bestimmen)
+    3. Race-Conditions zwischen finished->quit() und result-Signal
+
+    Als QThread-Subclass:
+    - run() wird automatisch im neuen Thread ausgeführt
+    - Das QThread-OBJEKT lebt im Hauptthread (nur run() läuft im neuen Thread)
+    - Daher werden Signale (result) per AutoConnection korrekt als
+      QueuedConnection zum Hauptthread zugestellt
+    - finished ist ein eingebautes QThread-Signal, das nach run() feuert
+    - Kein moveToThread(), keine Event-Loop, keine Signal-Routing-Probleme
+
+    Signale:
+        result: Sendet Tupel aus (empty_files_count, empty_pdfs_count, search_store, exception_text)
+        finished: (geerbt von QThread) Wird nach run() automatisch ausgesendet
+    """
+
+    result = Signal(tuple)
+
+    def __init__(self, directory_to_scan: str, script_root: str,
+                 database: str, message_id: str, parent=None):
+        super().__init__(parent)
+        self._directory_to_scan = directory_to_scan
+        self._script_root = script_root
+        self._database = database
+        self._message_id = message_id
+
+    def run(self) -> None:
+        """
+        Extrahiert Text aus allen Dateien und speichert in Datenbank.
+        Wird automatisch im neuen Thread ausgeführt wenn start() aufgerufen wird.
+        """
+        empty_files = 0
+        empty_pdfs = 0
+        search_store: Dict[str, str] = {}
+        exception_text: Optional[str] = None
+
+        try:
+            # Extrahiert Text aus allen Dateien im Verzeichnis
+            search_store = extract_texts_from_directory(self._directory_to_scan)
+
+            # Speichert in Datenbank
+            with sqlite3.connect(self._database) as db_connection:
+                db_cursor = db_connection.cursor()
+
+                # Löscht alte Einträge für diese Nachricht
+                db_query = 'DELETE FROM plaintext WHERE uuid = ? AND basedir = ?;'
+                db_cursor.execute(db_query, (self._message_id, self._directory_to_scan))
+
+                # Fügt neue Einträge ein
+                for filename, text in search_store.items():
+                    if text == '':
+                        empty_files += 1
+                        if filename.lower().endswith('.pdf'):
+                            empty_pdfs += 1
+
+                    db_query = 'INSERT OR REPLACE INTO plaintext (uuid, filename, text, basedir) VALUES (?, ?, ?, ?);'
+                    db_cursor.execute(db_query, (self._message_id, filename, text, self._directory_to_scan))
+
+        except Exception as e:
+            exception_text = str(e)
+
+        # Sendet Ergebnisse. Da das QThread-Objekt im Hauptthread lebt,
+        # wird AutoConnection dies als QueuedConnection zum Hauptthread
+        # zustellen. finished (QThread-intern) feuert danach automatisch.
+        result_data = (empty_files, empty_pdfs, search_store, exception_text)
+        self.result.emit(result_data)
 
 
 class SearchFilterManager:
@@ -49,6 +133,7 @@ class SearchFilterManager:
         self.empty_files: int = 0
         self.empty_pdf: int = 0
         self.search_prep_thread: Optional[QThread] = None
+        self.search_worker: Optional[SearchWorker] = None
 
     def prepare_search_store(
         self,
@@ -57,7 +142,6 @@ class SearchFilterManager:
         db_path: str,
         uuid: str,
         script_root: str,
-        search_worker_class: type,
         status_callback: Optional[callable] = None,
         ready_callback: Optional[callable] = None,
         reset_search_store: bool = True,
@@ -78,7 +162,6 @@ class SearchFilterManager:
             db_path: Pfad zur SQLite-Datenbankdatei.
             uuid: Eindeutiger Bezeichner für den aktuellen Dokumentensatz.
             script_root: Wurzelverzeichnis der Anwendungsskripte.
-            search_worker_class: Klasse zum Instanziieren für Hintergrund-Suchvorbereitung.
             status_callback: Optionaler Callback für Statusaktualisierungen. Wird mit String-Nachricht aufgerufen.
             ready_callback: Optionaler Callback, wenn Such-Speicher bereit ist. Wird aufgerufen mit
                           (empty_files, empty_pdf, search_store, error_msg)-Tupel.
@@ -94,15 +177,22 @@ class SearchFilterManager:
             Diese Methode blockiert die Ereignisschleife während der Prüfung, ob eine vorherige Such-
             Thread noch läuft, mit 0,3 Sekunden Pause zwischen Prüfungen.
         """
+        try:
+            thread_ref = self.search_prep_thread
+        except RuntimeError:
+            self.search_prep_thread = None
+            self.search_worker = None
+            thread_ref = None
+
         # Blockiert Ereignisschleife, falls eine Suche bereits läuft
         while True:
             try:
-                if self.search_prep_thread and self.search_prep_thread.isRunning():
+                if thread_ref and thread_ref.isRunning():
                     # Begrenze Overhead mit Pause
                     time.sleep(0.3)
                 else:
                     break
-            except:
+            except Exception:
                 break
             app.processEvents(QEventLoop.ProcessEventsFlag.ExcludeUserInputEvents)
 
@@ -175,22 +265,27 @@ class SearchFilterManager:
 
         # Erstelle neuen Such-Speicher durch Konvertierung von Dateien in "Klartext"
         if len(self.search_store) == 0:
-            self.search_prep_thread = QThread()
-            search_worker = search_worker_class()
-            search_worker.moveToThread(self.search_prep_thread)
-
-            self.search_prep_thread.started.connect(
-                lambda: search_worker.run(basedir, script_root, db_path, uuid)
+            self.search_worker = SearchWorker(
+                basedir, script_root, db_path, uuid
             )
-            search_worker.finished.connect(self.search_prep_thread.quit)
-            search_worker.finished.connect(search_worker.deleteLater)
-            search_worker.result.connect(
+            # search_prep_thread wird nicht mehr separat gebraucht — der
+            # Worker IST der Thread. Referenz behalten für isRunning()-Check.
+            self.search_prep_thread = self.search_worker
+
+            # result-Signal: AutoConnection. Da das QThread-Objekt im
+            # Hauptthread lebt, erkennt Qt automatisch, dass dies eine
+            # Cross-Thread-Verbindung ist → QueuedConnection → Callback
+            # wird im Hauptthread ausgeführt.
+            self.search_worker.result.connect(
                 lambda result: self._search_store_ready(
                     result, app, status_callback, ready_callback
                 )
             )
-            self.search_prep_thread.finished.connect(self.search_prep_thread.deleteLater)
-            self.search_prep_thread.start()
+
+            # finished: Aufräumen nach Thread-Ende.
+            self.search_worker.finished.connect(self.search_worker.deleteLater)
+
+            self.search_worker.start()
         else:
             self._search_store_ready(
                 (0, 0, {}, 'Textaufbereitung fehlgeschlagen.'),
@@ -239,6 +334,12 @@ class SearchFilterManager:
             ready_callback(result)
 
         app.restoreOverrideCursor()
+
+        # Aufräumen: search_worker und search_prep_thread zeigen auf dasselbe
+        # Objekt (SearchWorker ist ein QThread-Subclass). deleteLater wird
+        # bereits per finished-Signal ausgelöst. Hier nur Referenzen löschen.
+        self.search_worker = None
+        self.search_prep_thread = None
 
     def perform_search(
         self,

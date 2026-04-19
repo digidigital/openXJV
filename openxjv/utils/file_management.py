@@ -17,6 +17,7 @@ import re
 import sys
 import subprocess
 from pathlib import Path
+from openxjv.utils.url_utils import is_in_bundle
 from shutil import copyfile
 from typing import Optional, List, Any
 from uuid import uuid4
@@ -187,7 +188,7 @@ class FileManager:
             ...     print(f"Selected {len(files)} files")
         """
         files, check = QFileDialog.getOpenFileNames(
-            None,
+            QApplication.activeWindow(),
             "XJustiz-ZIP-Archive öffnen",
             str(self.settings.value("defaultFolder", str(self.homedir))),
             "XJustiz-Archive (*.zip *.ZIP)"
@@ -250,41 +251,36 @@ class FileManager:
         file_list: List[str],
         include_xml: bool = True,
         xml_file: Optional[str] = None
-    ) -> bool:
+    ) -> None:
         """
         Export files to a ZIP archive.
 
         Args:
             zip_path: Path where the ZIP file should be created.
-            file_list: List of file paths to include in the ZIP.
+            file_list: List of filenames (relative to basedir) to include in the ZIP.
             include_xml: Whether to include the XJustiz XML file. Defaults to True.
             xml_file: Path to the XJustiz XML file to include. Required if include_xml is True.
 
-        Returns:
-            True on success, False on failure.
+        Raises:
+            Exception: If ZIP creation fails (e.g. file not found, permission error).
 
         Example:
             >>> files = ["doc1.pdf", "doc2.pdf"]
-            >>> success = fm.export_to_zip("/path/to/archive.zip", files, xml_file="data.xml")
+            >>> fm.export_to_zip("/path/to/archive.zip", files, xml_file="data.xml")
         """
-        try:
-            # Ensure zip extension
-            if not zip_path.lower().endswith('.zip'):
-                zip_path = zip_path + '.zip'
+        # Ensure zip extension
+        if not zip_path.lower().endswith('.zip'):
+            zip_path = zip_path + '.zip'
 
-            # Prepare file list
-            files_to_zip = file_list.copy()
+        # Prepare file list with full paths
+        files_to_zip = [os.path.join(self.basedir, f) for f in file_list]
 
-            # Add XML file if requested
-            if include_xml and xml_file:
-                files_to_zip.append(xml_file)
+        # Add XML file if requested (already a full path)
+        if include_xml and xml_file:
+            files_to_zip.append(xml_file)
 
-            # Create ZIP archive
-            self._create_zip(zip_path, files_to_zip)
-            return True
-
-        except Exception:
-            return False
+        # Create ZIP archive
+        self._create_zip(zip_path, files_to_zip)
 
     def _create_zip(self, zipname: str, filelist: List[str]) -> None:
         """
@@ -294,7 +290,7 @@ class FileManager:
 
         Args:
             zipname: Path for the output ZIP file.
-            filelist: List of file paths to include.
+            filelist: List of full file paths to include.
 
         Raises:
             Exception: If ZIP creation fails.
@@ -309,38 +305,32 @@ class FileManager:
         file_list: List[str],
         include_xml: bool = True,
         xml_file: Optional[str] = None
-    ) -> bool:
+    ) -> None:
         """
         Export files to a folder by copying them.
 
         Args:
             folder_path: Destination folder path.
-            file_list: List of file paths (relative to basedir) to copy.
+            file_list: List of filenames (relative to basedir) to copy.
             include_xml: Whether to include the XJustiz XML file. Defaults to True.
             xml_file: Path to the XJustiz XML file to include. Required if include_xml is True.
 
-        Returns:
-            True on success, False on failure.
+        Raises:
+            Exception: If copying fails (e.g. file not found, permission error).
 
         Example:
             >>> files = ["doc1.pdf", "doc2.pdf"]
-            >>> success = fm.export_to_folder("/path/to/folder", files, xml_file="data.xml")
+            >>> fm.export_to_folder("/path/to/folder", files, xml_file="data.xml")
         """
-        try:
-            for filename in file_list:
-                filepath = os.path.join(self.basedir, filename)
-                targetpath = os.path.join(folder_path, filename)
-                copyfile(filepath, targetpath)
+        for filename in file_list:
+            filepath = os.path.join(self.basedir, filename)
+            targetpath = os.path.join(folder_path, filename)
+            copyfile(filepath, targetpath)
 
-            # Copy XML file if requested
-            if include_xml and xml_file:
-                xml_basename = os.path.basename(xml_file)
-                copyfile(xml_file, os.path.join(folder_path, xml_basename))
-
-            return True
-
-        except Exception:
-            return False
+        # Copy XML file if requested
+        if include_xml and xml_file:
+            xml_basename = os.path.basename(xml_file)
+            copyfile(xml_file, os.path.join(folder_path, xml_basename))
 
     def open_file_external(
         self,
@@ -427,11 +417,11 @@ class FileManager:
         # Open file based on platform
         try:
             if sys.platform.startswith('linux'):
-                # Copy current environment
                 env = os.environ.copy()
-
-                # Remove LD_LIBRARY_PATH for this call (pyinstaller workaround)
-                env.pop("LD_LIBRARY_PATH", None)
+                if is_in_bundle():
+                    # PyInstaller/AppImage set LD_LIBRARY_PATH to their internal
+                    # libs — strip it so xdg-open loads system libraries instead.
+                    env.pop("LD_LIBRARY_PATH", None)
 
                 # Start xdg-open with cleaned environment
                 subprocess.Popen(
@@ -504,7 +494,7 @@ class FileManager:
             folder = str(self.settings.value("defaultFolder", self.homedir))
 
         file, check = QFileDialog.getOpenFileName(
-            None,
+            QApplication.activeWindow(),
             "XJustiz-Datei öffnen",
             folder,
             file_filter
@@ -538,7 +528,7 @@ class FileManager:
             initial_folder = str(self.settings.value("defaultFolder", str(self.homedir)))
 
         folder = QFileDialog.getExistingDirectory(
-            None,
+            QApplication.activeWindow(),
             title,
             initial_folder,
             QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks
@@ -571,7 +561,7 @@ class FileManager:
             ...     print(f"Will save to: {path}")
         """
         filepath, _ = QFileDialog.getSaveFileName(
-            None,
+            QApplication.activeWindow(),
             title,
             self.settings.value("defaultFolder", str(self.homedir)),
             file_filter

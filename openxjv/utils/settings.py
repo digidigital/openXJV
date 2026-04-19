@@ -23,7 +23,7 @@ class SettingsManager:
         defaults: Dictionary mit Standardwerten für alle Einstellungen
     """
 
-    def __init__(self, organization: str = 'openXJV', application: str = 'digidigital') -> None:
+    def __init__(self, organization: str = 'digidigital', application: str = 'openXJV') -> None:
         """
         Initialisiert den Einstellungs-Manager.
 
@@ -32,6 +32,16 @@ class SettingsManager:
             application: Anwendungsname für QSettings
         """
         self.settings = QSettings(organization, application)
+
+        # TODO: Migration entfernen, sobald keine Installationen mit altem Registry-Pfad
+        # (HKCU\Software\openXJV\digidigital) mehr im Umlauf sind.
+        # Hintergrund: Organization und Application wurden vertauscht, damit Settings unter
+        # HKCU\Software\digidigital\openXJV liegen — außerhalb des vom Uninstaller
+        # gelöschten HKCU\Software\openXJV-Pfads.
+        try:
+            self._migrate_legacy_settings()
+        except Exception:
+            pass
 
         # Standardeinstellungen
         self.defaults: Dict[str, Any] = {
@@ -61,6 +71,10 @@ class SettingsManager:
 
             # Updates
             'checkUpdates': True,  # Online nach Updates suchen
+
+            # Maintenance Token
+            'maintenance_email': '',
+            'maintenance_token': '',
         }
 
     def get_bool(self, key: str, default: Optional[bool] = None) -> bool:
@@ -182,3 +196,25 @@ class SettingsManager:
         """
         if viewer in ('PDFjs', 'chromium', 'nativ'):
             self.set_value('pdfViewer', viewer)
+
+    def _migrate_legacy_settings(self) -> None:
+        """Migriert Einstellungen vom alten Registry-Pfad (HKCU\\Software\\openXJV\\digidigital)
+        in den neuen Pfad (HKCU\\Software\\digidigital\\openXJV).
+
+        Wird nur ausgeführt, wenn der neue Pfad noch leer ist und der alte Pfad Einträge enthält.
+
+        TODO: Entfernen, sobald keine Installationen mit altem Registry-Pfad mehr im Umlauf sind.
+        """
+        if self.settings.allKeys():
+            return  # Neuer Pfad enthält bereits Einstellungen — keine Migration nötig
+
+        legacy = QSettings('openXJV', 'digidigital')
+        keys = legacy.allKeys()
+        if not keys:
+            return  # Kein alter Pfad vorhanden — Neuinstallation
+
+        for key in keys:
+            value = legacy.value(key)
+            if value is not None:
+                self.settings.setValue(key, value)
+        self.settings.sync()

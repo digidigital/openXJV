@@ -1,0 +1,30 @@
+Gemma-4-E2B-it-Q5_K_M.gguf
+===========================
+
+Modell:      Gemma 4 E2B Instruct (GGUF-Quantisierung Q5_K_M)
+Herausgeber: Google LLC
+Quelle:      https://huggingface.co/google/gemma-4-E2B-it
+GGUF:        https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF
+
+Lizenz: Apache License 2.0 (mit zusätzlichen Gemma Terms of Use)
+SPDX-Identifier: Apache-2.0
+Lizenztext (Apache 2.0): https://ai.google.dev/gemma/apache_2
+Nutzungsbedingungen:     https://ai.google.dev/gemma/terms
+
+Wesentliche Bedingungen (Apache 2.0):
+- Kommerzielle Nutzung erlaubt.
+- Weitergabe (Quell- und Binärform) erlaubt unter Beibehaltung
+  des Copyright-Hinweises, einer Kopie dieser Lizenz sowie
+  Kennzeichnung von Änderungen.
+- Ausdrückliche Patentlizenz durch alle Beitragenden gewährt.
+- Keine Nutzung von Marken oder Logos ohne gesonderte Genehmigung.
+- Keine Garantie; keine Haftung.
+
+Zusätzliche Bedingungen (Gemma Terms of Use):
+- Keine Nutzung zur Verletzung von Gesetzen oder zur Schädigung
+  von Personen.
+- Keine Umgehung von Sicherheitsmaßnahmen.
+- Abgeleitete Modelle müssen als „Gemma"-basiert kenntlich gemacht
+  werden.
+
+Copyright (c) Google LLC

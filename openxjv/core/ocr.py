@@ -6,7 +6,9 @@ Migrated from helperScripts/OCR.py to openxjv.core module.
 Provides Tesseract-based OCR with automatic page rotation detection.
 """
 import os
-import numpy as np
+import sys
+import threading
+from openxjv.utils.url_utils import is_in_bundle
 import time
 import concurrent.futures
 import shlex
@@ -24,6 +26,13 @@ from tempfile import TemporaryDirectory
 import pypdfium2 as pdfium
 from PIL import Image, ImageEnhance, ImageFilter
 
+# pypdfium2 is not thread-safe when multiple threads open the same file
+# simultaneously — concurrent PdfDocument() calls corrupt internal xref
+# parsing state. This lock serializes only the fast open+render+close step;
+# the slow Tesseract OCR still runs fully in parallel.
+_pdfium_lock = threading.Lock()
+
+
 def run_args(return_text=True):
     """
     Returns standard kwargs for subprocess.run commands.
@@ -38,9 +47,17 @@ def run_args(return_text=True):
             'text':return_text,
             'timeout':600}
 
-    # Prevent console pop-ups in pyinstaller GUI-Applications
     if os.name == 'nt':
+        # Prevent console pop-ups in PyInstaller GUI applications
         kwargs['creationflags'] = CREATE_NO_WINDOW
+    elif getattr(sys, 'frozen', False):
+        # PyInstaller/AppImage set LD_LIBRARY_PATH to their internal libs.
+        # Child processes must not inherit it or they may load wrong .so files.
+        # Only apply when frozen — otherwise a legitimate user LD_LIBRARY_PATH
+        # (e.g. Conda, custom Tesseract build) would be silently dropped.
+        env = os.environ.copy()
+        env.pop("LD_LIBRARY_PATH", None)
+        kwargs['env'] = env
 
     return kwargs
 
@@ -86,8 +103,15 @@ class PDFocr():
 
         if open_when_done and os.path.exists(outpath):
                 if platform.startswith('linux'):
-                    cmd=["xdg-open",  f"{outpath}"]
-                    subprocess.call(cmd)
+                    env = os.environ.copy()
+                    if is_in_bundle():
+                        env.pop("LD_LIBRARY_PATH", None)
+                    subprocess.Popen(
+                        ["xdg-open", outpath],
+                        env=env,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
                 elif platform.lower().startswith('win'):
                     os.startfile(outpath)
                 else:
@@ -246,6 +270,7 @@ class PDFocr():
         Returns:
             bool: True if page appears empty
         """
+        import numpy as np
         # Load the image
         image = pil_image.convert('L') if pil_image.mode != 'L' else pil_image
 
@@ -288,13 +313,14 @@ class PDFocr():
 
             try:
                 #Try to render page with pypdfium at 200dpi
-                originalPDF = pdfium.PdfDocument(file)
-                pdfimage = originalPDF[pageNumber].render(scale = 200/72).to_pil()
+                with _pdfium_lock:
+                    originalPDF = pdfium.PdfDocument(file)
+                    pdfimage = originalPDF[pageNumber].render(scale = 200/72).to_pil()
+                    originalPDF.close()
                 page_rotation = 0
-                originalPDF.close()
 
             except Exception as e:
-                ocrExceptions+=e
+                ocrExceptions += str(e)
                 try:
                     # Try to extract image with pikepdf
                     listOfImages = list(PDF.pages[0].images.keys())
@@ -316,7 +342,7 @@ class PDFocr():
                         pdfimage=pdfimage.resize(targetSize)
 
                 except Exception as e:
-                    ocrExceptions+=e
+                    ocrExceptions += str(e)
                     # In case even pikepdf fails create an empty A4 dummy page
                     # The result will be a page without text
                     pdfimage = Image.new("RGBA", (1654, 2338), (255, 0, 0, 0))
@@ -338,9 +364,10 @@ class PDFocr():
             tesseract_image_path = str(tesseract_image).replace('\\','\\\\') if os.name == 'nt' else str(tesseract_image)
 
             # Check if page is empty (less than 3% black)
-            if self.is_page_empty(pdfimage, threshold=0.03):
-                skip_osd=True
-
+            # TODO: (workaround) removed due to incompatibility of new numpy ith older CPUs
+            #if self.is_page_empty(pdfimage, threshold=0.03):
+            #    skip_osd=True
+            
             # Check orientation
             if skip_osd:
                 rotateDegrees = 0
@@ -434,6 +461,9 @@ class PDFocr():
             print(f'{e} - {file}')
             ocrExceptions += f'{e} - {file}'
             pass
+
+        if ocrExceptions and '--debug' in sys.argv:
+            print(f'[OCR debug] Seite {pageNumber} Fallback-Fehler: {ocrExceptions}')
 
         return (pageNumber, PDF)
 

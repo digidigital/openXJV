@@ -2,7 +2,7 @@
 # coding: utf-8
 """
 openXJV_modular.py - Migrated UI class for XJustiz-Data Viewer
-2022 - 2025 Björn Seipel
+2022 - 2026 Björn Seipel
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,6 +17,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along mit this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from openxjv.ki.core.ui.main_window import KIMainWindow
+
 # For Ubuntu package: sudo apt install libxcb-cursor0 in case of xcb-error
 
 import traceback
@@ -26,7 +31,6 @@ import re
 import sys
 import urllib.request
 #import subprocess
-import sqlite3
 #if os.name == 'nt':
 #    from subprocess import CREATE_NO_WINDOW
 import platform
@@ -53,6 +57,7 @@ except ImportError:
     # Fallback falls Imports nicht verfügbar sind
     pass
 
+
 # QT-Imports
 from PySide6.QtCore import (
     qVersion,
@@ -68,7 +73,7 @@ from PySide6.QtCore import (
     QEvent,
     QTranslator,
     QLocale,
-    QTimer
+    QTimer,
 )
 
 from PySide6.QtGui import (
@@ -127,11 +132,12 @@ from PySide6.QtCore import QFile
 
 from PIL import Image
 from PIL.ImageQt import ImageQt
-from appdirs import AppDirs
+from platformdirs import PlatformDirs as AppDirs
 
 # Modulare Komponenten
 from openxjv import __version__ as MODULAR_VERSION
 from openxjv.core import DatabaseManager, OCRHandler, PDFocr
+from openxjv.core.database import FavoriteEntry
 from openxjv.core.pdf_operations import (
     PDFExportConfig,
     PDFExportError,
@@ -139,8 +145,8 @@ from openxjv.core.pdf_operations import (
     export_notes_to_pdf,
 )
 from openxjv.core.pdf_cover_page_template import CreateDeckblatt
-from openxjv.ui import Ui_MainWindow, TextObject, XJustizDisplayRenderer, CustomWebEnginePage, StandardItem, SearchWorker
-from openxjv.utils import SearchFilterManager, FileManager, SettingsManager
+from openxjv.ui import Ui_MainWindow, TextObject, XJustizDisplayRenderer, CustomWebEnginePage, StandardItem
+from openxjv.utils import SearchFilterManager, FileManager, SettingsManager, open_url, is_in_bundle
 from openxjv.parsers import (
     parser240,
     parser321,
@@ -150,8 +156,12 @@ from openxjv.parsers import (
     parser362,
 )
 from openxjv.validators import XSDValidatorDialog
-global VERSION
-VERSION = '0.9.0'
+from openxjv.ui.maintenance_dialog import MaintenanceTokenDialog
+from openxjv.ui.maintenance_banner import MaintenanceBanner
+from openxjv.utils.maintenance_token import is_token_valid, check_token_from_env
+# KI-Module werden lazy beim ersten Öffnen des KI-Labors geladen,
+# damit llama_cpp nicht schon beim App-Start initialisiert wird.
+VERSION = MODULAR_VERSION
 
 
 class SingleInstance:
@@ -162,13 +172,6 @@ class SingleInstance:
     Die Lock-Datei wird automatisch vom Betriebssystem freigegeben, wenn
     die Anwendung beendet wird - auch bei unerwartetem Absturz.
 
-    Verwendung:
-        single_instance = SingleInstance('app_name')
-        if not single_instance.acquire():
-            print("Anwendung läuft bereits!")
-            sys.exit(1)
-        # ... Anwendung läuft ...
-        single_instance.release()  # Optional, wird automatisch aufgerufen
     """
 
     def __init__(self, app_name):
@@ -299,64 +302,52 @@ class UI(QMainWindow, Ui_MainWindow):
     - XJustizDisplayRenderer: Renders XJustiz data templates
     - SettingsManager: Type-safe settings management
 
-    The UI supports:
-    - Viewing XJustiz legal documents mit structured data display
-    - PDF preview mit multiple viewer options (PDF.js, Chromium, native)
-    - Full-text search across all attached documents
-    - Favorites management
-    - Notes attached to files
-    - Export to PDF and ZIP
-    - OCR for non-searchable PDFs
-    - Customizable view options and column visibility
     """
     # ========================================
     # ABSCHNITT 1: INITIALISIERUNG & LEBENSZYKLUS
     # ========================================
-    def __init__(self, app: QApplication, file=None, ziplist=None):
+    def __init__(self, app: QApplication, file=None, ziplist=None, ki_debug: bool = False):
         """Initialisiert das openXJV-Hauptfenster.
 
         Argumente:
             file: Optionaler Pfad zu einer XJustiz-Datei zum Laden beim Start
             ziplist: Optionale Liste von ZIP-Dateien zum Extrahieren und Laden
             app: QApplication-Instanz
+            ki_debug: KI-Debug-Modus aktivieren (schreibt Preprocessing-Zwischenstände in Temp-Ordner)
         """
-        super(UI, self).__init__() 
+        self._ki_debug = ki_debug
+        super(UI, self).__init__()
         self.setupUi(self)
-        
+
+        # Maintenance-Banner zwischen Toolbar und Tabs einfügen
+        self.maintenanceBanner = MaintenanceBanner(self)
+        self.maintenanceBanner.setVisible(False)
+        self.gridLayout_13.removeWidget(self.tabs)
+        self.gridLayout_13.addWidget(self.maintenanceBanner, 0, 0, 1, 1)
+        self.gridLayout_13.addWidget(self.tabs, 1, 0, 1, 1)
+
         self.lastExceptionString=''
         
-        if os.environ.get('USERDOMAIN')=='DGBRS': 
-            self.supportMail="servicedesk@dgbrechtsschutz.de"
-        else:
-            self.supportMail="support@digidigital.de" 
+        self.supportMail = os.environ.get('OPENXJVSUPPORT', "support@digidigital.de")
+
         self.app=app
         
         # System /tmp-Ordner nicht zugänglich für SNAP Libreoffice
-        if sys.platform.lower().startswith("linux"):
-            home_dir = os.path.expanduser("~")
-            cache_dir = os.path.join(home_dir, ".cache")
-            tmpdir_base = cache_dir if os.path.isdir(cache_dir) else home_dir
-            tmpdir = os.path.join(tmpdir_base, ".openXJV")
-        elif sys.platform.lower().startswith("win"):
-            # Unter MSIX wird LOCALAPPDATA auf den Container gemappt:
-            # %LOCALAPPDATA%\Packages\<PackageFamilyName>\LocalCache
-            local_appdata = os.getenv("LOCALAPPDATA") or os.path.expanduser("~")
-            # Verwende LocalCache für temporäre Daten
-            tmpdir_base = os.path.join(local_appdata, "Packages", 
-                                    os.getenv("PACKAGE_FAMILY_NAME",""), 
-                                    "LocalCache")
-            # Fallback, falls nicht im Container
-            if not os.path.isdir(tmpdir_base):
-                tmpdir_base = local_appdata
-            tmpdir = os.path.join(tmpdir_base, "openXJV")
+        if sys.platform.lower().startswith(("linux", "win")):
+            tmpdir = AppDirs("OpenXJV", "digidigital", version="0.1").user_cache_dir
         else:
             tmpdir = None
+        print(f"[Init] tmpdir: {tmpdir}")
 
-        # Verzeichnis prüfen und ggf. erzeugen + ggf. alten Inhalt 
+        # Verzeichnis prüfen und ggf. erzeugen + ggf. alten Inhalt
         # for data protection reasons
         if tmpdir is not None:
             try:
-                os.makedirs(tmpdir, exist_ok=True)
+                try:
+                    os.makedirs(tmpdir, exist_ok=True)
+                except OSError as e:
+                    if getattr(e, 'winerror', None) != 183:  # 183 = Existiert bereits (Race condition / OneDrive)
+                        raise
                 for entry in os.listdir(tmpdir):
                     path = os.path.join(tmpdir, entry)
                     if os.path.isfile(path) or os.path.islink(path):
@@ -365,26 +356,18 @@ class UI(QMainWindow, Ui_MainWindow):
                         rmtree(path)
             except Exception as e:
                 self.lastExceptionString=f"Konnte 'tmpdir' nicht erzeugen: {str(e)}"
+                print(f"[Init] WARNUNG: tmpdir nicht nutzbar, Fallback auf System-tmp: {e}")
                 tmpdir = None
 
         self.tempDir = TemporaryDirectory(dir=tmpdir) if tmpdir else TemporaryDirectory()
+        print(f"[Init] tempDir: {self.tempDir.name}")
 
         self.scriptRoot = os.path.dirname(os.path.realpath(__file__))
       
-        if sys.platform.lower().startswith('win'):
-            windowIcon=QIcon(os.path.join(self.scriptRoot, 'icons', 'openxjv_desktop.ico'))
-        else:
-            icon16 =os.path.join(self.scriptRoot, 'icons', 'appicon16.png')
-            icon32 =os.path.join(self.scriptRoot, 'icons', 'appicon32.png')
-            icon64 =os.path.join(self.scriptRoot, 'icons', 'appicon64.png')
-            icon128=os.path.join(self.scriptRoot, 'icons', 'appicon128.png')
-            icon256=os.path.join(self.scriptRoot, 'icons', 'appicon256.png')
-            windowIcon=QIcon()
-            windowIcon.addFile(icon16,(QSize(16,16)))
-            windowIcon.addFile(icon32,(QSize(32,32)))
-            windowIcon.addFile(icon64,(QSize(64,64)))
-            windowIcon.addFile(icon128,(QSize(128,128)))
-            windowIcon.addFile(icon256,(QSize(256,256)))
+        windowIcon = QIcon()
+        for size, name in [(16, 'appicon16.png'), (32, 'appicon32.png'), (64, 'appicon64.png'),
+                           (128, 'appicon128.png'), (256, 'appicon256.png')]:
+            windowIcon.addFile(os.path.join(self.scriptRoot, 'icons', name), QSize(size, size))
         self.setWindowIcon(windowIcon)
 
         # Initialisiere Search/Filter Manager (Phase 2 Migration)
@@ -397,38 +380,55 @@ class UI(QMainWindow, Ui_MainWindow):
 
         self.loadedPDFpath=''
         self.loadedPDFfilename=''
- 
+
         self.column_preferences={}
+        self._ki_window: KIMainWindow | None = None
         
         self.dirs = AppDirs("OpenXJV", "digidigital", version="0.1")
-        os.makedirs(self.dirs.user_data_dir, exist_ok=True) 
-        
+        print(f"[Init] user_data_dir: {self.dirs.user_data_dir}")
+
+        try:
+            os.makedirs(self.dirs.user_data_dir, exist_ok=True)
+        except OSError as e:
+            if getattr(e, 'winerror', None) != 183:  # 183 = Existiert bereits (Race condition / OneDrive)
+                raise
+
         self.db_name = 'openXJV_data.db'
         self.db_path = os.path.join(self.dirs.user_data_dir, self.db_name)
-        # Initialisiere modulare Komponenten
-        self.db_manager = DatabaseManager(self.db_path)
+        db_is_new = not os.path.exists(self.db_path)
+        print(f"[Init] Datenbank: {self.db_path} ({'neu' if db_is_new else 'vorhanden'})")
+        try:
+            self.db_manager = DatabaseManager(self.db_path)
+        except Exception as e:
+            print(f"[Init] FEHLER: Datenbankinitialisierung fehlgeschlagen: {e}")
+            raise
 
         # Übersetzungen
-        translation_path = os.path.normcase(os.path.join(QLibraryInfo.path(QLibraryInfo.LibraryPath(10)),  "qtbase_de.qm")) 
+        translation_path = os.path.normcase(os.path.join(QLibraryInfo.path(QLibraryInfo.LibraryPath(10)),  "qtbase_de.qm"))
         translator = QTranslator(app)
-    
+
         if translator.load(translation_path):
-            app.installTranslator(translator)  
+            app.installTranslator(translator)
+            print(f"[Init] Qt-Übersetzung geladen: {translation_path}")
+        else:
+            print(f"[Init] Qt-Übersetzung nicht gefunden: {translation_path}")
 
         # Path.home() nicht direkt verwenden, falls wir in einem Snap-Paket sind
         self.homedir = os.environ.get('SNAP_REAL_HOME', Path.home())
 
         ### Lade Schriftarten ###
         self.fontDir = self.scriptRoot + '/fonts/'
-        
+
         fontFiles=[
             "materialicons/MaterialIcons-Regular.ttf",
             "ubuntu-font-family-0.83/Ubuntu-L.ttf",
             "ubuntu-font-family-0.83/Ubuntu-R.ttf"
-        ] 
+        ]
 
         for font in fontFiles:
-            QFontDatabase.addApplicationFont(self.fontDir + font)
+            font_path = self.fontDir + font
+            if QFontDatabase.addApplicationFont(font_path) == -1:
+                print(f"[Init] WARNUNG: Schriftart nicht geladen: {font_path}")
 
         # Setze Schriftarten
         self.buttonFont=QFont('Material Icons')
@@ -441,47 +441,60 @@ class UI(QMainWindow, Ui_MainWindow):
         self.setWindowTitle(f'openXJV {VERSION}')
 
         # Verstecke "Neue Version"-Symbol
-        self.newVersionIndicator=self.toolBar.actions()[14]
+        self.newVersionIndicator=self.toolBar.actions()[15]
         self.newVersionIndicator.setVisible(False)
 
-        # Füge temporär tesseract, jbig2dec zum Windows-PATH hinzu 
-        if os.name == 'nt': 
-            
+        # Füge temporär tesseract, jbig2dec zum Windows-PATH hinzu
+        if os.name == 'nt':
             #if os.path.exists(os.path.join(self.scriptRoot,'bin','search_tool', 'search_tool.exe')):
-            #        os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','search_tool')}"  
-            if os.path.exists(os.path.join(self.scriptRoot,'bin','gocr', 'gocr049.exe')):
-                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','gocr')}" 
+            #        os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','search_tool')}"
+            gocr_path = os.path.join(self.scriptRoot,'bin','gocr', 'gocr049.exe')
+            if os.path.exists(gocr_path):
+                os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','gocr')}"
+                print(f"[Init] gocr gefunden: {gocr_path}")
+            else:
+                print(f"[Init] gocr nicht gefunden: {gocr_path}")
             if not PDFocr.tesseractAvailable():
-                if os.path.exists(os.path.join(self.scriptRoot,'bin','jbig2dec', 'jbig2dec.exe')):
-                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','jbig2dec')}"    
-                if os.path.exists(os.path.join(self.scriptRoot,'bin','tesseract', 'tesseract.exe')):
+                jbig2_path = os.path.join(self.scriptRoot,'bin','jbig2dec', 'jbig2dec.exe')
+                tess_path  = os.path.join(self.scriptRoot,'bin','tesseract', 'tesseract.exe')
+                if os.path.exists(jbig2_path):
+                    os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','jbig2dec')}"
+                    print(f"[Init] jbig2dec gefunden: {jbig2_path}")
+                else:
+                    print(f"[Init] jbig2dec nicht gefunden: {jbig2_path}")
+                if os.path.exists(tess_path):
                     os.environ['PATH'] += f";{os.path.join(self.scriptRoot,'bin','tesseract')}"
                     os.environ['TESSDATA_PREFIX'] = f"{os.path.join(self.scriptRoot,'bin','tesseract', 'tessdata')}"
+                    print(f"[Init] tesseract (Bundle) gefunden: {tess_path}")
+                else:
+                    print(f"[Init] tesseract nicht gefunden: {tess_path}")
             os.environ['PATH'] += f";{self.scriptRoot}"
-        
+
         # Begrenze Tesseract Multithreading
-        os.environ['OMP_THREAD_LIMIT']='2' 
-        
+        os.environ['OMP_THREAD_LIMIT']='2'
+
         # Verstecke OCR-Optionen, falls Tesseract nicht verfügbar
         if not PDFocr.tesseractAvailable():
             self.OCRenabled=False
             self.actionTexterkennungAktuellesPDF.setVisible(False)
             self.actionTexterkennung.setVisible(False)
+            print("[Init] OCR: Tesseract nicht verfügbar, OCR deaktiviert")
         else:
             self.OCRenabled=True
+            print("[Init] OCR: Tesseract verfügbar")
         
         self.actionOCRall.setVisible(False)
             
         ###Bereite Einstellungen vor###
-        self.settings_manager = SettingsManager('openXJV', 'digidigital')
+        self.settings_manager = SettingsManager('digidigital', 'openXJV')
         # Erhalte Rückwärtskompatibilität - settings-Attribut zeigt nun auf die zugrundeliegenden QSettings
         self.settings = self.settings_manager.settings
         
         ### Initialisiere PDF-Viewer Widget ###
         # Lese gespeicherte Annotationseinstellung
-        saved_annotation_action = self.settings_manager.get_string('annotationAction', 'disabled')
+        saved_annotation_action = self.settings_manager.get_string('annotationAction', 'auto_save')
         if saved_annotation_action not in ('disabled', 'prompt', 'auto_save'):
-            saved_annotation_action = 'disabled'
+            saved_annotation_action = 'auto_save'
 
         pdf_config = PDFViewerConfig(
             features=PDFFeatures(
@@ -499,6 +512,7 @@ class UI(QMainWindow, Ui_MainWindow):
                 confirm_before_external_link=True,
                 block_remote_content=True,
                 allowed_protocols=["http", "https", "mailto"],
+                open_url_handler=open_url,
             ),
             print_handler=PrintHandler.QT_DIALOG,
             print_dpi=200,
@@ -659,7 +673,20 @@ class UI(QMainWindow, Ui_MainWindow):
         self.plusFilter.setText(self.settings_manager.get_string("plusFilter", ''))
         self.minusFilter.setText(self.settings_manager.get_string("minusFilter", ''))
         self.__readSettings()
+
         
+        # Maintenance-Token prüfen 
+        # Sei fair ;)
+        if is_in_bundle():
+            if check_token_from_env()[0]:
+                self.actionMaintenance_Token.setVisible(False)
+            elif not is_token_valid(self.settings_manager):
+                from datetime import date
+                if date.today().day % 2 == 1:
+                    self.maintenanceBanner.setVisible(True)
+        else:
+            self.actionMaintenance_Token.setVisible(False)
+            
         #TODO: In späterer Version entfernen
         ####Chromium als PDF-Viewer verbergen (Deprecated)####
         self.actionChromium.setVisible(False) 
@@ -733,6 +760,7 @@ class UI(QMainWindow, Ui_MainWindow):
         self.actionZIP_ArchiveOeffnen.triggered.connect(self.__selectZipFiles)
         self.actionUeberOpenXJV.triggered.connect(self.__displayInfo)
         self.actionAnleitung.triggered.connect(self.__openManual)
+        self.actionDatenschutzerklaerung.triggered.connect(self.__openDatenschutzerklaerung)
         self.actionSupport_anfragen.triggered.connect(self.__supportAnfragen)       
         self.actionAktenverzeichnis_festlegen.triggered.connect(lambda:self.__chooseStartFolder())
         # self.inhaltView.clicked.connect(self.__updateSelectedInhalt) # führt zu bounce mit connect in __setInhaltView()
@@ -759,11 +787,16 @@ class UI(QMainWindow, Ui_MainWindow):
         self.actionAlleSpaltenAbwaehlen.triggered.connect(self.__uncheckAllColumns)
         self.actionAlleSpaltenMarkieren.triggered.connect(self.__checkAllColumns)
         self.browser.page().profile().downloadRequested.connect(self.__downloadRequested) #TODO Gemeinsam mit Chromiumvieweroption entfernen
-        self.actionNeueVersion.triggered.connect(lambda triggered: QDesktopServices.openUrl(QUrl("https://openxjv.de")))
+        self.actionNeueVersion.triggered.connect(lambda triggered: open_url("https://openxjv.de"))
         self.actionXML_Validierung_XSD.triggered.connect(self.__openXSDValidator)
         self.actionAktion_erfragen.triggered.connect(self.__annotationSettingsSwitch)
         self.actionAutomatisch_speichern.triggered.connect(self.__annotationSettingsSwitch)
         self.actionVerwerfen.triggered.connect(self.__annotationSettingsSwitch)
+        self.actionMaintenance_Token.triggered.connect(self.__showMaintenanceDialog)
+        self.actionKI_Labor.triggered.connect(self.__openKILabor)
+
+        if "OPENXJV_NO_AI" in os.environ:
+            self.actionKI_Labor.setVisible(False)
 
         self.empfaengerText.customContextMenuRequested.connect(lambda event:self.__copyToClipboard(self.empfaengerText.text()))         
         self.erstellungszeitpunktText.customContextMenuRequested.connect(lambda event:self.__copyToClipboard(self.erstellungszeitpunktText.text()))
@@ -827,6 +860,7 @@ class UI(QMainWindow, Ui_MainWindow):
 
     def loadInitialFiles(self):
         """Lädt die beim Start übergebenen oder zuletzt verwendeten Dateien."""
+        QApplication.processEvents()
         if self._initial_file and self._initial_file.lower().endswith('xml'):
             self.getFile(self._initial_file)
         elif self._initial_ziplist:
@@ -844,9 +878,37 @@ class UI(QMainWindow, Ui_MainWindow):
 
     def cleanUp(self):
         """Speichert Notizen und Einstellungen, löscht temporäres Verzeichnis vor dem Beenden des Programms."""
-        self.__saveNotes() 
+        self.__saveNotes()
         self.settings.sync()
         self.tempDir.cleanup()
+
+    def closeEvent(self, event):
+        if self._ki_window is not None:
+            self._ki_window.close()
+            self._ki_window = None
+        annotation_action = self.__getAnnotationAction()
+        if annotation_action in ('prompt', 'auto_save'):
+            try:
+                self.pdf_viewer.exit_annotation_edit_mode()
+                if self.pdf_viewer.has_unsaved_changes():
+                    reply = QMessageBox.question(
+                        self,
+                        "Ungespeicherte Annotationen",
+                        "Das aktuell angezeigte PDF enthält ungespeicherte Annotationen.\n"
+                        "Sollen die Änderungen vor dem Beenden gespeichert werden?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                        QMessageBox.StandardButton.Yes,
+                    )
+                    if reply == QMessageBox.StandardButton.Yes:
+                        self.__trigger_pdf_unsaved_changes()
+                        QMessageBox.information(
+                            self,
+                            "Annotationen gespeichert",
+                            "Die Annotationen wurden gespeichert.",
+                        )
+            except Exception:
+                pass
+        super().closeEvent(event)
 
     # ========================================
     # ABSCHNITT 2: DATEIOPERATIONEN
@@ -976,6 +1038,27 @@ class UI(QMainWindow, Ui_MainWindow):
         if not success and not ignoreWarnings:
             self.statusBar.showMessage('Datei existiert nicht: ' + filename) 
 
+    def __trigger_pdf_unsaved_changes(self):
+        """Löst den async Save-Prozess für ungespeicherte PDF-Annotationen aus.
+
+        Nur noch von closeEvent verwendet: Nachdem der Nutzer im eigenen
+        QMessageBox-Dialog "Ja" gewählt hat, wird der async Save über
+        backend._handle_unsaved_before_action() angestoßen.
+
+        HINWEIS: Alle anderen früheren Aufrufstellen wurden nach den upstream-Fixes
+        in pdfjs_viewer entfernt — show_blank_page() behandelt ungespeicherte
+        Änderungen nun intern.
+
+        HINWEIS: Die öffentliche handle_unsaved_changes() ist hier NICHT geeignet, da sie
+        _close_deferred=True setzt und nach dem async Save widget.close() aufruft.
+        """
+        try:
+            self.pdf_viewer.backend._handle_unsaved_before_action(
+                {'type': 'show_blank_page'}
+            )
+        except Exception:
+            pass
+
     def __openFileInBrowser(self, filename):
         """Öffnet Datei im Browser-Viewer."""
         # Bestimme vollständigen Pfad - filename kann bereits absolut sein (z.B. konvertierte TIFF-Dateien)
@@ -1017,6 +1100,8 @@ class UI(QMainWindow, Ui_MainWindow):
                 return
         else:
             # Nicht-PDF-Dateien: Bilder, HTML, XML, Text - über Browser laden
+            # show_blank_page() behandelt ungespeicherte Annotationen und leert den PDF-Viewer.
+            self.pdf_viewer.show_blank_page()
             winslash = '/' if sys.platform.lower().startswith('win') else ''
             self.url = "file://%s%s" % (winslash, filePath)
             self.browser.setUrl(QUrl.fromUserInput(self.url))
@@ -1026,7 +1111,46 @@ class UI(QMainWindow, Ui_MainWindow):
     def __openManual(self):
         manualPath = os.path.join(self.scriptRoot , 'docs', 'openXJV_Benutzerhandbuch.pdf')
         self.__openFileExternal(manualPath, True, True)
-    
+
+    def __openDatenschutzerklaerung(self):
+        datenschutzPath = os.path.join(self.scriptRoot , 'docs', 'openXJV_Datenschutzerklärung.pdf')
+        self.__openFileExternal(datenschutzPath, True, True)
+
+    def __openKILabor(self):
+        """Öffnet das KI-Labor. Es kann immer nur ein KI-Labor gleichzeitig geöffnet sein."""
+        if self._ki_window is not None and self._ki_window.isVisible():
+            self._ki_window.activateWindow()
+            self._ki_window.raise_()
+            return
+        from openxjv.ki.core.ui.main_window import KIMainWindow
+        from openxjv.ki.core.model_registry import ModelRegistry as KIModelRegistry
+        models_dir = Path(self.dirs.user_data_dir) / "models"
+        registry = KIModelRegistry(models_dir=models_dir)
+        self._ki_window = KIMainWindow(registry=registry, app_dir=self.scriptRoot, ki_debug=self._ki_debug)
+        current_path = self.__getKISupportedFilePath()
+        if current_path:
+            self._ki_window.set_file_path(current_path)
+        self._ki_window.show()
+
+    def __getKISupportedFilePath(self) -> str:
+        """
+        Gibt den Originalpfad der aktuell in der Vorschau geladenen Datei zurück,
+        sofern das Format von der KI-Textextraktion unterstützt wird.
+        Gibt leeren String zurück, wenn keine passende Datei geladen ist.
+        """
+        from openxjv.ki.core.ui.main_window import SUPPORTED_EXTENSIONS as KI_SUPPORTED_EXTENSIONS
+        path = self.loadedPDFpath
+        if path and Path(path).suffix.lower() in KI_SUPPORTED_EXTENSIONS:
+            return path
+        return ""
+
+    def __passFileToKILabor(self, filepath: str) -> None:
+        """Übergibt einen Dateipfad an ein geöffnetes KI-Labor."""
+        from openxjv.ki.core.ui.main_window import SUPPORTED_EXTENSIONS as KI_SUPPORTED_EXTENSIONS
+        if self._ki_window is not None and self._ki_window.isVisible():
+            if Path(filepath).suffix.lower() in KI_SUPPORTED_EXTENSIONS:
+                self._ki_window.set_file_path(filepath)
+
     def __exportZipAction(self):
         """Exportiert Dateien aus der Favoritenliste nach Auswahl eines Dateinamens in eine ZIP-Datei. Delegiert an FileManager."""
         message = ''
@@ -1046,26 +1170,21 @@ class UI(QMainWindow, Ui_MainWindow):
             )
 
             if zipPath and self.favorites:
-                # Bereite Dateiliste vor (nur Favoriten, keine vollständigen Pfade)
                 try:
                     # Delegiere an FileManager
-                    success = self.file_manager.export_to_zip(
+                    self.file_manager.export_to_zip(
                         zip_path=zipPath,
-                        file_list=self.favorites,
+                        file_list=list(dict.fromkeys(e.filename for e in self.favorites)),
                         include_xml=True,
                         xml_file=self.settings_manager.get_string("lastFile", None)
                     )
-
-                    if success:
-                        message = 'Die Dateien wurden erfolgreich exportiert - %s' % zipPath
-                        self.__displayMessage(message)
-                    else:
-                        message = 'Bei der Erzeugung der Zip-Datei ist ein Fehler aufgetreten.'
-                        self.__displayMessage(message, title='Fehler', icon=QMessageBox.Icon.Warning)
+                    message = 'Die Dateien wurden erfolgreich exportiert - %s' % zipPath
+                    self.__displayMessage(message)
                 except Exception as e:
                     message = 'Bei der Erzeugung der Zip-Datei ist ein Fehler aufgetreten.'
                     self.__displayMessage(message, title='Fehler', icon=QMessageBox.Icon.Warning)
                     self.lastExceptionString = str(e)
+                    self.__debugOutput('__exportToZipAction')
             else:
                 return
 
@@ -1088,23 +1207,19 @@ class UI(QMainWindow, Ui_MainWindow):
             if folder and self.favorites:
                 try:
                     # Delegiere an FileManager
-                    success = self.file_manager.export_to_folder(
+                    self.file_manager.export_to_folder(
                         folder_path=folder,
-                        file_list=self.favorites,
+                        file_list=list(dict.fromkeys(e.filename for e in self.favorites)),
                         include_xml=True,
                         xml_file=self.settings_manager.get_string("lastFile", None)
                     )
-
-                    if success:
-                        message = 'Die Dateien wurden erfolgreich nach %s kopiert.' % folder
-                        self.__displayMessage(message)
-                    else:
-                        message = 'Es ist ein Fehler während des Kopiervorgangs aufgetreten.'
-                        self.__displayMessage(message, title='Fehler', icon=QMessageBox.Icon.Warning)
+                    message = 'Die Dateien wurden erfolgreich nach %s kopiert.' % folder
+                    self.__displayMessage(message)
                 except Exception as e:
                     message = 'Es ist ein Fehler während des Kopiervorgangs aufgetreten.'
                     self.__displayMessage(message, title='Fehler', icon=QMessageBox.Icon.Warning)
                     self.lastExceptionString = str(e)
+                    self.__debugOutput('__exportToFolderAction')
             else:
                 return
 
@@ -1181,82 +1296,94 @@ class UI(QMainWindow, Ui_MainWindow):
     # ========================================
     # ABSCHNITT 4: FAVORITENVERWALTUNG
     # ========================================      
-    def __addFavorite(self, filename):
+    def __addFavorite(self, filename, anzeigename=''):
         """Fügt eine Datei zu den Favoriten hinzu und markiert die neue Zeile."""
-        if filename not in self.favorites:
-            self.favorites.append(filename) 
+        entry = FavoriteEntry(filename=filename, anzeigename=anzeigename)
+        if entry not in self.favorites:
+            self.favorites.append(entry)
             self.__setFavorites()
-            self.__saveFavorites() 
-                        
-        self.favTableView.selectRow(self.favTableView.findItems(filename, Qt.MatchFlag.MatchExactly)[0].row()) 
+            self.__saveFavorites()
+
+        # Zeile in favTableView selektieren; Suche via UserRole-Daten ist robust
+        # gegenüber mehrfach vorkommendem Dateinamen mit unterschiedlichen Anzeigenamen.
+        for row_idx in range(self.favTableView.rowCount()):
+            if self.favTableView.item(row_idx, 0).data(Qt.ItemDataRole.UserRole) == entry:
+                self.favTableView.selectRow(row_idx)
+                break
 
     def __addDocToFavorites(self):
         """Fügt das aktuell in der Dokumentenansicht markierte Dokument zu den Favoriten hinzu."""
         filename = self.__getCurrentDocTableFilename()
-        self.__addFavorite(filename) 
+        if not filename:
+            return
+        anzeigenameColumn = self.docTableAttributes.index('anzeigename') + 2
+        az_item = self.docTableView.item(self.docTableView.currentRow(), anzeigenameColumn)
+        anzeigename = az_item.text() if az_item is not None else ''
+        self.__addFavorite(filename, anzeigename)
           
     def __addAllDocsToFavorites(self):
         """Fügt den Favoriten alle Dokumente der Dokumentenansicht hinzu."""
         if self.docTableView.rowCount() > 0:
-            filenameColumn=self.docTableAttributes.index('dateiname')+2
+            filenameColumn = self.docTableAttributes.index('dateiname') + 2
+            anzeigenameColumn = self.docTableAttributes.index('anzeigename') + 2
             for row in range(self.docTableView.rowCount()):
-                    # Nur sichtbare Reihen berücksichtigen
-                    if not self.docTableView.isRowHidden(row):    
-                        filename = self.docTableView.item(row, filenameColumn).text()
-                        if filename not in self.favorites:
-                            self.favorites.append(filename)
+                if not self.docTableView.isRowHidden(row):
+                    fn_item = self.docTableView.item(row, filenameColumn)
+                    az_item = self.docTableView.item(row, anzeigenameColumn)
+                    if fn_item is None:
+                        continue
+                    filename = fn_item.text()
+                    anzeigename = az_item.text() if az_item is not None else ''
+                    entry = FavoriteEntry(filename=filename, anzeigename=anzeigename)
+                    if entry not in self.favorites:
+                        self.favorites.append(entry)
             self.__setFavorites()
-            self.__saveFavorites()              
+            self.__saveFavorites()
            
     def __removeFavorite(self):
-        """Entfernt den markierten Eintrag in der aktuell active view aus der Favoritenliste."""   
+        """Entfernt den markierten Eintrag in der aktuell active view aus der Favoritenliste."""
         focusWidget = self.focusWidget()
-        if focusWidget in (self.favTableView, self.docTableView): # Wenn Tastenkombination oder Rechtsklickmenü in Tabelle ausgeführt wird
-            filename = self.__getCurrentItemFilename(focusWidget) # Datei, die in der jeweiligen Tabelle markiert ist wählen
-        elif focusWidget == self.deleteFavoriteButton: # Wenn Favoriten-Löschen Button geklickt wird
-            filename = self.__getCurrentItemFilename(self.favTableView) # In Favoritenliste markierte Datei wählen
+        if focusWidget in (self.favTableView, self.docTableView):
+            entry = self.__getCurrentItemEntry(focusWidget)
+        elif focusWidget == self.deleteFavoriteButton:
+            entry = self.__getCurrentItemEntry(self.favTableView)
         else:
             return
-            
-        if filename and filename in self.favorites:     
-            self.favorites.remove(filename)
 
-            if self.favTableView.currentRow() <= self.favTableView.rowCount()-2:
+        if entry and entry in self.favorites:
+            if self.favTableView.currentRow() <= self.favTableView.rowCount() - 2:
                 next_row = self.favTableView.currentRow()
-            else:    
-                next_row = self.favTableView.rowCount()-2
-            
+            else:
+                next_row = self.favTableView.rowCount() - 2
+
+            self.favorites.remove(entry)
             self.__setFavorites()
-            
-            # Nur aus Datenbank löschen, wenn eine Datei geladen ist (akte hat nachricht-Attribut)
-            if self.akte and hasattr(self.akte, 'nachricht'):
-                with sqlite3.connect(self.db_path) as db_connection:
-                    db_cursor = db_connection.cursor()
-                    db_query = '''
-                        DELETE FROM favorites WHERE uuid = ? AND filename = ?;
-                            '''
-                    eigeneID = self.akte.nachricht.get('eigeneID')
-                    db_cursor.execute(db_query, (eigeneID, filename))         
-            
-            self.favTableView.selectRow(next_row)   
-            
-            self.statusBar.showMessage(filename + ' aus Favoriten entfernt.')
+            self.__saveFavorites()
+
+            self.favTableView.selectRow(next_row)
+            self.statusBar.showMessage(entry.filename + ' aus Favoriten entfernt.')
 
     def __moveFav(self, direction='up'):
         if self.favTableView.currentItem():
-            filename = self.favTableView.item(self.favTableView.currentRow(), 1).text()
+            row = self.favTableView.currentRow()
+            col0 = self.favTableView.item(row, 0)
+            if col0 is None:
+                return
+            entry = col0.data(Qt.ItemDataRole.UserRole)
+            if entry is None:
+                return
 
             try:
-                position = self.favorites.index(filename)
-                self.favorites.remove(filename)
+                position = self.favorites.index(entry)
+                self.favorites.remove(entry)
                 if direction == 'up' and position != 0:
-                    position-=1
-                elif direction =='down':                  
-                    position+=1
-                self.favorites.insert(position,filename)     
+                    position -= 1
+                elif direction == 'down':
+                    position += 1
+                self.favorites.insert(position, entry)
                 self.__setFavorites()
                 if position == len(self.favorites):
-                    position -= 1  
+                    position -= 1
                 self.favTableView.selectRow(position)
                 self.__saveFavorites()
             except ValueError:
@@ -1274,7 +1401,17 @@ class UI(QMainWindow, Ui_MainWindow):
         if self.akte and hasattr(self.akte, 'nachricht'):
             eigeneID = self.akte.nachricht.get('eigeneID')
             if eigeneID:
-                self.favorites = self.db_manager.load_favorites(eigeneID, self.dirs.user_data_dir)
+                try:
+                    self.favorites = self.db_manager.load_favorites(eigeneID, self.dirs.user_data_dir)
+                    # TODO (Version 1.5+): Diesen Block entfernen, sobald keine Legacy-Einträge
+                    # (anzeigename='') mehr in der Datenbank zu erwarten sind.
+                    # Schreibt Legacy-Einträge sofort im neuen Format zurück, damit die
+                    # Datenbank konsistent bleibt (anzeigename-Spalte vorhanden, Wert '').
+                    if any(not e.anzeigename for e in self.favorites):
+                        self.__saveFavorites()
+                except Exception as e:
+                    self.lastExceptionString = str(e)
+                    self.__debugOutput('__loadFavorites')
         self.__setFavorites()
 
     def __saveFavorites(self):
@@ -1288,6 +1425,7 @@ class UI(QMainWindow, Ui_MainWindow):
                 self.db_manager.save_favorites(eigeneID, self.favorites)
             except Exception as e:
                 self.lastExceptionString = str(e)
+                self.__debugOutput('__saveFavorites')
 
     # ========================================
     # ABSCHNITT 5: NOTIZEN/DATENBANKOPERATIONEN
@@ -1332,7 +1470,6 @@ class UI(QMainWindow, Ui_MainWindow):
             db_path=self.db_path,
             uuid=uuid,
             script_root=self.scriptRoot,
-            search_worker_class=SearchWorker,
             status_callback=lambda msg: self.statusBar.showMessage(msg),
             ready_callback=self.__searchStoreReady,
             reset_search_store=reset_searchStore,
@@ -1547,7 +1684,8 @@ class UI(QMainWindow, Ui_MainWindow):
             msgText = 'Bei der Erzeugung der PDF-Datei ist ein Fehler aufgetreten.'
             self.statusBar.showMessage(msgText)
             self.__displayMessage(msgText, title='Fehler', icon=QMessageBox.Icon.Warning)
-            self.lastExceptionString = str(e)  
+            self.lastExceptionString = str(e)
+            self.__debugOutput('__exportPDF')
 
     def __notizPdfExport(self):
         """Exportiert die Notizen in eine PDF-Datei. Delegiert an pdf_operations."""
@@ -1592,11 +1730,7 @@ class UI(QMainWindow, Ui_MainWindow):
                 self.__displayMessage(message)
                 self.lastExceptionString = str(e) + message
                 self.statusBar.showMessage(message)
-
-    # ========================================
-    # ABSCHNITT 9: DRUCKOPERATIONEN
-    # ========================================
-    # Druckfunktionen wurden entfernt - pdfjs_viewer übernimmt das Drucken intern
+                self.__debugOutput('__notizPdfExport')
 
     # ========================================
     # ABSCHNITT 10: ANSICHTS-/UI-AKTUALISIERUNGSMETHODEN
@@ -1924,53 +2058,56 @@ class UI(QMainWindow, Ui_MainWindow):
         for singleID in self.akte.alleAktenIDs:
             rows.extend(self.akte.getFileRows(singleID))
 
-        data=[]
-        filename = []
+        data = []
+        entries = []  # Parallel zu data: welcher FavoriteEntry gehört zu welcher Tabellenzeile
+
         for favorite in self.favorites:
             for row in rows:
-                rowData= []
-                
-                #Ensure documents mit the same filename are displayed only one time (can be part of multiple parts like Akten and Teilakten) 
-                if row['dateiname'] in filename:
-                    continue
-                elif row['dateiname'] == favorite:
-                    filename.append(row['dateiname']) 
+                # TODO (Version 1.5+): Den Legacy-Zweig (not favorite.anzeigename) entfernen,
+                # sobald keine Einträge mit anzeigename='' mehr vorkommen.
+                # Dann nur noch exakten Match per (anzeigename, dateiname) verwenden.
+                if favorite.anzeigename:
+                    # Neues Format: exakter Abgleich per (anzeigename, dateiname)
+                    if row['dateiname'] != favorite.filename or row['anzeigename'] != favorite.anzeigename:
+                        continue
                 else:
-                    continue
-                
-                rowData+=self.__arrangeData(row, ('anzeigename', 'dateiname', 'datumDesSchreibens', 'veraktungsdatum', 'dokumentklasse'))
-                #add row
-                data.append(rowData)        
-        
+                    # Legacy-Abgleich: nur per Dateiname (anzeigename war bei Anlage unbekannt)
+                    if row['dateiname'] != favorite.filename:
+                        continue
+
+                rowData = self.__arrangeData(row, ('anzeigename', 'dateiname', 'datumDesSchreibens', 'veraktungsdatum', 'dokumentklasse'))
+                data.append(rowData)
+                entries.append(favorite)
+                break  # Pro Favorit-Eintrag nur die erste passende Zeile verwenden
+
         if data:
             self.favTableView.setRowCount(len(data))
-            self.favTableView.setColumnCount(len(data[0]))              
-            
+            self.favTableView.setColumnCount(len(data[0]))
+
             self.favTableView.setHorizontalHeaderItem(0, self.__tableItem('Anzeigename', self.appFont))
             self.favTableView.setHorizontalHeaderItem(1, self.__tableItem('Dateiname', self.appFont))
             self.favTableView.setHorizontalHeaderItem(2, self.__tableItem('Datum', self.appFont))
             self.favTableView.setHorizontalHeaderItem(3, self.__tableItem('Veraktung', self.appFont))
             self.favTableView.setHorizontalHeaderItem(4, self.__tableItem('Klasse', self.appFont))
-            # Datum + Klasse für Übersichtlichkeit ausblenden
             self.favTableView.hideColumn(2)
             self.favTableView.hideColumn(3)
             self.favTableView.hideColumn(4)
 
             if column_zero_width:
-                self.favTableView.setColumnWidth(0, column_zero_width)   
+                self.favTableView.setColumnWidth(0, column_zero_width)
             if column_one_width:
                 self.favTableView.setColumnWidth(1, column_one_width)
-                      
-            rowNo=0
-            for row in data:
-                itemNo=0
-                for item in row:
-                    font=self.appFont      
-                    tempItem=self.__tableItem(item, font)
-                    tempItem.setTextAlignment(Qt.AlignmentFlag.AlignCenter)    
-                    self.favTableView.setItem(rowNo, itemNo, tempItem)           
-                    itemNo+=1
-                rowNo=rowNo+1    
+
+            for rowNo, (row, entry) in enumerate(zip(data, entries)):
+                for itemNo, item in enumerate(row):
+                    tempItem = self.__tableItem(item, self.appFont)
+                    tempItem.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.favTableView.setItem(rowNo, itemNo, tempItem)
+                # FavoriteEntry als UserRole-Datum speichern; ermöglicht zuverlässiges
+                # Wiederfinden des Eintrags bei Entfernen/Verschieben unabhängig vom Anzeigetext.
+                col0 = self.favTableView.item(rowNo, 0)
+                if col0 is not None:
+                    col0.setData(Qt.ItemDataRole.UserRole, entry)
       
     def __setMetadata(self, nachricht, aktenID=None):
         
@@ -2088,11 +2225,12 @@ class UI(QMainWindow, Ui_MainWindow):
         """Lädt einen leeren Viewer in das Vorschaufenster."""
 
         self.loadedPDFfilename=''
+        self.loadedPDFpath=''
 
         viewer_mode = self.settings_manager.get_pdf_viewer()
 
         if viewer_mode == 'PDFjs':
-            # Verwende pdfjs_viewer's eingebaute Leerseite
+            # show_blank_page() behandelt ungespeicherte Annotationen intern.
             self.pdf_viewer.show_blank_page()
         ''' TODO: In späterer Version entfernen
         else:
@@ -2242,6 +2380,20 @@ class UI(QMainWindow, Ui_MainWindow):
                     if item:
                         item.setFont(self.appFont)
 
+        # Aktualisiere favTableView
+        favTableRows = self.favTableView.rowCount()
+        favTableColumns = self.favTableView.columnCount()
+        if favTableRows > 0 and favTableColumns > 0:
+            for column in range(favTableColumns):
+                item = self.favTableView.horizontalHeaderItem(column)
+                if item:
+                    item.setFont(self.appFont)
+            for row in range(favTableRows):
+                for column in range(favTableColumns):
+                    item = self.favTableView.item(row, column)
+                    if item:
+                        item.setFont(self.appFont)
+
         # Aktualisiere andere Widgets
         self.deleteFavoriteButton.setFont(self.buttonFont)
         self.filterMagic.setFont(self.buttonFont)
@@ -2327,8 +2479,12 @@ class UI(QMainWindow, Ui_MainWindow):
         self.actionSucheAnzeigen.setChecked              (self.settings_manager.get_bool('sucheAnzeigen'))
         self.actionDateitabelleLinksbuendig.setChecked   (self.settings_manager.get_bool('dateiansichtLinksbuendig'))
 
-        # Annotationseinstellungen wiederherstellen
-        saved_annotation = self.settings_manager.get_string('annotationAction', 'disabled')
+        # Annotationseinstellungen wiederherstellen.
+        # Ist der Key nicht vorhanden (Neuinstallation / nach Migration), gilt 'auto_save' als Default.
+        if self.settings_manager.settings.contains('annotationAction'):
+            saved_annotation = self.settings_manager.get_string('annotationAction', 'auto_save')
+        else:
+            saved_annotation = 'auto_save'
         self.actionAktion_erfragen.setChecked(saved_annotation == 'prompt')
         self.actionAutomatisch_speichern.setChecked(saved_annotation == 'auto_save')
         self.actionVerwerfen.setChecked(saved_annotation == 'disabled' or saved_annotation == 'default')
@@ -2386,9 +2542,9 @@ class UI(QMainWindow, Ui_MainWindow):
         self.actionNotizen.setChecked               (False)
         self.actionLeereSpaltenAusblenden.setChecked(True)  
         self.actionPDF_js.setChecked                (True)
-        self.actionVerwerfen.setChecked(True)
+        self.actionVerwerfen.setChecked(False)
         self.actionAktion_erfragen.setChecked(False)
-        self.actionAutomatisch_speichern.setChecked(False)
+        self.actionAutomatisch_speichern.setChecked(True)
         self.__viewerSwitch()
         self.__annotationSettingsSwitch()
         self.__updateSettings()
@@ -2562,22 +2718,30 @@ class UI(QMainWindow, Ui_MainWindow):
         contextMenu.exec(self.favTableView.mapToGlobal(pos))
         
     def __dClickDocTableAction(self, val):
-        filenameColumn=self.docTableAttributes.index('dateiname')+2
-        filename=self.docTableView.item( val.row(), filenameColumn).text()
-        
-        if val.column()==0:
-            self.__addFavorite(filename) 
-        elif self.settings_manager.get_pdf_viewer()=='nativ' or val.column()==1 or not filename.lower().endswith(".pdf"):
+        filenameColumn = self.docTableAttributes.index('dateiname') + 2
+        fn_item = self.docTableView.item(val.row(), filenameColumn)
+        if fn_item is None:
+            return
+        filename = fn_item.text()
+
+        if val.column() == 0:
+            anzeigenameColumn = self.docTableAttributes.index('anzeigename') + 2
+            az_item = self.docTableView.item(val.row(), anzeigenameColumn)
+            anzeigename = az_item.text() if az_item is not None else ''
+            self.__addFavorite(filename, anzeigename)
+        elif self.settings_manager.get_pdf_viewer() == 'nativ' or val.column() == 1 or not filename.lower().endswith(".pdf"):
             self.__openFileExternal(filename)
             
-    def __browseDocTableAction (self, val):     
+    def __browseDocTableAction (self, val):
         currentIndex=self.docTableView.currentIndex()
-        
+
         if currentIndex.row() == -1:
             return
         filenameColumn=self.docTableAttributes.index('dateiname')+2
         filename=self.docTableView.item(currentIndex.row(), filenameColumn).text()
-        
+
+        self.__passFileToKILabor(os.path.join(self.basedir, filename))
+
         if self.settings_manager.get_pdf_viewer()!='nativ':
             supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt', '.xml', '.html')
             # Prüfen, ob eine Vorschau-Datei im PDF-Format existiert,
@@ -2607,12 +2771,14 @@ class UI(QMainWindow, Ui_MainWindow):
                 self.__loadEmptyViewer(unknown = True) 
                 self.statusBar.showMessage(f'Der Dateityp {Path(filename).suffix} ist zur Anzeige in der Vorschau nicht geeignet.')  
 
-    def __getFavoriteViewAction (self, val):     
+    def __getFavoriteViewAction (self, val):
         filename = self.favTableView.item(self.favTableView.currentRow(),1).text()
-        
+
         if self.loadedPDFfilename == filename:
             return
-        
+
+        self.__passFileToKILabor(os.path.join(self.basedir, filename))
+
         if self.settings_manager.get_pdf_viewer()!='nativ':
             supportedFiles=('.pdf','.jpg', '.jpeg', '.png', '.gif', '.txt', '.xml', '.html')
             # Prüfen, ob eine Vorschau-Datei im PDF-Format existiert,
@@ -2643,8 +2809,8 @@ class UI(QMainWindow, Ui_MainWindow):
                     self.lastExceptionString = str(e)
                     self.statusBar.showMessage(f'(Temporärer) Fehler beim Laden der Datei: {filename}')
             else:
-                self.statusBar.showMessage(f'Der Dateityp {Path(filename).suffix} ist zur Anzeige in der Vorschau nicht geeignet.')  
-    
+                self.statusBar.showMessage(f'Der Dateityp {Path(filename).suffix} ist zur Anzeige in der Vorschau nicht geeignet.')
+
     def __getDClickFavoriteViewAction(self):
         """Öffnet eine doppelt angeklickte Datei im externen Standardprogramm."""
         filename = self.favTableView.item(self.favTableView.currentRow(),1).text()     
@@ -2663,7 +2829,7 @@ class UI(QMainWindow, Ui_MainWindow):
         if len(self.lastExceptionString)>0:
             mailbody+='\n\nLetzte Fehlermeldung\n' + self.lastExceptionString
         
-        QDesktopServices.openUrl(QUrl("mailto:%s?subject=Supportanfrage zu openXJV %s unter %s&body=%s" % (self.supportMail, VERSION, platform.platform() ,str(mailbody)), QUrl.ParsingMode.TolerantMode ))
+        open_url(QUrl("mailto:%s?subject=Supportanfrage zu openXJV %s unter %s&body=%s" % (self.supportMail, VERSION, platform.platform() ,str(mailbody)), QUrl.ParsingMode.TolerantMode ))
  
     def changeEvent(self, event):
         if event.type() == QEvent.Type.PaletteChange:  
@@ -2687,17 +2853,48 @@ class UI(QMainWindow, Ui_MainWindow):
             filename=self.docTableView.item(self.docTableView.currentRow(), filenameColumn).text()
             return filename
                 
-    def __getCurrentItemFilename(self, focusWidget):
+    def __getCurrentItemEntry(self, focusWidget):
+        """Gibt den FavoriteEntry der aktuell markierten Zeile zurück.
+
+        Für die favTableView wird das in __setFavorites gespeicherte UserRole-Datum
+        ausgelesen, das den exakten FavoriteEntry enthält (inkl. Leerstring für
+        Legacy-Einträge). Für die docTableView wird per aktuellem Anzeigenamen und
+        Dateinamen gesucht, mit Legacy-Fallback falls kein exakter Treffer gefunden wird.
+        """
         if focusWidget == self.favTableView:
             if self.favTableView.currentItem():
-                filename = self.favTableView.item(self.favTableView.currentRow(),1).text()
-                return filename
-                
+                row = self.favTableView.currentRow()
+                col0 = self.favTableView.item(row, 0)
+                col1 = self.favTableView.item(row, 1)
+                if col0 is None or col1 is None:
+                    return None
+                entry = col0.data(Qt.ItemDataRole.UserRole)
+                if entry is not None:
+                    return entry
+                # TODO (Version 1.5+): Fallback entfernen – tritt nur auf, wenn
+                # favTableView ohne UserRole-Daten befüllt wurde (sollte nie passieren).
+                return FavoriteEntry(filename=col1.text(), anzeigename=col0.text())
+
         elif focusWidget == self.docTableView:
-            if self.docTableView.currentRow()!=-1:
-                filenameColumn=self.docTableAttributes.index('dateiname')+2
-                filename=self.docTableView.item(self.docTableView.currentRow(), filenameColumn).text()
-                return filename    
+            if self.docTableView.currentRow() != -1:
+                row = self.docTableView.currentRow()
+                filenameColumn = self.docTableAttributes.index('dateiname') + 2
+                anzeigenameColumn = self.docTableAttributes.index('anzeigename') + 2
+                fn_item = self.docTableView.item(row, filenameColumn)
+                az_item = self.docTableView.item(row, anzeigenameColumn)
+                if fn_item is None or az_item is None:
+                    return None
+                entry = FavoriteEntry(filename=fn_item.text(), anzeigename=az_item.text())
+                if entry in self.favorites:
+                    return entry
+                # TODO (Version 1.5+): Legacy-Fallback entfernen, sobald keine
+                # Einträge mit anzeigename='' mehr in self.favorites vorkommen.
+                # Sucht nach Legacy-Eintrag mit passendem Dateinamen.
+                return next(
+                    (e for e in self.favorites if e.filename == fn_item.text() and not e.anzeigename),
+                    None
+                )
+        return None
 
     def __replaceTrueFalse(self, value):
        """Ersetzt Strings 'True' mit 'yes' and 'False' mit 'no'. Nicht case-sensitiv."""
@@ -2775,7 +2972,7 @@ class UI(QMainWindow, Ui_MainWindow):
         QMessageBox.information(self, "Information",
         "openXJV " + VERSION + "\n"
         "Lizenz: GPL v3\n"
-        "2022 - 2026 Björn Seipel\nKontakt: " + self.supportMail + "\nWebsite: https://openXJV.de\n\n" 
+        "2022 - 2026 Björn Seipel\nKontakt: " + self.supportMail + "\nWebsite: https://openXJV.de\n\n"
         "Die Anwendung nutzt folgende Komponenten:\n"
         "jbig2dec - AGPL License\n"
         "Qt6 - LGPLv3\n"
@@ -2786,19 +2983,26 @@ class UI(QMainWindow, Ui_MainWindow):
         "pdfjs-viewer-pyside6 - LGPLv3+ License\n"
         "Tesseract - Apache 2.0 License\n"
         "Material Icons Font - Apache 2.0 License\n"
-        "NumPy -BSD License\n"
-        "orjson -  Apache 2.0 / MIT Licenses\n"
+        "NumPy - BSD License\n"
+        "orjson - Apache 2.0 / MIT Licenses\n"
         "pypdfium2 - Apache 2.0 / BSD 3 Clause\n"
         "darkdetect - BSD license\n"
         "lxml - BSD License\n"
         "Pillow - The open source HPND License\n"
         "pikepdf - MPL-2.0 License\n"
-        "appdirs - MIT License\n"
+        "platformdirs - MIT License\n"
         "docx2txt - MIT License\n"
         "gocr - GNU GPL\n"
         "Ubuntu Font - UBUNTU FONT LICENCE Version 1.0\n"
         "python 3.x - PSF License\n\n"
-        "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden."
+        "KI-Labor — zusätzliche Komponenten:\n"
+        "llama-cpp-python - MIT License\n"
+        "rapidocr - Apache 2.0 License\n"
+        "onnxruntime - MIT License\n"
+        "opencv-python-headless - Apache 2.0 License\n\n"
+        "Lizenztexte und Quellcode-Links können dem Benutzerhandbuch entnommen werden.\n"
+        "Die im KI-Labor verwendeten KI-Modelle und OCR-Modelle sowie deren Lizenzen\n"
+        "sind dort jeweils über die ⓘ-Schaltflächen abrufbar."
         )
   
     def __displayMessage(self, message, title = 'Hinweis', icon = QMessageBox.Icon.Information, modal=True):
@@ -2814,6 +3018,11 @@ class UI(QMainWindow, Ui_MainWindow):
             msgBox.setModal(False)
             msgBox.show()
 
+    def __debugOutput(self, origin: str) -> None:
+        """Gibt den aktuellen Traceback nach stderr aus, wenn --debug aktiv ist."""
+        if '--debug' in sys.argv:
+            print(f'DEBUG {origin}: {traceback.format_exc()}', file=sys.stderr)
+
     def __fixGnomeDarkPalette(self):
         xjvPalette = self.palette()
         for role in QPalette.ColorRole:
@@ -2826,6 +3035,11 @@ class UI(QMainWindow, Ui_MainWindow):
     # ========================================
     # ABSCHNITT 14: XSD-VALIDIERUNG
     # ========================================
+    def __showMaintenanceDialog(self):
+        dialog = MaintenanceTokenDialog(self.settings_manager, parent=self)
+        dialog.token_validated.connect(lambda: self.maintenanceBanner.setVisible(False))
+        dialog.exec()
+
     def __openXSDValidator(self):
         """Oeffnet den XSD-Validierungsdialog fuer die geladene XML-Datei.
 
@@ -2911,6 +3125,7 @@ class UI(QMainWindow, Ui_MainWindow):
     # ENDE DER ABSCHNITTE
     # ========================================               
                                               
+
 def launchApp():
     """
     Startet openXJV
@@ -2918,6 +3133,16 @@ def launchApp():
     Diese Funktion initialisiert die Qt-Anwendung mit den richtigen Einstellungen
     und startet das Hauptfenster der Benutzeroberfläche.
     """
+    
+    # Unter Windows stdout und stderr in Log umleiten, wenn mit PyInstaller gefroren,
+    # da stdout und stderr nicht (mehr) in der aufrufenden Konsole dargesetllt weren
+    if getattr(sys, 'frozen', False) and os.name == 'nt':
+        import tempfile
+        _log_path = os.path.join(tempfile.gettempdir(), 'openXJV.log')
+        _log_file = open(_log_path, 'w', encoding='utf-8', buffering=1)
+        sys.stdout = _log_file
+        sys.stderr = _log_file
+        
     # Prüfe, ob bereits eine Instanz läuft, wenn nicht im Print Process
     if not os.environ.get("_PDFJS_PRINT_PROCESS") == "1":
         single_instance = SingleInstance('openXJV')
@@ -2959,8 +3184,11 @@ def launchApp():
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     app.setObjectName('openXJV')
-    app.setApplicationName(f'openXJV {VERSION}')
+    app.setApplicationName('OpenXJV')
+    app.setApplicationDisplayName(f'openXJV {VERSION}')
     app.setApplicationVersion(VERSION)
+    app.setDesktopFileName('de.openxjv.viewer')
+
 
     # Set German locale
     QLocale.setDefault(QLocale(QLocale.German, QLocale.Germany))
@@ -2978,12 +3206,16 @@ def launchApp():
     # Parse sys.argv
     file = None
     ziplist = None
-    if len(sys.argv) == 2 and sys.argv[1].lower().endswith('xml'):
-        file = sys.argv[1]
-    elif len(sys.argv) >= 2:
-        ziplist = [f for f in sys.argv[1:] if f.lower().endswith('zip')]
+    ki_debug = '--ki-debug' in sys.argv
+    debug = '--debug' in sys.argv
 
-    widget = UI(app, file=file, ziplist=ziplist)
+    remaining = [a for a in sys.argv[1:] if a not in ('--ki-debug', '--debug')]
+    if len(remaining) == 1 and remaining[0].lower().endswith('xml'):
+        file = remaining[0]
+    elif remaining:
+        ziplist = [f for f in remaining if f.lower().endswith('zip')]
+
+    widget = UI(app, file=file, ziplist=ziplist, ki_debug=ki_debug)
     widget.setWindowFlags(
         (widget.windowFlags() & ~Qt.WindowType.WindowFullscreenButtonHint)
         | Qt.WindowType.CustomizeWindowHint
@@ -3010,9 +3242,11 @@ def launchApp():
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()
+    _debug = '--debug' in sys.argv
     try:
         launchApp()
     except Exception as e:
-        # Debug
-        traceback.print_exc()
-        print(e)
+        if _debug:
+            traceback.print_exc()
+        else:
+            print(e)

@@ -48,7 +48,7 @@ Migration Status:
        - SettingsManager (settings management)
 """
 
-__version__ = "1.0.0"
+__version__ = "0.9.8"
 __author__ = "Björn Seipel"
 __license__ = "GPL-3.0-or-later"
 

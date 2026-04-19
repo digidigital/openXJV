@@ -11,7 +11,9 @@ Klassen:
 """
 
 import os
+import sys
 import time
+import traceback
 import multiprocessing
 import concurrent.futures
 from pathlib import Path
@@ -213,6 +215,8 @@ class OCRHandler:
                 ocr_thread.start()
             except Exception as e:
                 self.last_exception_string = str(e)
+                if '--debug' in sys.argv:
+                    print(f'DEBUG OCRHandler.__texterkennung: {traceback.format_exc()}', file=sys.stderr)
                 self.ocr_lock = False
                 return
 
@@ -398,6 +402,8 @@ class OCRHandler:
             self._display_message(f"Texterkennung fehlgeschlagen\n\n{e}")
             self.ocr_lock = False
             self.last_exception_string = str(e)
+            if '--debug' in sys.argv:
+                print(f'DEBUG OCRHandler._ocr_thread_function: {traceback.format_exc()}', file=sys.stderr)
             return
 
         self.ocr_finished(time.time() - start_time)
@@ -450,6 +456,8 @@ class OCRHandler:
                 except Exception as exc:
                     error_message = f"OCR-Thread {job} generated an exception: {str(exc)}"
                     self.last_exception_string = error_message
+                    if '--debug' in sys.argv:
+                        print(f'DEBUG OCRHandler.perform_batch_ocr: {traceback.format_exc()}', file=sys.stderr)
 
         if self.app:
             self.app.restoreOverrideCursor()

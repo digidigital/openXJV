@@ -1,0 +1,22 @@
+SmolLM3-3B-Q4_K_M.gguf
+=======================
+
+Modell:      SmolLM3-3B (GGUF-Quantisierung Q4_K_M)
+Herausgeber: Hugging Face TB (HuggingFaceTB)
+Quelle:      https://huggingface.co/HuggingFaceTB/SmolLM3-3B
+GGUF:        https://huggingface.co/unsloth/SmolLM3-3B-GGUF
+
+Lizenz: Apache License 2.0
+SPDX-Identifier: Apache-2.0
+Lizenztext: https://www.apache.org/licenses/LICENSE-2.0
+
+Wesentliche Bedingungen:
+- Kommerzielle Nutzung erlaubt.
+- Weitergabe (Quell- und Binärform) erlaubt unter Beibehaltung
+  des Copyright-Hinweises und einer Kopie dieser Lizenz.
+- Änderungen müssen als solche kenntlich gemacht werden.
+- Ausdrückliche Patentlizenz durch alle Beitragenden gewährt.
+- Keine Nutzung von Marken oder Logos ohne gesonderte Genehmigung.
+- Keine Garantie; keine Haftung.
+
+Copyright (c) Hugging Face TB

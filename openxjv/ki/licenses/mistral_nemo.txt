@@ -1,0 +1,25 @@
+Mistral-Nemo-Instruct-2407.Q4_K_M.gguf
+=======================================
+
+Modell:      Mistral-Nemo-Instruct-2407 (GGUF-Quantisierung Q4_K_M)
+Herausgeber: Mistral AI
+Quelle:      https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407
+GGUF:        https://huggingface.co/mradermacher/Mistral-Nemo-Instruct-2407-GGUF
+
+Lizenz: Apache License 2.0
+SPDX-Identifier: Apache-2.0
+Lizenztext: https://www.apache.org/licenses/LICENSE-2.0.txt
+
+Wesentliche Bedingungen:
+- Kommerzielle Nutzung erlaubt.
+- Weitergabe (Quell- und Binärform) erlaubt unter Beibehaltung
+  des Copyright-Hinweises, einer Kopie dieser Lizenz sowie
+  Kennzeichnung von Änderungen.
+- Ausdrückliche Patentlizenz durch alle Beitragenden gewährt.
+- Keine Nutzung von Marken oder Logos ohne gesonderte Genehmigung.
+- Keine Garantie; keine Haftung.
+
+Copyright (c) Mistral AI
+
+Hinweis zur GGUF-Konvertierung:
+  Die GGUF-Datei wird von mradermacher bereitgestellt.
